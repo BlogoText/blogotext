@@ -287,6 +287,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var) {
 					redirection($_SERVER['PHP_SELF'].'?file_id='.$fichier['bt_id'].'&errmsg=error_fichier_rename');
 				}
 			}
+			list($fichier['bt_dim_w'], $fichier['bt_dim_h']) = getimagesize($dossier.'/'.$new_filename); // reupdate filesize.
 
 			// modifie le fichier dans la BDD des fichiers.
 			foreach ($GLOBALS['liste_fichiers'] as $key => $entry) {
@@ -348,7 +349,6 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var) {
  *
  */
 function init_post_fichier() { //no $mode : it's always admin.
-		$image = array();
 		// on edit : get file info from form
 		if (isset($_POST['is_it_edit']) and $_POST['is_it_edit'] == 'yes') {
 			$file_id = htmlspecialchars($_POST['file_id']);
@@ -415,9 +415,8 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 	
 	if (empty($fichiers)) { // si PAS fichier donnée : formulaire nouvel envoi.
 		$form .= '<fieldset class="pref" >'."\n";
-		$form .= '<legend onclick="show_ul_form();" class="legend-addfile">'.$GLOBALS['lang']['label_fichier_ajout'].'</legend>'."\n";
+		$form .= '<legend class="legend-addfile">'.$GLOBALS['lang']['label_fichier_ajout'].'</legend>'."\n";
 
-		$form .= '<div id="onclicshow">'."\n";
 		// normal form : upload file
 		$form .= '<p class="gray-section" id="alternate-form-file">'."\n";
 		$form .= "\t".'<label for="fichier">'.ucfirst($GLOBALS['lang']['label_fichier']).' :</label>'."\n";
@@ -468,7 +467,6 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 		$form .= '<input class="submit blue-square" type="submit" name="upload" value="'.$GLOBALS['lang']['img_upload'].'" />'."\n";
 		$form .= hidden_input('token', new_token(), 'id');
 		$form .= hidden_input('_verif_envoi', '1');
-		$form .= '</div>'."\n";
 		$form .= '</div>'."\n";
 
 		$form .= '</fieldset>'."\n";

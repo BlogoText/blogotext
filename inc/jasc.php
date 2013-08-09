@@ -522,8 +522,15 @@ function image_vignettes() {
 	wall.innerHTML = \'\';
 	for (var i = 0, len = curr_img.length ; i < len ; i++) {
 		var img = curr_img[i];
-		var imgCode = \'<div class="image_bloc" id="bloc_\'+img.id+\'"><span class="spantop black"><a title="'.$GLOBALS['lang']['partager'].'" class="lien lien-shar" href="links.php?url=\'+img.filename[0]+\'">&nbsp;</a><a title="'.$GLOBALS['lang']['voir'].'" class="lien lien-voir" href="\'+img.filename[0]+\'">&nbsp;</a><a title="'.$GLOBALS['lang']['editer'].'" class="lien lien-edit" href="fichiers.php?file_id=\'+img.id+\'&amp;edit">&nbsp;</a><a title="'.$GLOBALS['lang']['supprimer'].'" class="lien lien-supr" href="#" onclick="request_delete_form(\'+img.id+\'); return false;" >&nbsp;</a></span><span class="spanbottom black"><span onclick="slideshow(\\\'start\\\', \'+i+\');"></span></span><img src="\'+img.filename[2]+\'" id="\'+img.id+\'" alt="\'+img.filename[1]+\'" /></div>\'
-		wall.innerHTML += imgCode;
+		var div = document.createElement("div");
+		div.className = \'image_bloc\';
+		div.id = \'bloc_\'+img.id;
+		div.innerHTML = \'<span class="spantop black"><a title="'.$GLOBALS['lang']['partager'].'" class="lien lien-shar" href="links.php?url=\'+img.filename[0]+\'">&nbsp;</a><a title="'.$GLOBALS['lang']['voir'].'" class="lien lien-voir" href="\'+img.filename[0]+\'">&nbsp;</a><a title="'.$GLOBALS['lang']['editer'].'" class="lien lien-edit" href="fichiers.php?file_id=\'+img.id+\'&amp;edit">&nbsp;</a><a title="'.$GLOBALS['lang']['supprimer'].'" class="lien lien-supr" href="#" onclick="request_delete_form(\'+img.id+\'); return false;" >&nbsp;</a></span><span class="spanbottom black"><span onclick="slideshow(\\\'start\\\', \'+i+\');"></span></span><img src="\'+img.filename[2]+\'" id="\'+img.id+\'" alt="\'+img.filename[1]+\'" />\';
+		wall.appendChild(div);
+
+
+//		var imgCode = \'<div class="image_bloc" id="bloc_\'+img.id+\'"><span class="spantop black"><a title="'.$GLOBALS['lang']['partager'].'" class="lien lien-shar" href="links.php?url=\'+img.filename[0]+\'">&nbsp;</a><a title="'.$GLOBALS['lang']['voir'].'" class="lien lien-voir" href="\'+img.filename[0]+\'">&nbsp;</a><a title="'.$GLOBALS['lang']['editer'].'" class="lien lien-edit" href="fichiers.php?file_id=\'+img.id+\'&amp;edit">&nbsp;</a><a title="'.$GLOBALS['lang']['supprimer'].'" class="lien lien-supr" href="#" onclick="request_delete_form(\'+img.id+\'); return false;" >&nbsp;</a></span><span class="spanbottom black"><span onclick="slideshow(\\\'start\\\', \'+i+\');"></span></span><img src="\'+img.filename[2]+\'" id="\'+img.id+\'" alt="\'+img.filename[1]+\'" /></div>\'
+//		wall.innerHTML += imgCode;
 	}
 }
 image_vignettes();
@@ -536,10 +543,12 @@ function folder_sort(folder, button) {
 			newlist.push(imgs.list[k]);
 		}
 	}
+
 	// reattributes the new list (it’s a global)
 	curr_img = newlist;
 	curr_max = curr_img.length-1;
 	// recreates the images wall with the new list
+
 	image_vignettes();
 
 	// styles on buttons
@@ -578,6 +587,7 @@ function type_sort(type, button) {
 	}
 	return $sc;
 }
+
 
 
 
