@@ -1197,10 +1197,10 @@ else {
 			// recomptage des commentaires
 			if ($_POST['recount']) {
 				if ($GLOBALS['sgdb'] == 'sqlite') {
-					$query = "UPDATE articles SET bt_nb_comments = (SELECT count(a.bt_id) FROM articles a INNER JOIN commentaires c ON (c.bt_article_id = a.bt_id) WHERE articles.bt_id = a.bt_id GROUP BY a.bt_id)";
+					$query = "UPDATE articles SET bt_nb_comments = COALESCE((SELECT count(a.bt_id) FROM articles a INNER JOIN commentaires c ON (c.bt_article_id = a.bt_id) WHERE articles.bt_id = a.bt_id GROUP BY a.bt_id), 0)";
 				}
 				if ($GLOBALS['sgdb'] == 'mysql') {
-					$query = "UPDATE articles SET bt_nb_comments = (SELECT count(articles.bt_id) FROM commentaires WHERE commentaires.bt_article_id = articles.bt_id)";
+					$query = "UPDATE articles SET bt_nb_comments = COALESCE((SELECT count(articles.bt_id) FROM commentaires WHERE commentaires.bt_article_id = articles.bt_id), 0)";
 				}
 				try {
 					$req = $GLOBALS['db_handle']->prepare($query);
