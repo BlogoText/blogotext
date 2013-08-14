@@ -650,6 +650,10 @@ function addFolder2zip($zip, $folder) {
 }
 
 function creer_fichier_zip($dossiers) {
+	$dossier_backup = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_backup'];
+	if (creer_dossier($dossier_backup, 0) === FALSE) {
+		echo $GLOBALS['lang']['err_file_write'];
+	}
 	$zipfile = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_backup'].'/'.'archive_site-'.date('Ymd').'-'.substr(md5(rand(10,99)),3,5).'.zip';
 	$zip = new ZipArchive;
 	if ($zip->open($zipfile, ZipArchive::CREATE) === TRUE) {
