@@ -113,6 +113,14 @@ echo '<div id="page">'."\n";
 
 // misc funtions
 
+// create the backup folder
+function creer_dossier_sauv() {
+	$dossier_backup = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_backup'];
+	if (creer_dossier($dossier_backup, 0) === FALSE) {
+		echo $GLOBALS['lang']['err_file_write'];
+	}
+}
+
 // gets a text/xml file and returns the content of a tag
 function parse_xml($fichier, $balise) {
 	if (is_file($fichier)) {
@@ -171,9 +179,6 @@ function file2base64($source) {
 // opens a file and put the XML content in it.
 function creer_fich_xml() {
 	$dossier_backup = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_backup'];
-	if (creer_dossier($dossier_backup, 0) === FALSE) {
-		echo $GLOBALS['lang']['err_file_write'];
-	}
 	$fichier = 'backup-'.date('Ymd').'-'.substr(md5(rand(100,999)),3,5).'.xml';
 	$path = $dossier_backup.'/'.$fichier;
 
@@ -262,12 +267,8 @@ function creer_xml() {
 
 /* génère le fichier HTML au format de favoris utilisés par tous les navigateurs. */
 function creer_fich_html() {
-	// création du dossier des backups
-	$dossier_backup = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_backup'];
-	if (creer_dossier($dossier_backup, 0) === FALSE) {
-		echo $GLOBALS['lang']['err_file_write'];
-	}
 	// nom du fichier de sortie
+	$dossier_backup = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_backup'];
 	$fichier = 'backup-links-'.date('Ymd').'-'.substr(md5(rand(100,999)),3,5).'.html';
 	$path = $dossier_backup.'/'.$fichier;
 
@@ -651,10 +652,7 @@ function addFolder2zip($zip, $folder) {
 
 function creer_fichier_zip($dossiers) {
 	$dossier_backup = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_backup'];
-	if (creer_dossier($dossier_backup, 0) === FALSE) {
-		echo $GLOBALS['lang']['err_file_write'];
-	}
-	$zipfile = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_backup'].'/'.'archive_site-'.date('Ymd').'-'.substr(md5(rand(10,99)),3,5).'.zip';
+	$zipfile = $dossier_backup.'/'.'archive_site-'.date('Ymd').'-'.substr(md5(rand(10,99)),3,5).'.zip';
 	$zip = new ZipArchive;
 	if ($zip->open($zipfile, ZipArchive::CREATE) === TRUE) {
 
@@ -957,6 +955,8 @@ else {
 
 	// S A U V E G A R D E
 	if (($_GET['quefaire'] == 'sauvegarde')) {
+		// création du dossier de sauvegarde
+		creer_dossier_sauv();
 		// on demande le type de sauvegarde
 		if (!isset($_GET['type'])) {
 
