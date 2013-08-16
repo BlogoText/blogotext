@@ -191,7 +191,7 @@ function form_langue_install($label) {
 }
 
 function liste_themes($chemin) {
-	if ( $ouverture = opendir($chemin) ) { 
+	if ( $ouverture = opendir($chemin) ) {
 		while ($dossiers = readdir($ouverture) ) {
 			if ( file_exists($chemin.'/'.$dossiers.'/list.html') ) {
 				$themes[$dossiers] = $dossiers;
@@ -301,7 +301,7 @@ function filtre($type, $filtre) { // cette fonction est très gourmande en resso
 		echo '</optgroup>'."\n";
 	}
 
-	/// PAR AUTEUR S'IL S'AGIT DES COMMENTAIRES OU DE LIENS 
+	/// PAR AUTEUR S'IL S'AGIT DES COMMENTAIRES OU DE LIENS
 	if (!empty($tab_auteur)) {
 		echo '<optgroup label="'.$GLOBALS['lang']['pref_auteur'].'">'."\n";
 		foreach ($tab_auteur as $nom) {
@@ -485,7 +485,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= '</form>'."\n\n";
 
 	} elseif ($step == 'edit') { // Form pour l'édition d'un lien : les champs sont remplis avec le "wiki_content" et il y a les boutons suppr/activer en plus.
-		$rand = substr(md5(rand(1000,9999)),0,5); 
+		$rand = substr(md5(rand(1000,9999)),0,5);
 		$form = '<form method="post"  onsubmit="return moveTag();" class="bordered-formbloc" id="post-lien" action="'.$_SERVER['PHP_SELF'].'?id='.$editlink['bt_id'].'">'."\n";
 		$form .= "\t".'<fieldset class="pref">'."\n";
 		$form .= legend($GLOBALS['lang']['label_edit_lien'], 'legend-link');
@@ -661,7 +661,7 @@ function afficher_form_billet($article, $erreurs) {
 			.s_u('æ').s_u('Æ').s_u('œ').s_u('Œ').s_u('é').s_u('É').s_u('è').s_u('È').s_u('ç').s_u('Ç').s_u('ù').s_u('Ù').s_u('à').s_u('À').s_u('ö').s_u('Ö')
 			.s_u('…').s_u('«').s_u('»').s_u('±').s_u('≠').s_u('×').s_u('÷').s_u('ß').s_u('®').s_u('©').s_u('↓').s_u('↑').s_u('←').s_u('→').s_u('ø').s_u('Ø')
 			.s_u('☠').s_u('☣').s_u('☢').s_u('☮').s_u('★').s_u('☯').s_u('☑').s_u('☒').s_u('☐').s_u('♫').s_u('♬').s_u('♪').s_u('♣').s_u('♠').s_u('♦').s_u('❤')
-			.s_u('♂').s_u('♀').s_u('☺').s_u('☺').s_u('☻').s_u('♲').s_u('⚐').s_u('⚠').s_u('☂').s_u('√').s_u('∑').s_u('λ').s_u('π').s_u('Ω').s_u('№').s_u('∞')
+			.s_u('♂').s_u('♀').s_u('☹').s_u('☺').s_u('☻').s_u('♲').s_u('⚐').s_u('⚠').s_u('☂').s_u('√').s_u('∑').s_u('λ').s_u('π').s_u('Ω').s_u('№').s_u('∞')
 			.'</span></span>'."\n";
 
 	echo "\t".'<span class="spacer"></span>'."\n";
@@ -750,11 +750,11 @@ function form_jour($jour_affiche) {
 
 function form_mois($mois_affiche) {
 	$mois = array(
-		"01" => $GLOBALS['lang']['janvier'],	"02" => $GLOBALS['lang']['fevrier'], 
-		"03" => $GLOBALS['lang']['mars'],		"04" => $GLOBALS['lang']['avril'], 
-		"05" => $GLOBALS['lang']['mai'],			"06" => $GLOBALS['lang']['juin'], 
+		"01" => $GLOBALS['lang']['janvier'],	"02" => $GLOBALS['lang']['fevrier'],
+		"03" => $GLOBALS['lang']['mars'],		"04" => $GLOBALS['lang']['avril'],
+		"05" => $GLOBALS['lang']['mai'],			"06" => $GLOBALS['lang']['juin'],
 		"07" => $GLOBALS['lang']['juillet'],	"08" => $GLOBALS['lang']['aout'],
-		"09" => $GLOBALS['lang']['septembre'],	"10" => $GLOBALS['lang']['octobre'], 
+		"09" => $GLOBALS['lang']['septembre'],	"10" => $GLOBALS['lang']['octobre'],
 		"11" => $GLOBALS['lang']['novembre'],	"12" => $GLOBALS['lang']['decembre']
 	);
 	echo '<select name="mois">'."\n" ;
