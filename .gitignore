@@ -4,3 +4,8 @@ config/
 databases/
 files/
 img/
+error.log
+.htaccess
+TODO
+MAJ.log
+DEMO.sqlite

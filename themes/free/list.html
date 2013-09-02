@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<title>{article_titre_page}{blog_nom}</title>
+	<meta name="generator" content="BlogoText" />
+	<meta name="robots" content="all" />
+	<meta name="author" content="{blog_auteur}" />
+	<meta name="viewport" content="width=device-width, user-scalable=yes" />
+	<meta name="keywords" content="{keywords}" />
+	<meta name="description" content="{blog_description}" />
+	<link type="text/css" rel="stylesheet" href="{style}/style.css" />
+	<link type="application/rss+xml" rel="alternate" title="RSS 2.0 - Articles" href="{rss}" />
+	<style type="text/css">
+	#email-adress { display: none!important; }
+	</style>
+
+</head>
+<body>
+
+<header id="top">
+<h1><a href="{racine_du_site}">{blog_nom}</a></h1>
+<h2>{blog_description}</h2>
+</header>
+<div id="wrapper">
+	<nav id="navigate">{recherche}</nav>
+	<section id="contenu">
+		{BOUCLE_posts}
+
+			// ici il s'affichera ce qu'on veut : un article, un commentaire, un lien sauvé…
+			// les thèmes pour ces choses sont dans le dossier "template"
+			// chaque "objet" (lien, article, …) dispose de son propre formatage. 
+
+			// **** le texte que vous mettez ici (dans la "boucle") ne sera pas éxécuté ni affiché. ****
+
+		{/BOUCLE_posts}
+		
+	</section>
+
+	<br style="clear:both;" />
+	{pagination}
+</div> <!-- einde #wrapper -->
+
+
+<footer><b>{blog_auteur}</b>, tous droits réservés – Publié avec <a href="http://lehollandaisvolant.net/blogotext/">BlogoText</a> – Thème par <a href="http://lehollandaisvolant.net/">Timo van Neerden</a></footer>
+
+<script type="text/javascript">
+/* Tag script found at : http://www.siteduzero.com/tutoriel-3-34703-insertion-de-balises-dans-une-zone-de-texte.html */
+function insertTag(startTag, endTag, tag, tagType) {
+	var field = document.getElementById(tag);
+	var scroll = field.scrollTop;
+	field.focus();
+
+	if (window.ActiveXObject) { // C'est IE
+		var textRange = document.selection.createRange();            
+		var currentSelection = textRange.text;
+
+		textRange.text = startTag + currentSelection + endTag;
+		textRange.moveStart("character", -endTag.length - currentSelection.length);
+		textRange.moveEnd("character", -endTag.length);
+		textRange.select();     
+	} else { // c'est pas IE.
+		var startSelection   = field.value.substring(0, field.selectionStart);
+		var currentSelection = field.value.substring(field.selectionStart, field.selectionEnd);
+		var endSelection     = field.value.substring(field.selectionEnd);
+		if (currentSelection == "") { currentSelection = "TEXTE"; }
+		field.value = startSelection + startTag + currentSelection + endTag + endSelection;
+		field.focus();
+		field.setSelectionRange(startSelection.length + startTag.length, startSelection.length + startTag.length + currentSelection.length);
+	}
+	field.scrollTop = scroll;
+}
+
+function reply(code) {
+	var field = document.getElementById('form-commentaire').getElementsByTagName('textarea')[0];
+	field.focus();
+	if (field.value !== '') {
+		field.value += '\n\n';
+	}
+	field.value += code;
+	field.scrollTop = 10000;
+	field.focus();
+}
+
+function resize(id, dht) {
+	var elem = document.getElementById(id);
+	var ht = elem.offsetHeight;
+	size = Number(ht)+Number(dht);
+	elem.style.height = size+"px";
+	return false;
+}
+
+</script>
+
+
+</body>
+</html>

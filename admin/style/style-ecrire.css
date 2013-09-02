@@ -1,0 +1,343 @@
+/* ECRIRE 
+---------------------------------------------------------------------------------- */
+
+/* apercu */
+#apercu {
+	padding: 1%;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	width: 99%;
+	margin: 0 0 20px 0;
+	border: 1px dashed #ccc;
+}
+
+#apercu pre, #apercu code {
+	white-space: pre-wrap;
+}
+
+#apercu p {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+#apercu img {
+	padding: 2px;
+	border: 1px solid #ddd;
+}
+
+/* formulaire à remplir */
+#form-ecrire {
+	margin-right: 10px;
+}
+
+#form-ecrire textarea {
+	resize: vertical;
+}
+
+#titre, #form-ecrire #categories, #contenu, #mots_cles {
+	width: 100%;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	clear: both;
+	padding: 5px;
+	margin: 0 0 15px;
+	border-radius: 5px;
+}
+
+#form-ecrire #titre {
+	font-weight: bold;
+	font-size: 16px;
+}
+
+#form-ecrire #categories, #contenu {
+	border-radius: 0 0 5px 5px;
+}
+
+#chapo_note {
+	display: table;
+	border-spacing: 0;
+	border-collapse: collapse;
+	width: 100%;
+	margin-bottom: 5px;
+}
+
+/* browsers scale the width of these box with the ratio of the value of html "cols" attribut they have (since they are table-cells). Damn, good to know that ! */
+#blocchapo, #blocnotes {
+	display: table-cell;
+}
+
+#chapo, #notes {
+	width: 100%;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+
+	padding: 5px;
+	height: 100px;
+	background: #f1f1f5;
+	border-radius: 5px;
+}
+
+#notes {
+	width: 98%;
+	margin-left: 2%;
+}
+
+/* tags */
+#form-ecrire #liste-tags { 
+	width: 99%;
+	margin: 0 0 2px;
+	line-height: 22px;
+}
+
+#form-ecrire .tag {
+	margin-bottom: 2px;
+	padding: 0 5px 0 21px;
+	background: url(format.png) -1px -162px no-repeat #ddd;
+	border: 1px solid #999;
+	border-radius: 0 5px 5px 7px;
+}
+
+#form-ecrire .tag:hover {
+	cursor: pointer;
+}
+
+/* Boutons de formatage  */
+p.formatbut {
+//	overflow: hidden;
+	border: 1px solid #9999a3;
+	border-bottom: 0;
+	border-radius: 5px 5px 0 0;
+	width: 100%;
+//	height: 30px;
+	line-height: 28px;
+	margin: 0; padding: 0 5px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+
+	background: #cde6ff;
+	background: -webkit-linear-gradient(top, white, #e6e6e6);
+	background:    -moz-linear-gradient(top, white, #e6e6e6);
+	background:     -ms-linear-gradient(top, white, #e6e6e6);
+	background:      -o-linear-gradient(top, white, #e6e6e6);
+	background:         linear-gradient(top, white, #e6e6e6);
+}
+
+.formatbut .but {
+	padding: 0;
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+	background: rgba(0, 0, 0, 0);
+	height: 24px; width: 24px;
+	border: 1px solid transparent;
+	border-radius: 4px;
+}
+
+.formatbut .but:hover {
+	-webkit-transition: border-color .3s;
+	   -moz-transition: border-color .3s;
+	    -ms-transition: border-color .3s;
+	     -o-transition: border-color .3s;
+	        transition: border-color .3s;
+	border-color: silver;
+	
+}
+
+.formatbut .but:active {
+	border-color: gray;
+	background: #cde6ff;
+	background: -webkit-linear-gradient(bottom, white, #d6d6d6);
+	background:    -moz-linear-gradient(bottom, white, #d6d6d6);
+	background:     -ms-linear-gradient(bottom, white, #d6d6d6);
+	background:      -o-linear-gradient(bottom, white, #d6d6d6);
+	background:         linear-gradient(bottom, white, #d6d6d6);
+}
+
+.formatbut .but span.c {
+	display: inline-block;
+	width: 16px;
+	height: 24px;
+	background: no-repeat 0 3px transparent url(format.png);
+}
+
+.formatbut span.spacer {
+	width: 2px;
+	margin: 0 4px;
+	border-left: 1px solid #e5e5e5;
+	border-right: 1px solid #fafafa
+}
+
+/* buttons : works in comment form and in article form */
+#button01 span.c { background-position: -4px   -1px; } /* bold */
+#button02 span.c { background-position: -4px  -21px; } /* ital */
+#button03 span.c { background-position: -4px  -42px; } /* underline */
+#button04 span.c { background-position: -4px  -82px; } /* strike */
+#button05 span.c { background-position: -4px -319px; } /* left align */
+#button06 span.c { background-position: -4px -293px; } /* center align */
+#button07 span.c { background-position: -4px -241px; } /* right align */
+#button08 span.c { background-position: -4px -267px; } /* justify */
+#button09 span.c { background-position: -4px  -62px; } /* link */
+#button10 span.c { background-position: -4px -102px; } /* quote */
+#button11 span.c { background-position: -4px -213px; } /* image */
+#button12 span.c { background-position: -4px -122px; } /* code */
+
+#button13 span.c { background-position: -4px -345px; } /* color edit */
+#button14 span.c { background-position: -4px -187px; } /* font size edit */
+#button15 span.c { background-position: -4px -376px; } /* unicode char insert */
+
+#button16 span.c { background-position: -4px -440px; } /* unicode char insert */
+#button17 span.c { background-position: -4px -408px; } /* unicode char insert */
+
+.but-dropdown {
+	position: relative;
+}
+
+.but-dropdown .list {
+	display:none;
+	padding: 3px;
+	border: 1px solid #9999a3;
+	border-radius: 4px;
+	background-color: white;
+	width: 110px;
+	height: 130px;
+	position: absolute;
+	top: 24px;
+	left: -1px;
+	line-height: 20px;
+	box-shadow: 0px 2px 7px silver;
+}
+
+.but-dropdown:hover .list {
+	display: block;
+}
+
+/* list colors */
+.but-dropdown .list-color button {
+	display: inline-block;
+	background: white;
+	margin: 0 2px;
+	width: 22px;
+	height: 22px;
+	padding: 3px;
+	border: 1px solid transparent;
+}
+
+.but-dropdown .list-color button span {
+	vertical-align: middle;
+	border: 1px solid #ccc;
+	margin: 0 auto;
+	display: block;
+	width: 12px;
+	height: 12px;
+}
+
+.but-dropdown .list-color button:hover {
+	background-color: #ddd;
+}
+.but-dropdown .list-color button:hover span {
+	border-color: #888;
+}
+
+/* list sizes */
+.but-dropdown .list-size {
+	text-align: left;
+	width: 140px;
+	padding: 3px 0;
+}
+
+.but-dropdown .list-size button {
+	color: black;
+	padding: 2px;
+	text-align: left;
+	display: inline-block;
+	background: white;
+	margin: 0;
+	width: 140px;
+	height: 28px;
+	margin-top: 3px;
+	border: 1px solid transparent;
+}
+
+.but-dropdown .list-size button span {
+	vertical-align: middle;
+	margin: 0 auto;
+}
+
+.but-dropdown .list-size button:hover {
+	background-color: #ddd;
+}
+
+/* list caractères unicodes */
+
+.but-dropdown .list-spechr {
+	text-align: left;
+	width: 384px;
+	height: 94px;
+	padding: 3px;
+}
+
+.but-dropdown .list-spechr button {
+	background: white;
+	margin: 0 2px 2px 0;
+	width: 22px;
+	padding: 0;
+	height: 22px;
+	border: 1px solid #ddd;
+	border-radius: 2px;
+	text-align: center;
+}
+
+.but-dropdown .list-spechr button span {
+
+}
+
+.but-dropdown .list-spechr button:hover {
+	background-color: #ddd;
+}
+
+
+/* boutons d’options et date */
+#date-and-opts {
+	width: 100%;
+}
+
+#date {
+	margin-top: 10px
+}
+
+#opts {
+	float: right;
+}
+
+#formdate,
+#formheure,
+#formstatut,
+#formallowcomment {
+	display: inline-block;
+	padding-left: 20px;
+	height: 20px;
+}
+
+#formdate {
+	background: url(legend.png) no-repeat -560px -168px;
+}
+
+#formheure {
+	margin-left: 15px;
+	background: url(legend.png) no-repeat 0px -148px;
+}
+
+#formstatut {
+	background: url(legend.png) no-repeat -560px -200px;
+}
+
+#formallowcomment {
+	margin-left: 15px;
+	background: url("comments.png") no-repeat left;
+	background: url(legend.png) no-repeat -560px -232px;
+}
+
+#opts label {
+	margin-right: 5px;
+}
+

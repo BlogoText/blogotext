@@ -1,0 +1,480 @@
+/* GENERAL PAGE LAYOUT
+------------------------------------------------------------ */
+html, body {
+	margin: 0; padding: 0;
+	background: #fff;
+	color: #333;
+	font-size: 12px;
+	font-family: Verdana, Helvetica, Arial, sans-serif;
+	word-wrap: break-word;
+}
+
+#axe { /* the entire page without top bar (#top) and footer (#footer) */ 
+	padding: 1% 3% 2%;
+	clear: both;
+}
+
+#page { /* the main frame. #axe minus the "filtre" forms, and the "mode" link (« modifier article » and « nb commentaires sur l’article » */
+	padding: 20px 1% 20px;
+}
+
+/* Footer */
+
+#footer {
+	clear: both;
+	text-align: center;
+	color: #666;
+	padding: 10px;
+	font-size: 10px;
+}
+
+#footer a {
+	color: inherit;
+	text-decoration : none;
+}
+
+#footer a:hover {
+	text-decoration : underline;
+}
+
+
+
+/* GENERAL STUFF 
+------------------------------------------------------------------- */
+a {
+	color: #45a6ff;
+}
+
+.centrer {
+	text-align: center;
+}
+
+a:hover {
+	color: #4f6681;
+	text-decoration: underline;
+}
+
+img {
+	border: none;
+}
+
+.nodisplay {
+	display: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: "Trebuchet MS", Verdana, Helvetica, Arial, sans-serif;
+	clear: both;
+}
+
+textarea {
+	resize: both;
+}
+
+h1 {
+	font-size: 30px;
+	margin-top: 0;
+}
+
+label {
+	margin-bottom: 5px;
+}
+
+label.inline {
+	display: inline;
+	margin-right: 10px;
+}
+
+input.inline {
+	margin: 0;
+	display: inline;
+}
+
+.info { /* ex : « il n'y a aucun commentaire » est un .info */
+	padding-left: 20px;
+	background: no-repeat left center url("info.png");
+}
+
+
+/* Message de confirmation ou d’erreur */
+.confirmation, .no_confirmation, .reminder {
+	position: absolute;
+	top: 7px; left: 7px;
+	width: 140px; height: 55px; line-height: 55px;
+	padding: 0 5px;
+	font-weight: bold;
+	text-align: center;
+	color : white;
+	text-shadow: black 1px 1px 3px;
+	border-radius: 6px ;
+	box-shadow: rgba(0, 0, 0, .8) 2px 2px 4px inset, rgba(0,0,0,.7) 2px 2px 15px inset;
+}
+
+.confirmation span, .no_confirmation span, .reminder span {
+	line-height: 1.7em;
+	vertical-align: middle;
+	display: inline-block;
+}
+
+.confirmation {
+	background: rgba(80, 220, 80, .7);
+}
+
+.no_confirmation {
+	background: #ff4841;
+}
+
+.reminder {
+	background: #ffb54c;
+	border: 1px solid #ff6b0d;
+	opacity: 0;
+}
+
+/* ce popup CSS apparaît au bout d'un délai (600s = 10 min) et prévient l'utilisateur qu'il devrait sauver son travail */
+html:hover .reminder {
+	opacity: .9;
+	-webkit-transition: opacity 3s 600s ease-out; 
+	   -moz-transition: opacity 3s 600s ease-out; 
+	     -o-transition: opacity 3s 600s ease-out; 
+	        transition: opacity 3s 600s ease-out; 
+}
+
+/* TOP 
+------------------------------------------------------------------------ */
+#top {
+	height: 112px;
+	clear: both;
+	background: linear-gradient(top, #bdbdbd 2px, #eee 79px, #c4c4c4);
+	background: -o-linear-gradient(top, #bdbdbd 2px, #eee 79px, #c4c4c4);
+	background: -ms-linear-gradient(top, #bdbdbd 2px, #eee 79px, #c4c4c4);
+	background: -moz-linear-gradient(top, #bdbdbd 2px, #eee 79px, #c4c4c4);
+	background: -webkit-linear-gradient(top, #bdbdbd 2px, #eee 79px, #c4c4c4);
+	margin-bottom: 20px;
+	box-shadow: 0 -4px 12px silver inset;
+}
+
+#top h1 {
+	height: 50px;
+	text-shadow: white 0px 0px 10px, white 0px 0px 10px;
+	line-height: 50px;
+	font-size: 20px;
+	padding-left: 5%;
+	margin: 0 0 0 130px;
+}
+
+
+/* TOP NAV BAR 
+------------------------------------------------------------------------- */
+#nav {
+	padding: 0 3%;
+}
+
+#nav a {
+	display: block;
+	float: left;
+	color: #222;
+	text-shadow: white 0 0 4px, white 0 0 4px;
+	padding : 19px 10px 2px;
+	margin: 20px 1px 0;
+	line-height: 20px;
+	text-decoration: none;
+	border: 1px solid transparent;
+	border-bottom: none;
+	border-radius: 4px 4px 0 0;
+	background-repeat: no-repeat;
+	background-color: transparent;
+	background-image: url(menu.png);
+}
+
+#nav a.current {
+	border-color: #c8c8c8;
+	background-color: #fff;
+	box-shadow: 0 5px 0px #fff, 0 0px 4px silver;
+}
+
+#lien-index    { background-position: center  -34px; }
+#lien-liste    { background-position: center -194px; }
+#lien-lscom    { background-position: center -114px; }
+#lien-nouveau  { background-position: center    6px; }
+#lien-links    { background-position: center -154px; }
+#lien-fichiers { background-position: center -234px; }
+
+
+
+#nav-top {
+	position: absolute;
+	top: -10px;
+	right: 25px;
+}
+
+#nav-top a {
+	border: 1px solid #aaa;
+	padding: 10px 8px 2px; margin: 0 3px;
+	border-radius: 0 0 10px 10px;
+	background-color: #f6f6f6;
+	background-image: none;
+	color: #000;
+	text-shadow: white 0 0 4px, white 0 0 4px;
+	box-shadow: 0 0px 4px #555 inset;
+}
+
+#nav-top a:hover {
+	padding-top: 11px;
+	box-shadow: 0 -5px 0px #fff, 0 0px 4px #555;
+}
+
+#nav-top #lien-deconnexion {
+	font-weight: bold;
+	color: #e00;
+	text-shadow: white 0 0 4px;
+}
+
+/* --------------------------------------
+FORM RECHERCHE */
+
+#search {
+	border: 1px solid gray;
+	border-radius: 10px;
+	height: 22px;
+	position: absolute;
+	right: 10px;
+	top: 40px;
+	background: #f7f7f7;
+	box-shadow: 0 0 4px #ccc inset;
+}
+
+#search:hover #q, #q:focus, #q:not([value=""]) {
+	width: 200px;
+}
+
+#q, #input-rechercher {
+	vertical-align: middle;
+	border: none;
+	box-shadow: none;
+	background-color: transparent;
+}
+
+#q {
+	padding: 2px 3px 2px 27px;
+	background: url("menu.png") no-repeat 7px -278px;
+	width: 140px;
+	-webkit-transition: width .3s ease-out;
+	   -moz-transition: width .3s ease-out;
+	     -o-transition: width .3s ease-out;
+	        transition: width .3s ease-out;
+}
+
+#input-rechercher {
+	height: 22px;
+	padding: 2px 5px;
+	color: #000	;
+	font-weight: bold;
+}
+
+/* SUBNAV
+------------------------------------------------------------------ */
+
+#subnav {
+	margin: 0 1% 10px;
+}
+
+#mode { /* the link above comment/ecrire #page */
+	display: block;
+	float: right;
+	margin: 0;
+	color: gray;
+}
+
+#mode a, #voir-en-ligne a {
+	text-decoration: none;
+}
+
+#lien-comments, #voir-en-ligne a {
+	font-weight: bold;
+	margin-right: 0px;
+}
+
+#form-filtre {
+	margin-bottom: 15px;
+}
+
+
+/* PAGE INDEX 
+------------------------------------------------------------------------- */
+
+#resultat-recherche {
+	list-style-type: none;
+}
+
+
+/* PAGE PREFERENCES 
+--------------------------------------------------------------------------- 
+--------------------------------------------------------------------------- */
+/* legend, for bg image. Also legends of other pages */
+.legend-tic { background: no-repeat 5px -119px url("legend.png"); }
+.legend-user { background: no-repeat 5px   1px url("legend.png"); }
+.legend-link { background: no-repeat 5px -269px url("legend.png"); }
+.legend-note { background: no-repeat 5px -299px url("legend.png"); }
+.legend-sweep { background: no-repeat 5px -239px url("legend.png"); }
+.legend-backup { background: no-repeat 5px  -59px url("legend.png"); }
+.legend-config { background: no-repeat 5px -179px url("legend.png"); }
+.legend-update { background: no-repeat 5px -89px url("legend.png"); }
+.legend-addfile { background: no-repeat 5px -209px url("legend.png"); }
+.legend-fichier { background: no-repeat 5px -29px url("legend.png"); }
+.legend-question { background: no-repeat 5px -329px url("legend.png"); }
+.legend-securite { background: no-repeat 5px -359px url("legend.png"); }
+.legend-dateheure { background: no-repeat 5px -149px url("legend.png"); }
+.legend-apparence { background: no-repeat 5px -389px url("legend.png"); }
+
+.post-lien p.sinline, .form-commentaire p.sinline {
+	float: right;
+}
+
+p.sinline, p.sinline label, p.sinline input {
+	vertical-align: middle;
+}
+
+
+/* GENERAL FORM STUFF */
+
+input.text {
+	border: 1px solid #999;
+	margin: 0;
+	box-shadow: 0px 1px 4px #ccc inset;
+}
+
+textarea {
+	font-family: Verdana, Helvetica, Arial, sans-serif;
+	font-size: 12px;
+	display: block;
+	box-shadow: 0px 1px 4px silver inset;
+	border: 1px solid #9999a3;
+}
+
+input.text:focus, textarea:focus {
+	box-shadow: 0 0 6px rgba(0, 0, 0, 0.15), 0px 1px 4px #ccc inset; 
+} 
+
+.submit {
+	margin-top: 20px;
+	display: block;
+	float: right;
+}
+
+/* .text: type = { text, password, url, email } */
+#form-image input.text, #form-image textarea,
+#pageauth input.text,
+#preferences input.text, #preferences textarea,
+#post-lien input.text, #post-lien textarea, #post-new-lien #lien {
+	border-radius: 5px;
+}
+
+/*input buttons */
+.red-square, .blue-square {
+	padding: 3px 10px;
+	color: #fff;
+	font-size: 14px;
+	vertical-align: middle;
+	border-radius: 5px;
+	margin-left: 10px;
+}
+
+.blue-square {
+	font-weight: bold;
+	background: #45a6ff;
+	border: 1px solid #6df;
+
+	background: -webkit-linear-gradient(#4af, #8df);
+	background:    -moz-linear-gradient(#4af, #8df);
+	background:     -ms-linear-gradient(#4af, #8df);
+	background:      -o-linear-gradient(#4af, #8df);
+	background:         linear-gradient(#4af, #8df);
+	box-shadow: 1px 1px 2px rgba(0, 0, 0, .5);
+}
+
+.red-square {
+	background: #cc0000;
+	background: -webkit-linear-gradient(#f11, #f8a);
+	background:    -moz-linear-gradient(#f11, #f8a);
+	background:     -ms-linear-gradient(#f11, #f8a);
+	background:      -o-linear-gradient(#f11, #f8a);
+	background:         linear-gradient(#f11, #f8a);
+	box-shadow: 1px 1px 2px rgba(0, 0, 0, .5);
+
+	border: 1px solid #f62;
+}
+
+/* these are the bordered fieldsets */
+.bordered-formbloc fieldset {
+	clear: both;
+	border: 1px solid #ccc;
+	border-width: 0 0 1px 1px;
+	padding: 10px;
+	margin: 0 0 10px;
+	border-radius: 5px;
+}
+
+.bordered-formbloc fieldset p {
+	clear: both;
+	margin: 10px 0;
+}
+
+.bordered-formbloc fieldset label {
+	color: #666;
+	float: left;
+	width: 40%;
+	margin: 0 15px 0 0;
+	padding: 3px;
+	text-align: right;
+	vertical-align: middle;
+	line-height: 1em;
+}
+
+.bordered-formbloc fieldset input, .bordered-formbloc fieldset textarea {
+	display: inline;
+	padding: 2px 5px;
+	vertical-align: middle;
+}
+
+legend {
+	padding: 0 10px 0 30px;
+	color: #333;
+	font-weight: bold;
+	font-size: 14px;
+}
+
+
+q, blockquote {
+	font-style: italic;
+}
+
+/* ERREURS */
+#erreurs, .erreurs, #succes, .succes {
+	display: block;
+	clear: both;
+	margin: 0 0 15px 0;
+}
+
+#erreurs, .erreurs {
+	color: #D40000;
+}
+#succes, .succes {
+	color: #00A400;
+}
+
+#erreurs ul, #succes ul {
+	list-style-type: square;
+	padding-left: 20px;
+	margin-top: 10px;
+}
+
+#erreurs li, #succes li {
+	margin: 0;
+}
+
+/* Page maintenance.
+********************************************/
+#form_export, #form_import, #form_optimi,
+#e_json, #e_html, #e_zip {
+	display: none;
+}

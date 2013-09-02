@@ -1,1 +1,91 @@
-/home/azkai/Documents/blog/_TEST/cloud/LICENSE.txt
++-=======================================================================-+
+|                        B L O G O T E X T                                |
++-=======================================================================-+
+| Blogotext is a lightweight PHP-only Blog engine.                        |
+|                                                                         |
+| (c) 2006      Frederic Nassar.                                          |
+| (c) 2010-2013 Timo van Neerden, AKA Le Hollandais Volant                |
+|                                                                         |
+| Blogotext is redistributed under the terms of the X11 / MIT Licence     |
+|                                      http://opensource.org/licenses/MIT |
+|                                                                         |
+| Blogotext is based upon others ressources, that are listed below.       |
+|                                                                         |
+| Blogotext requires PHP 5.1+ (5.3 recommended) with PDO support & SQLite |
+| (GD and MySQL might be needed for some additionnal stuff aswell).       |
+|                                                                         |
+| Please, feel free to send bugs reports or questions to                  |
+|                                   http://lehollandaisvolant.net/contact |
+|                                                                         |
++-------------------------------------------------------------------------+
+|                                                                    LINX |
++-------------------------------------------------------------------------+
+| http://lehollandaisvolant.net/tout/linx/                                |
+|                                                                         |
+| Linx is an ultra-lightweight SQLite-based "delicous-like" url-saver.    |
+|                                                                         |
+| (c) 2011 Timo van Neerden, AKA Le Hollandais Volant                     |
+|                                                                         |
+| Linx is redistributed under the terms of the WTFPL.                     |
+|                                                                         |
++-------------------------------------------------------------------------+
+|                                                                 FREECAP |
++-------------------------------------------------------------------------+
+| http://www.puremango.co.uk                                              |
+|                                                                         |
+| Freecap is an independant Image Captcha generator.                      |
+|                                                                         |
+| (c) 2006 Howard Yend                                                    |
+|                                                                         |
+| Freecap is redistributed under the terms of the GNU GPL License.        |
+| Freecap is used in Blogotext with special grant of its author.          |
+|                                                                         |
++-------------------------------------------------------------------------+
+|                              HTML5 Drag and Drop Multiple File Uploader |
++-------------------------------------------------------------------------+
+| http://script-tutorials.com/html5-drag-and-drop-multiple-file-uploader  |
+|                                                                         |
+| "HTML5 Drag and Drop Multiple File Uploader" is a file uploade script.  |
+|                                                                         |
+| (c) 2012 Script-Tutorials.com                                           |
+|                                                                         |
+| The script is adapted and used in Blogotext with special grant of       |
+| script-tutorials.com.                                                   |
+|                                                                         |
++-------------------------------------------------------------------------+
+|                                                             FUGUE ICONS |
++-------------------------------------------------------------------------+
+| http://p.yusukekamiyamane.com/                                          |
+|                                                                         |
+| Fugue is a free icon-set (over 3000 16x16 PNG icons)                    |
+|                                                                         |
+| (c) 2012 Yusuke Kamiyamane.                                             |
+|                                                                         |
+| These icons are licensed under a Creative Commons                       |
+| Attribution 3.0 License.                                                |
+| http://creativecommons.org/licenses/by/3.0/                             |
+|                                                                         |
++-------------------------------------------------------------------------+
+|                                                            FAENZA ICONS |
++-------------------------------------------------------------------------+
+| http://tiheum.deviantart.com/art/Faenza-Icons-173323228                 |
+|                                                                         |
+| Faenza icons is a set of icons, free for non-commercial use             |
+|                                                                         |
+| (c) 2010 Tiheum                                                         |
+|                                                                         |
+| These icons are licensed under a Creative Commons                       |
+| Attribution 3.0 License.                                                |
+| http://creativecommons.org/licenses/by/3.0/                             | |                                                                         |
++-------------------------------------------------------------------------+
+|                                                                         |
++-------------------------------------------------------------------------+
+|                                                                         |
+| As we enjoy great advantages from the inventions of others, we should   |
+| be glad of an opportunity to serve others by any invention of ours,     |
+| and this we should do freely and generously.                            |
+|                                                                         |
+|                                                   − Benjamin Franklin   |
+|                                                                         |
++-------------------------------------------------------------------------+
+

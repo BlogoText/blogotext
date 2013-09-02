@@ -1,0 +1,172 @@
+/* GRAPHS */
+#mainpage {
+	text-align: center;
+}
+
+#graphs {
+	vertical-align: middle;
+	text-align: center;
+	width: 400px;
+	display: inline-block;
+}
+.graphique a {
+	color: black;
+	text-decoration: none;
+}
+.graphique {
+	font-size: 12px;
+	padding: 0px 0px 22px;
+	text-align: center;
+	position: relative;
+	line-height: 20px;
+}
+.graphique h3 {
+	height: 25px;
+	margin: 0;
+}
+.graphique .month {
+	vertical-align: bottom;
+	display: inline-block;
+	text-align: center;
+}
+.graphique .month-bar {
+	border-bottom: transparent 2px solid;
+	min-height: 1px;
+}
+.graphique .month:hover .month-bar {
+	box-shadow: 1px 0px 2px black;
+	border-bottom: black 2px solid;
+}
+
+/* articles */
+#articles {
+	margin-bottom: 35px;
+}
+
+#articles .month {
+	width: 30px;
+	position: relative;
+}
+
+#articles .month-bar {
+	background: red;
+
+	background: -webkit-linear-gradient(left, #f00, #F55);
+	background: -moz-linear-gradient(left, #f00, #F55);
+	background: -o-linear-gradient(left, #f00, #F55);
+	background: linear-gradient(left, #f00, #F55);
+	border-radius: 1px 1px 0 0;
+}
+
+#articles .month-name {
+	bottom: 0;
+	display: block;
+	white-space: pre;
+	font-size: 80%;
+	line-height: 100%;
+}
+
+#articles .month:hover .month-name {
+	font-weight: bold;
+}
+
+#articles .month-nb {
+	top: 3px;
+	left: 0px;
+	position: absolute;
+	width: 30px;
+	color: white;
+	font-weight: bold;
+}
+
+/* commentaires */
+#commentaires .month {
+	width: 14px;
+}
+
+#commentaires .month-bar {
+	background: #87ceeb;
+	background: -webkit-linear-gradient(left, #0be, #9df);
+	background: -moz-linear-gradient(left, #0be, #9df);
+	background: -o-linear-gradient(left, #0be, #9df);
+	background: linear-gradient(left, #0be, #9df);
+	border-radius: 1px 1px 0 0;
+}
+
+/* liens */
+#links .month {
+	width: 14px;
+}
+
+#links .month-bar {
+	background: orange;
+
+	background: -webkit-linear-gradient(left, #f90, #FFCB88);
+	background: -moz-linear-gradient(left, #f90, #FFCB88);
+	background: -o-linear-gradient(left, #f90, #FFCB88);
+	background: linear-gradient(left, #f90, #FFCB88);
+
+	border-radius: 1px 1px 0 0;
+}
+#links, #commentaires {
+	width: 190px;
+	display: inline-block;
+	height: 75px;
+}
+/* Commentaires et liens : popups ! */
+#links .month a, #commentaires .month a {
+	visibility: hidden;
+	position: absolute;
+	bottom: 0; right: 0;
+	display: block;
+	width: 220px;
+	background: white;
+	font-family: sans-serif;
+}
+#links .month:hover a, #commentaires .month:hover a {
+	visibility: visible;
+}
+#links .links-total, #commentaires .comm-total {
+	display: block;
+}
+
+
+
+/* MINIATURES */
+
+#miniatures {
+	vertical-align: middle;
+	width: 250px;
+	display: inline-block;
+}
+
+.miniature {
+	box-shadow: 0 0 10px white inset, 0 0 3px white inset;
+	height: 50px;
+	width: 50px;
+	float: left;
+	-webkit-background-size: 100% 100%;
+	-moz-background-size: 100% 100%;
+	-o-background-size: 100% 100%;
+	background-size: 100% 100%;
+}
+
+.miniature:hover {
+	box-shadow: 0 0 5px white inset, 0 0 10px white, 0 0 3px black;
+
+}
+.miniature:last-of-type:hover {
+	box-shadow: none;
+}
+
+.miniature:last-of-type {
+	line-height: 50px;
+	width: 50px;
+	float: left;
+	background: no-repeat center center url(plus-circle-frame.png);
+	-webkit-background-size: 16px 16px;
+	-moz-background-size: 16px 16px;
+	-o-background-size: 16px 16px;
+	background-size: 16px 16px;
+}
+

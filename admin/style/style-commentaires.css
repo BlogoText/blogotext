@@ -1,0 +1,174 @@
+
+/* COMMENTAIRES */
+
+.commentbloc {
+	padding : 5px 15px 5px 30px;
+	background: #edf3fe url("comment.png") no-repeat 5px 5px;
+	background: url("comment.png") no-repeat 5px 5px, -webkit-linear-gradient(right, white 60%, #edf3fe );
+	background: url("comment.png") no-repeat 5px 5px,    -moz-linear-gradient(right, white 60%, #edf3fe );
+	background: url("comment.png") no-repeat 5px 5px,     -ms-linear-gradient(right, white 60%, #edf3fe );
+	background: url("comment.png") no-repeat 5px 5px,      -o-linear-gradient(right, white 60%, #edf3fe );
+	background: url("comment.png") no-repeat 5px 5px,         linear-gradient(right, white 60%, #edf3fe );
+	border: 1px solid #ccc;
+	border-width: 1px 1px 0 1px;
+}
+
+
+
+
+
+
+.commentbloc:nth-of-type(even) {
+	background: url("comment.png") no-repeat 5px 5px white;
+}
+
+.commentbloc:first-of-type {
+	border-top-left-radius : 5px;
+	border-top-right-radius : 5px;
+}
+
+.commentbloc:last-of-type {
+	border-bottom-left-radius : 5px;
+	border-bottom-right-radius : 5px;
+	border-width: 1px;
+	margin-bottom: 10px;
+}
+
+.commentbloc:hover {
+	box-shadow: 0px 0px 4px #aaa, 1px 1px 5px #aaa;
+	z-index: +1;
+	position: relative;
+}
+
+
+.p-edit-button {
+	text-align: right;
+	visibility: hidden;
+}
+.comm-edit-hidden-bloc {
+	display: none;
+}
+
+.commentbloc h3, .commentbloc .email {
+	display: inline;
+	margin-right: 15px;
+}
+
+.commentbloc h3 a {
+	text-decoration: none;
+}
+
+.commentbloc .email {
+	visibility: hidden;
+}
+
+.commentbloc .lien_article_de_com {
+	display: inline;
+	float: right;
+	color: gray;
+}
+
+.commentbloc a {
+	color: inherit;
+}
+
+.commentbloc .lien_article_de_com img {
+	vertical-align: middle;
+	margin-left: 10px;
+}
+
+.comm-date {
+	visibility: hidden;
+}
+	
+
+/* onHover */
+.commentbloc:hover a {
+	color: #45a6ff;
+}
+.commentbloc:hover .email, .commentbloc:hover .p-edit-button, .commentbloc:hover .comm-date {
+	visibility: visible;
+}
+
+
+.privatebloc {
+	background-color: #e1e1e1;
+	border-left: 6px solid #777;
+}
+
+.privatebloc h3, .privatebloc h3 a {
+	font-style: italic;
+}
+
+.privatebloc a {
+	color: black;
+}
+
+#erreurs, .erreurs {
+	display: block;
+	clear: both;
+	color: #D40000;
+	margin: 0 0 15px 0;
+}
+
+.titre-commentaire, .titre-lien {
+	font-size: 16px;
+}
+
+.suppr-commentaire {
+	text-align: right;
+}
+
+.poster-comment {
+	padding-left: 20px;
+	background: url("comment.png") no-repeat left;
+}
+
+.form-commentaire label {
+	margin-top: 10px;
+}
+
+.form-commentaire textarea {
+	margin-top: 0;
+	width: 100%;
+	padding: 5px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	background: #f9f9f9;
+	border-radius: 0 0 5px 5px;
+}
+
+.form-commentaire input {
+	padding: 2px;
+}
+
+.form-commentaire fieldset, .post-lien fieldset {
+	border: none;
+	margin:0;
+	padding:0;
+}
+
+.infos input, .infos label {
+	display: inline;
+	min-width: 32px;
+}
+
+.form-commentaire fieldset.infos input {
+	margin-top: 2px;
+}
+.form-commentaire fieldset.infos {
+	margin-top: 15px;
+	max-width: 500px;
+	text-align: right;
+}
+
+fieldset.valid-center .submit {
+	float: none;
+	margin: 0 auto;
+}
+
+.cl-suppr {
+	background: url(legend.png) 0px -417px no-repeat;
+	border: 0;
+}
+
