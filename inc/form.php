@@ -441,7 +441,8 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 				if (!empty($titles[1])) {
 					$html_title = trim($titles[1]);
 					// ré-encode le titre en UTF-8 en fonction de son encodage.
-					$title = htmlspecialchars(($charset == 'iso-8859-1') ? utf8_encode($html_title) : $html_title);
+					$title = html_entity_decode( (($charset == 'iso-8859-1') ? utf8_encode($html_title) : $html_title), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+					$title = htmlspecialchars($title);
 				// si pas de titre : on utilise l’URL.
 				} else {
 					$title = htmlspecialchars($url);
