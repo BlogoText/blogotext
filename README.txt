@@ -6,7 +6,7 @@
 +-=======================================================================
 |
 | - Requirements
-|   * PHP 5.1.2 (5.2 recommended)
+|   * PHP 5.3
 |   * SQLite with PDO support (or MySQL with PDO Support)
 |   * A CSS3 / HTML5 compatible Browser (Firefox, Opera…)
 |

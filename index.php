@@ -118,11 +118,11 @@ if ( isset($_GET['d']) and preg_match('#^\d{4}/\d{2}/\d{2}/\d{2}/\d{2}/\d{2}#', 
 			// COMMENT POST INIT
 			$comment = init_post_comment($id, 'public');
 			if (isset($_POST['enregistrer'])) {
-				$erreurs_form = valider_form_commentaire($comment, $_POST['captcha'], ($_SESSION['captx']+$_SESSION['capty']), 'public');
+				$erreurs_form = valider_form_commentaire($comment, 'public');
 			}
 		}
 		afficher_form_commentaire($id, 'public', $erreurs_form);
-		if (empty($erreurs_form) and isset($_POST['enregistrer']) and empty($_POST['email-adress'])) {
+		if (empty($erreurs_form) and isset($_POST['enregistrer'])) {
 			traiter_form_commentaire($comment, 'public');
 		}
 

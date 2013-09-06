@@ -11,7 +11,7 @@
 #
 # *** LICENSE ***
 
-function valider_form_commentaire($commentaire, $captcha, $valid_captcha, $mode) {
+function valider_form_commentaire($commentaire, $mode) {
 	$erreurs = array();
 	if (!strlen(trim($commentaire['bt_author']))) {
 		$erreurs[] = $GLOBALS['lang']['err_comm_auteur'];
@@ -34,7 +34,8 @@ function valider_form_commentaire($commentaire, $captcha, $valid_captcha, $mode)
 		}
 	}
 	if ($mode != 'admin') { // if public : tests captcha aswell
-		if ( $captcha != $valid_captcha or $captcha != is_numeric($captcha)) {
+		$ua = (isset($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : '';
+		if ( !isset($_POST['_token']) or ($_POST['_token'] != sha1($ua.$_POST['captcha'].$GLOBALS['salt']) ) ) {
 			$erreurs[] = $GLOBALS['lang']['err_comm_captcha'];
 		}
 	} else { // mode admin : test token

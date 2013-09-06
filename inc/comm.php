@@ -118,7 +118,7 @@ function afficher_form_commentaire($article_id, $mode, $erreurs='', $comm_id='')
 
 	// COMMENT FORM ON ADMIN SIDE : +edit +always_open –captcha –previsualisation –verif
 	if ($mode == 'admin') {
-		$rand = ($mode == 'admin') ? substr(md5(rand(100,999)),0,5) : '';
+		$rand = substr(md5(rand(100,999)),0,5);
 		// begin with some additional stuff on comment "edit".
 		if (isset($actual_comment)) { // edit
 			$form = "\n".'<form id="form-commentaire-'.$actual_comment['bt_id'].'" class="form-commentaire" method="post" action="'.$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'].'#erreurs">'."\n";
@@ -159,8 +159,6 @@ function afficher_form_commentaire($article_id, $mode, $erreurs='', $comm_id='')
 		$form .= "\t\t".'<input type="email" name="email" placeholder="'.$label_email.' " id="email'.$rand.'" '.$required.' value="'.$defaut['email'].'" size="25"  tabindex="2" class="text" /><br/>'."\n";
 		$form .= "\t\t".label('webpage'.$rand, $GLOBALS['lang']['comment_webpage'].' :');
 		$form .= "\t\t".'<input type="url" name="webpage" placeholder="'.$GLOBALS['lang']['comment_webpage'].'" id="webpage'.$rand.'" value="'.$defaut['webpage'].'" size="25"  tabindex="2" class="text" /><br/>'."\n";
-		$form .= ($mode != 'admin') ? "\t\t".label('captcha', $GLOBALS['lang']['comment_captcha'].' <b>'.en_lettres($_SESSION['captx']).'</b> + <b>'.en_lettres($_SESSION['capty']).'</b> ?') : '';
-		$form .= ($mode != 'admin') ? "\t\t".'<input type="text" id="captcha'.$rand.'" name="captcha" placeholder="'.$GLOBALS['lang']['comment_captcha_usenumbers'].'" value="" size="25" tabindex="2" class="text" /><br/>'."\n" : '';
 		$form .= "\t\t".hidden_input('_verif_envoi', '1');
 		$form .= "\t\t".hidden_input('token', new_token());
 		if (isset($actual_comment)) { // edit
@@ -203,11 +201,11 @@ function afficher_form_commentaire($article_id, $mode, $erreurs='', $comm_id='')
 		$form .= "\t\t".'<input type="text" name="auteur" placeholder="'.$GLOBALS['lang']['comment_nom'].'" required="" id="auteur" value="'.$defaut['auteur'].'" size="25"  tabindex="2" class="text" /><br/>'."\n";
 		$form .= "\t\t".label('email', $label_email.' :');
 		$form .= "\t\t".'<input type="email" name="email" placeholder="'.$label_email.'" id="email" '.$required.' value="'.$defaut['email'].'" size="25"  tabindex="2"/><br/>'."\n";
-		$form .= "\t\t".'<input type="email" id="email-adress" name="email-adress" placeholder="email" value="" size="25" class="text" />'."\n";
 		$form .= "\t\t".label('webpage', $GLOBALS['lang']['comment_webpage'].' :');
 		$form .= "\t\t".'<input type="text" name="webpage" placeholder="'.$GLOBALS['lang']['comment_webpage'].'" id="webpage" value="'.$defaut['webpage'].'" size="25"  tabindex="2"/><br/>'."\n";
-		$form .= "\t\t".label('captcha', $GLOBALS['lang']['comment_captcha'].' <b>'.en_lettres($_SESSION['captx']).'</b> <b>+ '.en_lettres($_SESSION['capty']).'</b> <b style="display:none;">+ '.en_lettres(rand(1,9)).'</b>?');
+		$form .= "\t\t".label('captcha', $GLOBALS['lang']['comment_captcha'].' <b>'.en_lettres($GLOBALS['captcha']['x']).'</b> <b>+ '.en_lettres($GLOBALS['captcha']['y']).'</b> <b style="opacity: 0; position: absolute; z-index: -1000;">+ '.en_lettres(rand(1,9)).'</b>?');
 		$form .= "\t\t".'<input type="text" id="captcha" name="captcha" autocomplete="off" placeholder="'.$GLOBALS['lang']['comment_captcha_usenumbers'].'" value="" size="25" tabindex="2" class="text" /><br/>'."\n";
+		$form .= "\t\t".hidden_input('_token', $GLOBALS['captcha']['hash']);
 		$form .= "\t\t".hidden_input('_verif_envoi', '1');
 		$form .= "\t".'</fieldset><!--end info-->'."\n";
 		$form .= "\t".'<fieldset class="cookie"><!--begin cookie asking -->'."\n";
