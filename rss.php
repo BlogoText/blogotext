@@ -20,9 +20,9 @@ $begin = microtime(TRUE);
 
 $GLOBALS['dossier_cache'] = 'cache';
 
-// met dans une fonction pour accéllérer encore plus le chargement (les requires sont plutôt lents en fait…) !
 require_once 'config/user.php';
 require_once 'config/prefs.php';
+
 function require_all() {
 	require_once 'inc/lang.php';
 	require_once 'inc/conf.php';
@@ -78,42 +78,95 @@ if (isset($_GET['id']) and preg_match('#^[0-9]{14}$#', $_GET['id'])) {
 	}
 }
 /* sinon, fil rss sur les articles (par défaut) */
-/* Ceci se fait toujours à partir d'un fichier que l'on place en cache. */
+/* Ici, on utilise la petite BDD placée en cache. */
 else {
-	$int_code = 1;
-	if (!empty($_GET['mode'])) {
 
-		$int_code = 0;   // chmod-like CODE
+	function rel2abs($article) { // convertit les URL relatives en absolues
+		$article = str_replace(' src="/', ' src="http://'.$_SERVER['HTTP_HOST'].'/' , $article);
+		$article = str_replace(' href="/', ' href="http://'.$_SERVER['HTTP_HOST'].'/' , $article);
+		$base = $GLOBALS['racine'];
+		$article = preg_replace('#(src|href)=\"(?!http)#i','$1="'.$base, $article);
+		return $article;
+	}
+
+
+	$fcache = $GLOBALS['dossier_cache'].'/'.'cache_rss_array.dat';
+	$liste = array();
+	// this function exists in SQLI.PHP. It is replaced here, because including sqli.php and the other files takes 10x more cpu load than this
+	if (!file_exists($fcache)) {
+		require_all();
+		$GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
+		rafraichir_cache();
+	}
+
+	if (file_exists($fcache)) {
+		$liste = unserialize(base64_decode(substr(file_get_contents($fcache), strlen('<?php /* '), -strlen(' */'))));
+	}
+
+	$liste_rss = array();
+	$modes_url = '';
+	if (!empty($_GET['mode'])) {
+		$found = 0;
 		// 1 = articles
 		if ( strpos($_GET['mode'], 'blog') !== FALSE ) {
-			$int_code += 1;
+			$liste_rss = array_merge($liste_rss, $liste['a']);
+			$found = 1; $modes_url .= 'blog-';
 		}
 		// 2 = commentaires
 		if ( strpos($_GET['mode'], 'comments') !== FALSE ) {
-			$int_code += 2;
+			$liste_rss = array_merge($liste_rss, $liste['c']);
+			$found = 1; $modes_url .= 'comments-';
 		}
 		// 4 = links
 		if (strpos($_GET['mode'], 'links') !== FALSE) {
-			$int_code += 4;
+			$liste_rss = array_merge($liste_rss, $liste['l']);
+			$found = 1; $modes_url .= 'links-';
 		}
-		// si rien de bon dans l'url, on prend le blog, à défaut
-		if ($int_code == 0) {
-			$int_code = 1;
-		}
+		// si rien : prend blog 
+		if ($found == 0) { $liste_rss = $liste['a']; }
+
+	// si pas de mode, on prend le blog.
+	} else {
+		$liste_rss = $liste['a'];
 	}
 
-	$invert = (isset($_GET['invertlinks'])) ? '_I' : '';
-
-	// if no file, reload them (typically on first use or on cache-purge)
-	$filename = $GLOBALS['dossier_cache'].'/'.'cache_rss_'.$int_code.$invert.'.dat';
-	if (!file_exists($filename)) {
-		require_all();
-		$GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
-		rafraichir_cache('article');
-		rafraichir_cache('commentaire');
-		rafraichir_cache('link');
+	// trick : tri selon des sous-clés d'un tableau à plusieurs sous-niveaux (trouvé dans doc-PHP)
+	foreach ($liste_rss as $key => $item) {
+		 $bt_id[$key] = (isset($item['bt_date'])) ? $item['bt_date'] : $item['bt_id'];
 	}
-	if (readfile($filename) === FALSE) echo 'Error creating cache data';
+	array_multisort($bt_id, SORT_DESC, $liste_rss);
+	$liste_rss = array_slice($liste_rss, 0, 20); // FIXME : ici les articles futur sont toujours dedans.
+	$invert = (isset($_GET['invertlinks'])) ? TRUE : FALSE;
+	$xml = '<title>'.$GLOBALS['nom_du_site'].'</title>'."\n";
+	$xml .= '<link>'.$GLOBALS['racine'].'index.php?mode='.$modes_url.'</link>'."\n"; 
+	$xml .= '<description><![CDATA['.$GLOBALS['description'].']]></description>'."\n";
+	$xml .= '<language>fr</language>'."\n"; 
+	$xml .= '<copyright>'.$GLOBALS['auteur'].'</copyright>'."\n";
+	foreach ($liste_rss as $elem) {
+		$time = (isset($elem['bt_date'])) ? $elem['bt_date'] : $elem['bt_id'];
+		if ($time > date('YmdHis')) { echo "no..........."; continue; }
+		$title = (in_array($elem['bt_type'], array('article', 'link', 'note'))) ? $elem['bt_title'] : $elem['bt_author'];
+		// normal code
+		$xml_post = '<item>'."\n";
+		$xml_post .= '<title>'.$title.'</title>'."\n";
+		$xml_post .= '<guid isPermaLink="false">'.$GLOBALS['racine'].'index.php?mode=links&amp;id='.$elem['bt_id'].'</guid>'."\n";
+		$xml_post .= '<pubDate>'.date_create_from_format('YmdHis', $time)->format('r').'</pubDate>'."\n";
+		if ($elem['bt_type'] == 'link') {
+			if ($invert) {
+				$xml_post .= '<link>'.$GLOBALS['racine'].'index.php?mode=links&amp;id='.$elem['bt_id'].'</link>'."\n";
+				$xml_post .= '<description><![CDATA['.rel2abs($elem['bt_content']). '<br/> — (<a href="'.$elem['bt_link'].'">link</a>)]]></description>'."\n";
+			} else {
+				$xml_post .= '<link>'.$elem['bt_link'].'</link>'."\n";
+				$xml_post .= '<description><![CDATA['.rel2abs($elem['bt_content']).'<br/> — (<a href="'.$GLOBALS['racine'].'index.php?mode=links&amp;id='.$elem['bt_id'].'">permalink</a>)]]></description>'."\n";
+			}
+		} else {
+			$xml_post .= '<link>'.$elem['bt_link'].'</link>'."\n";
+			$xml_post .= '<description><![CDATA['.rel2abs($elem['bt_content']).']]></description>'."\n";
+		}
+		$xml_post .= '</item>'."\n";
+		$xml .= $xml_post;
+	}
+	echo $xml;
 }
 
 $end = microtime(TRUE);

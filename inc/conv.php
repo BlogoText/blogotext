@@ -120,15 +120,6 @@ function diacritique($texte, $majuscules, $espaces) {
 	return $texte;
 }
 
-function rel2abs($article) { // convertit les URL relatives en absolues
-	$article = str_replace(' src="/', ' src="http://'.$_SERVER['HTTP_HOST'].'/' , $article);
-	$article = str_replace(' href="/', ' href="http://'.$_SERVER['HTTP_HOST'].'/' , $article);
-//	$base = 'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']); FIXME. Iz it good ?
-	$base = $GLOBALS['racine'];
-	$article = preg_replace('#(src|href)=\"(?!http)#i','$1="'.$base, $article);
-	return $article;
-}
-
 function rel2abs_admin($article) { // pour le panel admin : l’aperçu de l’article doit convertir les liens (vu que /admin est un sous dossier de /).
 	// remplace tous les (src|href)="$i" ou $i ne contient pas "/" ni "[a-z]+://" (référence avant négative (avec le !))
 	$article = preg_replace('#(src|href)=\"(?!(/|[a-z]+://))#i','$1="../', $article);

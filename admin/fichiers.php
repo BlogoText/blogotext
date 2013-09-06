@@ -19,7 +19,7 @@ operate_session();
 $begin = microtime(TRUE);
 
 $fichier = array();
-$GLOBALS['liste_fichiers'] = open_file_db_fichiers($GLOBALS['fichier_liste_fichiers']);
+$GLOBALS['liste_fichiers'] = open_serialzd_file($GLOBALS['fichier_liste_fichiers']);
 
 // recherche / tri
 if ( !empty($_GET['filtre']) ) {

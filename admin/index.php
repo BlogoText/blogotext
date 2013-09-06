@@ -26,7 +26,7 @@ operate_session();
 
 // open bases
 $GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
-$GLOBALS['liste_fichiers'] = open_file_db_fichiers($GLOBALS['fichier_liste_fichiers']);
+$GLOBALS['liste_fichiers'] = open_serialzd_file($GLOBALS['fichier_liste_fichiers']);
 
 
 afficher_top($GLOBALS['lang']['label_resume']);

@@ -25,7 +25,7 @@ error_reporting($GLOBALS['show_errors']);
 operate_session();
 $begin = microtime(TRUE);
 $liste_fileid = array();
-$GLOBALS['liste_fichiers'] = open_file_db_fichiers($GLOBALS['fichier_liste_fichiers']);
+$GLOBALS['liste_fichiers'] = open_serialzd_file($GLOBALS['fichier_liste_fichiers']);
 
 foreach ($GLOBALS['liste_fichiers'] as $key => $file) {
 	$liste_fileid[] = $file['bt_id'];

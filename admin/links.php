@@ -87,7 +87,7 @@ if (isset($_POST['_verif_envoi'])) {
 				$fichier = init_post_fichier();
 				$erreurs = valider_form_fichier($fichier);
 
-				$GLOBALS['liste_fichiers'] = open_file_db_fichiers($GLOBALS['fichier_liste_fichiers']);
+				$GLOBALS['liste_fichiers'] = open_serialzd_file($GLOBALS['fichier_liste_fichiers']);
 				bdd_fichier($fichier, 'ajout-nouveau', 'download', $link['bt_link']);
 			}
 		}

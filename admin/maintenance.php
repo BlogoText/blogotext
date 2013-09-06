@@ -19,7 +19,7 @@ error_reporting($GLOBALS['show_errors']);
 operate_session();
 
 $GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
-$GLOBALS['liste_fichiers'] = open_file_db_fichiers($GLOBALS['fichier_liste_fichiers']);
+$GLOBALS['liste_fichiers'] = open_serialzd_file($GLOBALS['fichier_liste_fichiers']);
 
 afficher_top($GLOBALS['lang']['titre_maintenance']);
 echo '<div id="top">'."\n";

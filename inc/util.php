@@ -239,3 +239,9 @@ function unsubscribe($file_id, $email_sha, $all) {
 	return FALSE; // si il y avait été TRUE, on serait déjà sorti de la fonction
 }
 
+function debug($data) {
+	echo '<pre>';
+	print_r($data);
+	die;
+}
+

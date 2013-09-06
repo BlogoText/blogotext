@@ -215,15 +215,6 @@ function fichier_ip() {
 	}
 }
 
-
-// écrit un fichier cache (diminuer les charges serveur)
-function cache_file($file, $text) {
-	$text .= "\n".'<!-- Servi par le cache. Cache du '.date('r').'-->'."\n";
-	creer_dossier($GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_cache'], 1);
-	file_put_contents($file, $text);
-}
-
-
 function get_literal_chmod($file) {
 	$perms = fileperms($file);
 	if (($perms & 0xC000) == 0xC000) {
@@ -274,7 +265,7 @@ function detection_type_fichier($extension) {
 }
 
 
-function open_file_db_fichiers($fichier) {
+function open_serialzd_file($fichier) {
 	$liste  = (file_exists($fichier)) ? unserialize(base64_decode(substr(file_get_contents($fichier),strlen('<?php /* '), -strlen(' */')))) : array();
 	return $liste;
 }
