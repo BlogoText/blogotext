@@ -172,7 +172,7 @@ function init_post_article() { //no $mode : it's always admin.
 function init_post_comment($id, $mode) {
 	$comment = array();
 	$edit_msg = '';
-	if ( (isset($id, $_POST['_verif_envoi'], $_POST['commentaire'], $_POST['auteur'], $_POST['email'], $_POST['webpage'])) ) {
+	if ( isset($id) ) {
 		if ( ($mode == 'admin') and (isset($_POST['is_it_edit']) and $_POST['is_it_edit'] == 'yes') ) {
 			$status = (isset($_POST['activer_comm']) and $_POST['activer_comm'] == 'on' ) ? '0' : '1'; // c'est plus « désactiver comm en fait »
 			$comment_id = $_POST['comment_id'];

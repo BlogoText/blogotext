@@ -35,7 +35,7 @@ function valider_form_commentaire($commentaire, $mode) {
 	}
 	if ($mode != 'admin') { // if public : tests captcha aswell
 		$ua = (isset($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : '';
-		if ( !isset($_POST['_token']) or ($_POST['_token'] != sha1($ua.$_POST['captcha'].$GLOBALS['salt']) ) ) {
+		if ($_POST['_token'] != sha1($ua.$_POST['captcha'].$GLOBALS['salt']) ) {
 			$erreurs[] = $GLOBALS['lang']['err_comm_captcha'];
 		}
 	} else { // mode admin : test token
