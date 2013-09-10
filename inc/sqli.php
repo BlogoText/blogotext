@@ -608,9 +608,6 @@ function table_list_date($date, $statut, $table) {
 	}
 }
 
-
-
-
 function list_all_tags($table) {
 	$col = ($table == 'articles') ? 'bt_categories' : 'bt_tags';
 	try {
@@ -648,19 +645,3 @@ function list_all_tags($table) {
 	return $return;
 }
 
-
-function rafraichir_cache() {
-	creer_dossier($GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_cache'], 1);
-	$arr_a = liste_elements("SELECT * FROM articles WHERE bt_statut = 1 ORDER BY bt_date DESC LIMIT 0, 20", array(), 'articles');
-	$arr_c = liste_elements("SELECT * FROM commentaires WHERE bt_statut = 1 ORDER BY bt_id DESC LIMIT 0, 20", array(), 'commentaires');
-	$arr_l = liste_elements("SELECT * FROM links WHERE bt_statut = 1 ORDER BY bt_id DESC LIMIT 0, 20", array(), 'links');
-	$file = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_cache'].'/'.'cache_rss_array.dat';
-	return file_put_contents($file, '<?php /* '.chunk_split(base64_encode(serialize(array('c' => $arr_c, 'a' => $arr_a, 'l' => $arr_l)))).' */');
-}
-
-function save_file_db() {
-	$liste = liste_elements("SELECT * FROM commentaires ORDER BY bt_id DESC", array(), 'commentaires');
-	$liste = tri_selon_sous_cle($liste, 'bt_id');
-	file_put_contents('dat.php', '<?php /* '.chunk_split(base64_encode(serialize($liste))).' */');
-	return true;
-}
