@@ -57,11 +57,11 @@ if (isset($_GET['id']) and preg_match('#^[0-9]{14}$#', $_GET['id'])) {
 
 		foreach ($liste as $comment) {
 			$dec = decode_id($comment['bt_id']);
-
+			$tag = 'tag:'.parse_url($GLOBALS['racine'], PHP_URL_HOST).''.$dec['annee'].'-'.$dec['mois'].'-'.$dec['jour'].':'.$comment['bt_id'];
 			echo '<entry>'."\n";
 				echo '<title>'.$comment['bt_author'].'</title>'."\n";
 				echo '<link href="'.$comment['bt_link'].'"/>'."\n";
-				echo '<id>'.$comment['bt_link'].'</id>'."\n";
+				echo '<id>'.$tag.'</id>'."\n";
 				echo '<updated>'.date('c', mktime($dec['heure'], $dec['minutes'], $dec['secondes'], $dec['mois'], $dec['jour'], $dec['annee'])).'</updated>'."\n";
 				echo '<content type="html">'.htmlspecialchars($comment['bt_content']).'</content>'."\n";
 			echo '</entry>'."\n";
@@ -145,11 +145,13 @@ else {
 		$main_updated = max($main_updated, $time);
 		if ($time > date('YmdHis')) { continue; }
 		$title = (in_array($elem['bt_type'], array('article', 'link', 'note'))) ? $elem['bt_title'] : $elem['bt_author'];
+		$tag = 'tag:'.parse_url($GLOBALS['racine'], PHP_URL_HOST).','.date_create_from_format('YmdHis', $time)->format('Y-m-d').':'.$elem['bt_type'].'-'.$elem['bt_id'];
+
 
 		// normal code
 		$xml_post .= '<entry>'."\n";
 		$xml_post .= '<title>'.$title.'</title>'."\n";
-		$xml_post .= '<id>'.$GLOBALS['racine'].'index.php?mode=links&amp;id='.$elem['bt_id'].'</id>'."\n";
+		$xml_post .= '<id>'.$tag.'</id>'."\n";
 		$xml_post .= '<updated>'.date_create_from_format('YmdHis', $time)->format('c').'</updated>'."\n";
 
 		if ($elem['bt_type'] == 'link') {
