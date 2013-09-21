@@ -334,7 +334,7 @@ function importer_wordpress($xml) {
 		$new_article['bt_link'] = (string) $value[0]->link;
 		$new_article['bt_wiki_content'] = reverse_wiki($value->children("content", true)->encoded);
 		$new_article['bt_content'] = wiki($new_article['bt_wiki_content']);
-		$new_article['bt_abstract'] = ''; // FIXME : make abstract.
+		$new_article['bt_abstract'] = '';
 		// get categories
 		$new_article['bt_categories'] = '';
 			foreach($value->category as $tag) $new_article['bt_categories'] .= (string) $tag . ',';

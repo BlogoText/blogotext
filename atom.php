@@ -133,7 +133,7 @@ else {
 		 $bt_id[$key] = (isset($item['bt_date'])) ? $item['bt_date'] : $item['bt_id'];
 	}
 	array_multisort($bt_id, SORT_DESC, $liste_rss);
-	$liste_rss = array_slice($liste_rss, 0, 20); // FIXME : ici les articles futur sont toujours dedans.
+	$liste_rss = array_slice($liste_rss, 0, 20);
 	$invert = (isset($_GET['invertlinks'])) ? TRUE : FALSE;
 	$xml = '<title>'.$GLOBALS['nom_du_site'].'</title>'."\n";
 	$xml .= '<link href="'.$GLOBALS['racine'].'index.php?mode='.$modes_url.'"/>'."\n"; 

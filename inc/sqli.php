@@ -211,9 +211,7 @@ function get_entry($base_handle, $table, $entry, $id, $retour_mode) {
 }
 
 function traiter_form_billet($billet) {
-	$do_cache = TRUE;
 	if ( isset($_POST['enregistrer']) and !isset($billet['ID']) ) {
-		$do_cache = ($billet['bt_statut'] == '1') ? TRUE : FALSE;
 		$result = bdd_article($billet, 'enregistrer-nouveau');
 		$redir = $_SERVER['PHP_SELF'].'?post_id='.$billet['bt_id'].'&msg=confirm_article_maj';
 	}
@@ -232,13 +230,11 @@ function traiter_form_billet($billet) {
 
 		$redir = 'articles.php?msg=confirm_article_suppr';
 	}
-
 	if ($result === TRUE) {
-		if ($do_cache == TRUE) rafraichir_cache();
+		rafraichir_cache();
 		redirection($redir);
 	}
 	else { die($result); }
-
 }
 
 function bdd_article($billet, $what) {
@@ -336,11 +332,9 @@ function bdd_article($billet, $what) {
 // une fois le lien donné (étape 1) et les champs renseignés (étape 2) on traite dans la BDD
 function traiter_form_link($link) {
 	$query_string = str_replace(((isset($_GET['msg'])) ? '&msg='.$_GET['msg'] : ''), '', $_SERVER['QUERY_STRING']);
-	$do_cache = TRUE;
 	if ( isset($_POST['enregistrer'])) {
 		$result = bdd_lien($link, 'enregistrer-nouveau');
 		$redir = $_SERVER['PHP_SELF'].'?id='.$link['bt_id'].'&msg=confirm_link_edit';
-		$do_cache = ($link['bt_statut'] == 0) ? FALSE : TRUE; // rebuilt cache only if public link (not hidden)
 	}
 
 	elseif (isset($_POST['editer'])) {
@@ -354,7 +348,7 @@ function traiter_form_link($link) {
 	}
 
 	if ($result === TRUE) {
-		if ($do_cache == TRUE) rafraichir_cache();
+		rafraichir_cache();
 		redirection($redir);
 	} else { die($result); }
 
