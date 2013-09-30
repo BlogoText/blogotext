@@ -1,5 +1,12 @@
+bt_backup/
 cache/
 config/
 databases/
 files/
 img/
+error.log
+.htaccess
+TODO
+MAJ.log
+DEMO.sqlite
+admin/.PLUGIN_model.php

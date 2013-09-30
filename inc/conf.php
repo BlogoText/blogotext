@@ -19,11 +19,11 @@ if (!empty($GLOBALS['fuseau_horaire'])) {
 }
 
 // BLOGOTEXT VERSION (do not change it)
-$GLOBALS['version'] = '2.0.2.2';
+$GLOBALS['version'] = '2.0.2.3';
 $GLOBALS['last-online-file'] = '../config/version.txt';
 
 // MINIMAL REQUIRED PHP VERSION
-$GLOBALS['minimal_php_version'] = '5.1.2';
+$GLOBALS['minimal_php_version'] = '5.3';
 
 // GENERAL
 $GLOBALS['nom_application']= 'BlogoText';
@@ -55,18 +55,12 @@ if (is_file($mysql_file) and is_readable($mysql_file) and file_get_contents($mys
 }
 
 
-// CAPTCHA
-function mk_captcha() {
-	$captcha['x'] = rand(4, 9);
-	$captcha['y'] = rand(1, 6);
-	return $captcha;
-}
-
-// regenerate captcha if the posted one is wrong
-if (!isset($_SESSION['captx']) or !(isset($_POST['captcha'])) or !(htmlspecialchars($_POST['captcha']) == $_SESSION['captx']+$_SESSION['capty']) ) {
-	$GLOBALS['captcha'] = mk_captcha();
-	$_SESSION['captx'] = $GLOBALS['captcha']['x'];
-	$_SESSION['capty'] = $GLOBALS['captcha']['y'];
+// regenerate captcha (always)
+if (!isset($GLOBALS['captcha'])) {
+	$ua = (isset($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : '';
+	$GLOBALS['captcha']['x'] = rand(4, 9);
+	$GLOBALS['captcha']['y'] = rand(1, 6);
+	$GLOBALS['captcha']['hash'] = sha1($ua.($GLOBALS['captcha']['x']+$GLOBALS['captcha']['y']).$GLOBALS['salt']);
 }
 
 // THEMES
@@ -178,7 +172,7 @@ function init_post_article() { //no $mode : it's always admin.
 function init_post_comment($id, $mode) {
 	$comment = array();
 	$edit_msg = '';
-	if ( (isset($id, $_POST['_verif_envoi'], $_POST['commentaire'], $_POST['auteur'], $_POST['email'], $_POST['webpage'])) ) {
+	if ( isset($id) ) {
 		if ( ($mode == 'admin') and (isset($_POST['is_it_edit']) and $_POST['is_it_edit'] == 'yes') ) {
 			$status = (isset($_POST['activer_comm']) and $_POST['activer_comm'] == 'on' ) ? '0' : '1'; // c'est plus « désactiver comm en fait »
 			$comment_id = $_POST['comment_id'];

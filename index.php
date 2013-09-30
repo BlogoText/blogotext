@@ -11,7 +11,6 @@
 #
 # *** LICENSE ***
 
-
 /*****************************************************************************
  some misc routines
 ******************************************************************************/
@@ -115,15 +114,16 @@ if ( isset($_GET['d']) and preg_match('#^\d{4}/\d{2}/\d{2}/\d{2}/\d{2}/\d{2}#', 
 	if ( !empty($billets[0]) ) {
 		// TRAITEMENT new commentaire
 		$erreurs_form = array();
-		if (isset($_POST['_verif_envoi']) and ($billets[0]['bt_allow_comments'] == '1' )) {
+		if (isset($_POST['_verif_envoi'], $_POST['commentaire'], $_POST['captcha'], $_POST['_token'], $_POST['auteur'], $_POST['email'], $_POST['webpage']) and ($billets[0]['bt_allow_comments'] == '1' )) {
 			// COMMENT POST INIT
 			$comment = init_post_comment($id, 'public');
 			if (isset($_POST['enregistrer'])) {
-				$erreurs_form = valider_form_commentaire($comment, $_POST['captcha'], ($_SESSION['captx']+$_SESSION['capty']), 'public');
+				$erreurs_form = valider_form_commentaire($comment, 'public');
 			}
-		}
+		} else { unset($_POST['enregistrer']); }
+
 		afficher_form_commentaire($id, 'public', $erreurs_form);
-		if (empty($erreurs_form) and isset($_POST['enregistrer']) and empty($_POST['email-adress'])) {
+		if (empty($erreurs_form) and isset($_POST['enregistrer'])) {
 			traiter_form_commentaire($comment, 'public');
 		}
 
@@ -299,6 +299,6 @@ else {
 }
 
  $end = microtime(TRUE);
-// echo ' Rendered in '.round(($end - $begin),6).' seconds ';
+ //echo ' Rendered in '.round(($end - $begin),6).' seconds ';
 
 ?>

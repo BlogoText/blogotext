@@ -45,6 +45,10 @@ a {
 	color: #45a6ff;
 }
 
+.centrer {
+	text-align: center;
+}
+
 a:hover {
 	color: #4f6681;
 	text-decoration: underline;
@@ -468,5 +472,9 @@ q, blockquote {
 	margin: 0;
 }
 
-
-
+/* Page maintenance.
+********************************************/
+#form_export, #form_import, #form_optimi,
+#e_json, #e_html, #e_zip {
+	display: none;
+}

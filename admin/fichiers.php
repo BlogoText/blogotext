@@ -19,7 +19,7 @@ operate_session();
 $begin = microtime(TRUE);
 
 $fichier = array();
-$GLOBALS['liste_fichiers'] = open_file_db_fichiers($GLOBALS['fichier_liste_fichiers']);
+$GLOBALS['liste_fichiers'] = open_serialzd_file($GLOBALS['fichier_liste_fichiers']);
 
 // recherche / tri
 if ( !empty($_GET['filtre']) ) {
@@ -85,16 +85,6 @@ echo '</div>'."\n";
 echo '<div id="axe">'."\n";
 
 // SUBNAV
-/*
-echo '<div id="subnav">'."\n";
-// Affichage formulaire filtrage fichiers
-if (isset($_GET['filtre'])) {
-	afficher_form_filtre('fichiers', htmlspecialchars($_GET['filtre']));
-} else {
-	afficher_form_filtre('fichiers', '');
-}
-echo '</div>'."\n";
-*/
 echo '<div id="page">'."\n";
 
 
@@ -143,7 +133,6 @@ echo js_drag_n_drop_handle(0);
 echo js_button_request_delete(0);
 echo js_lazyload_img(0);
 echo js_folder_sort_img(0);
-echo js_show_img_form(0);
 echo js_show_slideshow(0);
 echo js_detect_arrow_keys(0);
 echo "\n".'</script>'."\n";

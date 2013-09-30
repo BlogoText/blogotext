@@ -166,6 +166,7 @@ $word_start_y = 15;
 // write each char in different color
 $font = ImageLoadFont($font_locations);
 $font_width = open_font($font_locations);
+
 for ($i=0 ; $i < strlen($word) ; $i++) {
 	$text_r = rand_color();
 	$text_g = rand_color();
@@ -236,5 +237,3 @@ ImageCopy($im, $im3, 0, 0, 0, 0, $width, $height);
 unset($word, $bg_images);
 
 sendImage($im);
-
-?>

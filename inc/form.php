@@ -25,6 +25,17 @@ function form_select($id, $choix, $defaut, $label) {
 	return $form;
 }
 
+function form_select_no_label($id, $choix, $defaut) {
+	$form = '<select id="'.$id.'" name="'.$id.'">'."\n";
+	foreach ($choix as $valeur => $mot) {
+		$form .= '<option value="'.$valeur.'"';
+		$form .= ($defaut == $valeur) ? ' selected="selected"' : '';
+		$form .= '>'.$mot.'</option>'."\n";
+	}
+	$form .= '</select>'."\n";
+	return $form;
+}
+
 function form_text($id, $defaut, $label) {
 	$form = '<p>'."\n";
 	$form .= '<label for="'.$id.'">'.$label.'</label>'."\n";
@@ -191,7 +202,7 @@ function form_langue_install($label) {
 }
 
 function liste_themes($chemin) {
-	if ( $ouverture = opendir($chemin) ) { 
+	if ( $ouverture = opendir($chemin) ) {
 		while ($dossiers = readdir($ouverture) ) {
 			if ( file_exists($chemin.'/'.$dossiers.'/list.html') ) {
 				$themes[$dossiers] = $dossiers;
@@ -301,7 +312,7 @@ function filtre($type, $filtre) { // cette fonction est très gourmande en resso
 		echo '</optgroup>'."\n";
 	}
 
-	/// PAR AUTEUR S'IL S'AGIT DES COMMENTAIRES OU DE LIENS 
+	/// PAR AUTEUR S'IL S'AGIT DES COMMENTAIRES OU DE LIENS
 	if (!empty($tab_auteur)) {
 		echo '<optgroup label="'.$GLOBALS['lang']['pref_auteur'].'">'."\n";
 		foreach ($tab_auteur as $nom) {
@@ -398,7 +409,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 			if (strpos($cnt_type, 'image/') === 0) {
 				$title = $GLOBALS['lang']['label_image'];
 				if (list($width, $height) = @getimagesize($url)) {
-					$fdata = 'data:'.$cnt_type.';base64,'.chunk_split(base64_encode(get_external_file($url, 1)));
+					$fdata = $url;
 					$type = 'image';
 					$title .= ' - '.$width.'x'.$height.'px ';
 				}
@@ -413,22 +424,25 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 
 			// URL est un lien normal
 			elseif ($ext_file = get_external_file($url, 15) ) {
-				// cherche le charset spécifié dans le code HTML.
-				preg_match('#<meta .*charset=.*>#Usi', $ext_file, $meta);
-
-				// si la balise a été trouvée, on isole l’encodage.
-				if (!empty($meta[0])) {
-					preg_match('#charset="?(.*)"#si', $meta[0], $enc); // récupère juste l’encodage utilisé, dans $enc
-					$html_charset = (!empty($enc[1])) ? strtolower($enc[1]) : 'utf-8'; // trouve le charset, sinon UTF-8
-				} else {
-					$html_charset = 'utf-8';
+				$charset = 'utf-8';
+				// cherche le charset dans les headers
+				if (preg_match('#charset=(.*);?#', $cnt_type, $hdr_charset) and !empty($hdr_charset[1])) {
+					$charset = $hdr_charset[1];
+				}
+				// sinon cherche le charset dans le code HTML.
+				else {
+					// cherche la balise "meta charset"
+					preg_match('#<meta .*charset=([^\s]*)\s+/?>#Usi', $ext_file, $meta);
+					$charset = (!empty($meta[1])) ? strtolower(str_replace(array("'", '"'), array('', ''), $meta[1]) ) : 'utf-8';
 				}
 				// récupère le titre, dans le tableau $titles, rempli par preg_match()
 				preg_match('#<title>(.*)</title>#Usi', $ext_file, $titles);
+
 				if (!empty($titles[1])) {
 					$html_title = trim($titles[1]);
 					// ré-encode le titre en UTF-8 en fonction de son encodage.
-					$title = htmlspecialchars(($html_charset == 'iso-8859-1') ? utf8_encode($html_title) : $html_title);
+					$title = html_entity_decode( (($charset == 'iso-8859-1') ? utf8_encode($html_title) : $html_title), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+					$title = htmlspecialchars($title);
 				// si pas de titre : on utilise l’URL.
 				} else {
 					$title = htmlspecialchars($url);
@@ -485,7 +499,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= '</form>'."\n\n";
 
 	} elseif ($step == 'edit') { // Form pour l'édition d'un lien : les champs sont remplis avec le "wiki_content" et il y a les boutons suppr/activer en plus.
-		$rand = substr(md5(rand(1000,9999)),0,5); 
+		$rand = substr(md5(rand(1000,9999)),0,5);
 		$form = '<form method="post"  onsubmit="return moveTag();" class="bordered-formbloc" id="post-lien" action="'.$_SERVER['PHP_SELF'].'?id='.$editlink['bt_id'].'">'."\n";
 		$form .= "\t".'<fieldset class="pref">'."\n";
 		$form .= legend($GLOBALS['lang']['label_edit_lien'], 'legend-link');
@@ -504,18 +518,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= "\t\t".'<textarea class="description text" id="description'.$rand.'" name="description" cols="70" rows="7" placeholder="'.$GLOBALS['lang']['pref_desc'].'" tabindex="2" >'.$editlink['bt_wiki_content'].'</textarea>'."\n";
 		$form .= "\t".'</span>'."\n";
 		$form .= '</p>'."\n";
-
-
-/*
-		$form .= '<p>'."\n";
 		$form .= form_categories_links();
-		$form .= "\t".'<label for="categories">'.ucfirst($GLOBALS['lang']['label_categories']).' : </label>'."\n";
-		$form .= "\t".'<input type="text" id="categories" name="categories" placeholder="'.$GLOBALS['lang']['label_categories'].'" value="'.$editlink['bt_tags'].'" size="50" class="text" tabindex="3" />'."\n";
-		$form .= '</p>'."\n";
-*/
-
-		$form .= form_categories_links();
-
 		$form .= '<div id="wrap">'."\n";
 		$form .= "\t".'<ul id="selected">'."\n";
 		$list_tags = explode(',', $editlink['bt_tags']);
@@ -661,7 +664,7 @@ function afficher_form_billet($article, $erreurs) {
 			.s_u('æ').s_u('Æ').s_u('œ').s_u('Œ').s_u('é').s_u('É').s_u('è').s_u('È').s_u('ç').s_u('Ç').s_u('ù').s_u('Ù').s_u('à').s_u('À').s_u('ö').s_u('Ö')
 			.s_u('…').s_u('«').s_u('»').s_u('±').s_u('≠').s_u('×').s_u('÷').s_u('ß').s_u('®').s_u('©').s_u('↓').s_u('↑').s_u('←').s_u('→').s_u('ø').s_u('Ø')
 			.s_u('☠').s_u('☣').s_u('☢').s_u('☮').s_u('★').s_u('☯').s_u('☑').s_u('☒').s_u('☐').s_u('♫').s_u('♬').s_u('♪').s_u('♣').s_u('♠').s_u('♦').s_u('❤')
-			.s_u('♂').s_u('♀').s_u('☺').s_u('☺').s_u('☻').s_u('♲').s_u('⚐').s_u('⚠').s_u('☂').s_u('√').s_u('∑').s_u('λ').s_u('π').s_u('Ω').s_u('№').s_u('∞')
+			.s_u('♂').s_u('♀').s_u('☹').s_u('☺').s_u('☻').s_u('♲').s_u('⚐').s_u('⚠').s_u('☂').s_u('√').s_u('∑').s_u('λ').s_u('π').s_u('Ω').s_u('№').s_u('∞')
 			.'</span></span>'."\n";
 
 	echo "\t".'<span class="spacer"></span>'."\n";
@@ -754,7 +757,7 @@ function form_mois($mois_affiche) {
 		"03" => $GLOBALS['lang']['mars'],		"04" => $GLOBALS['lang']['avril'], 
 		"05" => $GLOBALS['lang']['mai'],			"06" => $GLOBALS['lang']['juin'], 
 		"07" => $GLOBALS['lang']['juillet'],	"08" => $GLOBALS['lang']['aout'],
-		"09" => $GLOBALS['lang']['septembre'],	"10" => $GLOBALS['lang']['octobre'], 
+		"09" => $GLOBALS['lang']['septembre'],	"10" => $GLOBALS['lang']['octobre'],
 		"11" => $GLOBALS['lang']['novembre'],	"12" => $GLOBALS['lang']['decembre']
 	);
 	echo '<select name="mois">'."\n" ;
@@ -787,9 +790,6 @@ function form_heure($heureaffiche, $minutesaffiche, $secondesaffiche) {
 	echo '<input name="heure" type="text" size="2" value="'.$heureaffiche.'" required="" class="text" /> : ';
 	echo '<input name="minutes" type="text" size="2" value="'.$minutesaffiche.'" required="" class="text" /> : ' ;
 	echo '<input name="secondes" type="text" size="2" value="'.$secondesaffiche.'" required="" class="text" />' ;
-//	echo '<input name="heure" onblur="padz(this)" type="number" size="3" step="1" min="0" max="23" value="'.$heureaffiche.'" required="" class="text" /> : ';
-//	echo '<input name="minutes" onblur="padz(this)" type="number" size="3" step="1" min="0" max="59" value="'.$minutesaffiche.'" required="" class="text" /> : ' ;
-//	echo '<input name="secondes" onblur="padz(this)" type="number" size="3" step="1" min="0" max="59" value="'.$secondesaffiche.'" required="" class="text" />' ;
 }
 
 function form_statut($etat) {

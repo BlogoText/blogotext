@@ -24,7 +24,7 @@ error_reporting($GLOBALS['show_errors']);
 operate_session();
 $begin = microtime(TRUE);
 
-$GLOBALS['liste_fichiers'] = open_file_db_fichiers($GLOBALS['fichier_liste_fichiers']);
+$GLOBALS['liste_fichiers'] = open_serialzd_file($GLOBALS['fichier_liste_fichiers']);
 
 
 if (isset($_POST['file_id']) and preg_match('#\d{14}#',($_POST['file_id'])) and isset($_POST['supprimer']) ) {

@@ -121,7 +121,6 @@ function unfold(button) {
 function js_select_text_on_focus($a) {
 	$sc = '
 function SelectAllText(id) {
-	document.getElementById(id).focus();
 	document.getElementById(id).select();
 }';
 	if ($a == 1) {
@@ -130,34 +129,9 @@ function SelectAllText(id) {
 	return $sc;
 }
 
-/*
- * In files list : you can hide the images (because ther is already a page 'images'.
-*
-*/
-function js_hide_img_in_table($a) {
-	$sc = '
-function hideimages() {
-	var tableau = document.getElementById(\'table-images\');
-	var lignes = tableau.getElementsByTagName(\'tr\');
-	var nbLignes = lignes.length;
-
-	for (var i = 0; i < nbLignes; i++) {
-		if (lignes[i].className == \'image\') {
-			lignes[i].style.display = \'none\';
-		}
-	}
-}';
-	if ($a == 1) {
-		$sc = "\n".'<script type="text/javascript">'."\n".$sc."\n".'</script>'."\n";
-	}
-	return $sc;
-}
 
 /*
- * JS : for image upload, switches between the FILE upload and URL specification 
- * (to send a file, one can give a file or an url from witch the file will be downloaded)
- * But not both can be given at the same time, so this JS helps activate one and desactivate the other.
-*
+ * JS : for image upload, switches between the FILE upload, URL upload and Drag'n'Drop
 */
 function js_switch_upload_form($a) {
 	$sc = '
@@ -165,42 +139,42 @@ function switchUploadForm(where) {
 	var formLink = document.getElementById(\'alternate-form-url\');
 	var formFile = document.getElementById(\'alternate-form-file\');
 	var formDrag = document.getElementById(\'alternate-form-dragndrop\');
+	var imSubmit = document.getElementById(\'img-submit\');
+	var inputUrl = document.getElementById(\'url\');
+	var inputFcr = document.getElementById(\'fichier\');
+	var inputNom = document.getElementById(\'nom_entree\');
+
 
 	if (where == \'to_file\') {
 		formLink.style.display = "none";
 		formDrag.style.display = "none";
 		formFile.style.display = "block";
-
-		document.getElementById(\'img-submit\').style.display = "block";
-
-		document.getElementById(\'fichier\').disabled = "";
-		document.getElementById(\'url\').disabled = "0";
-		document.getElementById(\'nom_entree\').disabled = "";
+		imSubmit.style.display = "block";
+		inputFcr.disabled = "";
+		inputUrl.disabled = "0";
+		inputNom.disabled = "";
 	}
 
 	if (where == \'to_link\') {
 		formFile.style.display = "none";
 		formDrag.style.display = "none";
 		formLink.style.display = "block"; 
-
-		document.getElementById(\'img-submit\').style.display = "block";
-
-		document.getElementById(\'fichier\').disabled = "0";
-		document.getElementById(\'url\').disabled = "";
-		document.getElementById(\'nom_entree\').disabled = "";
+		imSubmit.style.display = "block";
+		inputFcr.disabled = "0";
+		inputUrl.disabled = "";
+		inputNom.disabled = "";
 	}
 
 	if (where == \'to_drag\') {
 		formLink.style.display = "none";
 		formFile.style.display = "none";
 		formDrag.style.display = "block";
-
-		document.getElementById(\'img-submit\').style.display = "none";
-
-		document.getElementById(\'nom_entree\').disabled = "0";
-		document.getElementById(\'fichier\').disabled = "0";
-		document.getElementById(\'url\').disabled = "0";
+		imSubmit.style.display = "none";
+		inputFcr.disabled = "0";
+		inputUrl.disabled = "0";
+		inputNom.disabled = "0";
 	}
+	return false;
 }';
 	if ($a == 1) {
 		$sc = "\n".'<script type="text/javascript">'."\n".$sc."\n".'</script>'."\n";
@@ -407,42 +381,11 @@ function uploadNext() {
 	return $sc;
 }
 
-function js_html5_str_pad_time($a) {
-$sc = '
-function padz(field) {
-	if (field.value.length == 1) {
-		field.value = "0" + field.value;
-	}
-	if (field.value.length == 0) {
-		field.value = "00";
-	}
-}
-';
-	if ($a == 1) {
-		$sc = "\n".'<script type="text/javascript">'."\n".$sc."\n".'</script>'."\n";
-	}
-	return $sc;
-}
-
 function js_lazyload_img($a) {
 $sc = '
 function lazy_load() {
 	var inner = document.getElementById(\'hideblock\');
 	inner.innerHTML = inner.innerHTML.slice(4, -3);
-}
-';
-	if ($a == 1) {
-		$sc = "\n".'<script type="text/javascript">'."\n".$sc."\n".'</script>'."\n";
-	} else {
-		$sc = "\n".$sc."\n";
-	}
-	return $sc;
-}
-
-function js_show_img_form($a) {
-$sc = '
-function show_ul_form() {
-	document.getElementById(\'onclicshow\').style.display = \'block\';
 }
 ';
 	if ($a == 1) {
@@ -496,8 +439,6 @@ function slideshow(action, image) {
 	};
 	newImg.src = curr_img[counter].filename[0];
 }
-
-
 ';
 	if ($a == 1) {
 		$sc = "\n".'<script type="text/javascript">'."\n".$sc."\n".'</script>'."\n";
@@ -528,9 +469,6 @@ function image_vignettes() {
 		div.innerHTML = \'<span class="spantop black"><a title="'.$GLOBALS['lang']['partager'].'" class="lien lien-shar" href="links.php?url=\'+img.filename[0]+\'">&nbsp;</a><a title="'.$GLOBALS['lang']['voir'].'" class="lien lien-voir" href="\'+img.filename[0]+\'">&nbsp;</a><a title="'.$GLOBALS['lang']['editer'].'" class="lien lien-edit" href="fichiers.php?file_id=\'+img.id+\'&amp;edit">&nbsp;</a><a title="'.$GLOBALS['lang']['supprimer'].'" class="lien lien-supr" href="#" onclick="request_delete_form(\'+img.id+\'); return false;" >&nbsp;</a></span><span class="spanbottom black"><span onclick="slideshow(\\\'start\\\', \'+i+\');"></span></span><img src="\'+img.filename[2]+\'" id="\'+img.id+\'" alt="\'+img.filename[1]+\'" />\';
 		wall.appendChild(div);
 
-
-//		var imgCode = \'<div class="image_bloc" id="bloc_\'+img.id+\'"><span class="spantop black"><a title="'.$GLOBALS['lang']['partager'].'" class="lien lien-shar" href="links.php?url=\'+img.filename[0]+\'">&nbsp;</a><a title="'.$GLOBALS['lang']['voir'].'" class="lien lien-voir" href="\'+img.filename[0]+\'">&nbsp;</a><a title="'.$GLOBALS['lang']['editer'].'" class="lien lien-edit" href="fichiers.php?file_id=\'+img.id+\'&amp;edit">&nbsp;</a><a title="'.$GLOBALS['lang']['supprimer'].'" class="lien lien-supr" href="#" onclick="request_delete_form(\'+img.id+\'); return false;" >&nbsp;</a></span><span class="spanbottom black"><span onclick="slideshow(\\\'start\\\', \'+i+\');"></span></span><img src="\'+img.filename[2]+\'" id="\'+img.id+\'" alt="\'+img.filename[1]+\'" /></div>\'
-//		wall.innerHTML += imgCode;
 	}
 }
 image_vignettes();
@@ -590,19 +528,15 @@ function type_sort(type, button) {
 
 
 
-
 function js_detect_arrow_keys($a) {
 $sc = '
 document.onkeydown = checkKey;
 
 function checkKey(e) {
 	if (document.getElementById(\'slider\').style.display != \'block\') return true;
-
 	e = e || window.event;
-
 	var evt = document.createEvent("MouseEvents"); // créer un évennement souris
 	evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-
 	if (e.keyCode == \'37\') {
 		// left
 		var button = document.getElementById(\'slider-prev\');
@@ -612,7 +546,6 @@ function checkKey(e) {
 		var button = document.getElementById(\'slider-next\');
 		e.preventDefault();
 	}
-
 	button.dispatchEvent(evt);
 	e.preventDefault();
 
@@ -643,7 +576,55 @@ function ask_suppr(button) {
 	return $sc;
 }
 
+function js_switch_form_maintenant($a) {
+$sc = '
+function switch_form(activeForm, activeButton) {
+	var buttons = document.getElementById(\'list-switch-buttons\').getElementsByTagName(\'button\');
+	for (var i=0, l=buttons.length; i<l; i++) buttons[i].className = \'\';
+	activeButton.className = \'current\';
 
+	var form_export = document.getElementById(\'form_export\');
+	var form_import = document.getElementById(\'form_import\');
+	var form_optimi = document.getElementById(\'form_optimi\');
+
+	form_export.style.display = form_import.style.display = form_optimi.style.display = \'none\';
+	eval(activeForm).style.display = \'block\';
+}
+
+
+function switch_export_type(activeForm) {
+	var e_json = document.getElementById(\'e_json\');
+	var e_html = document.getElementById(\'e_html\');
+	var e_zip = document.getElementById(\'e_zip\');
+
+	e_json.style.display = e_html.style.display = e_zip.style.display = \'none\';
+	eval(activeForm).style.display = \'block\';
+}
+
+
+function hide_forms(blocs) {
+	var radios = document.getElementsByName(blocs);
+	var e_json = document.getElementById(\'e_json\');
+	var e_html = document.getElementById(\'e_html\');
+	var e_zip = document.getElementById(\'e_zip\');
+	var checked = false;
+	for (var i = 0, length = radios.length; i < length; i++) {
+		if (!radios[i].checked) {
+			eval(\'e_\'+radios[i].value).innerHTML = \'\';
+		}
+	}
+
+
+}
+
+';
+	if ($a == 1) {
+		$sc = "\n".'<script type="text/javascript">'."\n".$sc."\n".'</script>'."\n";
+	} else {
+		$sc = "\n".$sc."\n";
+	}
+	return $sc;
+}
 
 
 

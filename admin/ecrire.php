@@ -84,7 +84,6 @@ afficher_form_billet($post, $erreurs_form);
 echo '<script type="text/javascript">';
 echo js_inserttag(0);
 echo js_addcategories(0);
-echo js_html5_str_pad_time(0);
 echo '</script>';
 
 footer('', $begin);

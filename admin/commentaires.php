@@ -33,7 +33,7 @@ $article_title='';
 $erreurs_form = array();
 if (isset($_POST['_verif_envoi'])) {
 	$comment = init_post_comment($_POST['comment_article_id'], 'admin');
-	$erreurs_form = valider_form_commentaire($comment, 0, 0, 'admin');
+	$erreurs_form = valider_form_commentaire($comment, 'admin');
 	if (empty($erreurs_form)) {
 		traiter_form_commentaire($comment, 'admin');
 	}

@@ -11,8 +11,8 @@
 #
 # *** LICENSE ***
 
-header('Content-Type: application/rss+xml; charset=UTF-8');
-echo "<?".'xml version="1.0" encoding="UTF-8"'."?>"."\n";
+header('Content-Type: application/atom+xml; charset=UTF-8');
+echo '<?xml version="1.0" encoding="UTF-8"?>'."\n";
 
 $GLOBALS['BT_ROOT_PATH'] = '';
 error_reporting(-1);
@@ -36,12 +36,11 @@ function require_all() {
 	require_once 'inc/sqli.php';
 }
 
-echo '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">'."\n";
-echo '<channel>'."\n";
-echo '<atom:link href="'.$GLOBALS['racine'].'rss.php'.((!empty($_SERVER['QUERY_STRING'])) ? '?'.(htmlspecialchars($_SERVER['QUERY_STRING'])) : '').'" rel="self" type="application/rss+xml" />';
-
-// RSS DU BLOG
-/* si y'a un ID en paramètre : rss sur fil commentaires de l'article "ID" */
+echo '<feed xmlns="http://www.w3.org/2005/Atom">'."\n";
+echo '<author><name>'.$GLOBALS['auteur'].'</name></author>'."\n"; 
+echo '<link rel="self" href="'.$GLOBALS['racine'].'atom.php'.((!empty($_SERVER['QUERY_STRING'])) ? '?'.(htmlspecialchars($_SERVER['QUERY_STRING'])) : '').'" />'."\n";
+// ATOM DU BLOG
+/* si y'a un ID en paramètre : flux sur fil commentaires de l'article "ID" */
 if (isset($_GET['id']) and preg_match('#^[0-9]{14}$#', $_GET['id'])) {
 	require_all();
 	$GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
@@ -53,28 +52,28 @@ if (isset($_GET['id']) and preg_match('#^[0-9]{14}$#', $_GET['id'])) {
 		$query = "SELECT * FROM articles WHERE bt_id=? AND bt_date<=".date('YmdHis')." AND bt_statut=1";
 		$billet = liste_elements($query, array($article_id), 'articles');
 		echo '<title>Commentaires sur '.$billet[0]['bt_title'].' - '.$GLOBALS['nom_du_site'].'</title>'."\n";
-		echo '<link>'.$billet[0]['bt_link'].'</link>'."\n"; 
-		echo '<description><![CDATA['.$GLOBALS['description'].']]></description>'."\n";
-		echo '<language>fr</language>'."\n"; 
-		echo '<copyright>'.$GLOBALS['auteur'].'</copyright>'."\n";
+		echo '<link href="'.$billet[0]['bt_link'].'" />'."\n"; 
+		echo '<id>'.$billet[0]['bt_link'].'</id>';
+
 		foreach ($liste as $comment) {
 			$dec = decode_id($comment['bt_id']);
-			echo '<item>'."\n";
+			$tag = 'tag:'.parse_url($GLOBALS['racine'], PHP_URL_HOST).''.$dec['annee'].'-'.$dec['mois'].'-'.$dec['jour'].':'.$comment['bt_id'];
+			echo '<entry>'."\n";
 				echo '<title>'.$comment['bt_author'].'</title>'."\n";
-				echo '<guid isPermaLink="false">'.$comment['bt_link'].'</guid>'."\n";
-				echo '<link>'.$comment['bt_link'].'</link>'."\n";
-				echo '<pubDate>'.date('r', mktime($dec['heure'], $dec['minutes'], $dec['secondes'], $dec['mois'], $dec['jour'], $dec['annee'])).'</pubDate>'."\n";
-				echo '<description><![CDATA['.($comment['bt_content']).']]></description>'."\n";
-			echo '</item>'."\n";
+				echo '<link href="'.$comment['bt_link'].'"/>'."\n";
+				echo '<id>'.$tag.'</id>'."\n";
+				echo '<updated>'.date('c', mktime($dec['heure'], $dec['minutes'], $dec['secondes'], $dec['mois'], $dec['jour'], $dec['annee'])).'</updated>'."\n";
+				echo '<content type="html">'.htmlspecialchars($comment['bt_content']).'</content>'."\n";
+			echo '</entry>'."\n";
 		}
 	} else {
-		echo '<item>'."\n";
+		echo '<entry>'."\n";
 			echo '<title>'.$GLOBALS['lang']['note_no_comment'].'</title>'."\n";
-			echo '<guid isPermaLink="false">'.$GLOBALS['racine'].'index.php</guid>'."\n";
-			echo '<link>'.$GLOBALS['racine'].'index.php</link>'."\n";
-			echo '<pubDate>'.date('r').'</pubDate>'."\n";
-			echo '<description>'.$GLOBALS['lang']['no_comments'].'</description>'."\n";
-		echo '</item>'."\n";
+			echo '<id>'.$GLOBALS['racine'].'</id>'."\n";
+			echo '<link href="'.$GLOBALS['racine'].'index.php" />'."\n";
+			echo '<updated>'.date('r').'</updated>'."\n";
+			echo '<content type="html">'.$GLOBALS['lang']['no_comments'].'</content>'."\n";
+		echo '</entry>'."\n";
 	}
 }
 /* sinon, fil rss sur les articles (par défaut) */
@@ -137,39 +136,45 @@ else {
 	$liste_rss = array_slice($liste_rss, 0, 20);
 	$invert = (isset($_GET['invertlinks'])) ? TRUE : FALSE;
 	$xml = '<title>'.$GLOBALS['nom_du_site'].'</title>'."\n";
-	$xml .= '<link>'.$GLOBALS['racine'].'index.php?mode='.$modes_url.'</link>'."\n"; 
-	$xml .= '<description><![CDATA['.$GLOBALS['description'].']]></description>'."\n";
-	$xml .= '<language>fr</language>'."\n"; 
-	$xml .= '<copyright>'.$GLOBALS['auteur'].'</copyright>'."\n";
+	$xml .= '<link href="'.$GLOBALS['racine'].'index.php?mode='.$modes_url.'"/>'."\n"; 
+	$xml .= '<id>'.$GLOBALS['racine'].'index.php?mode='.$modes_url.'</id>'."\n";
+	$main_updated = 0;
+	$xml_post = '';
 	foreach ($liste_rss as $elem) {
 		$time = (isset($elem['bt_date'])) ? $elem['bt_date'] : $elem['bt_id'];
-		if ($time > date('YmdHis')) { echo "no..........."; continue; }
+		$main_updated = max($main_updated, $time);
+		if ($time > date('YmdHis')) { continue; }
 		$title = (in_array($elem['bt_type'], array('article', 'link', 'note'))) ? $elem['bt_title'] : $elem['bt_author'];
+		$tag = 'tag:'.parse_url($GLOBALS['racine'], PHP_URL_HOST).','.date_create_from_format('YmdHis', $time)->format('Y-m-d').':'.$elem['bt_type'].'-'.$elem['bt_id'];
+
+
 		// normal code
-		$xml_post = '<item>'."\n";
+		$xml_post .= '<entry>'."\n";
 		$xml_post .= '<title>'.$title.'</title>'."\n";
-		$xml_post .= '<guid isPermaLink="false">'.$GLOBALS['racine'].'index.php?mode=links&amp;id='.$elem['bt_id'].'</guid>'."\n";
-		$xml_post .= '<pubDate>'.date_create_from_format('YmdHis', $time)->format('r').'</pubDate>'."\n";
+		$xml_post .= '<id>'.$tag.'</id>'."\n";
+		$xml_post .= '<updated>'.date_create_from_format('YmdHis', $time)->format('c').'</updated>'."\n";
+
 		if ($elem['bt_type'] == 'link') {
 			if ($invert) {
-				$xml_post .= '<link>'.$GLOBALS['racine'].'index.php?mode=links&amp;id='.$elem['bt_id'].'</link>'."\n";
-				$xml_post .= '<description><![CDATA['.rel2abs($elem['bt_content']). '<br/> — (<a href="'.$elem['bt_link'].'">link</a>)]]></description>'."\n";
+				$xml_post .= '<link href="'.$GLOBALS['racine'].'index.php?mode=links&amp;id='.$elem['bt_id'].'"/>'."\n";
+				$xml_post .= '<content type="html">'.htmlspecialchars(rel2abs($elem['bt_content']).'<br/> — (<a href="'.$elem['bt_link'].'">link</a>)').'</content>'."\n";
 			} else {
-				$xml_post .= '<link>'.$elem['bt_link'].'</link>'."\n";
-				$xml_post .= '<description><![CDATA['.rel2abs($elem['bt_content']).'<br/> — (<a href="'.$GLOBALS['racine'].'index.php?mode=links&amp;id='.$elem['bt_id'].'">permalink</a>)]]></description>'."\n";
+				$xml_post .= '<link href="'.$elem['bt_link'].'"/>'."\n";
+				$xml_post .= '<content type="html">'.htmlspecialchars(rel2abs($elem['bt_content']).'<br/> — (<a href="'.$GLOBALS['racine'].'index.php?mode=links&id='.$elem['bt_id'].'">permalink</a>)').'</content>'."\n";
 			}
 		} else {
-			$xml_post .= '<link>'.$elem['bt_link'].'</link>'."\n";
-			$xml_post .= '<description><![CDATA['.rel2abs($elem['bt_content']).']]></description>'."\n";
+			$xml_post .= '<link href="'.$elem['bt_link'].'"/>'."\n";
+			$xml_post .= '<content type="html">'.htmlspecialchars(rel2abs($elem['bt_content'])).'</content>'."\n";
 		}
-		$xml_post .= '</item>'."\n";
-		$xml .= $xml_post;
+		$xml_post .= '</entry>'."\n";
 	}
+	$xml .= '<updated>'.date_create_from_format('YmdHis', $main_updated)->format('c').'</updated>'."\n";
+	$xml .= $xml_post;
+
 	echo $xml;
 }
 
 $end = microtime(TRUE);
 echo '<!-- generated in '.round(($end - $begin),6).' seconds -->'."\n";
-echo '</channel>'."\n";
-echo '</rss>';
+echo '</feed>';
 ?>

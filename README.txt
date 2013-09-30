@@ -1,16 +1,16 @@
 +-=======================================================================
 |                         «  B L O G O T E X T » 
 +-=======================================================================
-| This is Blogotext, 
+| This is Blogotext, the lightweight SQLite Blog-Engine.
 | 2011 - 2013 Timo van Neerden http://lehollandaisvolant.net/blogotext/
 +-=======================================================================
 |
 | - Requirements
-|   * PHP 5.1.2 (5.2 recommended)
+|   * PHP 5.3
 |   * SQLite with PDO support (or MySQL with PDO Support)
 |   * A CSS3 / HTML5 compatible Browser (Firefox, Opera…)
 |
-|   * min 1 Mo disc space (more data = more space needed)
+|   * min 1 Mo disk space (more data = more space needed)
 |
 | - Installation
 |   * Unzip the downloaded " blogotext.zip " file

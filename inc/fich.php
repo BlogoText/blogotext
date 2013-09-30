@@ -215,15 +215,6 @@ function fichier_ip() {
 	}
 }
 
-
-// écrit un fichier cache (diminuer les charges serveur)
-function cache_file($file, $text) {
-	$text .= "\n".'<!-- Servi par le cache. Cache du '.date('r').'-->'."\n";
-	creer_dossier($GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_cache'], 1);
-	file_put_contents($file, $text);
-}
-
-
 function get_literal_chmod($file) {
 	$perms = fileperms($file);
 	if (($perms & 0xC000) == 0xC000) {
@@ -274,13 +265,16 @@ function detection_type_fichier($extension) {
 }
 
 
-function open_file_db_fichiers($fichier) {
-	$liste  = (file_exists($fichier)) ? unserialize(base64_decode(substr(file_get_contents($fichier),strlen('<?php /* '), -strlen(' */')))) : array();
+function open_serialzd_file($fichier) {
+	$liste  = (file_exists($fichier)) ? unserialize(base64_decode(substr(file_get_contents($fichier), strlen('<?php /* '), -strlen(' */')))) : array();
 	return $liste;
 }
 
 function get_external_file($url, $timeout) {
-	$context = stream_context_create(array('http'=>array('timeout' => $timeout))); // Timeout : time until we stop waiting for the response.
+	$context = stream_context_create(array('http'=>array(
+			'user_agent' => 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:23.0) Gecko/20100101 Firefox/23.0',
+			'timeout' => $timeout
+		))); // Timeout : time until we stop waiting for the response.
 	$data = @file_get_contents($url, false, $context, -1, 4000000); // We download at most 4 Mb from source.
 	if (isset($data) and isset($http_response_header[0]) and (strpos($http_response_header[0], '200 OK') !== FALSE) ) {
 		return $data;
@@ -290,3 +284,11 @@ function get_external_file($url, $timeout) {
 	}
 }
 
+function rafraichir_cache() {
+	creer_dossier($GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_cache'], 1);
+	$arr_a = liste_elements("SELECT * FROM articles WHERE bt_statut = 1 ORDER BY bt_date DESC LIMIT 0, 20", array(), 'articles');
+	$arr_c = liste_elements("SELECT * FROM commentaires WHERE bt_statut = 1 ORDER BY bt_id DESC LIMIT 0, 20", array(), 'commentaires');
+	$arr_l = liste_elements("SELECT * FROM links WHERE bt_statut = 1 ORDER BY bt_id DESC LIMIT 0, 20", array(), 'links');
+	$file = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_cache'].'/'.'cache_rss_array.dat';
+	return file_put_contents($file, '<?php /* '.chunk_split(base64_encode(serialize(array('c' => $arr_c, 'a' => $arr_a, 'l' => $arr_l)))).' */');
+}

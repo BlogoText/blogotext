@@ -11,7 +11,7 @@
 #
 # *** LICENSE ***
 
-function valider_form_commentaire($commentaire, $captcha, $valid_captcha, $mode) {
+function valider_form_commentaire($commentaire, $mode) {
 	$erreurs = array();
 	if (!strlen(trim($commentaire['bt_author']))) {
 		$erreurs[] = $GLOBALS['lang']['err_comm_auteur'];
@@ -34,7 +34,8 @@ function valider_form_commentaire($commentaire, $captcha, $valid_captcha, $mode)
 		}
 	}
 	if ($mode != 'admin') { // if public : tests captcha aswell
-		if ( $captcha != $valid_captcha or $captcha != is_numeric($captcha)) {
+		$ua = (isset($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : '';
+		if ($_POST['_token'] != sha1($ua.$_POST['captcha'].$GLOBALS['salt']) ) {
 			$erreurs[] = $GLOBALS['lang']['err_comm_captcha'];
 		}
 	} else { // mode admin : test token
@@ -150,6 +151,14 @@ function valider_form_link() {
 
 	if (!preg_match('#^\d{14}$#', $_POST['bt_id'])) {
 		$erreurs[] = 'Erreur id.';
+	}
+	return $erreurs;
+}
+
+function valider_form_maintenance() {
+	$erreurs = array();
+	if (!( isset($_POST['token']) and check_token($_POST['token']) === TRUE) ) {
+		$erreurs[] = $GLOBALS['lang']['err_wrong_token'];
 	}
 	return $erreurs;
 }

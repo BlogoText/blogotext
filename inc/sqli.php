@@ -211,9 +211,7 @@ function get_entry($base_handle, $table, $entry, $id, $retour_mode) {
 }
 
 function traiter_form_billet($billet) {
-	$do_cache = TRUE;
 	if ( isset($_POST['enregistrer']) and !isset($billet['ID']) ) {
-		$do_cache = ($billet['bt_statut'] == '1') ? TRUE : FALSE;
 		$result = bdd_article($billet, 'enregistrer-nouveau');
 		$redir = $_SERVER['PHP_SELF'].'?post_id='.$billet['bt_id'].'&msg=confirm_article_maj';
 	}
@@ -232,13 +230,11 @@ function traiter_form_billet($billet) {
 
 		$redir = 'articles.php?msg=confirm_article_suppr';
 	}
-
 	if ($result === TRUE) {
-		if ($do_cache == TRUE) rafraichir_cache('article');
+		rafraichir_cache();
 		redirection($redir);
 	}
 	else { die($result); }
-
 }
 
 function bdd_article($billet, $what) {
@@ -336,11 +332,9 @@ function bdd_article($billet, $what) {
 // une fois le lien donné (étape 1) et les champs renseignés (étape 2) on traite dans la BDD
 function traiter_form_link($link) {
 	$query_string = str_replace(((isset($_GET['msg'])) ? '&msg='.$_GET['msg'] : ''), '', $_SERVER['QUERY_STRING']);
-	$do_cache = TRUE;
 	if ( isset($_POST['enregistrer'])) {
 		$result = bdd_lien($link, 'enregistrer-nouveau');
 		$redir = $_SERVER['PHP_SELF'].'?id='.$link['bt_id'].'&msg=confirm_link_edit';
-		$do_cache = ($link['bt_statut'] == 0) ? FALSE : TRUE; // rebuilt cache only if public link (not hidden)
 	}
 
 	elseif (isset($_POST['editer'])) {
@@ -354,7 +348,7 @@ function traiter_form_link($link) {
 	}
 
 	if ($result === TRUE) {
-		if ($do_cache == TRUE) rafraichir_cache('link');
+		rafraichir_cache();
 		redirection($redir);
 	} else { die($result); }
 
@@ -439,7 +433,7 @@ function traiter_form_commentaire($commentaire, $admin) {
 	if (isset($_POST['enregistrer']) and empty($_POST['is_it_edit'])) {
 		$result = bdd_commentaire($commentaire, 'enregistrer-nouveau');
 		if ($result === TRUE) {
-			rafraichir_cache('commentaire');
+			rafraichir_cache();
 			send_emails($commentaire['bt_id']); // send emails new comment posted to people that are subscriben
 			$redir = $_SERVER['PHP_SELF'].'?'.$query_string.'&msg=confirm_comment_ajout';
 			if ($admin == 'admin') {
@@ -466,7 +460,7 @@ function traiter_form_commentaire($commentaire, $admin) {
 	}
 
 	if ($result === TRUE) {
-		rafraichir_cache('commentaire');
+		rafraichir_cache();
 		redirection($redir);
 	}
 	else { die($result); }
@@ -608,9 +602,6 @@ function table_list_date($date, $statut, $table) {
 	}
 }
 
-
-
-
 function list_all_tags($table) {
 	$col = ($table == 'articles') ? 'bt_categories' : 'bt_tags';
 	try {
@@ -648,124 +639,3 @@ function list_all_tags($table) {
 	return $return;
 }
 
-
-function rafraichir_cache($code) {
-	$query_a = "SELECT * FROM articles WHERE bt_statut=1 AND bt_date <= ".date('YmdHis')." ORDER BY bt_date DESC LIMIT 0, 20";
-	$query_c = "SELECT * FROM commentaires WHERE bt_statut=1 AND bt_id <= ".date('YmdHis')." ORDER BY bt_id DESC LIMIT 0, 20";
-	$query_l = "SELECT * FROM links WHERE bt_statut=1 AND bt_id <= ".date('YmdHis')." ORDER BY bt_id DESC LIMIT 0, 20";
-
-	$arr_a = liste_elements($query_a, array(), 'articles');
-	$arr_c = liste_elements($query_c, array(), 'commentaires');
-	$arr_l = liste_elements($query_l, array(), 'links');
-
-	// sélectionne les caches à reconstruire
-
-	if ($code == 'article') {
-		rebuilt_xml($arr_a, 1);
-		rebuilt_xml(array_merge($arr_a, $arr_c), 3);
-		rebuilt_xml(array_merge($arr_a, $arr_l), 5);
-		rebuilt_xml(array_merge($arr_a, $arr_c, $arr_l), 7);
-	}
-
-	if ($code == 'commentaire') {
-		rebuilt_xml($arr_c, 2);
-		rebuilt_xml(array_merge($arr_a, $arr_c), 3);
-		rebuilt_xml(array_merge($arr_c, $arr_l), 6);
-		rebuilt_xml(array_merge($arr_a, $arr_c, $arr_l), 7);
-	}
-
-	if ($code == 'link') {
-		rebuilt_xml($arr_l, 4);
-		rebuilt_xml(array_merge($arr_a, $arr_l), 5);
-		rebuilt_xml(array_merge($arr_c, $arr_l), 6);
-		rebuilt_xml(array_merge($arr_a, $arr_c, $arr_l), 7);
-	}
-}
-
-// used in rafraichir_cache();
-function rebuilt_xml($tableau, $cod) {
-	switch ($cod) {
-		case '1' : $modes_url = 'blog'; break;
-		case '2' : $modes_url = 'comments'; break;
-		case '3' : $modes_url = 'blog-comments'; break;
-		case '4' : $modes_url = 'links'; break;
-		case '5' : $modes_url = 'links-blog'; break;
-		case '6' : $modes_url = 'links-comments'; break;
-		case '7' : $modes_url = 'links-comments-blog'; break;
-		default : $modes_url = '';
-	}
-
-	if (!empty($tableau)) {
-		// tri le tableau fusionné selon les bt_id
-		foreach ($tableau as $key => $item) {
-			 $bt_id[$key] = (isset($item['bt_date'])) ? $item['bt_date'] : $item['bt_id'];
-		}
-		// trick : tri selon des sous-clés d'un tableau à plusieurs sous-niveaux (trouvé dans doc-PHP)
-		array_multisort($bt_id, SORT_DESC, $tableau);
-
-		// conserve les 20 dernières entrées seulement
-		$tableau = array_slice($tableau, 0, 20);
-	}
-
-	$xml = '<title>'.$GLOBALS['nom_du_site'].'</title>'."\n";
-	$xml .= '<link>'.$GLOBALS['racine'].'index.php?mode='.$modes_url.'</link>'."\n"; 
-	$xml .= '<description><![CDATA['.$GLOBALS['description'].']]></description>'."\n";
-	$xml .= '<language>fr</language>'."\n"; 
-	$xml .= '<copyright>'.$GLOBALS['auteur'].'</copyright>'."\n";
-	$xml_inv = $xml;
-
-	foreach ($tableau as $elem) {
-		$time = (isset($elem['bt_date'])) ? $elem['bt_date'] : $elem['bt_id'];
-		$dec = decode_id($time);
-
-		// normal code
-		$xml_post = '<item>'."\n";
-			if ($elem['bt_type'] == 'article' or $elem['bt_type'] == 'link' or $elem['bt_type'] == 'note') {
-				$xml_post .= '<title>'.$elem['bt_title'].'</title>'."\n";
-			} else {
-				$xml_post .= '<title>'.$elem['bt_author'].'</title>'."\n";
-			}
-
-			$xml_post .= '<link>'.$elem['bt_link'].'</link>'."\n";
-			$xml_post .= '<guid isPermaLink="false">'.$GLOBALS['racine'].'index.php?mode=links&amp;id='.$elem['bt_id'].'</guid>'."\n";
-			$xml_post .= '<pubDate>'.date('r', mktime($dec['heure'], $dec['minutes'], $dec['secondes'], $dec['mois'], $dec['jour'], $dec['annee'])).'</pubDate>'."\n";
-			if ($elem['bt_type'] == 'link') {
-				$xml_post .= '<description><![CDATA['.rel2abs($elem['bt_content']).'<br/> — (<a href="'.$GLOBALS['racine'].'index.php?mode=links&amp;id='.$elem['bt_id'].'">permalink</a>)]]></description>'."\n";
-			} else {
-				$xml_post .= '<description><![CDATA['.rel2abs($elem['bt_content']).']]></description>'."\n";
-			}
-
-		$xml_post .= '</item>'."\n";
-
-		// code with permalink instead of link (for the shared links)
-		$xml_post_inv = '<item>'."\n";
-
-			$xml_post_inv .= '<title>'.(($elem['bt_type'] == 'comment') ? $elem['bt_author'] : $elem['bt_title']).'</title>'."\n";
-
-			$xml_post_inv .= '<guid isPermaLink="false">'.$GLOBALS['racine'].'index.php?mode=links&amp;id='.$elem['bt_id'].'</guid>'."\n";
-			$xml_post_inv .= '<pubDate>'.date('r', mktime($dec['heure'], $dec['minutes'], $dec['secondes'], $dec['mois'], $dec['jour'], $dec['annee'])).'</pubDate>'."\n";
-
-			if ($elem['bt_type'] == 'link') {
-				$xml_post_inv .= '<link>'.$GLOBALS['racine'].'index.php?mode=links&amp;id='.$elem['bt_id'].'</link>'."\n";
-				$xml_post_inv .= '<description><![CDATA['.rel2abs($elem['bt_content']). '<br/> — (<a href="'.$elem['bt_link'].'">link</a>)]]></description>'."\n";
-			} else {
-				$xml_post_inv .= '<link>'.$elem['bt_link'].'</link>'."\n";
-				$xml_post_inv .= '<description><![CDATA['.rel2abs($elem['bt_content']).']]></description>'."\n";
-			}
-
-		$xml_post_inv .= '</item>'."\n";
-
-		$xml .= $xml_post;
-		$xml_inv .= $xml_post_inv;
-	}
-
-	cache_file($GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_cache'].'/'.'cache_rss_'.$cod.'.dat', $xml);
-	cache_file($GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_cache'].'/'.'cache_rss_'.$cod.'_I.dat', $xml_inv);
-}
-
-function save_file_db() {
-	$liste = liste_elements("SELECT * FROM commentaires ORDER BY bt_id DESC", array(), 'commentaires');
-	$liste = tri_selon_sous_cle($liste, 'bt_id');
-	file_put_contents('dat.php', '<?php /* '.chunk_split(base64_encode(serialize($liste))).' */');
-	return true;
-}
