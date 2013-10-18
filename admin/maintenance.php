@@ -11,12 +11,12 @@
 #
 # *** LICENSE ***
 
-$GLOBALS['begin'] = microtime(TRUE);
 $GLOBALS['BT_ROOT_PATH'] = '../';
 require_once '../inc/inc.php';
 error_reporting($GLOBALS['show_errors']);
 
 operate_session();
+$begin = microtime(TRUE);
 
 $GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
 $GLOBALS['liste_fichiers'] = open_serialzd_file($GLOBALS['fichier_liste_fichiers']);
@@ -648,5 +648,5 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 
 echo js_switch_form_maintenant(1);
 
-footer('', $GLOBALS['begin']);
+footer('', $begin);
 

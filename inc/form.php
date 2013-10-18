@@ -467,19 +467,12 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= "\t".'</span>'."\n";
 		$form .= '</p>'."\n";
 
-		$form .= form_categories_links();
-
-		$form .= '<div id="wrap">'."\n";
-		$form .= "\t".'<ul id="selected"></ul>'."\n";
-		$form .= '</div>'."\n";
+		$form .= form_categories_links('links', '');
 
 		$form .= '<p>'."\n";
 		$form .= "\t".'<label for="categories">'.ucfirst($GLOBALS['lang']['label_categories']).' : </label>'."\n";
-//		$form .= "\t".'<input type="text" id="dcategories" name="categories" placeholder="'.$GLOBALS['lang']['label_categories'].'" value="" size="50" class="text" tabindex="3" /></p>'."\n";
-
 		$form .= "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.$GLOBALS['lang']['label_categories'].'" tabindex="3"/>'."\n";
 		$form .= "\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
-
 		$form .= '</p>'."\n";
 
 		$form .= '<p class="sinline">'."\n";
@@ -518,22 +511,10 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= "\t\t".'<textarea class="description text" id="description'.$rand.'" name="description" cols="70" rows="7" placeholder="'.$GLOBALS['lang']['pref_desc'].'" tabindex="2" >'.$editlink['bt_wiki_content'].'</textarea>'."\n";
 		$form .= "\t".'</span>'."\n";
 		$form .= '</p>'."\n";
-		$form .= form_categories_links();
-		$form .= '<div id="wrap">'."\n";
-		$form .= "\t".'<ul id="selected">'."\n";
-		$list_tags = explode(',', $editlink['bt_tags']);
-		foreach ($list_tags as $mytag => $mtag) {
-			if (!empty($mtag)) {
-				$form .= "\t".'<li class="tag"><span>'.trim($mtag).'</span>';
-				$form .= "\t".'<a href="javascript:void(0)" onclick="removeTag(this.parentNode)">×</a></li>'."\n";
-			}
-		}
-		$form .= "\t".'</ul>'."\n";
-		$form .= '</div>'."\n";
+		$form .= form_categories_links('links', $editlink['bt_tags']);
 
 		$form .= '<p>'."\n";
 		$form .= "\t".'<label for="categories">'.ucfirst($GLOBALS['lang']['label_categories']).' : </label>'."\n";
-		//$form .= "\t".'<input type="text" id="dcategories" name="categories" placeholder="'.$GLOBALS['lang']['label_categories'].'" value="" size="50" class="text" tabindex="3" /></p>'."\n";
 		$form .= "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.$GLOBALS['lang']['label_categories'].'" tabindex="3"/>'."\n";
 		$form .= "\t".'<input type="hidden" id="categories" name="categories" value="" tabindex="3" />'."\n";
 		$form .= '</p>'."\n";
@@ -615,9 +596,9 @@ function afficher_form_billet($article, $erreurs) {
 		echo erreurs($erreurs);
 	}
 	if (isset($article['bt_id'])) {
-		echo '<form id="form-ecrire" method="post" action="'.$_SERVER['PHP_SELF'].'?post_id='.$article['bt_id'].'" >'."\n";
+		echo '<form id="form-ecrire" method="post" onsubmit="return moveTag();" action="'.$_SERVER['PHP_SELF'].'?post_id='.$article['bt_id'].'" >'."\n";
 	} else {
-		echo '<form id="form-ecrire" method="post" action="'.$_SERVER['PHP_SELF'].'" >'."\n";
+		echo '<form id="form-ecrire" method="post" onsubmit="return moveTag();" action="'.$_SERVER['PHP_SELF'].'" >'."\n";
 	}
 		echo '<input id="titre" name="titre" type="text" size="50" value="'.$titredefaut.'" required="" placeholder="'.$GLOBALS['lang']['label_titre'].'" title="'.$GLOBALS['lang']['label_titre'].'" tabindex="30" class="text" spellcheck="true" />'."\n" ;
 	echo '<div id="chapo_note">'."\n";
@@ -629,14 +610,11 @@ function afficher_form_billet($article, $erreurs) {
 	echo '</div>'."\n";
 	echo '</div>'."\n";
 
-	if ($GLOBALS['activer_categories'] == '1') {
-		echo form_categories('articles');
-		echo '<input id="categories" name="categories" type="text" size="50" value="'.$categoriesdefaut.'" placeholder="'.$GLOBALS['lang']['label_categories'].'" title="'.$GLOBALS['lang']['label_categories'].'" tabindex="45" class="text" />'."\n";
+	echo form_categories_links('articles', $categoriesdefaut);
 
-	} else {
-		echo hidden_input('categories', '');
-	}
-	//echo label('contenu', $GLOBALS['lang']['label_contenu']);
+	echo "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.$GLOBALS['lang']['label_categories'].'" tabindex="45"/>'."\n";
+	echo "\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
+
 
 	echo '<p class="formatbut">'."\n";
 	echo "\t".'<button id="button01" class="but" type="button" title="'.$GLOBALS['lang']['bouton-gras'].'" onclick="insertTag(\'[b]\',\'[/b]\',\'contenu\');"><span class="c"></span></button>'."\n";
@@ -688,7 +666,6 @@ function afficher_form_billet($article, $erreurs) {
 	echo '<textarea id="contenu" name="contenu" rows="20" cols="60" required="" placeholder="'.$GLOBALS['lang']['label_contenu'].'" title="'.$GLOBALS['lang']['label_contenu'].'" tabindex="55" class="text" >'.$contenudefaut.'</textarea>'."\n" ;
 
 	if ($GLOBALS['automatic_keywords'] == '0') {
-//		echo label('mots_cles', $GLOBALS['lang']['label_motscles']);
 		echo '<div><input id="mots_cles" name="mots_cles" type="text" size="50" value="'.$motsclesdefaut.'" placeholder="'.$GLOBALS['lang']['label_motscles'].'" title="'.$GLOBALS['lang']['label_motscles'].'" tabindex="60" class="text" /></div>'."\n";
 	}
 
@@ -772,8 +749,6 @@ function form_mois($mois_affiche) {
 function form_annee($annee_affiche) {
 	$annees = array();
 
-//	echo '<input name="annee" type="number" size="6" maxlength="4" step="1" min="'.($annees-10).'" max="'.($annees+10).'" value="'.$annee_affiche.'" required="" class="text" />';
-
 	for ($annee = date('Y') -3, $annee_max = date('Y') +3; $annee <= $annee_max; $annee++) {
 		$annees[$annee] = $annee;
 	}
@@ -812,30 +787,27 @@ function form_allow_comment($etat) {
 	echo form_select('allowcomment', $choix, $etat, $GLOBALS['lang']['label_allowcomment']);
 }
 
-function form_categories($table) {
-	$tags = list_all_tags($table);
+function form_categories_links($where, $tags_post) {
+	$tags = list_all_tags($where);
 	$html = '';
 	if (!empty($tags)) {
-		$html .= '<p id="liste-tags">'."\n";
-		foreach($tags as $i => $tag) {
-			$html .= "\t".'<button type="button" class="tag" id="tag'.$i.'" onclick="insertCatTag(\'categories\', \''.addslashes($tag['tag']).'\');">'.$tag['tag']."</button>\n";
-		}
-		$html .= '</p>'."\n";
-	}
-
-	return $html;
-}
-
-function form_categories_links() {
-	$tags = list_all_tags('links');
-	$html = '';
-	if (!empty($tags)) {
-		$html = '<datalist id="htmlListTags">';
+		$html = '<datalist id="htmlListTags">'."\n";
 		foreach ($tags as $i => $tag) {
 			$html .= "\t".'<option value="'.addslashes($tag['tag']).'"/>'."\n";
 		}
-		$html .= '</datalist>';
+		$html .= '</datalist>'."\n";
 	}
+	$html .= '<div id="wrap">'."\n";
+	$html .= "\t".'<ul id="selected">'."\n";
+	$list_tags = explode(',', $tags_post);
+	foreach ($list_tags as $mytag => $mtag) {
+		if (!empty($mtag)) {
+			$html .= "\t".'<li class="tag"><span>'.trim($mtag).'</span>';
+			$html .= "\t".'<a href="javascript:void(0)" onclick="removeTag(this.parentNode)">×</a></li>'."\n";
+		}
+	}
+	$html .= "\t".'</ul>'."\n";
+	$html .= '</div>'."\n";
 	return $html;
 }
 

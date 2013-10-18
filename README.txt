@@ -14,7 +14,7 @@
 |
 | - Installation
 |   * Unzip the downloaded " blogotext.zip " file
-|   * Upload folder to your site (eg : http://site.com/blog)
+|   * Upload folder to your site (eg : http://example.com/blog)
 |   * Use your browser to go to your site
 |   * Follow the few steps
 |

@@ -49,12 +49,13 @@
 
 .link-tags {
 	margin: 0 0 3px;
+	line-height: 20px;
 	opacity: .3;
 }
 
 .link-tags span {
 	border: 1px solid silver;
-	padding: 0 2px 0 2px;
+	padding: 0 2px;
 	border-radius: 3px;	
 }
 
@@ -172,45 +173,36 @@
 	line-height: 19px;
 }
 
-#post-lien .tag {
-	margin-bottom: 2px;
-	padding: 0 5px 0 21px;
-	background: #eee;
-	border: 1px solid #999;
-	border-radius: 0 5px 5px 7px;
-}
-
 #post-lien .tag:hover {
 	cursor: pointer;
 }
 
-#post-lien #selected {
-	padding: 0 0 0 1px;
+#selected {
+	padding: 0px;
 	margin: 0;
 	list-style-type: none;
 }
 
-#post-lien #selected li {
-	display:inline-block;
+#selected li {
+	display:inline;
 	border: 1px solid silver;
 	border-radius: 3px;
-	margin: 1px;
-	padding: 0px 2px;
+	padding: 2px 2px;
 	color: #333;
+	background: #eee;
 	height: 20px;
-	line-height: 20px;
+	line-height: 25px;
 }
 
-#post-lien #selected a {
+#selected a {
 	display: inline-block;
 	color: inherit;
 	margin: 0px 5px 0px 8px;
 	text-decoration: none;
 	font-weight: bold;
-	vertical-align: middle;
 }
 
-#post-lien #tags {
+#tags {
 	margin: 2px;
 	border: 1px solid transparent;
 	border-radius: 3px;
@@ -225,10 +217,5 @@
 	width: 50%;
 	position: relative;
 	margin: 0 0 2px 25%;
-}
-
-#post-lien #wrap * {
-	position: relative;
-	z-index: +1;
 }
 
