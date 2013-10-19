@@ -293,13 +293,16 @@ function encart_commentaires() {
 	}
 }
 
-function encart_categories() {
+function encart_categories($mode) {
 	if ($GLOBALS['activer_categories'] == '1') {
-		$liste = list_all_tags('articles');
+		$where = ($mode == 'links') ? 'links' : 'articles';
+		$ampmode = ($mode == 'links') ? '&amp;mode=links' : '';
+
+		$liste = list_all_tags($where);
 		$uliste = '<ul>'."\n";
 		foreach($liste as $tag) {
 			$tagurl = urlencode(trim($tag['tag']));
-			$uliste .= "\t".'<li><a href="'.$_SERVER['PHP_SELF'].'?tag='.$tagurl.'" rel="tag">'.ucfirst($tag['tag']).'</a></li>'."\n";
+			$uliste .= "\t".'<li><a href="'.$_SERVER['PHP_SELF'].'?tag='.$tagurl.$ampmode.'" rel="tag">'.ucfirst($tag['tag']).'</a></li>'."\n";
 		}
 		$uliste .= '</ul>'."\n";
 		return $uliste;
@@ -339,16 +342,18 @@ function lien_pagination() {
 }
 
 
-function liste_tags_article($billet, $html_link) {
-	if (!empty($billet['bt_categories'])) {
-		$tag_list = explode(',', $billet['bt_categories']);
+function liste_tags($billet, $html_link) {
+	$tags = ($billet['bt_type'] == 'article') ? $billet['bt_categories'] : $billet['bt_tags'];
+	$mode = ($billet['bt_type'] == 'article') ? '' : '&amp;mode=links';
+	if (!empty($tags)) {
+		$tag_list = explode(',', $tags);
 		$nb_tags = sizeof($tag_list);
 		$liste = '';
 		if ($html_link == 1) {
 			foreach($tag_list as $tag) {
 				$tag = trim($tag);
 				$tagurl = urlencode(trim($tag));
-				$liste .= '<a href="'.$_SERVER['PHP_SELF'].'?tag='.$tagurl.'" rel="tag">'.$tag.'</a>, ';
+				$liste .= '<a href="'.$_SERVER['PHP_SELF'].'?tag='.$tagurl.$mode.'" rel="tag">'.$tag.'</a>, ';
 			}
 			$liste = trim($liste, ', ');
 		} else {
@@ -364,6 +369,7 @@ function liste_tags_article($billet, $html_link) {
 	}
 	return $liste;
 }
+
 
 // AFFICHE LA LISTE DES ARTICLES, DANS LA PAGE ADMIN
 function afficher_liste_articles($tableau) {

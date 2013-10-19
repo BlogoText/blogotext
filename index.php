@@ -239,8 +239,11 @@ else {
 				$array[] = '%, '.$_GET['tag'];
 				break;
 			case 'links' :
-				$sql_tag = "bt_tags LIKE ? ";
-				$array[] = '%'.$_GET['tag'].'%';
+				$sql_tag = "( bt_tags LIKE ? OR bt_tags LIKE ? OR bt_tags LIKE ? OR bt_tags LIKE ? )";
+				$array[] = $_GET['tag'];
+				$array[] = $_GET['tag'].', %';
+				$array[] = '%, '.$_GET['tag'].', %';
+				$array[] = '%, '.$_GET['tag'];
 				break;
 			default:
 				$sql_tag = "";

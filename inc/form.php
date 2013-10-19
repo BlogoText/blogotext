@@ -362,7 +362,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		echo erreurs($erreurs);
 	}
 	$form = '';
-	if ($step == 1) {// postage de l'URL : un champ affiché en GET
+	if ($step == 1) { // postage de l'URL : un champ affiché en GET
 		$form .= '<form method="get" class="bordered-formbloc" id="post-new-lien" action="'.'links.php'.'">'."\n"; // not using PHP_SELF because of if the form is loaded on index.php
 		$form .= '<fieldset>'."\n";
 		$form .= legend($GLOBALS['lang']['label_nouv_lien'], 'legend-link');
@@ -386,6 +386,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 			$title = 'Note';
 			$url = $GLOBALS['racine'].'?mode=links&amp;id='.$new_id;
 			$form .= legend($GLOBALS['lang']['label_nouv_note'], 'legend-note');
+			$form .= "\t".'<div class="wrap-fields">'."\n";
 			$form .= '<p>'."\n";
 			$form .= hidden_input('url', $url);
 			$form .= hidden_input('type', 'note');
@@ -394,8 +395,8 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		// URL non vide
 		} else {
 			$form .= legend($GLOBALS['lang']['label_nouv_lien'], 'legend-link');
+			$form .= "\t".'<div class="wrap-fields">'."\n";
 			$form .= '<p>'."\n";
-			$form .= "\t".'<label for="lien">'.ucfirst($GLOBALS['lang']['label_link']).' : </label>'."\n";
 			$form .= "\t".'<input type="text" id="lien" name="url" value="'.htmlspecialchars($url).'" size="50" class="text readonly-like" />'."\n";
 			$form .= hidden_input('type', 'link');
 			$form .= '</p>'."\n";
@@ -452,11 +453,9 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 
 		$link = array('title' => $title, 'url' => htmlspecialchars($url));
 		$form .= '<p>'."\n";
-		$form .= "\t".'<label for="title">'.ucfirst($GLOBALS['lang']['label_titre']).' : </label>'."\n";
 		$form .= "\t".'<input type="text" id="title" name="title" placeholder="'.$GLOBALS['lang']['label_titre'].'" required="" value="'.$link['title'].'" size="50" class="text" tabindex="1" />'."\n";
 		$form .= '</p>'."\n";
 		$form .= '<p>'."\n";
-		$form .= "\t".'<label for="description">'.ucfirst($GLOBALS['lang']['pref_desc']).' : </label>'."\n";
 		if ($type == 'image') { // si le lien est une image, on ajoute une miniature de l’image;
 			$form .= "\t".'<span id="description-box" class="space-left">'."\n";
 			$form .= '<img src="'.$fdata.'" alt="img" class="preview-img" />';
@@ -470,8 +469,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= form_categories_links('links', '');
 
 		$form .= '<p>'."\n";
-		$form .= "\t".'<label for="categories">'.ucfirst($GLOBALS['lang']['label_categories']).' : </label>'."\n";
-		$form .= "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.$GLOBALS['lang']['label_categories'].'" tabindex="3"/>'."\n";
+		$form .= "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="return chkHit(event);" placeholder="'.$GLOBALS['lang']['label_categories'].'" tabindex="3"/>'."\n";
 		$form .= "\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
 		$form .= '</p>'."\n";
 
@@ -488,25 +486,24 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= hidden_input('bt_id', $new_id);
 		$form .= hidden_input('bt_author', $GLOBALS['auteur']);
 		$form .= hidden_input('token', new_token());
+		$form .= '</div>'."\n";
 		$form .= '</fieldset>'."\n";
 		$form .= '</form>'."\n\n";
 
 	} elseif ($step == 'edit') { // Form pour l'édition d'un lien : les champs sont remplis avec le "wiki_content" et il y a les boutons suppr/activer en plus.
 		$rand = substr(md5(rand(1000,9999)),0,5);
-		$form = '<form method="post"  onsubmit="return moveTag();" class="bordered-formbloc" id="post-lien" action="'.$_SERVER['PHP_SELF'].'?id='.$editlink['bt_id'].'">'."\n";
+		$form = '<form method="post" onsubmit="return moveTag();" class="bordered-formbloc" id="post-lien" action="'.$_SERVER['PHP_SELF'].'?id='.$editlink['bt_id'].'">'."\n";
 		$form .= "\t".'<fieldset class="pref">'."\n";
 		$form .= legend($GLOBALS['lang']['label_edit_lien'], 'legend-link');
+		$form .= "\t".'<div class="wrap-fields">'."\n";
 
 		$form .= '<p>'."\n";
-		$form .= "\t".'<label for="url'.$rand.'">'.ucfirst($GLOBALS['lang']['label_link']).' : </label>'."\n";
 		$form .= "\t".'<input type="text" id="url'.$rand.'" name="url" value="'.$editlink['bt_link'].'" size="70" class="text readonly-like" />'."\n";
 		$form .= '</p>'."\n";
 		$form .= '<p>'."\n";
-		$form .= "\t".'<label for="title'.$rand.'">'.ucfirst($GLOBALS['lang']['label_titre']).' : </label>'."\n";
 		$form .= "\t".'<input type="text" id="title'.$rand.'" name="title" placeholder="'.$GLOBALS['lang']['label_titre'].'" required="" value="'.$editlink['bt_title'].'" size="70" class="text" tabindex="1" />'."\n";
 		$form .= '</p>'."\n";
 		$form .= '<p>'."\n";
-		$form .= "\t".'<label for="description'.$rand.'">'.ucfirst($GLOBALS['lang']['pref_desc']).' : </label>'."\n";
 		$form .= "\t".'<span id="description-box">'."\n";
 		$form .= "\t\t".'<textarea class="description text" id="description'.$rand.'" name="description" cols="70" rows="7" placeholder="'.$GLOBALS['lang']['pref_desc'].'" tabindex="2" >'.$editlink['bt_wiki_content'].'</textarea>'."\n";
 		$form .= "\t".'</span>'."\n";
@@ -514,8 +511,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= form_categories_links('links', $editlink['bt_tags']);
 
 		$form .= '<p>'."\n";
-		$form .= "\t".'<label for="categories">'.ucfirst($GLOBALS['lang']['label_categories']).' : </label>'."\n";
-		$form .= "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.$GLOBALS['lang']['label_categories'].'" tabindex="3"/>'."\n";
+		$form .= "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="return chkHit(event);" placeholder="'.$GLOBALS['lang']['label_categories'].'" tabindex="3"/>'."\n";
 		$form .= "\t".'<input type="hidden" id="categories" name="categories" value="" tabindex="3" />'."\n";
 		$form .= '</p>'."\n";
 
@@ -532,21 +528,12 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= hidden_input('is_it_edit', 'yes');
 		$form .= hidden_input('token', new_token());
 		$form .= hidden_input('type', $editlink['bt_type']);
+		$form .= "\t".'</div>'."\n";
 		$form .= "\t".'</fieldset>'."\n";
 		$form .= '</form>'."\n\n";
 	}
 	return $form;
 }
-
-
-/*
-/// Formulaire link public
-function afficher_form_link_public($step, $erreurs) {
-	$form = '';
-	return $form;
-}
-*/
-
 
 /// formulaires BILLET //////////
 function afficher_form_billet($article, $erreurs) {

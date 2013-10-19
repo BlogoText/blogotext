@@ -224,6 +224,7 @@ function chkHit(e) {
 	var unicode = (e.keyCode) ? e.keyCode : e.charCode;
 	if (unicode == 13) {
 		moveTag;
+		return false;
 	}
 }
 
