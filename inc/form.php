@@ -362,7 +362,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		echo erreurs($erreurs);
 	}
 	$form = '';
-	if ($step == 1) {// postage de l'URL : un champ affiché en GET
+	if ($step == 1) { // postage de l'URL : un champ affiché en GET
 		$form .= '<form method="get" class="bordered-formbloc" id="post-new-lien" action="'.'links.php'.'">'."\n"; // not using PHP_SELF because of if the form is loaded on index.php
 		$form .= '<fieldset>'."\n";
 		$form .= legend($GLOBALS['lang']['label_nouv_lien'], 'legend-link');
@@ -386,6 +386,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 			$title = 'Note';
 			$url = $GLOBALS['racine'].'?mode=links&amp;id='.$new_id;
 			$form .= legend($GLOBALS['lang']['label_nouv_note'], 'legend-note');
+			$form .= "\t".'<div class="wrap-fields">'."\n";
 			$form .= '<p>'."\n";
 			$form .= hidden_input('url', $url);
 			$form .= hidden_input('type', 'note');
@@ -394,8 +395,8 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		// URL non vide
 		} else {
 			$form .= legend($GLOBALS['lang']['label_nouv_lien'], 'legend-link');
+			$form .= "\t".'<div class="wrap-fields">'."\n";
 			$form .= '<p>'."\n";
-			$form .= "\t".'<label for="lien">'.ucfirst($GLOBALS['lang']['label_link']).' : </label>'."\n";
 			$form .= "\t".'<input type="text" id="lien" name="url" value="'.htmlspecialchars($url).'" size="50" class="text readonly-like" />'."\n";
 			$form .= hidden_input('type', 'link');
 			$form .= '</p>'."\n";
@@ -452,11 +453,9 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 
 		$link = array('title' => $title, 'url' => htmlspecialchars($url));
 		$form .= '<p>'."\n";
-		$form .= "\t".'<label for="title">'.ucfirst($GLOBALS['lang']['label_titre']).' : </label>'."\n";
 		$form .= "\t".'<input type="text" id="title" name="title" placeholder="'.$GLOBALS['lang']['label_titre'].'" required="" value="'.$link['title'].'" size="50" class="text" tabindex="1" />'."\n";
 		$form .= '</p>'."\n";
 		$form .= '<p>'."\n";
-		$form .= "\t".'<label for="description">'.ucfirst($GLOBALS['lang']['pref_desc']).' : </label>'."\n";
 		if ($type == 'image') { // si le lien est une image, on ajoute une miniature de l’image;
 			$form .= "\t".'<span id="description-box" class="space-left">'."\n";
 			$form .= '<img src="'.$fdata.'" alt="img" class="preview-img" />';
@@ -467,19 +466,11 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= "\t".'</span>'."\n";
 		$form .= '</p>'."\n";
 
-		$form .= form_categories_links();
-
-		$form .= '<div id="wrap">'."\n";
-		$form .= "\t".'<ul id="selected"></ul>'."\n";
-		$form .= '</div>'."\n";
+		$form .= form_categories_links('links', '');
 
 		$form .= '<p>'."\n";
-		$form .= "\t".'<label for="categories">'.ucfirst($GLOBALS['lang']['label_categories']).' : </label>'."\n";
-//		$form .= "\t".'<input type="text" id="dcategories" name="categories" placeholder="'.$GLOBALS['lang']['label_categories'].'" value="" size="50" class="text" tabindex="3" /></p>'."\n";
-
-		$form .= "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.$GLOBALS['lang']['label_categories'].'" tabindex="3"/>'."\n";
+		$form .= "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="return chkHit(event);" placeholder="'.$GLOBALS['lang']['label_categories'].'" tabindex="3"/>'."\n";
 		$form .= "\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
-
 		$form .= '</p>'."\n";
 
 		$form .= '<p class="sinline">'."\n";
@@ -495,46 +486,32 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= hidden_input('bt_id', $new_id);
 		$form .= hidden_input('bt_author', $GLOBALS['auteur']);
 		$form .= hidden_input('token', new_token());
+		$form .= '</div>'."\n";
 		$form .= '</fieldset>'."\n";
 		$form .= '</form>'."\n\n";
 
 	} elseif ($step == 'edit') { // Form pour l'édition d'un lien : les champs sont remplis avec le "wiki_content" et il y a les boutons suppr/activer en plus.
 		$rand = substr(md5(rand(1000,9999)),0,5);
-		$form = '<form method="post"  onsubmit="return moveTag();" class="bordered-formbloc" id="post-lien" action="'.$_SERVER['PHP_SELF'].'?id='.$editlink['bt_id'].'">'."\n";
+		$form = '<form method="post" onsubmit="return moveTag();" class="bordered-formbloc" id="post-lien" action="'.$_SERVER['PHP_SELF'].'?id='.$editlink['bt_id'].'">'."\n";
 		$form .= "\t".'<fieldset class="pref">'."\n";
 		$form .= legend($GLOBALS['lang']['label_edit_lien'], 'legend-link');
+		$form .= "\t".'<div class="wrap-fields">'."\n";
 
 		$form .= '<p>'."\n";
-		$form .= "\t".'<label for="url'.$rand.'">'.ucfirst($GLOBALS['lang']['label_link']).' : </label>'."\n";
 		$form .= "\t".'<input type="text" id="url'.$rand.'" name="url" value="'.$editlink['bt_link'].'" size="70" class="text readonly-like" />'."\n";
 		$form .= '</p>'."\n";
 		$form .= '<p>'."\n";
-		$form .= "\t".'<label for="title'.$rand.'">'.ucfirst($GLOBALS['lang']['label_titre']).' : </label>'."\n";
 		$form .= "\t".'<input type="text" id="title'.$rand.'" name="title" placeholder="'.$GLOBALS['lang']['label_titre'].'" required="" value="'.$editlink['bt_title'].'" size="70" class="text" tabindex="1" />'."\n";
 		$form .= '</p>'."\n";
 		$form .= '<p>'."\n";
-		$form .= "\t".'<label for="description'.$rand.'">'.ucfirst($GLOBALS['lang']['pref_desc']).' : </label>'."\n";
 		$form .= "\t".'<span id="description-box">'."\n";
 		$form .= "\t\t".'<textarea class="description text" id="description'.$rand.'" name="description" cols="70" rows="7" placeholder="'.$GLOBALS['lang']['pref_desc'].'" tabindex="2" >'.$editlink['bt_wiki_content'].'</textarea>'."\n";
 		$form .= "\t".'</span>'."\n";
 		$form .= '</p>'."\n";
-		$form .= form_categories_links();
-		$form .= '<div id="wrap">'."\n";
-		$form .= "\t".'<ul id="selected">'."\n";
-		$list_tags = explode(',', $editlink['bt_tags']);
-		foreach ($list_tags as $mytag => $mtag) {
-			if (!empty($mtag)) {
-				$form .= "\t".'<li class="tag"><span>'.trim($mtag).'</span>';
-				$form .= "\t".'<a href="javascript:void(0)" onclick="removeTag(this.parentNode)">×</a></li>'."\n";
-			}
-		}
-		$form .= "\t".'</ul>'."\n";
-		$form .= '</div>'."\n";
+		$form .= form_categories_links('links', $editlink['bt_tags']);
 
 		$form .= '<p>'."\n";
-		$form .= "\t".'<label for="categories">'.ucfirst($GLOBALS['lang']['label_categories']).' : </label>'."\n";
-		//$form .= "\t".'<input type="text" id="dcategories" name="categories" placeholder="'.$GLOBALS['lang']['label_categories'].'" value="" size="50" class="text" tabindex="3" /></p>'."\n";
-		$form .= "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.$GLOBALS['lang']['label_categories'].'" tabindex="3"/>'."\n";
+		$form .= "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="return chkHit(event);" placeholder="'.$GLOBALS['lang']['label_categories'].'" tabindex="3"/>'."\n";
 		$form .= "\t".'<input type="hidden" id="categories" name="categories" value="" tabindex="3" />'."\n";
 		$form .= '</p>'."\n";
 
@@ -551,21 +528,12 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= hidden_input('is_it_edit', 'yes');
 		$form .= hidden_input('token', new_token());
 		$form .= hidden_input('type', $editlink['bt_type']);
+		$form .= "\t".'</div>'."\n";
 		$form .= "\t".'</fieldset>'."\n";
 		$form .= '</form>'."\n\n";
 	}
 	return $form;
 }
-
-
-/*
-/// Formulaire link public
-function afficher_form_link_public($step, $erreurs) {
-	$form = '';
-	return $form;
-}
-*/
-
 
 /// formulaires BILLET //////////
 function afficher_form_billet($article, $erreurs) {
@@ -615,9 +583,9 @@ function afficher_form_billet($article, $erreurs) {
 		echo erreurs($erreurs);
 	}
 	if (isset($article['bt_id'])) {
-		echo '<form id="form-ecrire" method="post" action="'.$_SERVER['PHP_SELF'].'?post_id='.$article['bt_id'].'" >'."\n";
+		echo '<form id="form-ecrire" method="post" onsubmit="return moveTag();" action="'.$_SERVER['PHP_SELF'].'?post_id='.$article['bt_id'].'" >'."\n";
 	} else {
-		echo '<form id="form-ecrire" method="post" action="'.$_SERVER['PHP_SELF'].'" >'."\n";
+		echo '<form id="form-ecrire" method="post" onsubmit="return moveTag();" action="'.$_SERVER['PHP_SELF'].'" >'."\n";
 	}
 		echo '<input id="titre" name="titre" type="text" size="50" value="'.$titredefaut.'" required="" placeholder="'.$GLOBALS['lang']['label_titre'].'" title="'.$GLOBALS['lang']['label_titre'].'" tabindex="30" class="text" spellcheck="true" />'."\n" ;
 	echo '<div id="chapo_note">'."\n";
@@ -629,14 +597,11 @@ function afficher_form_billet($article, $erreurs) {
 	echo '</div>'."\n";
 	echo '</div>'."\n";
 
-	if ($GLOBALS['activer_categories'] == '1') {
-		echo form_categories('articles');
-		echo '<input id="categories" name="categories" type="text" size="50" value="'.$categoriesdefaut.'" placeholder="'.$GLOBALS['lang']['label_categories'].'" title="'.$GLOBALS['lang']['label_categories'].'" tabindex="45" class="text" />'."\n";
+	echo form_categories_links('articles', $categoriesdefaut);
 
-	} else {
-		echo hidden_input('categories', '');
-	}
-	//echo label('contenu', $GLOBALS['lang']['label_contenu']);
+	echo "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.$GLOBALS['lang']['label_categories'].'" tabindex="45"/>'."\n";
+	echo "\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
+
 
 	echo '<p class="formatbut">'."\n";
 	echo "\t".'<button id="button01" class="but" type="button" title="'.$GLOBALS['lang']['bouton-gras'].'" onclick="insertTag(\'[b]\',\'[/b]\',\'contenu\');"><span class="c"></span></button>'."\n";
@@ -688,7 +653,6 @@ function afficher_form_billet($article, $erreurs) {
 	echo '<textarea id="contenu" name="contenu" rows="20" cols="60" required="" placeholder="'.$GLOBALS['lang']['label_contenu'].'" title="'.$GLOBALS['lang']['label_contenu'].'" tabindex="55" class="text" >'.$contenudefaut.'</textarea>'."\n" ;
 
 	if ($GLOBALS['automatic_keywords'] == '0') {
-//		echo label('mots_cles', $GLOBALS['lang']['label_motscles']);
 		echo '<div><input id="mots_cles" name="mots_cles" type="text" size="50" value="'.$motsclesdefaut.'" placeholder="'.$GLOBALS['lang']['label_motscles'].'" title="'.$GLOBALS['lang']['label_motscles'].'" tabindex="60" class="text" /></div>'."\n";
 	}
 
@@ -772,8 +736,6 @@ function form_mois($mois_affiche) {
 function form_annee($annee_affiche) {
 	$annees = array();
 
-//	echo '<input name="annee" type="number" size="6" maxlength="4" step="1" min="'.($annees-10).'" max="'.($annees+10).'" value="'.$annee_affiche.'" required="" class="text" />';
-
 	for ($annee = date('Y') -3, $annee_max = date('Y') +3; $annee <= $annee_max; $annee++) {
 		$annees[$annee] = $annee;
 	}
@@ -812,30 +774,27 @@ function form_allow_comment($etat) {
 	echo form_select('allowcomment', $choix, $etat, $GLOBALS['lang']['label_allowcomment']);
 }
 
-function form_categories($table) {
-	$tags = list_all_tags($table);
+function form_categories_links($where, $tags_post) {
+	$tags = list_all_tags($where);
 	$html = '';
 	if (!empty($tags)) {
-		$html .= '<p id="liste-tags">'."\n";
-		foreach($tags as $i => $tag) {
-			$html .= "\t".'<button type="button" class="tag" id="tag'.$i.'" onclick="insertCatTag(\'categories\', \''.addslashes($tag['tag']).'\');">'.$tag['tag']."</button>\n";
-		}
-		$html .= '</p>'."\n";
-	}
-
-	return $html;
-}
-
-function form_categories_links() {
-	$tags = list_all_tags('links');
-	$html = '';
-	if (!empty($tags)) {
-		$html = '<datalist id="htmlListTags">';
+		$html = '<datalist id="htmlListTags">'."\n";
 		foreach ($tags as $i => $tag) {
 			$html .= "\t".'<option value="'.addslashes($tag['tag']).'"/>'."\n";
 		}
-		$html .= '</datalist>';
+		$html .= '</datalist>'."\n";
 	}
+	$html .= '<div id="wrap">'."\n";
+	$html .= "\t".'<ul id="selected">'."\n";
+	$list_tags = explode(',', $tags_post);
+	foreach ($list_tags as $mytag => $mtag) {
+		if (!empty($mtag)) {
+			$html .= "\t".'<li class="tag"><span>'.trim($mtag).'</span>';
+			$html .= "\t".'<a href="javascript:void(0)" onclick="removeTag(this.parentNode)">×</a></li>'."\n";
+		}
+	}
+	$html .= "\t".'</ul>'."\n";
+	$html .= '</div>'."\n";
 	return $html;
 }
 

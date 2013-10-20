@@ -224,6 +224,7 @@ function chkHit(e) {
 	var unicode = (e.keyCode) ? e.keyCode : e.charCode;
 	if (unicode == 13) {
 		moveTag;
+		return false;
 	}
 }
 
@@ -241,7 +242,6 @@ function moveTag() {
 		var iTag = \'\';
 		for (var i = 0 ; i<len ; i++) { iTag += liste[i].getElementsByTagName(\'span\')[0].innerHTML+", "; }
 		fField.value = iTag.substr(0, iTag.length-2);
-		iField.parentNode.removeChild(iField);
 		return true;
 	}
 }
@@ -481,7 +481,6 @@ function folder_sort(folder, button) {
 			newlist.push(imgs.list[k]);
 		}
 	}
-
 	// reattributes the new list (it’s a global)
 	curr_img = newlist;
 	curr_max = curr_img.length-1;
@@ -596,11 +595,9 @@ function switch_export_type(activeForm) {
 	var e_json = document.getElementById(\'e_json\');
 	var e_html = document.getElementById(\'e_html\');
 	var e_zip = document.getElementById(\'e_zip\');
-
 	e_json.style.display = e_html.style.display = e_zip.style.display = \'none\';
 	eval(activeForm).style.display = \'block\';
 }
-
 
 function hide_forms(blocs) {
 	var radios = document.getElementsByName(blocs);
@@ -613,8 +610,6 @@ function hide_forms(blocs) {
 			eval(\'e_\'+radios[i].value).innerHTML = \'\';
 		}
 	}
-
-
 }
 
 ';
@@ -625,6 +620,4 @@ function hide_forms(blocs) {
 	}
 	return $sc;
 }
-
-
 

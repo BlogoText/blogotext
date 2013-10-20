@@ -11,9 +11,6 @@
 |                                                                         |
 | Blogotext is based upon others ressources, that are listed below.       |
 |                                                                         |
-| Blogotext requires PHP 5.1+ (5.3 recommended) with PDO support & SQLite |
-| (GD and MySQL might be needed for some additionnal stuff aswell).       |
-|                                                                         |
 | Please, feel free to send bugs reports or questions to                  |
 |                                   http://lehollandaisvolant.net/contact |
 |                                                                         |
@@ -88,4 +85,3 @@
 |                                                   − Benjamin Franklin   |
 |                                                                         |
 +-------------------------------------------------------------------------+
-

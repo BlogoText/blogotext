@@ -59,8 +59,9 @@
 }
 
 #form-image #dragndrop-mssg {
-	color: #444;
+	color: #777;
 	font-size: 160%;
+	height: 150px;
 	font-weight: bold;
 	display: block;
 	text-align: center;

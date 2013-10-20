@@ -79,6 +79,7 @@ $GLOBALS['balises'] = array(
 	'lien_description' => '{lien_description}',
 	'lien_permalink' => '{lien_permalink}',
 	'lien_id' => '{lien_id}',
+	'lien_tags' => '{lien_tags}',
 );
 
 function conversions_theme($texte, $solo_art, $cnt_mode) {
@@ -121,7 +122,7 @@ function conversions_theme($texte, $solo_art, $cnt_mode) {
 	// Formulaires
 	$texte = str_replace($GLOBALS['balises']['rss'], $GLOBALS['rss'], $texte);
 	$texte = str_replace($GLOBALS['balises']['comm_encart'], encart_commentaires(), $texte);
-	$texte = str_replace($GLOBALS['balises']['cat_encart'], encart_categories(), $texte);
+	$texte = str_replace($GLOBALS['balises']['cat_encart'], encart_categories((isset($_GET['mode']))?$_GET['mode']:''), $texte);
 	if (isset($GLOBALS['rss_comments'])) { $texte = str_replace($GLOBALS['balises']['rss_comments'], $GLOBALS['rss_comments'], $texte);}
 
 	return $texte;
@@ -165,8 +166,8 @@ function conversions_theme_article($texte, $billet) {
 	// comments open OR ( comments closed AND comments exists ) => say « nb comments ».
 	if ( !($billet['bt_allow_comments'] == 0 or $GLOBALS['global_com_rule'] == 1 ) or $billet['bt_nb_comments'] != 0 ) { $texte = str_replace($GLOBALS['balises']['nb_commentaires'], nombre_commentaires($billet['bt_nb_comments']), $texte); }
 	$texte = str_replace($GLOBALS['balises']['article_lien'], $billet['lien'], $texte);
-	$texte = str_replace($GLOBALS['balises']['article_tags'], liste_tags_article($billet, '1'), $texte);
-	$texte = str_replace($GLOBALS['balises']['article_tags_plain'], liste_tags_article($billet, '0'), $texte);
+	$texte = str_replace($GLOBALS['balises']['article_tags'], liste_tags($billet, '1'), $texte);
+	$texte = str_replace($GLOBALS['balises']['article_tags_plain'], liste_tags($billet, '0'), $texte);
 	return $texte;
 }
 
@@ -181,6 +182,7 @@ function conversions_theme_lien($texte, $lien) {
 	$texte = str_replace($GLOBALS['balises']['lien_permalink'], $lien['bt_id'], $texte);
 	$texte = str_replace($GLOBALS['balises']['lien_description'], $lien['bt_content'], $texte);
 	$texte = str_replace($GLOBALS['balises']['lien_id'], $lien['ID'], $texte);
+	$texte = str_replace($GLOBALS['balises']['lien_tags'], liste_tags($lien, '1'), $texte);
 	return $texte;
 }
 

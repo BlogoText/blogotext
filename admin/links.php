@@ -180,4 +180,4 @@ else { // aucun lien à ajouter ou éditer : champ nouveau lien + listage des li
 echo js_addcategories_links(1);
 
 footer('', $begin);
-?>
+

@@ -19,7 +19,7 @@ if (!empty($GLOBALS['fuseau_horaire'])) {
 }
 
 // BLOGOTEXT VERSION (do not change it)
-$GLOBALS['version'] = '2.0.2.3';
+$GLOBALS['version'] = '2.0.2.4';
 $GLOBALS['last-online-file'] = '../config/version.txt';
 
 // MINIMAL REQUIRED PHP VERSION
@@ -92,7 +92,6 @@ $GLOBALS['files_ext'] = array(
 	'text_document'=> array('doc', 'docx', 'rtf', 'odt', 'ott'),
 	'text-code'		=> array('txt', 'css', 'py', 'c', 'cpp', 'dat', 'ini', 'inf', 'text', 'conf', 'sh'), // more ?
 	'video'			=> array('mp4', 'ogv', 'avi', 'mpeg', 'mpg', 'flv', 'webm', 'mov', 'divx', 'rm', 'rmvb'), // more ?
-
 	'other' => array(''), // par défaut
 );
 

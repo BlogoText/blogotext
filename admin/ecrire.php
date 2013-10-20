@@ -19,9 +19,8 @@ error_reporting($GLOBALS['show_errors']);
 operate_session();
 $begin = microtime(TRUE);
 
-// open base
+// OPEN BASE
 $GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
-
 
 // TRAITEMENT
 $erreurs_form = array();
@@ -38,11 +37,8 @@ $post = '';
 $article_id = '';
 if (isset($_GET['post_id'])) {
 	$article_id = htmlspecialchars($_GET['post_id']);
-
 	$query = "SELECT * FROM articles WHERE bt_id LIKE ?";
 	$posts = liste_elements($query, array($article_id), 'articles');
-
-	//echo '<pre>'; print_r($posts); die();
 	if (isset($posts[0])) $post = $posts[0];
 }
 
@@ -65,6 +61,7 @@ echo '</div>'."\n";
 
 echo '<div id="axe">'."\n";
 echo '<div class="reminder"><span>'.'Pensez à enregistrer votre article.'.'</span></div>'."\n";
+
 // SUBNAV
 if ($post != '') {
 	echo '<div id="subnav">'."\n";
@@ -84,7 +81,8 @@ afficher_form_billet($post, $erreurs_form);
 echo '<script type="text/javascript">';
 echo js_inserttag(0);
 echo js_addcategories(0);
+echo js_addcategories_links(0);
 echo '</script>';
 
 footer('', $begin);
-?>
+
