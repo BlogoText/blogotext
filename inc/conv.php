@@ -225,6 +225,9 @@ function formatage_wiki($texte) {
 
 function formatage_commentaires($texte) {
 	$texte = " ".$texte;
+
+	$texte = preg_replace('#\[([^|]+)\|(\s*javascript.*)\]#i', '$1', $texte);
+
 	$tofindc = array(
 		'#\[quote\](.+?)\[/quote\]#s',									// citation } les citation imbriquées marchent pour **deux niveaux** seulement, 
 		'#\[quote\](.+?)\[/quote\]#s',									//          } [quote][quote]bla[/quote][quote]bla[/quote][/quote] marchent et donnent le résultat attendu.
