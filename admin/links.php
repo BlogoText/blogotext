@@ -26,28 +26,17 @@ $step = 0;
 function afficher_liens($link) {
 	$list = '';
 
-	if ($link['bt_statut'] == 0) { // lien privé
-		$list .= '<div class="linkbloc privatebloc">'."\n";
-	} else { // lien public
-		$list .= '<div class="linkbloc">'."\n";
-	}
+	$list .= '<div class="linkbloc'.(!$link['bt_statut'] ? ' privatebloc' : '').'">'."\n";
+	$list .= "\t".'<p class="lien_editer">'."\n";
+	$list .= "\t\t"
+		.(($link['bt_statut'] == '1') ? '<a href="'.$GLOBALS['racine'].'?mode=links&amp;id='.$link['bt_id'].'" class="links-link ll-see" title="'.$GLOBALS['lang']['voir_sur_le_blog'].'"></a> ' : '')
+		.(empty($_GET['id']) ? '<a href="'.$_SERVER['PHP_SELF'].'?id='.$link['bt_id'].'" class="links-link ll-edit" title="'.$GLOBALS['lang']['editer'].'"></a> ' : '').'</span>'
+		.(!$link['bt_statut'] ? '<img src="style/lock.png" title="'.$GLOBALS['lang']['link_is_private'].'" alt="private-icon" />' : '');
+	$list .= "\t".'</p>'."\n";
 	$list .= "\t".'<h3 class="titre-lien"><a href="'.$link['bt_link'].'">'.$link['bt_title'].'</a></h3>'."\n";
-	$list .= "\t".'<p class="lien_editer"><span>';
 
-	if ($link['bt_statut'] == '1') {
-		$list .= '<a href="'.$GLOBALS['racine'].'?mode=links&amp;id='.$link['bt_id'].'" class="links-link ll-see" title="'.$GLOBALS['lang']['voir_sur_le_blog'].'"></a> ';
-	}
-
-	if (empty($_GET['id'])) {
-		$list .= '<a href="'.$_SERVER['PHP_SELF'].'?id='.$link['bt_id'].'" class="links-link ll-edit" title="'.$GLOBALS['lang']['editer'].'"></a> ';
-	}
-	$list .= '</span>';
-	if ($link['bt_statut'] != '1') {
-		$list .= '<img src="style/lock.png" title="'.$GLOBALS['lang']['link_is_private'].'" alt="private-icon" />';
-	}
-	$list .= '</p>'."\n";
 	$list .= "\t".'<p>'.$link['bt_content'].'</p>'."\n";
-	$list .= "\t".'<p class="date">'.date_formate($link['bt_id']).', '.heure_formate($link['bt_id']).' - <span class="link_no_clic">'.$link['bt_link'].'</span>'.' </p>'."\n";
+	$list .= "\t".'<p class="date">'.date_formate($link['bt_id']).', '.heure_formate($link['bt_id']).' - <span class="link_no_clic">'.$link['bt_link'].'</p>'."\n";
 
 	if (!empty($link['bt_tags'])) {
 		$tags = explode(',', $link['bt_tags']);
@@ -173,10 +162,8 @@ else { // aucun lien à ajouter ou éditer : champ nouveau lien + listage des li
 		afficher_liens($link);
 	}
 }
+
 // affichage
-
-
-
 echo js_addcategories_links(1);
 
 footer('', $begin);

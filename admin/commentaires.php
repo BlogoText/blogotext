@@ -102,21 +102,22 @@ else {
 
 function afficher_commentaire($comment, $with_link) {
 	afficher_form_commentaire($comment['bt_article_id'], 'admin', '', $comment);
-	echo '<div class="commentbloc'.(!$comment['bt_statut']? ' privatebloc' : '').'" id="'.article_anchor($comment['bt_id']).'">'."\n";
+	echo '<div class="commentbloc'.(!$comment['bt_statut'] ? ' privatebloc' : '').'" id="'.article_anchor($comment['bt_id']).'">'."\n";
+	if ($comment['bt_statut'] == '0') {
+		echo '<img class="img_inv_flag" src="style/deny.png" title="'.$GLOBALS['lang']['comment_is_invisible'].'" alt="icon"/>';
+	}
 	echo '<span onclick="reply(\'[b]@['.str_replace('\'', '\\\'', $comment['bt_author']).'|#'.article_anchor($comment['bt_id']).'] :[/b] \'); ">@</span> ';
 	echo '<h3 class="titre-commentaire">'.$comment['auteur_lien'].'</h3>'."\n";
 	echo '<p class="email"><a href="mailto:'.$comment['bt_email'].'">'.$comment['bt_email'].'</a></p>'."\n";
-	echo '<p class="lien_article_de_com">';
-	echo '<span class="comm-date">'.$GLOBALS['lang']['le'].' '.date_formate($comment['bt_id']).', '.heure_formate($comment['bt_id']).'</span> ';
-	if ($with_link == 1 and !empty($comment['bt_title'])) {
-		echo $GLOBALS['lang']['sur'].' <a href="'.$_SERVER['PHP_SELF'].'?post_id='.$comment['bt_article_id'].'">'.$comment['bt_title'].'</a>';
-	}
-	if ($comment['bt_statut'] == '0') {
-		echo '<img src="style/deny.png" title="'.$GLOBALS['lang']['comment_is_invisible'].'" alt="icon"/>';
-	}
-	echo '</p>'."\n";
-
 	echo $comment['bt_content'];
+	echo '<p class="p-edit-button">'."\n";
+	echo $GLOBALS['lang']['le'].' '.date_formate($comment['bt_id']).', '.heure_formate($comment['bt_id']);
+	if ($with_link == 1 and !empty($comment['bt_title'])) {
+		echo ' '.$GLOBALS['lang']['sur'].' <a href="'.$_SERVER['PHP_SELF'].'?post_id='.$comment['bt_article_id'].'">'.$comment['bt_title'].'</a>';
+	}
+	echo "\t".'<button class="comm-link cl-suppr" type="button" onclick="ask_suppr(this);" title="'.$GLOBALS['lang']['supprimer'].'"></button>'."\n";
+	echo "\t".'<button class="comm-link cl-edit" type="button" onclick="unfold(this);" title="'.$GLOBALS['lang']['editer'].'"></button> ';
+	echo '</p>'."\n";
 	echo $GLOBALS['form_commentaire'];
 	echo '</div>'."\n\n";
 }

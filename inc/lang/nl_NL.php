@@ -84,6 +84,8 @@ $GLOBALS['lang'] = array(
 'bouton-center'					=> 'Centreren',
 'bouton-right'						=> 'Rechts uitlijnen',
 'bouton-justify'					=> 'Uitvullen',
+'bouton-liul'						=> 'Lijst invoegen',
+'bouton-liol'						=> 'Lijst met nummers invoegen',
 // Modes
 'ecrire'								=> 'Bericht bijwerken',
 'apercu'								=> 'Overzicht',
@@ -93,7 +95,7 @@ $GLOBALS['lang'] = array(
 'label_titre'						=> 'Titel',
 'label_chapo'						=> 'Kop',
 'label_contenu'					=> 'Inhoud',
-'label_motscles'					=> 'Trefwoorden, met en comma geschijden',
+'label_motscles'					=> 'Trefwoorden',
 'label_identifiant'				=> 'Login',
 'label_motdepasse'				=> 'Wachtwoord',
 'label_word_captcha'				=> 'Tekst in het beeld',
@@ -131,7 +133,7 @@ $GLOBALS['lang'] = array(
 'label_note'						=> 'note', /////////////////////
 'label_nouv_note'					=> 'Nieuw note',
 'label_notes'						=> 'note', /////////////////////
-'label_categories'				=> 'Tags, met en comma geschijden',
+'label_categories'				=> 'Tags',
 'label_nouv_lien'					=> 'Nieuw link <span style="font-weight:normal;">of laat leeg voor en autolink</span>',
 'label_edit_lien'					=> 'Link bijverken',
 'label_lien_priv'					=> 'Verborgen link?',

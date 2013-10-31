@@ -14,24 +14,18 @@
 }
 
 #form-image #fichier { /* double ID needed for CSS priority rules */
-	width: 300px;
-	max-width: 90%;
+	max-width: 80%;
+	display: block;
+	margin: 80px auto 20px;
 }
 
 .specify-link {
-	margin-top: 7px;
-	margin-bottom: -4px;
 	font-size: 75%;
-	text-decoration: underline;
 	color: gray;
-	cursor: pointer;
 }
 
 #form-image .upload-info {
-	display: inline-block;
-	width: 150px;
-	text-align: right;
-	font-style: italic;
+	float: right;
 	color: gray;
 }
 
@@ -54,7 +48,7 @@
 	margin:1px 0;
 }
 
-#alternate-form-dragndrop, #alternate-form-url { /* hidden by default */
+#alternate-form-url { /* hidden by default */
 	display: none;
 }
 

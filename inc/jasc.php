@@ -93,6 +93,7 @@ function insertChar(ch, tag) {
 	return $sc;
 }
 
+
 /*
  * unfold blocs, sort of "spoiler" type button
 *
@@ -136,43 +137,16 @@ function SelectAllText(id) {
 function js_switch_upload_form($a) {
 	$sc = '
 function switchUploadForm(where) {
-	var formLink = document.getElementById(\'alternate-form-url\');
-	var formFile = document.getElementById(\'alternate-form-file\');
-	var formDrag = document.getElementById(\'alternate-form-dragndrop\');
-	var imSubmit = document.getElementById(\'img-submit\');
-	var inputUrl = document.getElementById(\'url\');
-	var inputFcr = document.getElementById(\'fichier\');
-	var inputNom = document.getElementById(\'nom_entree\');
+	var link = document.getElementById(\'click-change-form\');
+	var input = document.getElementById(\'fichier\');
 
-
-	if (where == \'to_file\') {
-		formLink.style.display = "none";
-		formDrag.style.display = "none";
-		formFile.style.display = "block";
-		imSubmit.style.display = "block";
-		inputFcr.disabled = "";
-		inputUrl.disabled = "0";
-		inputNom.disabled = "";
+	if (input.type == "file") {
+		link.innerHTML = link.dataset.langFile;
+		input.type = "url";
 	}
-
-	if (where == \'to_link\') {
-		formFile.style.display = "none";
-		formDrag.style.display = "none";
-		formLink.style.display = "block"; 
-		imSubmit.style.display = "block";
-		inputFcr.disabled = "0";
-		inputUrl.disabled = "";
-		inputNom.disabled = "";
-	}
-
-	if (where == \'to_drag\') {
-		formLink.style.display = "none";
-		formFile.style.display = "none";
-		formDrag.style.display = "block";
-		imSubmit.style.display = "none";
-		inputFcr.disabled = "0";
-		inputUrl.disabled = "0";
-		inputNom.disabled = "0";
+	else {
+		link.innerHTML = link.dataset.langUrl;
+		input.type = "file";
 	}
 	return false;
 }';
@@ -270,7 +244,8 @@ function js_button_request_delete($a) {
 // create and send form
 function request_delete_form(id) {
 	// prepare XMLHttpRequest
-		//document.getElementById(id).src += \'style/loading.gif\';
+	document.getElementById(id).src = \'style/loading.gif\';
+	document.getElementById(id).style.borderColor = "transparent";
 	var xhr = new XMLHttpRequest();
 	xhr.open(\'POST\', \'_rmfichier.ajax.php\');
 	xhr.onload = function() {
@@ -308,6 +283,7 @@ function js_drag_n_drop_handle($a) {
 var result = document.getElementById(\'result\'); // text zone where informations about uploaded files are displayed
 var list = []; // file list
 var nbDone = 0; // initialisation of nb files already uploaded during the process.
+var nbDraged = false; // init amount of files draged (false, then receives amount on processing)
 
 // pour le input des fichiers publics ou privés.
 function statut_image() {
@@ -327,7 +303,8 @@ function handleDrop(event) {
 		list.push(filelist[i]);
 	}
 	uploadNext();
-
+	nbDraged = false;
+	nbDone = 0;
 	return false;
 }
 
@@ -359,16 +336,18 @@ function uploadFile(file) {
 // upload next file
 function uploadNext() {
 	if (list.length) {
-		var nb = list.length - 1;
-		nbDone +=1;
-
+		if (nbDraged === false) {
+			nbDraged = list.length;
+		}
 		var nextFile = list.shift();
 		if (nextFile.size >= '.$max_file_size.') {
 			result.innerHTML += \'<div class="f">File too big</div>\';
+			nbDone +=1;
 			uploadNext();
 		} else {
 			uploadFile(nextFile);
-			document.getElementById(\'count\').innerHTML = \'Files done: \'+nbDone+\' ; \'+\'Files left: \'+nb;
+			nbDone +=1;
+			document.getElementById(\'count\').innerHTML = \''.$GLOBALS['lang']['label_fichier'].' : \'+nbDone+\'/\'+nbDraged;
 		}
 	}
 }
@@ -562,7 +541,16 @@ $sc = '
 function ask_suppr(button) {
 	var reponse = window.confirm(\''.$GLOBALS['lang']['question_suppr_comment'].'\');
 	if (reponse == true) {
-		button.type = \'submit\';
+		var form = button.parentNode.parentNode.getElementsByTagName(\'form\')[0];
+		var submitButtons = form.getElementsByTagName(\'input\');
+		for (var i = 0, nb = submitButtons.length ; i<nb ; i++) {
+			if (submitButtons[i].name === \'enregistrer\') {
+				submitButtons[i].name = \'supprimer_comm\';
+				submitButtons[i].type = \'text\';
+				break;
+			}
+		}
+		form.submit();
 	}
 	return reponse;
 }

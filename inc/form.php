@@ -597,12 +597,6 @@ function afficher_form_billet($article, $erreurs) {
 	echo '</div>'."\n";
 	echo '</div>'."\n";
 
-	echo form_categories_links('articles', $categoriesdefaut);
-
-	echo "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.$GLOBALS['lang']['label_categories'].'" tabindex="45"/>'."\n";
-	echo "\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
-
-
 	echo '<p class="formatbut">'."\n";
 	echo "\t".'<button id="button01" class="but" type="button" title="'.$GLOBALS['lang']['bouton-gras'].'" onclick="insertTag(\'[b]\',\'[/b]\',\'contenu\');"><span class="c"></span></button>'."\n";
 	echo "\t".'<button id="button02" class="but" type="button" title="'.$GLOBALS['lang']['bouton-ital'].'" onclick="insertTag(\'[i]\',\'[/i]\',\'contenu\');"><span class="c"></span></button>'."\n";
@@ -645,15 +639,19 @@ function afficher_form_billet($article, $erreurs) {
 	echo "\t".'<button id="button12" class="but" type="button" title="'.$GLOBALS['lang']['bouton-code'].'" onclick="insertTag(\'[code]\',\'[/code]\',\'contenu\');"><span class="c"></span></button>'."\n";
 
 	echo "\t".'<span class="spacer"></span>'."\n";
-	echo "\t".'<button id="button16" class="but" type="button" title="'.$GLOBALS['lang']['bouton-lien'].'" onclick="insertChar(\'\n\n** element 1\n** element 2\n\',\'contenu\');"><span class="c"></span></button>'."\n";
-	echo "\t".'<button id="button17" class="but" type="button" title="'.$GLOBALS['lang']['bouton-cita'].'" onclick="insertChar(\'\n\n## element 1\n## element 2\n\',\'contenu\');"><span class="c"></span></button>'."\n";
+	echo "\t".'<button id="button16" class="but" type="button" title="'.$GLOBALS['lang']['bouton-liul'].'" onclick="insertChar(\'\n\n** element 1\n** element 2\n\',\'contenu\');"><span class="c"></span></button>'."\n";
+	echo "\t".'<button id="button17" class="but" type="button" title="'.$GLOBALS['lang']['bouton-liol'].'" onclick="insertChar(\'\n\n## element 1\n## element 2\n\',\'contenu\');"><span class="c"></span></button>'."\n";
 
 	echo '</p>';
 
 	echo '<textarea id="contenu" name="contenu" rows="20" cols="60" required="" placeholder="'.$GLOBALS['lang']['label_contenu'].'" title="'.$GLOBALS['lang']['label_contenu'].'" tabindex="55" class="text" >'.$contenudefaut.'</textarea>'."\n" ;
 
+	echo form_categories_links('articles', $categoriesdefaut);
+	echo "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.$GLOBALS['lang']['label_categories'].'" tabindex="65"/>'."\n";
+	echo "\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
+
 	if ($GLOBALS['automatic_keywords'] == '0') {
-		echo '<div><input id="mots_cles" name="mots_cles" type="text" size="50" value="'.$motsclesdefaut.'" placeholder="'.$GLOBALS['lang']['label_motscles'].'" title="'.$GLOBALS['lang']['label_motscles'].'" tabindex="60" class="text" /></div>'."\n";
+		echo '<div><input id="mots_cles" name="mots_cles" type="text" size="50" value="'.$motsclesdefaut.'" placeholder="'.$GLOBALS['lang']['label_motscles'].'" title="'.$GLOBALS['lang']['label_motscles'].'" tabindex="67" class="text" /></div>'."\n";
 	}
 
 	echo '<div id="date-and-opts">'."\n";
@@ -679,7 +677,7 @@ function afficher_form_billet($article, $erreurs) {
 	echo '</div>'."\n";
 
 	echo '<div>';
-		echo '<input class="submit blue-square" type="submit" name="enregistrer" value="'.$GLOBALS['lang']['envoyer'].'" tabindex="65" />'."\n";
+		echo '<input class="submit blue-square" type="submit" name="enregistrer" value="'.$GLOBALS['lang']['envoyer'].'" tabindex="70" />'."\n";
 		if ($article) {
 			echo '<input class="submit red-square" type="submit" name="supprimer" value="'.$GLOBALS['lang']['supprimer'].'" onclick="return window.confirm(\''.$GLOBALS['lang']['question_suppr_article'].'\')" />'."\n";
 			echo hidden_input('article_id', $article['bt_id']);

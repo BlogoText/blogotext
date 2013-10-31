@@ -6,7 +6,6 @@
 #graphs {
 	vertical-align: middle;
 	text-align: center;
-	width: 400px;
 	display: inline-block;
 }
 .graphique a {
@@ -109,7 +108,6 @@
 	border-radius: 1px 1px 0 0;
 }
 #links, #commentaires {
-	width: 190px;
 	display: inline-block;
 	height: 75px;
 }
@@ -128,45 +126,5 @@
 }
 #links .links-total, #commentaires .comm-total {
 	display: block;
-}
-
-
-
-/* MINIATURES */
-
-#miniatures {
-	vertical-align: middle;
-	width: 250px;
-	display: inline-block;
-}
-
-.miniature {
-	box-shadow: 0 0 10px white inset, 0 0 3px white inset;
-	height: 50px;
-	width: 50px;
-	float: left;
-	-webkit-background-size: 100% 100%;
-	-moz-background-size: 100% 100%;
-	-o-background-size: 100% 100%;
-	background-size: 100% 100%;
-}
-
-.miniature:hover {
-	box-shadow: 0 0 5px white inset, 0 0 10px white, 0 0 3px black;
-
-}
-.miniature:last-of-type:hover {
-	box-shadow: none;
-}
-
-.miniature:last-of-type {
-	line-height: 50px;
-	width: 50px;
-	float: left;
-	background: no-repeat center center url(plus-circle-frame.png);
-	-webkit-background-size: 16px 16px;
-	-moz-background-size: 16px 16px;
-	-o-background-size: 16px 16px;
-	background-size: 16px 16px;
 }
 

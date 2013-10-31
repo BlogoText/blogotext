@@ -34,7 +34,7 @@
 	resize: vertical;
 }
 
-#titre, #form-ecrire #type_tags, #contenu, #mots_cles {
+#titre, #type_tags, #contenu, #mots_cles {
 	width: 100%;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -62,10 +62,10 @@
 	border-spacing: 0;
 	border-collapse: collapse;
 	width: 100%;
-	margin-bottom: 5px;
+	margin-bottom: 15px;
 }
 
-/* browsers scale the width of these box with the ratio of the value of html "cols" attribut they have (since they are table-cells). Damn, good to know that ! */
+/* browsers scale the width of these box with the ratio of the value of html "cols" attribut they have (since they are table-cells). */
 #blocchapo, #blocnotes {
 	display: table-cell;
 }
@@ -74,7 +74,6 @@
 	width: 100%;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
-
 	padding: 5px;
 	height: 100px;
 	background: #f1f1f5;
@@ -169,13 +168,11 @@ p.formatbut {
 #button10 span.c { background-position: -4px -102px; } /* quote */
 #button11 span.c { background-position: -4px -213px; } /* image */
 #button12 span.c { background-position: -4px -122px; } /* code */
-
 #button13 span.c { background-position: -4px -345px; } /* color edit */
 #button14 span.c { background-position: -4px -187px; } /* font size edit */
 #button15 span.c { background-position: -4px -376px; } /* unicode char insert */
-
-#button16 span.c { background-position: -4px -440px; } /* unicode char insert */
-#button17 span.c { background-position: -4px -408px; } /* unicode char insert */
+#button16 span.c { background-position: -4px -440px; } /* ul list */
+#button17 span.c { background-position: -4px -408px; } /* ol list */
 
 .but-dropdown {
 	position: relative;
@@ -230,7 +227,7 @@ p.formatbut {
 /* list sizes */
 .but-dropdown .list-size {
 	text-align: left;
-	width: 140px;
+	width: 160px;
 	padding: 3px 0;
 }
 
@@ -241,10 +238,18 @@ p.formatbut {
 	display: inline-block;
 	background: white;
 	margin: 0;
-	width: 140px;
+	width: 160px;
 	height: 28px;
 	margin-top: 3px;
 	border: 1px solid transparent;
+}
+
+.but-dropdown .list-size button:first-of-type {
+	height: 23px;
+}
+
+.but-dropdown .list-size button:last-of-type {
+	height: 33px;
 }
 
 .but-dropdown .list-size button span {

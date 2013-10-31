@@ -91,7 +91,7 @@ $GLOBALS['files_ext'] = array(
 	'spreadsheet'	=> array('xls', 'xlsx', 'xlt', 'xltx', 'ods', 'ots', 'csv'),
 	'text_document'=> array('doc', 'docx', 'rtf', 'odt', 'ott'),
 	'text-code'		=> array('txt', 'css', 'py', 'c', 'cpp', 'dat', 'ini', 'inf', 'text', 'conf', 'sh'), // more ?
-	'video'			=> array('mp4', 'ogv', 'avi', 'mpeg', 'mpg', 'flv', 'webm', 'mov', 'divx', 'rm', 'rmvb'), // more ?
+	'video'			=> array('mp4', 'ogv', 'avi', 'mpeg', 'mpg', 'flv', 'webm', 'mov', 'divx', 'rm', 'rmvb', 'wmv'), // more ?
 	'other' => array(''), // par défaut
 );
 

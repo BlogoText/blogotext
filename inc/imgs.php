@@ -180,8 +180,8 @@ function traiter_form_fichier($fichier) {
 			$new_fichier = bdd_fichier($fichier, 'ajout-nouveau', 'upload', $_FILES['fichier']);
 		}
 		// par $_POST d’une url
-		if (isset($_POST['url'])) {
-			$new_fichier = bdd_fichier($fichier, 'ajout-nouveau', 'download', $_POST['url']);
+		if (isset($_POST['fichier'])) {
+			$new_fichier = bdd_fichier($fichier, 'ajout-nouveau', 'download', $_POST['fichier']);
 		}
 		$fichier = (is_null($new_fichier)) ? $fichier : $new_fichier;
 		redirection($_SERVER['PHP_SELF'].'?file_id='.$fichier['bt_id'].'&msg=confirm_fichier_ajout');
@@ -362,16 +362,18 @@ function init_post_fichier() { //no $mode : it's always admin.
 		} else {
 			$file_id = date('YmdHis');
 			$dossier = htmlspecialchars($_POST['dossier']);
-			if (!empty($_FILES['fichier']) and ($_FILES['fichier']['error'] == 0)) { // ajout de fichier par upload
+			// ajout de fichier par upload
+			if (!empty($_FILES['fichier']) and ($_FILES['fichier']['error'] == 0)) {
 				$filename = pathinfo($_FILES['fichier']['name'], PATHINFO_FILENAME);
 				$ext = strtolower(pathinfo($_FILES['fichier']['name'], PATHINFO_EXTENSION));
 				$checksum = sha1_file($_FILES['fichier']['tmp_name']);
 				$size = $_FILES['fichier']['size'];
 				$type = detection_type_fichier($ext);
-			} elseif ( !empty($_POST['url']) ) { // ajout par une URL d’un fichier distant
-				$filename = pathinfo(parse_url($_POST['url'], PHP_URL_PATH), PATHINFO_FILENAME);
-				$ext = strtolower(pathinfo(parse_url($_POST['url'], PHP_URL_PATH), PATHINFO_EXTENSION));
-				$checksum = sha1_file($_POST['url']); // works with URL files
+			// ajout par une URL d’un fichier distant
+			} elseif ( !empty($_POST['fichier']) ) {
+				$filename = pathinfo(parse_url($_POST['fichier'], PHP_URL_PATH), PATHINFO_FILENAME);
+				$ext = strtolower(pathinfo(parse_url($_POST['fichier'], PHP_URL_PATH), PATHINFO_EXTENSION));
+				$checksum = sha1_file($_POST['fichier']); // works with URL files
 				$size = '';// same (even if we could use "filesize" with the URL, it would over-use data-transfer)
 				$type = detection_type_fichier($ext);
 			} else {
@@ -381,13 +383,7 @@ function init_post_fichier() { //no $mode : it's always admin.
 			}
 		}
 		// nom du fichier : si nom donné, sinon nom du fichier inchangé
-		if (!empty($_POST['nom_entree'])) {
-			// on supprimme les caractères spéciaux du nom donné
-			$filename = diacritique(htmlspecialchars($_POST['nom_entree']), '' , '0').'.'.$ext;
-		} else { // FIXME : faire ça plus haut
-			// on supprimme les caractères spéciaux du nom du fichier
-			$filename = diacritique(htmlspecialchars($filename), '' , '0').'.'.$ext;
-		}
+		$filename = diacritique(htmlspecialchars((!empty($_POST['nom_entree'])) ? $_POST['nom_entree'] : $filename), '' , '0').'.'.$ext;
 		$statut = (isset($_POST['statut']) and $_POST['statut'] == 'on') ? '0' : '1';
 		$fichier = array (
 			'bt_id' => $file_id,
@@ -408,6 +404,7 @@ function init_post_fichier() { //no $mode : it's always admin.
 
 function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fichier
 	$max_file_size = taille_formate(return_bytes(ini_get('upload_max_filesize')));
+	$max_file_nb = ini_get('max_file_uploads');
 	if ($erreurs) {
 		echo erreurs($erreurs);
 	}
@@ -417,56 +414,43 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 		$form .= '<fieldset class="pref" >'."\n";
 		$form .= '<legend class="legend-addfile">'.$GLOBALS['lang']['label_fichier_ajout'].'</legend>'."\n";
 
-		// normal form : upload file
-		$form .= '<p class="gray-section" id="alternate-form-file">'."\n";
-		$form .= "\t".'<label for="fichier">'.ucfirst($GLOBALS['lang']['label_fichier']).' :</label>'."\n";
-		$form .= "\t".'<input name="fichier" id="fichier" type="file" required="" class="text" />'."\n";
-		$form .= "\t".'<span class="upload-info">('.$GLOBALS['lang']['max_file_size'].$max_file_size.')</span>'."\n";
-		$form .= "\t".'<br/><a class="specify-link" onclick="switchUploadForm(\'to_link\'); return false;" href="#">'.$GLOBALS['lang']['img_specifier_url'].'</a>'."\n";
-		$form .= "\t".'<br/><a class="specify-link" onclick="switchUploadForm(\'to_drag\'); return false;" href="#">'.$GLOBALS['lang']['img_use_dragndrop'].'</a>'."\n";
-		$form .= '</p>'."\n";
-		$form .= '<p class="gray-section" id="alternate-form-url">'."\n";
-		$form .= "\t".'<label for="url">'.ucfirst($GLOBALS['lang']['label_link']).' :</label>'."\n";
-		$form .= "\t".'<input name="url" id="url" required="" placeholder="'.$GLOBALS['lang']['label_link'].'" type="text" class="text" disabled="" />'."\n";
-		$form .= "\t".'<br/><a class="specify-link" onclick="switchUploadForm(\'to_file\'); return false;" href="#">'.$GLOBALS['lang']['img_upload_un_fichier'].'</a>'."\n";
-		$form .= "\t".'<br/><a class="specify-link" onclick="switchUploadForm(\'to_drag\'); return false;" href="#">'.$GLOBALS['lang']['img_use_dragndrop'].'</a>'."\n";
-		$form .= '</p>'."\n";
+		$form .= '<div id="form-dragndrop">'."\n";
+			$form .= '<p class="gray-section" id="dragndrop-area" ondragenter="return false;" ondragover="return false;" ondrop="return handleDrop(event);" >'."\n";
+			$form .= "\t".'<span id="dragndrop-mssg">'.$GLOBALS['lang']['img_drop_files_here'];
+				$form .= "\t".'<input name="fichier" id="fichier" type="file" required="" class="text" placeholder="http://example.com/image.png" />'."\n";
+			$form .= '</span>'."\n";
 
-		// form with drag n drop
-		$form .= '<div id="alternate-form-dragndrop">'."\n";
-		$form .= '<p class="gray-section" id="dragndrop-area" ondragenter="return false;" ondragover="return false;" ondrop="return handleDrop(event);">'."\n";
-		$form .= "\t".'<span id="dragndrop-mssg">'.$GLOBALS['lang']['img_drop_files_here'].'</span>'."\n";
-		$form .= "\t".'<br/><a class="specify-link" onclick="switchUploadForm(\'to_file\'); return false;" href="#">'.$GLOBALS['lang']['img_upload_un_fichier'].'</a>'."\n";
-		$form .= "\t".'<br/><a class="specify-link" onclick="switchUploadForm(\'to_link\'); return false;" href="#">'.$GLOBALS['lang']['img_specifier_url'].'</a>'."\n";
-		$form .= '</p>'."\n";
-		$form .= '<div id="count"></div>'."\n";
-		$form .= '<div id="result"></div>'."\n";
+			$form .= "\t".'<span class="upload-info">'.$GLOBALS['lang']['max_file_size'].$max_file_size.'</span>'."\n";
+			$form .= "\t".'<a class="specify-link" id="click-change-form" onclick="return switchUploadForm();" href="#" data-lang-url="'.$GLOBALS['lang']['img_specifier_url'].'" data-lang-file="'.$GLOBALS['lang']['img_upload_un_fichier'].'">'.$GLOBALS['lang']['img_specifier_url'].'</a>'."\n";
+			$form .= '</p>'."\n";
+			$form .= '<div id="count"></div>'."\n";
+			$form .= '<div id="result"></div>'."\n";
 		$form .= '</div>'."\n";
 	
 		$form .= '<div id="img-others-infos">'."\n";
-		$form .= '<div class="gray-section">'."\n";
-		$form .= '<p>'."\n";
-		$form .= "\t".label('nom_entree', ucfirst($GLOBALS['lang']['img_nom_donnee']))."\n";
-		$form .= "\t".'<input type="text" id="nom_entree" name="nom_entree" placeholder="'.$GLOBALS['lang']['img_nom'].'" value="" size="60" class="text" />'."\n";
-		$form .= '</p>'."\n";
-		$form .= '<p>'."\n";
-		$form .= "\t".label('description', ucfirst($GLOBALS['lang']['pref_desc']).' :')."\n";
-		$form .= "\t".'<textarea class="description text" id="description" name="description" cols="60" rows="5" placeholder="'.$GLOBALS['lang']['pref_desc'].'" ></textarea>'."\n";
-		$form .= '</p>'."\n";
-		$form .= '<p>'."\n";
-		$form .= "\t".label('dossier', ucfirst($GLOBALS['lang']['img_dossier']))."\n";
-		$form .= "\t".'<input type="text" id="dossier" name="dossier" placeholder="'.$GLOBALS['lang']['img_dossier'].'" value="" size="60" class="text" />'."\n";
-		$form .= '</p>'."\n";		
-		$form .= '</div>'."\n";
-		$form .= '<p class="gray-section">'."\n";
-		$form .= "\t".'<input type="checkbox" id="statut" name="statut"/>'.'<label for="statut">'.$GLOBALS['lang']['label_file_priv'].'</label>';
-		$form .= '</p>'."\n";
+			$form .= '<div class="gray-section">'."\n";
+			$form .= '<p>'."\n";
+			$form .= "\t".label('nom_entree', ucfirst($GLOBALS['lang']['img_nom_donnee']))."\n";
+			$form .= "\t".'<input type="text" id="nom_entree" name="nom_entree" placeholder="'.$GLOBALS['lang']['img_nom'].'" value="" size="60" class="text" />'."\n";
+			$form .= '</p>'."\n";
+			$form .= '<p>'."\n";
+			$form .= "\t".label('description', ucfirst($GLOBALS['lang']['pref_desc']).' :')."\n";
+			$form .= "\t".'<textarea class="description text" id="description" name="description" cols="60" rows="5" placeholder="'.$GLOBALS['lang']['pref_desc'].'" ></textarea>'."\n";
+			$form .= '</p>'."\n";
+			$form .= '<p>'."\n";
+			$form .= "\t".label('dossier', ucfirst($GLOBALS['lang']['img_dossier']))."\n";
+			$form .= "\t".'<input type="text" id="dossier" name="dossier" placeholder="'.$GLOBALS['lang']['img_dossier'].'" value="" size="60" class="text" />'."\n";
+			$form .= '</p>'."\n";		
+			$form .= '</div>'."\n";
+			$form .= '<p class="gray-section">'."\n";
+			$form .= "\t".'<input type="checkbox" id="statut" name="statut"/>'.'<label for="statut">'.$GLOBALS['lang']['label_file_priv'].'</label>';
+			$form .= '</p>'."\n";
 		$form .= '</div>'."\n";
 
 		$form .= '<div id="img-submit">'."\n";
-		$form .= '<input class="submit blue-square" type="submit" name="upload" value="'.$GLOBALS['lang']['img_upload'].'" />'."\n";
-		$form .= hidden_input('token', new_token(), 'id');
-		$form .= hidden_input('_verif_envoi', '1');
+			$form .= '<input class="submit blue-square" type="submit" name="upload" value="'.$GLOBALS['lang']['img_upload'].'" />'."\n";
+			$form .= hidden_input('token', new_token(), 'id');
+			$form .= hidden_input('_verif_envoi', '1');
 		$form .= '</div>'."\n";
 
 		$form .= '</fieldset>'."\n";
@@ -482,7 +466,6 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 
 		$form .= '<fieldset class="edit-fichier">'."\n";
 		$form .= legend($GLOBALS['lang']['label_votre_fichier'], 'legend-fichier');
-		$form .= '<p>'.ucfirst($GLOBALS['lang']['label_fichier']).' <a href="'.$dossier.'/'.$fichiers[0]['bt_filename'].'">'.$fichiers[0]['bt_filename'].'</a> :'.'</p>'."\n";
 
 		// codes d’intégrations pour les médias
 		// Video
@@ -581,15 +564,15 @@ function afficher_liste_fichiers($tableau) {
 		$lstype = array_unique($lstype);
 
 		if (!empty($lstype)) {
-			echo '<div class="list-buttons" id="list-types">'."\n";
+			$out .= '<div class="list-buttons" id="list-types">'."\n";
 			$i = 0;
-			echo "\t".'<button class="current" id="butIdtype'.$i.'" onclick="type_sort(\'\', \'butIdtype'.$i.'\');">'.count($tableau).' '.$GLOBALS['lang']['label_fichiers'].'</button>';
+			$out .= "\t".'<button class="current" id="butIdtype'.$i.'" onclick="type_sort(\'\', \'butIdtype'.$i.'\');">'.count($tableau).' '.$GLOBALS['lang']['label_fichiers'].'</button>';
 			foreach ($lstype as $t => $n) {
 				if (empty($t)) break;
 				$i++;
-				echo '<button id="butIdtype'.$i.'" onclick="type_sort(\''.$t.'\', \'butIdtype'.$i.'\');">'.$t.' ('.$n.')</button>';
+				$out .= '<button id="butIdtype'.$i.'" onclick="type_sort(\''.$t.'\', \'butIdtype'.$i.'\');">'.$t.' ('.$n.')</button>';
 			}
-			echo "\n".'</div>'."\n";
+			$out .= "\n".'</div>'."\n";
 		}
 
 		$out .= '<div class="files-wall">'."\n";

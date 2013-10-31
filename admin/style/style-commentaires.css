@@ -13,11 +13,6 @@
 	border-width: 1px 1px 0 1px;
 }
 
-
-
-
-
-
 .commentbloc:nth-of-type(even) {
 	background: url("comment.png") no-repeat 5px 5px white;
 }
@@ -37,14 +32,21 @@
 .commentbloc:hover {
 	box-shadow: 0px 0px 4px #aaa, 1px 1px 5px #aaa;
 	z-index: +1;
-	position: relative;
+	position: relative; /* for shadow to get over the other comment-blocs */
 }
 
 
 .p-edit-button {
-	text-align: right;
 	visibility: hidden;
+	margin-bottom: 5px;
+	color: gray;
+	font-style: italic;
 }
+
+.p-edit-button button {
+	float: right;
+}
+
 .comm-edit-hidden-bloc {
 	display: none;
 }
@@ -62,38 +64,24 @@
 	visibility: hidden;
 }
 
-.commentbloc .lien_article_de_com {
-	display: inline;
+.commentbloc .img_inv_flag {
 	float: right;
-	color: gray;
 }
 
 .commentbloc a {
 	color: inherit;
 }
 
-.commentbloc .lien_article_de_com img {
-	vertical-align: middle;
-	margin-left: 10px;
-}
-
-.comm-date {
-	visibility: hidden;
-}
-	
-
 /* onHover */
 .commentbloc:hover a {
 	color: #45a6ff;
 }
-.commentbloc:hover .email, .commentbloc:hover .p-edit-button, .commentbloc:hover .comm-date {
+.commentbloc:hover .email, .commentbloc:hover .p-edit-button {
 	visibility: visible;
 }
 
-
 .privatebloc {
-	background-color: #e1e1e1;
-	border-left: 6px solid #777;
+	border-left-color: #333;
 }
 
 .privatebloc h3, .privatebloc h3 a {
@@ -124,10 +112,6 @@
 	background: url("comment.png") no-repeat left;
 }
 
-.form-commentaire label {
-	margin-top: 10px;
-}
-
 .form-commentaire textarea {
 	margin-top: 0;
 	width: 100%;
@@ -139,7 +123,9 @@
 }
 
 .form-commentaire input {
-	padding: 2px;
+	padding: 4px;
+	vertical-align: middle;
+	border-radius: 3px;
 }
 
 .form-commentaire fieldset, .post-lien fieldset {
@@ -148,14 +134,11 @@
 	padding:0;
 }
 
-.infos input, .infos label {
-	display: inline;
-	min-width: 32px;
+.infos label {
+	display: block;
+	vertical-align: middle;
 }
 
-.form-commentaire fieldset.infos input {
-	margin-top: 2px;
-}
 .form-commentaire fieldset.infos {
 	margin-top: 15px;
 	max-width: 500px;
@@ -169,6 +152,11 @@ fieldset.valid-center .submit {
 
 .cl-suppr {
 	background: url(legend.png) 0px -417px no-repeat;
+	border: 0;
+}
+
+.cl-edit {
+	background: url(legend.png) -557px -103px no-repeat;
 	border: 0;
 }
 

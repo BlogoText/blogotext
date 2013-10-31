@@ -241,6 +241,10 @@ h3 img {
 	margin-top: 5px;
 }
 
+#postcom .infos label {
+	display: block;
+}
+
 .infos input, textarea.commentaire {
 	border: 1px solid gray;
 }
