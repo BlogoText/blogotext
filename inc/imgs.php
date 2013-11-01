@@ -417,7 +417,7 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 		$form .= '<div id="form-dragndrop">'."\n";
 			$form .= '<p class="gray-section" id="dragndrop-area" ondragenter="return false;" ondragover="return false;" ondrop="return handleDrop(event);" >'."\n";
 			$form .= "\t".'<span id="dragndrop-mssg">'.$GLOBALS['lang']['img_drop_files_here'];
-				$form .= "\t".'<input name="fichier" id="fichier" type="file" required="" class="text" placeholder="http://example.com/image.png" />'."\n";
+				$form .= "\t".'<input name="fichier" id="fichier" type="file" required="" class="text" />'."\n";
 			$form .= '</span>'."\n";
 
 			$form .= "\t".'<span class="upload-info">'.$GLOBALS['lang']['max_file_size'].$max_file_size.'</span>'."\n";
@@ -430,28 +430,24 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 		$form .= '<div id="img-others-infos">'."\n";
 			$form .= '<div class="gray-section">'."\n";
 			$form .= '<p>'."\n";
-			$form .= "\t".label('nom_entree', ucfirst($GLOBALS['lang']['img_nom_donnee']))."\n";
-			$form .= "\t".'<input type="text" id="nom_entree" name="nom_entree" placeholder="'.$GLOBALS['lang']['img_nom'].'" value="" size="60" class="text" />'."\n";
+			$form .= "\t".'<label>'.ucfirst($GLOBALS['lang']['img_nom_donnee']).' <input type="text" id="nom_entree" name="nom_entree" placeholder="'.$GLOBALS['lang']['img_nom'].'" value="" size="60" class="text" /></label>'."\n";
 			$form .= '</p>'."\n";
 			$form .= '<p>'."\n";
-			$form .= "\t".label('description', ucfirst($GLOBALS['lang']['pref_desc']).' :')."\n";
-			$form .= "\t".'<textarea class="description text" id="description" name="description" cols="60" rows="5" placeholder="'.$GLOBALS['lang']['pref_desc'].'" ></textarea>'."\n";
+			$form .= "\t".'<label>'.ucfirst($GLOBALS['lang']['pref_desc']).' : <textarea class="description text" id="description" name="description" cols="60" rows="5" placeholder="'.$GLOBALS['lang']['pref_desc'].'" ></textarea></label>'."\n";
 			$form .= '</p>'."\n";
 			$form .= '<p>'."\n";
-			$form .= "\t".label('dossier', ucfirst($GLOBALS['lang']['img_dossier']))."\n";
-			$form .= "\t".'<input type="text" id="dossier" name="dossier" placeholder="'.$GLOBALS['lang']['img_dossier'].'" value="" size="60" class="text" />'."\n";
+			$form .= "\t".'<label>'.ucfirst($GLOBALS['lang']['img_dossier']).' : <input type="text" id="dossier" name="dossier" placeholder="'.$GLOBALS['lang']['img_dossier'].'" value="" size="60" class="text" /></label>'."\n";
 			$form .= '</p>'."\n";		
-			$form .= '</div>'."\n";
-			$form .= '<p class="gray-section">'."\n";
-			$form .= "\t".'<input type="checkbox" id="statut" name="statut"/>'.'<label for="statut">'.$GLOBALS['lang']['label_file_priv'].'</label>';
-			$form .= '</p>'."\n";
-		$form .= '</div>'."\n";
-
-		$form .= '<div id="img-submit">'."\n";
+			$form .= '<p style="margin-top: 20px;">'."\n";
 			$form .= '<input class="submit blue-square" type="submit" name="upload" value="'.$GLOBALS['lang']['img_upload'].'" />'."\n";
+			$form .= "\t".'<label id="private-chkbox">'.$GLOBALS['lang']['label_file_priv'].'<input type="checkbox" id="statut" name="statut"/></label>';
+			$form .= '</p>'."\n";		
 			$form .= hidden_input('token', new_token(), 'id');
 			$form .= hidden_input('_verif_envoi', '1');
+
+			$form .= '</div>'."\n";
 		$form .= '</div>'."\n";
+
 
 		$form .= '</fieldset>'."\n";
 	}

@@ -6,11 +6,22 @@
 }
 
 #form-image input.text, #form-image textarea { /* add img form */
-	width: 450px;
-	max-width: 90%;	
+	width: 75%;
 }
 #form-image fieldset label {
-	width: 25%; /* default is 30% in .bordered-formbloc fieldset label (ligne 909)*/
+	width: 80%; /* default is 30% in .bordered-formbloc fieldset label (ligne 909)*/
+	margin: 0 auto;
+	float: none;
+	display: block;
+}
+
+#private-chkbox {
+	float: none;
+	text-align: left;
+}
+
+#form-image .submit.blue-square {
+	margin-top: 0;
 }
 
 #form-image #fichier { /* double ID needed for CSS priority rules */
@@ -74,13 +85,15 @@
 }
 
 #result .success, #result .failure {
-	margin-bottom: 10px;
-	padding: 10px;
-	width: 700px;
-	margin: 10px auto 0;
+	padding: 1px;
+	margin: 5px auto 0;
+	max-width: 500px;
 	border-radius: 5px;
 }
 
+#result .success p, #result .failure p {
+	margin: 5px;
+}
 #result .success {
 	background-color: #77fc9f;
 }
@@ -443,27 +456,6 @@
 	float: left;
 	line-height: 60px;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

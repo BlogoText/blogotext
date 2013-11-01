@@ -453,7 +453,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 
 		$link = array('title' => $title, 'url' => htmlspecialchars($url));
 		$form .= '<p>'."\n";
-		$form .= "\t".'<input type="text" id="title" name="title" placeholder="'.$GLOBALS['lang']['label_titre'].'" required="" value="'.$link['title'].'" size="50" class="text" tabindex="1" />'."\n";
+		$form .= "\t".'<input type="text" id="title" name="title" placeholder="'.$GLOBALS['lang']['label_titre'].'" required="" value="'.$link['title'].'" size="50" class="text" autofocus />'."\n";
 		$form .= '</p>'."\n";
 		$form .= '<p>'."\n";
 		if ($type == 'image') { // si le lien est une image, on ajoute une miniature de l’image;
@@ -462,26 +462,26 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		} else {
 			$form .= "\t".'<span id="description-box">'."\n";
 		}
-		$form .= "\t\t".'<textarea class="description" name="description" id="description" cols="40" rows="7" placeholder="'.$GLOBALS['lang']['pref_desc'].'" tabindex="2"></textarea>'."\n";
+		$form .= "\t\t".'<textarea class="description" name="description" id="description" cols="40" rows="7" placeholder="'.$GLOBALS['lang']['pref_desc'].'"></textarea>'."\n";
 		$form .= "\t".'</span>'."\n";
 		$form .= '</p>'."\n";
 
 		$form .= form_categories_links('links', '');
 
 		$form .= '<p>'."\n";
-		$form .= "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.$GLOBALS['lang']['label_categories'].'" tabindex="3"/>'."\n";
+		$form .= "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.$GLOBALS['lang']['label_categories'].'"/>'."\n";
 		$form .= "\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
 		$form .= '</p>'."\n";
 
 		$form .= '<p class="sinline">'."\n";
-		$form .= "\t".'<input type="checkbox" id="statut" name="statut" tabindex="4" />' . '<label for="statut">'.$GLOBALS['lang']['label_lien_priv'].'</label>'."\n";
+		$form .= "\t".'<input type="checkbox" id="statut" name="statut" />' . '<label for="statut">'.$GLOBALS['lang']['label_lien_priv'].'</label>'."\n";
 		$form .= '</p>'."\n";
 		if ( ($type == 'image' or $type == 'file') and $GLOBALS['dl_link_to_files'] == 2) {
 			$form .= '<p class="sinline">'."\n";
-			$form .= "\t".'<input type="checkbox" id="add_to_files" name="add_to_files" tabindex="4" />' . '<label for="add_to_files">'.$GLOBALS['lang']['label_dl_fichier'].'</label>'."\n";
+			$form .= "\t".'<input type="checkbox" id="add_to_files" name="add_to_files" />' . '<label for="add_to_files">'.$GLOBALS['lang']['label_dl_fichier'].'</label>'."\n";
 			$form .= '</p>'."\n";
 		}
-		$form .= '<input class="submit blue-square" type="submit" name="enregistrer" id="valid-link" value="'.$GLOBALS['lang']['envoyer'].'" tabindex="5" />'."\n";
+		$form .= '<input class="submit blue-square" type="submit" name="enregistrer" id="valid-link" value="'.$GLOBALS['lang']['envoyer'].'" />'."\n";
 		$form .= hidden_input('_verif_envoi', '1');
 		$form .= hidden_input('bt_id', $new_id);
 		$form .= hidden_input('bt_author', $GLOBALS['auteur']);
@@ -501,18 +501,18 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= "\t".'<input type="text" id="url'.$rand.'" name="url" value="'.$editlink['bt_link'].'" size="70" class="text readonly-like" />'."\n";
 		$form .= '</p>'."\n";
 		$form .= '<p>'."\n";
-		$form .= "\t".'<input type="text" id="title'.$rand.'" name="title" placeholder="'.$GLOBALS['lang']['label_titre'].'" required="" value="'.$editlink['bt_title'].'" size="70" class="text" tabindex="1" />'."\n";
+		$form .= "\t".'<input type="text" id="title'.$rand.'" name="title" placeholder="'.$GLOBALS['lang']['label_titre'].'" required="" value="'.$editlink['bt_title'].'" size="70" class="text" autofocus />'."\n";
 		$form .= '</p>'."\n";
 		$form .= '<p>'."\n";
 		$form .= "\t".'<span id="description-box">'."\n";
-		$form .= "\t\t".'<textarea class="description text" id="description'.$rand.'" name="description" cols="70" rows="7" placeholder="'.$GLOBALS['lang']['pref_desc'].'" tabindex="2" >'.$editlink['bt_wiki_content'].'</textarea>'."\n";
+		$form .= "\t\t".'<textarea class="description text" id="description'.$rand.'" name="description" cols="70" rows="7" placeholder="'.$GLOBALS['lang']['pref_desc'].'" >'.$editlink['bt_wiki_content'].'</textarea>'."\n";
 		$form .= "\t".'</span>'."\n";
 		$form .= '</p>'."\n";
 		$form .= form_categories_links('links', $editlink['bt_tags']);
 
 		$form .= '<p>'."\n";
-		$form .= "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.$GLOBALS['lang']['label_categories'].'" tabindex="3"/>'."\n";
-		$form .= "\t".'<input type="hidden" id="categories" name="categories" value="" tabindex="3" />'."\n";
+		$form .= "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.$GLOBALS['lang']['label_categories'].'"/>'."\n";
+		$form .= "\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
 		$form .= '</p>'."\n";
 
 		$checked = ($editlink['bt_statut'] == 0) ? 'checked ' : '';

@@ -142,7 +142,9 @@ function switchUploadForm(where) {
 
 	if (input.type == "file") {
 		link.innerHTML = link.dataset.langFile;
+		input.placeholder = "http://example.com/image.png";
 		input.type = "url";
+		input.focus();
 	}
 	else {
 		link.innerHTML = link.dataset.langUrl;
@@ -263,13 +265,11 @@ function request_delete_form(id) {
 	xhr.send(formData);
 }
 ';
-
 	if ($a == 1) {
 		$sc = "\n".'<script type="text/javascript">'."\n".$sc."\n".'</script>'."\n";
 	}
 	return $sc;
 }
-
 
 /*
  * JS to handle drag-n-drop : ondraging files on a <div> opens web request with POST individualy for each file (in case many are draged-n-droped)
@@ -282,8 +282,6 @@ function js_drag_n_drop_handle($a) {
 // variables
 var result = document.getElementById(\'result\'); // text zone where informations about uploaded files are displayed
 var list = []; // file list
-var nbDone = 0; // initialisation of nb files already uploaded during the process.
-var nbDraged = false; // init amount of files draged (false, then receives amount on processing)
 
 // pour le input des fichiers publics ou privés.
 function statut_image() {
@@ -294,17 +292,26 @@ function folder_image() {
 	return document.getElementById(\'dossier\').value;
 }
 
+
+var nbDraged = false;
+var nbDone = 0;
+
 // process bunch of files
 function handleDrop(event) {
+
+	if (nbDraged !== false) { nbDraged = false; nbDone = 0; }
+
 	filelist = event.dataTransfer.files;
 	if (!filelist || !filelist.length || list.length) return;
 	result.innerHTML += \'\';
 	for (var i = 0; i < filelist.length && i < 500; i++) { // limit is for not having an infinite loop
 		list.push(filelist[i]);
 	}
+
+	nbDraged = list.length;
+
 	uploadNext();
-	nbDraged = false;
-	nbDone = 0;
+
 	return false;
 }
 
@@ -328,26 +335,22 @@ function uploadFile(file) {
 	document.getElementById(\'token\').parentNode.removeChild(document.getElementById(\'token\'));
 	formData.append(\'statut\', statut_image());
 	formData.append(\'description\', \'\');
+	formData.append(\'nom_entree\', document.getElementById(\'nom_entree\').value);
 	formData.append(\'dossier\', folder_image());
-
 	xhr.send(formData);
 }
 
 // upload next file
 function uploadNext() {
+	nbDone++;
 	if (list.length) {
-		if (nbDraged === false) {
-			nbDraged = list.length;
-		}
 		var nextFile = list.shift();
 		if (nextFile.size >= '.$max_file_size.') {
 			result.innerHTML += \'<div class="f">File too big</div>\';
-			nbDone +=1;
 			uploadNext();
 		} else {
 			uploadFile(nextFile);
-			nbDone +=1;
-			document.getElementById(\'count\').innerHTML = \''.$GLOBALS['lang']['label_fichier'].' : \'+nbDone+\'/\'+nbDraged;
+			document.getElementById(\'count\').innerHTML = \''.$GLOBALS['lang']['label_fichier'].': \'+nbDone+\'/\'+nbDraged;
 		}
 	}
 }
@@ -463,8 +466,8 @@ function folder_sort(folder, button) {
 	// reattributes the new list (it’s a global)
 	curr_img = newlist;
 	curr_max = curr_img.length-1;
-	// recreates the images wall with the new list
 
+	// recreates the images wall with the new list
 	image_vignettes();
 
 	// styles on buttons
@@ -569,11 +572,9 @@ function switch_form(activeForm, activeButton) {
 	var buttons = document.getElementById(\'list-switch-buttons\').getElementsByTagName(\'button\');
 	for (var i=0, l=buttons.length; i<l; i++) buttons[i].className = \'\';
 	activeButton.className = \'current\';
-
 	var form_export = document.getElementById(\'form_export\');
 	var form_import = document.getElementById(\'form_import\');
 	var form_optimi = document.getElementById(\'form_optimi\');
-
 	form_export.style.display = form_import.style.display = form_optimi.style.display = \'none\';
 	eval(activeForm).style.display = \'block\';
 }

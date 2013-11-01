@@ -48,9 +48,7 @@ if (isset($_FILES['fichier'])) {
 		echo '
 		<div class="success">
 			<p>
-				Your file: '.$fichier['bt_filename'].' has been successfully received. (<a class="lien lien-edit" href="fichiers.php?file_id='.$fichier['bt_id'].'&amp;edit">Lien</a>)<br/>
-				Type: '.$fichier['bt_type'].'<br/>
-				Size: '.taille_formate($fichier['bt_filesize']).'
+				Your file: <a class="lien lien-edit" href="fichiers.php?file_id='.$fichier['bt_id'].'&amp;edit">'.$fichier['bt_filename'].'</a> ('.$fichier['bt_type'].', '.taille_formate($fichier['bt_filesize']).') has been successfully received.
 				<button class="nodisplay" id="token" value="'.new_token().'"></button>
 			</p>
 		</div>';
