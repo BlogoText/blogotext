@@ -109,11 +109,6 @@
 		padding-right: 10px;
 	}
 
-
-
-
-
-
 	/* auth page */
 	#pageauth {
 		padding-left: 0;
@@ -130,10 +125,6 @@
 		padding: 5px 0;
 		font-size: 110%;
 	}
-
-
-
-
 
 
 	/* links */
@@ -163,20 +154,6 @@
 		min-width: 0;
 	}
 
-
-
-	/* Ecrire */
-
-	#date-and-opts div {
-		float: none;
-	}
-
-	#date-and-opts span {
-		display: block;
-		margin-left: 0;
-		margin-top: 20px;
-	}
-
 	#post-lien input.text, #post-lien textarea.text, #post-lien #description-box {
 		display: block;
 		width: 100%;
@@ -185,21 +162,26 @@
 
 	}
 
-	#post-lien p:not(.sinline) label {
-		width: 100%;
-		text-align: left;
+	/* Ecrire */
+
+	#date-and-opts, #date-and-opts span, #date-and-opts div {
+		margin-left: 0;
+		margin-top: 20px;
+	}
+
+	#date-and-opts {
+		height: auto;
+	}
+
+	#opts, #date {
 		float: none;
+	}
+
+	#formdate, #formheure, #formstatut, #formallowcomment {
 		display: block;
+		max-width: 500px;
+		padding-left: 20px;
+		vertical-align: middle;
 	}
-
-	#post-lien p.sinline label {
-		width: auto;
-		text-align: left;
-	}
-
-
-
-
-
 
 }

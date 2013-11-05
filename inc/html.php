@@ -376,14 +376,6 @@ function afficher_liste_articles($tableau) {
 	if (!empty($tableau)) {
 		$i = 0;
 		$out = '<table id="billets">'."\n";
-		$out .= '<tr>';
-			// LEGENDE DES COLONNES
-			$out .= '<th>'.$GLOBALS['lang']['label_titre'].'</th>'."\n";
-			$out .= '<th>'.$GLOBALS['lang']['label_date'].'</th>'."\n";
-			$out .= '<th>&nbsp;</th>'."\n";
-			$out .= '<th>&nbsp;</th>'."\n";
-		$out .= '</tr>';
-
 		foreach ($tableau as $article) {
 			// ICONE SELON STATUT
 			$class = ($article['bt_statut'] == '1') ? 'on' : 'off';

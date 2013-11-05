@@ -111,7 +111,6 @@ function afficher_form_commentaire($article_id, $mode, $erreurs='', $comm_id='')
 	}
 
 	// prelim vars for Generation of comment Form
-	$label_email = ($GLOBALS['require_email'] == 1) ? $GLOBALS['lang']['comment_email_required'] : $GLOBALS['lang']['comment_email']; 
 	$required = ($GLOBALS['require_email'] == 1) ? 'required=""' : '';
 	$cookie_checked = (isset($_COOKIE['cookie_c']) and $_COOKIE['cookie_c'] == 1) ? ' checked="checked"' : '';
 	$subscribe_checked = (isset($_COOKIE['subscribe_c']) and $_COOKIE['subscribe_c'] == 1) ? ' checked="checked"' : '';
@@ -137,25 +136,25 @@ function afficher_form_commentaire($article_id, $mode, $erreurs='', $comm_id='')
 		$form .= "\t".'<fieldset class="field">'."\n";
 		$form .= "\t\t".hidden_input('comment_article_id', $article_id);
 		$form .= "\t".'<p class="formatbut">'."\n";
-		$form .= "\t\t".'<button id="button01" class="but" type="button" title="'.$GLOBALS['lang']['bouton-gras'].'" onclick="insertTag(\'[b]\',\'[/b]\',\'commentaire'.$rand.'\');"><span class="c"></span></button>'."\n";
-		$form .= "\t\t".'<button id="button02" class="but" type="button" title="'.$GLOBALS['lang']['bouton-ital'].'" onclick="insertTag(\'[i]\',\'[/i]\',\'commentaire'.$rand.'\');"><span class="c"></span></button>'."\n";
-		$form .= "\t\t".'<button id="button03" class="but" type="button" title="'.$GLOBALS['lang']['bouton-soul'].'" onclick="insertTag(\'[u]\',\'[/u]\',\'commentaire'.$rand.'\');"><span class="c"></span></button>'."\n";
-		$form .= "\t\t".'<button id="button04" class="but" type="button" title="'.$GLOBALS['lang']['bouton-barr'].'" onclick="insertTag(\'[s]\',\'[/s]\',\'commentaire'.$rand.'\');"><span class="c"></span></button>'."\n";
+		$form .= "\t\t".'<button id="button01" class="but" type="button" title="'.$GLOBALS['lang']['bouton-gras'].'" onclick="insertTag(\'[b]\',\'[/b]\',\'commentaire'.$rand.'\');"><span></span></button>'."\n";
+		$form .= "\t\t".'<button id="button02" class="but" type="button" title="'.$GLOBALS['lang']['bouton-ital'].'" onclick="insertTag(\'[i]\',\'[/i]\',\'commentaire'.$rand.'\');"><span></span></button>'."\n";
+		$form .= "\t\t".'<button id="button03" class="but" type="button" title="'.$GLOBALS['lang']['bouton-soul'].'" onclick="insertTag(\'[u]\',\'[/u]\',\'commentaire'.$rand.'\');"><span></span></button>'."\n";
+		$form .= "\t\t".'<button id="button04" class="but" type="button" title="'.$GLOBALS['lang']['bouton-barr'].'" onclick="insertTag(\'[s]\',\'[/s]\',\'commentaire'.$rand.'\');"><span></span></button>'."\n";
 		$form .= "\t\t".'<span class="spacer"></span>'."\n";
-		$form .= "\t\t".'<button id="button09" class="but" type="button" title="'.$GLOBALS['lang']['bouton-lien'].'" onclick="insertTag(\'[\',\'|http://]\',\'commentaire'.$rand.'\');"><span class="c"></span></button>'."\n";
-		$form .= "\t\t".'<button id="button10" class="but" type="button" title="'.$GLOBALS['lang']['bouton-cita'].'" onclick="insertTag(\'[quote]\',\'[/quote]\',\'commentaire'.$rand.'\');"><span class="c"></span></button>'."\n";
-		$form .= "\t\t".'<button id="button12" class="but" type="button" title="'.$GLOBALS['lang']['bouton-code'].'" onclick="insertTag(\'[code]\',\'[/code]\',\'commentaire'.$rand.'\');"><span class="c"></span></button>'."\n";
+		$form .= "\t\t".'<button id="button09" class="but" type="button" title="'.$GLOBALS['lang']['bouton-lien'].'" onclick="insertTag(\'[\',\'|http://]\',\'commentaire'.$rand.'\');"><span></span></button>'."\n";
+		$form .= "\t\t".'<button id="button10" class="but" type="button" title="'.$GLOBALS['lang']['bouton-cita'].'" onclick="insertTag(\'[quote]\',\'[/quote]\',\'commentaire'.$rand.'\');"><span></span></button>'."\n";
+		$form .= "\t\t".'<button id="button12" class="but" type="button" title="'.$GLOBALS['lang']['bouton-code'].'" onclick="insertTag(\'[code]\',\'[/code]\',\'commentaire'.$rand.'\');"><span></span></button>'."\n";
 		$form .= "\t".'</p><!--end formatbut-->'."\n";
-		$form .= "\t\t".'<textarea class="commentaire text" name="commentaire" required="" placeholder="'.$GLOBALS['lang']['label_commentaire'].'" id="commentaire'.$rand.'" cols="50" rows="10">'.$defaut['commentaire'].'</textarea>'."\n";
+		$form .= "\t\t".'<textarea class="commentaire text" name="commentaire" required="" placeholder="Lorem Ipsum" id="commentaire'.$rand.'" cols="50" rows="10">'.$defaut['commentaire'].'</textarea>'."\n";
 		$form .= "\t".'</fieldset>'."\n";
 
 		$form .= "\t".'<fieldset class="infos">'."\n";
 
-		$form .= "\t\t".'<label>'.$GLOBALS['lang']['comment_nom'].' : <input type="text" name="auteur" placeholder="John Doe" required="" value="'.$defaut['auteur'].'" size="25" class="text" /></label>'."\n";
+		$form .= "\t\t".'<label>'.$GLOBALS['lang']['label_dp_pseudo'].'<input type="text" name="auteur" placeholder="John Doe" required="" value="'.$defaut['auteur'].'" size="25" class="text" /></label>'."\n";
 
-		$form .= "\t\t".'<label>'.$label_email.' : <input type="email" name="email" placeholder="mail@example.com" '.$required.' value="'.$defaut['email'].'" size="25" class="text" /></label>'."\n";
+		$form .= "\t\t".'<label>'.(($GLOBALS['require_email'] == 1) ? $GLOBALS['lang']['label_dp_email_required'] : $GLOBALS['lang']['label_dp_email']).'<input type="email" name="email" placeholder="mail@example.com" '.$required.' value="'.$defaut['email'].'" size="25" class="text" /></label>'."\n";
 
-		$form .= "\t\t".'<label>'.$GLOBALS['lang']['comment_webpage'].' : <input type="url" name="webpage" placeholder="http://www.example.com" value="'.$defaut['webpage'].'" size="25" class="text" /></label>'."\n";
+		$form .= "\t\t".'<label>'.$GLOBALS['lang']['label_dp_webpage'].'<input type="url" name="webpage" placeholder="http://www.example.com" value="'.$defaut['webpage'].'" size="25" class="text" /></label>'."\n";
 
 		$form .= "\t\t".hidden_input('_verif_envoi', '1');
 		$form .= "\t\t".hidden_input('token', new_token());
@@ -197,13 +196,13 @@ function afficher_form_commentaire($article_id, $mode, $erreurs='', $comm_id='')
 		$form .= "\t".'</fieldset>'."\n";
 
 		$form .= "\t".'<fieldset class="infos">'."\n";
-		$form .= "\t\t".'<label>'.$GLOBALS['lang']['comment_nom'].' : <input type="text" name="auteur" placeholder="John Doe" required="" value="'.$defaut['auteur'].'" size="25" class="text" /></label>'."\n";
+		$form .= "\t\t".'<label>'.$GLOBALS['lang']['label_dp_pseudo'].'<input type="text" name="auteur" placeholder="John Doe" required="" value="'.$defaut['auteur'].'" size="25" class="text" /></label>'."\n";
 
-		$form .= "\t\t".'<label>'.$label_email.' : <input type="email" name="email" placeholder="mail@example.com" '.$required.' value="'.$defaut['email'].'" size="25" /></label>'."\n";
+		$form .= "\t\t".'<label>'.(($GLOBALS['require_email'] == 1) ? $GLOBALS['lang']['label_dp_email_required'] : $GLOBALS['lang']['label_dp_email']).'<input type="email" name="email" placeholder="mail@example.com" '.$required.' value="'.$defaut['email'].'" size="25" /></label>'."\n";
 
-		$form .= "\t\t".'<label>'.$GLOBALS['lang']['comment_webpage'].' : <input type="text" name="webpage" placeholder="http://www.example.com" value="'.$defaut['webpage'].'" size="25" /></label>'."\n";
+		$form .= "\t\t".'<label>'.$GLOBALS['lang']['label_dp_webpage'].'<input type="url" name="webpage" placeholder="http://www.example.com" value="'.$defaut['webpage'].'" size="25" /></label>'."\n";
 
-		$form .= "\t\t".'<label>'.$GLOBALS['lang']['comment_captcha'].' <b>'.en_lettres($GLOBALS['captcha']['x']).'</b> + <b>'.en_lettres($GLOBALS['captcha']['y']).'</b> ? <input type="text" name="captcha" autocomplete="off" placeholder="12" value="" size="25" class="text" /></label>'."\n";
+		$form .= "\t\t".'<label>'.$GLOBALS['lang']['label_dp_captcha'].'<b>'.en_lettres($GLOBALS['captcha']['x']).'</b> &#10133; <b>'.en_lettres($GLOBALS['captcha']['y']).'</b> <input type="number" name="captcha" autocomplete="off" value="" size="25" class="text" /></label>'."\n";
 
 		$form .= "\t\t".hidden_input('_token', $GLOBALS['captcha']['hash']);
 		$form .= "\t\t".hidden_input('_verif_envoi', '1');

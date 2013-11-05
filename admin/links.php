@@ -30,17 +30,17 @@ function afficher_liens($link) {
 	$list .= "\t".'<p class="lien_editer">'."\n";
 	$list .= "\t\t"
 		.(($link['bt_statut'] == '1') ? '<a href="'.$GLOBALS['racine'].'?mode=links&amp;id='.$link['bt_id'].'" class="links-link ll-see" title="'.$GLOBALS['lang']['voir_sur_le_blog'].'"></a> ' : '')
-		.(empty($_GET['id']) ? '<a href="'.$_SERVER['PHP_SELF'].'?id='.$link['bt_id'].'" class="links-link ll-edit" title="'.$GLOBALS['lang']['editer'].'"></a> ' : '').'</span>'
+		.(empty($_GET['id']) ? '<a href="'.$_SERVER['PHP_SELF'].'?id='.$link['bt_id'].'" class="links-link ll-edit" title="'.$GLOBALS['lang']['editer'].'"></a> ' : '')
 		.(!$link['bt_statut'] ? '<img src="style/lock.png" title="'.$GLOBALS['lang']['link_is_private'].'" alt="private-icon" />' : '');
 	$list .= "\t".'</p>'."\n";
 	$list .= "\t".'<h3 class="titre-lien"><a href="'.$link['bt_link'].'">'.$link['bt_title'].'</a></h3>'."\n";
 
 	$list .= "\t".'<p>'.$link['bt_content'].'</p>'."\n";
-	$list .= "\t".'<p class="date">'.date_formate($link['bt_id']).', '.heure_formate($link['bt_id']).' - <span class="link_no_clic">'.$link['bt_link'].'</p>'."\n";
+	$list .= "\t".'<p class="date">'.date_formate($link['bt_id']).', '.heure_formate($link['bt_id']).' - '.$link['bt_link'].'</p>'."\n";
 
 	if (!empty($link['bt_tags'])) {
 		$tags = explode(',', $link['bt_tags']);
-		$list .= "\t".'<p class="link-tags">';
+		$list .= '<p class="link-tags">';
 			foreach ($tags as $tag) $list .= '<span class="tag">'.'<a href="?filtre=tag.'.urlencode(trim($tag)).'">'.trim($tag).'</a>'.'</span> ';
 		$list .= '</p>'."\n";
 	}

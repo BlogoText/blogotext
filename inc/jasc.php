@@ -350,7 +350,7 @@ function uploadNext() {
 			uploadNext();
 		} else {
 			uploadFile(nextFile);
-			document.getElementById(\'count\').innerHTML = \''.$GLOBALS['lang']['label_fichier'].': \'+nbDone+\'/\'+nbDraged;
+			document.getElementById(\'count\').innerHTML = \''.$GLOBALS['lang']['label_fichier'].'\'+nbDone+\'/\'+nbDraged;
 		}
 	}
 }
@@ -405,9 +405,9 @@ function slideshow(action, image) {
 	newImg.onload = function() {
 		ElemImg.src = newImg.src;
 		var im = curr_img[counter];
-		ElemUlLi[0].innerHTML = \''.$GLOBALS['lang']['label_date'].' : \'+im.id.substring(0,4)+\'/\'+im.id.substring(4,6)+\'/\'+im.id.substring(6,8);
-		ElemUlLi[1].innerHTML = \''.$GLOBALS['lang']['label_dim_img'].' : \'+img_width+\'×\'+img_height;
-		ElemUlLi[2].innerHTML = \''.$GLOBALS['lang']['pref_desc'].' : \'+(im.desc||im.filename[1]);
+		ElemUlLi[0].innerHTML = \''.$GLOBALS['lang']['label_dp_date'].'\'+im.id.substring(0,4)+\'/\'+im.id.substring(4,6)+\'/\'+im.id.substring(6,8);
+		ElemUlLi[1].innerHTML = \''.$GLOBALS['lang']['label_dp_dimensions'].'\'+img_width+\'×\'+img_height;
+		ElemUlLi[2].innerHTML = \''.$GLOBALS['lang']['label_dp_description'].'\'+(im.desc||im.filename[1]);
 		document.getElementById(\'slider-img-a\').href = \'?file_id=\'+im.id;
 		ElemImg.style.marginTop = (Math.round((box_height - Math.min(img_height/ratio_w, box_height))/2))+\'px\';
 	};

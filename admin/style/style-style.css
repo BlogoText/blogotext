@@ -76,18 +76,17 @@ h1 {
 	margin-top: 0;
 }
 
+label, input, textarea {
+	vertical-align: middle;
+}
+
 label {
 	margin-bottom: 5px;
-}
-
-label.inline {
-	display: inline;
-	margin-right: 10px;
-}
-
-input.inline {
+	color: #666;
+	display: block;
 	margin: 0;
-	display: inline;
+	padding: 3px;
+	text-align: right;
 }
 
 .info { /* ex : « il n'y a aucun commentaire » est un .info */
@@ -146,7 +145,6 @@ html:hover .reminder {
 	clear: both;
 	background: linear-gradient(top, #bdbdbd 2px, #eee 79px, #c4c4c4);
 	background: -o-linear-gradient(top, #bdbdbd 2px, #eee 79px, #c4c4c4);
-	background: -ms-linear-gradient(top, #bdbdbd 2px, #eee 79px, #c4c4c4);
 	background: -moz-linear-gradient(top, #bdbdbd 2px, #eee 79px, #c4c4c4);
 	background: -webkit-linear-gradient(top, #bdbdbd 2px, #eee 79px, #c4c4c4);
 	margin-bottom: 20px;
@@ -326,82 +324,71 @@ FORM RECHERCHE */
 .legend-dateheure { background: no-repeat 5px -149px url("legend.png"); }
 .legend-apparence { background: no-repeat 5px -389px url("legend.png"); }
 
-.post-lien p.sinline, .form-commentaire p.sinline {
-	float: right;
+
+#preferences p {
+	display: table;
+	width: 100%;
 }
 
-p.sinline, p.sinline label, p.sinline input {
-	vertical-align: middle;
+#preferences p label {
+	display: table-cell;
+	width: 40%;
 }
+
+#preferences p label+*:first-of-type {
+	display: table-cell;
+}
+
 
 
 /* GENERAL FORM STUFF */
 
-input.text {
+.text {
 	border: 1px solid #999;
-	margin: 0;
+	margin: 3px 0 2px;
+	vertical-align: middle;
 	box-shadow: 0px 1px 4px #ccc inset;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	padding: 5px;
 }
 
 textarea {
 	font-family: Verdana, Helvetica, Arial, sans-serif;
 	font-size: 12px;
-	display: block;
-	box-shadow: 0px 1px 4px silver inset;
-	border: 1px solid #9999a3;
-}
-
-input.text:focus, textarea:focus {
-	box-shadow: 0 0 6px rgba(0, 0, 0, 0.15), 0px 1px 4px #ccc inset; 
-} 
-
-.submit {
-	margin-top: 20px;
-	display: block;
-	float: right;
 }
 
 /* .text: type = { text, password, url, email } */
-#form-image input.text, #form-image textarea,
-#pageauth input.text,
-#preferences input.text, #preferences textarea,
-#post-lien input.text, #post-lien textarea, #post-new-lien #lien {
+input.text, textarea {
 	border-radius: 5px;
 }
 
 /*input buttons */
 .red-square, .blue-square {
-	padding: 3px 10px;
+	padding: 4px 10px;
 	color: #fff;
 	font-size: 14px;
 	vertical-align: middle;
 	border-radius: 5px;
-	margin-left: 10px;
+	margin-top: 20px;
 }
 
 .blue-square {
 	font-weight: bold;
 	background: #45a6ff;
-	border: 1px solid #6df;
-
-	background: -webkit-linear-gradient(#4af, #8df);
-	background:    -moz-linear-gradient(#4af, #8df);
-	background:     -ms-linear-gradient(#4af, #8df);
-	background:      -o-linear-gradient(#4af, #8df);
-	background:         linear-gradient(#4af, #8df);
+	border: 1px solid #4af;
+	width: 130px;
+	background: linear-gradient(#4af, #8df);
 	box-shadow: 1px 1px 2px rgba(0, 0, 0, .5);
 }
 
 .red-square {
 	background: #cc0000;
-	background: -webkit-linear-gradient(#f11, #f8a);
-	background:    -moz-linear-gradient(#f11, #f8a);
-	background:     -ms-linear-gradient(#f11, #f8a);
-	background:      -o-linear-gradient(#f11, #f8a);
-	background:         linear-gradient(#f11, #f8a);
+	border: 1px solid #f11;
+	width: 120px;
+	background: linear-gradient(#f11, #f8a);
 	box-shadow: 1px 1px 2px rgba(0, 0, 0, .5);
 
-	border: 1px solid #f62;
 }
 
 /* these are the bordered fieldsets */
@@ -411,29 +398,7 @@ input.text:focus, textarea:focus {
 	border-width: 0 0 1px 1px;
 	padding: 10px;
 	margin: 0 0 10px;
-	border-radius: 5px;
-}
-
-.bordered-formbloc fieldset p {
-	clear: both;
-	margin: 10px 0;
-}
-
-.bordered-formbloc fieldset label {
-	color: #666;
-	float: left;
-	width: 40%;
-	margin: 0 15px 0 0;
-	padding: 3px;
-	text-align: right;
-	vertical-align: middle;
-	line-height: 1em;
-}
-
-.bordered-formbloc fieldset input, .bordered-formbloc fieldset textarea {
-	display: inline;
-	padding: 2px 5px;
-	vertical-align: middle;
+	border-bottom-left-radius: 5px;
 }
 
 legend {

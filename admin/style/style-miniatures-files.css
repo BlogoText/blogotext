@@ -11,17 +11,6 @@
 #form-image fieldset label {
 	width: 80%; /* default is 30% in .bordered-formbloc fieldset label (ligne 909)*/
 	margin: 0 auto;
-	float: none;
-	display: block;
-}
-
-#private-chkbox {
-	float: none;
-	text-align: left;
-}
-
-#form-image .submit.blue-square {
-	margin-top: 0;
 }
 
 #form-image #fichier { /* double ID needed for CSS priority rules */
@@ -218,7 +207,6 @@
 	background: #38f;
 	background: linear-gradient(top, #d51, #f84);
 	background: -o-linear-gradient(top, #d51, #f84);
-	background: -ms-linear-gradient(top, #d51, #f84);
 	background: -moz-linear-gradient(top, #d51, #f84);
 	background: -webkit-linear-gradient(top, #d51, #f84);
 	border-radius: 7px;

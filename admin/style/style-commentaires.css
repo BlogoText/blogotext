@@ -6,7 +6,6 @@
 	background: #edf3fe url("comment.png") no-repeat 5px 5px;
 	background: url("comment.png") no-repeat 5px 5px, -webkit-linear-gradient(right, white 60%, #edf3fe );
 	background: url("comment.png") no-repeat 5px 5px,    -moz-linear-gradient(right, white 60%, #edf3fe );
-	background: url("comment.png") no-repeat 5px 5px,     -ms-linear-gradient(right, white 60%, #edf3fe );
 	background: url("comment.png") no-repeat 5px 5px,      -o-linear-gradient(right, white 60%, #edf3fe );
 	background: url("comment.png") no-repeat 5px 5px,         linear-gradient(right, white 60%, #edf3fe );
 	border: 1px solid #ccc;
@@ -125,7 +124,6 @@
 .form-commentaire input {
 	padding: 4px;
 	vertical-align: middle;
-	border-radius: 3px;
 }
 
 .form-commentaire fieldset, .post-lien fieldset {
@@ -143,11 +141,6 @@
 	margin-top: 15px;
 	max-width: 500px;
 	text-align: right;
-}
-
-fieldset.valid-center .submit {
-	float: none;
-	margin: 0 auto;
 }
 
 .cl-suppr {

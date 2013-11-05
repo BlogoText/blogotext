@@ -156,12 +156,12 @@ function afficher_form_2($erreurs='') {
 	echo '<h1 id="step">'.$GLOBALS['lang']['install'].'</h1>'."\n";
 	echo erreurs($erreurs);
 	echo '<form method="post" action="install.php?s='.$GLOBALS['step'].'&amp;l='.$GLOBALS['lang']['id'].'" onsubmit="return verifForm2(this)">'."\n".'<div id="erreurs_js" class="erreurs"></div>'."\n";
-	echo form_text('identifiant', '', $GLOBALS['lang']['install_id']);
-	echo form_password('mdp', '', $GLOBALS['lang']['install_mdp']);
-	echo form_password('mdp_rep', '', $GLOBALS['lang']['install_remdp']);
-	$lien = str_replace('?'.$_SERVER['QUERY_STRING'], '', 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING']);
+	echo '<label>'.$GLOBALS['lang']['install_id'].'<input type="text" name="identifiant" size="30" value="" class="text" /></label>'."\n";
+	echo '<label>'.$GLOBALS['lang']['install_mdp'].'<input type="password" name="mdp" size="30" value="" class="text" autocomplete="off" /></label>'."\n";
+	echo '<label>'.$GLOBALS['lang']['install_remdp'].'<input type="password" name="mdp_rep" size="30" value="" class="text" autocomplete="off" /></label>'."\n";
+	$lien = str_replace('?'.$_SERVER['QUERY_STRING'], '', 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING']); // dafuq this ?
 	$lien = str_replace('admin/install.php', '', $lien);
-	echo form_text('racine', $lien, $GLOBALS['lang']['pref_racine']);
+	echo '<label>'.$GLOBALS['lang']['pref_racine'].'<input type="text" name="racine" size="30" value="'.$lien.'" class="text" /></label>'."\n";
 
 	echo hidden_input('comm_defaut_status', '1');
 	echo hidden_input('langue', $GLOBALS['lang']['id']);
@@ -183,8 +183,7 @@ function afficher_form_3($erreurs='') {
 	echo '<form method="post" action="'.$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'].'">'."\n";
 
 	
-	echo '<p class="sinline">'."\n";
-	echo '<label>'.$GLOBALS['lang']['install_choose_sgdb'].'</label>'."\n";
+	echo '<label>'.$GLOBALS['lang']['install_choose_sgdb'].' ';
 	echo '<select id="sgdb" name="sgdb" onchange="show_mysql_form()">'."\n";
 	if (extension_loaded('pdo_sqlite')) {
 		echo "\t".'<option value="sqlite">SQLite</option>'."\n";
@@ -192,15 +191,14 @@ function afficher_form_3($erreurs='') {
 	if (extension_loaded('pdo_mysql') ) {
 		echo "\t".'<option value="mysql">MySQL</option>'."\n";
 	}
-	echo '</select>'."\n";
-	echo '</p>'."\n";
+	echo '</select></label>'."\n";
 
 	echo '<div id="mysql_vars" style="display:none;">'."\n";
 	if (extension_loaded('pdo_mysql') ) {
-		echo form_text('mysql_user', '', 'MySQL user:');
-		echo form_password('mysql_passwd', '', 'MySQL passwd:');
-		echo form_text('mysql_db', '', 'MySQL Database:');
-		echo form_text('mysql_host', '', 'MySQL Host (ie: localhost):');
+		echo '<label>MySQL User: <input type="text" name="mysql_user" size="30" value="" class="text" /></label>'."\n";
+		echo '<label>MySQL Password: <input type="password" name="mysql_passwd" size="30" value="" class="text" autocomplete="off" /></label>'."\n";
+		echo '<label>MySQL Database: <input type="text" name="mysql_db" size="30" value="" class="text" /></label>'."\n";
+		echo '<label>MySQL Host: <input type="text" name="mysql_host" size="30" value="" class="text" /></label>'."\n";
 	}
 	echo '</div>'."\n";
 

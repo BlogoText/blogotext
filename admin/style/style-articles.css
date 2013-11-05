@@ -26,16 +26,15 @@ table tr {
 	border-radius: 10px 10px 0 0;
 }
 
-table tr:nth-of-type(even) {
+table tr:nth-of-type(odd) {
 	background: #edf3fe;
 	background: -webkit-linear-gradient(left, #edf3fe, #fdfdff, #edf3fe);
 	background:    -moz-linear-gradient(left, #edf3fe, #fdfdff, #edf3fe);
-	background:     -ms-linear-gradient(left, #edf3fe, #fdfdff, #edf3fe);
 	background:      -o-linear-gradient(left, #edf3fe, #fdfdff, #edf3fe);
 	background:         linear-gradient(left, #edf3fe, #fdfdff, #edf3fe);
 }
 
-table tr:nth-of-type(even):hover {
+table tr:nth-of-type(odd):hover {
 	background: #edf3fe;
 }
 
