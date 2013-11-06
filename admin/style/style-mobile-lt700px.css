@@ -46,12 +46,10 @@
 	}
 
 	#input-rechercher {
-		//border: 1px dashed navy;
 		text-align: right;
 		padding-right: 10px;
 		padding-bottom: 5px;
 	}
-
 
 	#nav a {
 		display: inline-block;
@@ -116,13 +114,9 @@
 		width: 100%;
 		background-position: center 0%;
 		text-align: center;
-	}
-	#auth {
 		font-size: 140%;
 	}
-
-	#auth input.text {
-		padding: 5px 0;
+	#pageauth input.text {
 		font-size: 110%;
 	}
 
@@ -150,38 +144,27 @@
 		display: none;
 	}
 
-	#post-lien input.text, #post-lien #description-box, #post-lien #wrap {
-		min-width: 0;
+	#description-box .preview-img {
+		width: 100%;
+		height: auto;
 	}
 
-	#post-lien input.text, #post-lien textarea.text, #post-lien #description-box {
+	#post-lien .text, #post-lien #description-box {
 		display: block;
 		width: 100%;
 		box-sizing: border-box;
 		-moz-box-sizing: border-box;
-
 	}
 
 	/* Ecrire */
-
 	#date-and-opts, #date-and-opts span, #date-and-opts div {
 		margin-left: 0;
 		margin-top: 20px;
+		text-align: left;
 	}
 
-	#date-and-opts {
-		height: auto;
-	}
-
-	#opts, #date {
-		float: none;
-	}
-
-	#formdate, #formheure, #formstatut, #formallowcomment {
+	#date-and-opts, #date-and-opts > div, #date-and-opts span {
 		display: block;
-		max-width: 500px;
-		padding-left: 20px;
-		vertical-align: middle;
 	}
 
 }

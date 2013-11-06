@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------------- */
 
 #pageauth {
-	width: 350px;
+	width: 450px;
 	font-size: 1em;
 	display: block;
 	clear: both;
@@ -12,8 +12,27 @@
 	padding-top: 130px;
 }
 
+#pageauth p label {
+	display: inline-block;
+	width: 200px;
+}
+
 #pageauth input.text {
 	width: 200px;
+}
+
+#auth {
+	width: 399px;
+	margin: auto;
+}
+
+#auth p label {
+	text-align: left;
+	width: 200px;
+}
+
+#auth label[for="stay_logged"], #auth label[for="stay_logged"]+input {
+	display: inline;
 }
 
 #pageauth h1 {
@@ -27,16 +46,6 @@
 	color: #999;
 }
 
-#pageauth .inpauth {
-	margin-top: 15px;
-	padding: 2px 5px;
-	color: #fff;
-	background: #45A6FF;
-	border: 1px solid #2E83D9;
-	font-size: 1.4em;
-	font-weight: bold;
-}
-
 #freecap {
 	border: 1px dashed silver;
 }
@@ -46,5 +55,4 @@
 }
 
 #pageauth .blue-square {
-	margin-top: 35px;
 }

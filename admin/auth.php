@@ -63,17 +63,17 @@ if (isset($_POST['_verif_envoi']) and valider_form() === TRUE) { // OK : getting
 		echo '<div id="axe">'."\n";
 		echo '<div id="pageauth">'."\n";
 		echo '<h1>'.$GLOBALS['nom_application'].'</h1>'."\n";
-		echo '<form method="post" action="'.$_SERVER['PHP_SELF'].'">'."\n";
+		echo '<form method="post" action="auth.php">'."\n";
 		echo '<div id="auth">'."\n";
-		echo '<label>'.ucfirst($GLOBALS['lang']['label_identifiant']).' : <input class="text" type="text" name="nom_utilisateur" placeholder="John Doe" value="" /></label>'."\n";
-		echo '<label>'.ucfirst($GLOBALS['lang']['label_motdepasse']).' : <input class="text" type="password" placeholder="••••••••••••" name="mot_de_passe" value="" /></label>'."\n";
+		echo '<p><label for="user">'.ucfirst($GLOBALS['lang']['label_dp_identifiant']).'</label><input class="text" type="text" id="user" name="nom_utilisateur" placeholder="John Doe" value="" /></p>'."\n";
+		echo '<p><label for="password">'.ucfirst($GLOBALS['lang']['label_dp_motdepasse']).'</label><input class="text" id="password" type="password" placeholder="••••••••••••" name="mot_de_passe" value="" /></p>'."\n";
 		if (isset($GLOBALS['connexion_captcha']) and ($GLOBALS['connexion_captcha'] == "1")) {
 			echo js_reload_captcha(1);
-			echo '<label>'.ucfirst($GLOBALS['lang']['label_word_captcha']).'<input class="text" type="text" name="word" value="" /></label>'."\n";
-			echo '<p><a href="#" onclick="new_freecap();return false;" title="'.$GLOBALS['lang']['label_changer_captcha'].'"><img src="../inc/freecap/freecap.php" id="freecap"></a></p>'."\n";
+			echo '<p><label for="word">'.ucfirst($GLOBALS['lang']['label_dp_word_captcha']).'</label><input class="text" type="text" id="word" name="word" value="" /></p>'."\n";
+			echo '<p><a href="#" onclick="new_freecap();return false;" title="'.$GLOBALS['lang']['label_dp_changer_captcha'].'"><img src="../inc/freecap/freecap.php" id="freecap"></a></p>'."\n";
 		}
 
-		echo '<label for="stay_logged">'.$GLOBALS['lang']['label_stay_logged'].'<input type="checkbox" id="stay_logged" name="stay_logged" /></label>'."\n";
+		echo '<p><label for="stay_logged">'.$GLOBALS['lang']['label_stay_logged'].'</label><input type="checkbox" id="stay_logged" name="stay_logged" /></p>'."\n";
 		echo '<input class="blue-square" type="submit" name="submit" value="'.$GLOBALS['lang']['connexion'].'" />'."\n";
 		echo '<input type="hidden" name="_verif_envoi" value="1" />'."\n";
 		echo '</div>'."\n";

@@ -325,18 +325,23 @@ FORM RECHERCHE */
 .legend-apparence { background: no-repeat 5px -389px url("legend.png"); }
 
 
-#preferences p {
+#preferences p,
+form[action="maintenance.php"] p {
 	display: table;
 	width: 100%;
 }
 
+form[action="maintenance.php"] p label,
 #preferences p label {
 	display: table-cell;
 	width: 40%;
+	vertical-align: middle;
 }
 
-#preferences p label+*:first-of-type {
+#preferences p label+*:first-of-type,
+form[action="maintenance.php"] p label+*:first-of-type {
 	display: table-cell;
+	vertical-align: middle;
 }
 
 

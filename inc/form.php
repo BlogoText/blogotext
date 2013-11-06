@@ -140,12 +140,12 @@ function form_langue($defaut) {
 }
 
 function form_langue_install($label) {
-	echo '<label for="langue">'.$label.'</label>'."\n";
+	echo '<label for="langue">'.$label;
 	echo '<select id="langue" name="langue">'."\n";
 	foreach ($GLOBALS['langs'] as $option => $label) {
 		echo "\t".'<option value="'.htmlentities($option).'">'.$label.'</option>'."\n";
 	}
-	echo '</select>'."\n";
+	echo '</select></label>'."\n";
 }
 
 function liste_themes($chemin) {
@@ -295,7 +295,6 @@ function filtre($type, $filtre) { // cette fonction est très gourmande en resso
 		}
 		echo '</optgroup>'."\n";
 	}
-
 	echo '</select> '."\n\n";
 	echo '<input type="submit" value="'.$GLOBALS['lang']['label_afficher'].'" />'."\n";
 }
@@ -574,15 +573,6 @@ function afficher_form_billet($article, $erreurs) {
 	}
 
 	echo '<div id="date-and-opts">'."\n";
-	echo '<div id="opts">'."\n";
-		echo '<span id="formstatut">'."\n";
-			form_statut($statutdefaut);
-		echo '</span>'."\n";
-		echo '<span id="formallowcomment">'."\n";
-			form_allow_comment($allowcommentdefaut);
-		echo '</span>'."\n";
-	echo '</div>'."\n";
-
 	echo '<div id="date">'."\n";
 		echo '<span id="formdate">'."\n";
 			form_annee($defaut_annee);
@@ -593,7 +583,16 @@ function afficher_form_billet($article, $erreurs) {
 			form_heure($defaut_heure, $defaut_minutes, $defaut_secondes);
 		echo '</span>'."\n";
 		echo '</div>'."\n";
-    	echo '</div>'."\n";
+		echo '<div id="opts">'."\n";
+			echo '<span id="formstatut">'."\n";
+				form_statut($statutdefaut);
+			echo '</span>'."\n";
+			echo '<span id="formallowcomment">'."\n";
+				form_allow_comment($allowcommentdefaut);
+			echo '</span>'."\n";
+		echo '</div>'."\n";
+
+    echo '</div>'."\n";
 
 	echo '<input class="submit blue-square" type="submit" name="enregistrer" value="'.$GLOBALS['lang']['envoyer'].'" tabindex="70" />'."\n";
 	if ($article) {

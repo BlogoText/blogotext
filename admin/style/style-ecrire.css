@@ -91,7 +91,6 @@ p.formatbut {
 	margin: 0; padding: 0 5px;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
-
 	background: #cde6ff;
 	background: -webkit-linear-gradient(top, white, #e6e6e6);
 	background:    -moz-linear-gradient(top, white, #e6e6e6);
@@ -117,7 +116,6 @@ p.formatbut {
 	     -o-transition: border-color .3s;
 	        transition: border-color .3s;
 	border-color: silver;
-	
 }
 
 .formatbut .but:active {
@@ -269,10 +267,6 @@ p.formatbut {
 	text-align: center;
 }
 
-.but-dropdown .list-spechr button span {
-
-}
-
 .but-dropdown .list-spechr button:hover {
 	background-color: #ddd;
 }
@@ -281,14 +275,15 @@ p.formatbut {
 /* boutons d’options et date */
 #date-and-opts {
 	width: 100%;
-	height: 40px;
+	display: table;
+}
+
+#date-and-opts > div {
+	display: table-cell;
 }
 
 #opts {
-	float: right;
-}
-#date {
-	float: left;
+	text-align: right;
 }
 
 #formdate,
@@ -298,6 +293,12 @@ p.formatbut {
 	display: inline-block;
 	padding-left: 20px;
 	vertical-align: middle;
+	margin: 0 15px;
+}
+
+#formstatut label,
+#formallowcomment label {
+	display: inline;
 }
 
 #formdate {
@@ -313,7 +314,6 @@ p.formatbut {
 }
 
 #formallowcomment {
-	margin-left: 15px;
 	background: url(legend.png) no-repeat -560px -232px;
 }
 
