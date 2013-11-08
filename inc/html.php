@@ -38,11 +38,11 @@ function no_confirmation($message) {
 }
 
 function legend($legend, $class='') {
-	return '<legend class="'.$class.'">'.$legend.'</legend>'."\n"; 
+	return '<legend class="'.$class.'">'.$legend.'</legend>'."\n";
 }
 
 function label($for, $txt) {
-	return '<label for="'.$for.'">'.$txt.'</label>'."\n"; 
+	return '<label for="'.$for.'">'.$txt.'</label>'."\n";
 }
 
 function info($message) {
@@ -58,7 +58,7 @@ function erreurs($erreurs) {
 	} else {
 		$texte_erreur = '';
 	}
-	return $texte_erreur; 
+	return $texte_erreur;
 }
 
 function erreur($message) {
@@ -274,7 +274,7 @@ function afficher_calendrier() {
 }
 
 function encart_commentaires() {
-	$query = "SELECT c.bt_author, c.bt_id, c.bt_article_id, c.bt_content, a.bt_title FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id WHERE c.bt_statut=1 ORDER BY c.bt_id DESC LIMIT 5";
+	$query = "SELECT c.bt_author, c.bt_id, c.bt_article_id, c.bt_content, a.bt_title FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id WHERE c.bt_statut=1 AND a.bt_statut=1 ORDER BY c.bt_id DESC LIMIT 5";
 	$tableau = liste_elements($query, array(), 'commentaires');
 	if (isset($tableau)) {
 		$listeLastComments = '<ul class="encart_lastcom">';
@@ -393,7 +393,7 @@ function afficher_liste_articles($tableau) {
 			$out .= '<a class="'.$class.'" href="ecrire.php?post_id='.$article['bt_id'].'" title="'.$article['bt_abstract'].'">'.$article['bt_title'].'</a>';
 			$out .= '</td>'."\n";
 			// DATE
-			$out .= '<td><a class="black" href="'.$_SERVER['PHP_SELF'].'?filtre='.substr($article['bt_date'],0,8).'">'.date_formate($article['bt_date']).'</a> - '.heure_formate($article['bt_date']).'</td>'; 
+			$out .= '<td><a class="black" href="'.$_SERVER['PHP_SELF'].'?filtre='.substr($article['bt_date'],0,8).'">'.date_formate($article['bt_date']).'</a> - '.heure_formate($article['bt_date']).'</td>';
 			// NOMBRE COMMENTS
 			if ($article['bt_nb_comments'] == 1) {
 				$texte = $article['bt_nb_comments'].' '.$GLOBALS['lang']['label_commentaire'];
