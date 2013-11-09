@@ -27,12 +27,4 @@ This is Blogotext, the lightweight SQLite Blog-Engine.
   * Please, report *any* bugs to http://lehollandaisvolant.net/contact It will help me.
 
 
-
-
-
-
-<p align="center">
-
 [![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](http://flattr.com/thing/734525/Blogotext)
-
-</p>
