@@ -3,10 +3,9 @@
 
 /* apercu */
 #apercu {
-	padding: 1%;
+	padding: 5px;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
-	width: 99%;
 	margin: 0 0 20px 0;
 	border: 1px dashed #ccc;
 }
@@ -26,10 +25,6 @@
 }
 
 /* formulaire à remplir */
-#form-ecrire {
-	margin-right: 10px;
-}
-
 #form-ecrire textarea {
 	resize: vertical;
 }
@@ -302,7 +297,7 @@ p.formatbut {
 }
 
 #formdate {
-	background: url(legend.png) no-repeat -560px -168px;
+	background: url(legend.png) no-repeat -560px -162px;
 }
 
 #formheure {
@@ -310,10 +305,10 @@ p.formatbut {
 }
 
 #formstatut {
-	background: url(legend.png) no-repeat -560px -200px;
+	background: url(legend.png) no-repeat -560px -194px;
 }
 
 #formallowcomment {
-	background: url(legend.png) no-repeat -560px -232px;
+	background: url(legend.png) no-repeat -560px -226px;
 }
 

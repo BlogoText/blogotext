@@ -14,7 +14,7 @@ html, body {
 	clear: both;
 }
 
-#page { /* the main frame. #axe minus the "filtre" forms, and the "mode" link (« modifier article » and « nb commentaires sur l’article » */
+#page { /* the main frame. #axe minus the "filtre" forms, and the subnav */
 	padding: 20px 1% 20px;
 }
 
@@ -28,6 +28,13 @@ html, body {
 	font-size: 10px;
 }
 
+/* GENERAL STUFF 
+------------------------------------------------------------------- */
+a {
+	color: #45a6ff;
+}
+
+
 #footer a {
 	color: inherit;
 	text-decoration : none;
@@ -35,14 +42,6 @@ html, body {
 
 #footer a:hover {
 	text-decoration : underline;
-}
-
-
-
-/* GENERAL STUFF 
-------------------------------------------------------------------- */
-a {
-	color: #45a6ff;
 }
 
 .centrer {
@@ -76,7 +75,7 @@ h1 {
 	margin-top: 0;
 }
 
-label, input, textarea {
+label, input, textarea, select {
 	vertical-align: middle;
 }
 
@@ -250,6 +249,7 @@ FORM RECHERCHE */
 	border: none;
 	box-shadow: none;
 	background-color: transparent;
+	margin: 0;
 }
 
 #q {
@@ -276,20 +276,14 @@ FORM RECHERCHE */
 	margin: 0 1% 10px;
 }
 
-#mode { /* the link above comment/ecrire #page */
-	display: block;
-	float: right;
-	margin: 0;
+#subnav p { /* the link above comment/ecrire #page */
 	color: gray;
-}
-
-#mode a, #voir-en-ligne a {
-	text-decoration: none;
-}
-
-#lien-comments, #voir-en-ligne a {
+	text-align: right;
 	font-weight: bold;
-	margin-right: 0px;
+}
+
+#subnav p a {
+	text-decoration: none;
 }
 
 #form-filtre {
@@ -342,20 +336,24 @@ form[action="maintenance.php"] p label,
 form[action="maintenance.php"] p label+*:first-of-type {
 	display: table-cell;
 	vertical-align: middle;
+	margin-left: 5px;
 }
-
-
 
 /* GENERAL FORM STUFF */
 
-.text {
+.text, select, *[type='submit'] {
 	border: 1px solid #999;
 	margin: 3px 0 2px;
-	vertical-align: middle;
 	box-shadow: 0px 1px 4px #ccc inset;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	padding: 5px;
+	border-radius: 5px;
+	background: none;
+}
+
+.text {
+	background: white;
 }
 
 textarea {
@@ -363,37 +361,32 @@ textarea {
 	font-size: 12px;
 }
 
-/* .text: type = { text, password, url, email } */
-input.text, textarea {
-	border-radius: 5px;
+select {
+	background: #f0f0f0;
+	box-shadow: 0px 4px 6px white inset, 0px 0px 5px #eee;
 }
 
 /*input buttons */
-.red-square, .blue-square {
-	padding: 4px 10px;
-	color: #fff;
-	font-size: 14px;
-	vertical-align: middle;
-	border-radius: 5px;
-	margin-top: 20px;
+*.red-square, *.blue-square {
+	color: white;
+	box-shadow: none;
+	border: 1px solid black;
 }
 
-.blue-square {
+*.blue-square {
+	min-width: 140px;
 	font-weight: bold;
-	background: #45a6ff;
-	border: 1px solid #4af;
-	width: 130px;
-	background: linear-gradient(#4af, #8df);
-	box-shadow: 1px 1px 2px rgba(0, 0, 0, .5);
+	border-color: #389;
+	background: #7ef;
+	background: linear-gradient(#def, #adf 6%, #5bf 50%);
 }
 
-.red-square {
-	background: #cc0000;
-	border: 1px solid #f11;
-	width: 120px;
-	background: linear-gradient(#f11, #f8a);
-	box-shadow: 1px 1px 2px rgba(0, 0, 0, .5);
-
+*.red-square {
+	min-width: 100px;
+	margin-left: 50px;
+	border-color: #943;
+	background: #fa9;
+	background: linear-gradient(#faa, #faa 6%, #e44 50%);
 }
 
 /* these are the bordered fieldsets */
@@ -412,7 +405,6 @@ legend {
 	font-weight: bold;
 	font-size: 14px;
 }
-
 
 q, blockquote {
 	font-style: italic;

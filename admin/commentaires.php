@@ -136,11 +136,11 @@ echo '<div id="axe">'."\n";
 
 // SUBNAV
 echo '<div id="subnav">'."\n";
-echo '<p id="mode">'."\n";
+echo '<p>'."\n";
 if ($param_makeup['menu_theme'] == 'for_article') {
-	echo '<a id="lien-edit" href="ecrire.php?post_id='.$article_id.'">'.$GLOBALS['lang']['ecrire'].' : '.$article_title.'</a> &nbsp; – &nbsp; <span id="lien-comments">'.ucfirst(nombre_commentaires(count($commentaires))).'</span>';
+	echo '<a href="ecrire.php?post_id='.$article_id.'">'.$GLOBALS['lang']['ecrire'].' : '.$article_title.'</a> &nbsp; – &nbsp; '.ucfirst(nombre_commentaires(count($commentaires)));
 } elseif ($param_makeup['menu_theme'] == 'for_comms') {
-	echo '<span id="lien-comments">'.ucfirst(nombre_commentaires(count($commentaires))).' '.$GLOBALS['lang']['sur'].' '.$nb_total_comms.'</span>';
+	echo ucfirst(nombre_commentaires(count($commentaires))).' '.$GLOBALS['lang']['sur'].' '.$nb_total_comms;
 }
 echo '</p>'."\n";
 

@@ -66,18 +66,16 @@ echo '<div id="axe">'."\n";
 
 // SUBNAV
 echo '<div id="subnav">'."\n";
+		echo '<p>'."\n";
+			echo ucfirst(nombre_articles(count($tableau))).' '.$GLOBALS['lang']['sur'].' '.liste_elements_count("SELECT count(*) AS nbr FROM articles", array());
+		echo '</p>'."\n";
 
-echo '<p id="mode">'."\n";
-	echo '<span id="lien-comments">'.ucfirst(nombre_articles(count($tableau))).' '.$GLOBALS['lang']['sur'].' '.liste_elements_count("SELECT count(*) AS nbr FROM articles", array()).'</span>';
-echo '</p>'."\n";
-
-
-if (isset($_GET['filtre'])) {
-	afficher_form_filtre('articles', htmlspecialchars($_GET['filtre']));
-} else {
-	afficher_form_filtre('articles', '');
-}
-echo '</div>'."\n";
+		if (isset($_GET['filtre'])) {
+			afficher_form_filtre('articles', htmlspecialchars($_GET['filtre']));
+		} else {
+			afficher_form_filtre('articles', '');
+		}
+	echo '</div>'."\n";
 
 echo '<div id="page">'."\n";
 

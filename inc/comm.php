@@ -166,11 +166,11 @@ function afficher_form_commentaire($article_id, $mode, $erreurs='', $comm_id='')
 			$form .= "\t".'</fieldset><!--end info-->'."\n";
 			$form .= "\t".'<fieldset class="buttons">'."\n";
 			$form .= "\t\t".hidden_input('ID', $actual_comment['ID']);
-			$form .= "\t\t".'<input class="submit blue-square" type="submit" name="enregistrer" value="'.$GLOBALS['lang']['envoyer'].'" />'."\n";
+			$form .= "\t\t".'<p class="centrer"><input class="submit blue-square" type="submit" name="enregistrer" value="'.$GLOBALS['lang']['envoyer'].'" /></p>'."\n";
 		} else {
 			$form .= "\t".'</fieldset><!--end info-->'."\n";
 			$form .= "\t".'<fieldset class="buttons">'."\n";
-			$form .= "\t\t".'<input class="submit blue-square" type="submit" name="enregistrer" value="'.$GLOBALS['lang']['envoyer'].'" />'."\n";
+			$form .= "\t\t".'<p class="centrer"><input class="submit blue-square" type="submit" name="enregistrer" value="'.$GLOBALS['lang']['envoyer'].'" /></p>'."\n";
 		}
 		$form .= "\t".'</fieldset><!--end buttons-->'."\n";
 		$GLOBALS['form_commentaire'] .= $form;
@@ -235,6 +235,4 @@ function afficher_form_commentaire($article_id, $mode, $erreurs='', $comm_id='')
 		}
 	}
 }
-
-
 

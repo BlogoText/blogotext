@@ -136,14 +136,16 @@ echo '<div id="axe">'."\n";
 
 // SUBNAV
 echo '<div id="subnav">'."\n";
-echo '<p id="mode"><span id="lien-comments">'.ucfirst(nombre_liens($nb_links_displayed)).' '.$GLOBALS['lang']['sur'].' '.liste_elements_count("SELECT count(*) AS nbr FROM links", array(), 'links').'</span></p>'."\n";
+	echo "\t".'<p>';
+		echo "\t\t".ucfirst(nombre_liens($nb_links_displayed)).' '.$GLOBALS['lang']['sur'].' '.liste_elements_count("SELECT count(*) AS nbr FROM links", array(), 'links')."\n";
+	echo "\t".'</p>'."\n";
 
-// Affichage formulaire filtrage liens
-if (isset($_GET['filtre'])) {
-	afficher_form_filtre('links', htmlspecialchars($_GET['filtre']));
-} else {
-	afficher_form_filtre('links', '');
-}
+	// Affichage formulaire filtrage liens
+	if (isset($_GET['filtre'])) {
+		afficher_form_filtre('links', htmlspecialchars($_GET['filtre']));
+	} else {
+		afficher_form_filtre('links', '');
+	}
 echo '</div>'."\n";
 
 

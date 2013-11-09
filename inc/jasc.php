@@ -299,6 +299,9 @@ var nbDone = 0;
 // process bunch of files
 function handleDrop(event) {
 
+	document.getElementById(\'count\').style.paddingTop = \'20px\';
+	document.getElementById(\'count\').style.background = \'url(style/loading.gif) center top no-repeat\';
+
 	if (nbDraged !== false) { nbDraged = false; nbDone = 0; }
 
 	filelist = event.dataTransfer.files;
@@ -311,7 +314,6 @@ function handleDrop(event) {
 	nbDraged = list.length;
 
 	uploadNext();
-
 	return false;
 }
 
@@ -350,8 +352,10 @@ function uploadNext() {
 			uploadNext();
 		} else {
 			uploadFile(nextFile);
-			document.getElementById(\'count\').innerHTML = \''.$GLOBALS['lang']['label_fichier'].'\'+nbDone+\'/\'+nbDraged;
+			document.getElementById(\'count\').innerHTML = \''.$GLOBALS['lang']['label_dp_fichier'].'\'+nbDone+\'/\'+nbDraged;
 		}
+	} else {
+		document.getElementById(\'count\').style.background = \'\';
 	}
 }
 

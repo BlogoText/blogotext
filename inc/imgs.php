@@ -59,7 +59,6 @@ function afficher_liste_images($images) {
 	$dossier_relatif = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_images'];
 	$out = ''; $i = 0;
 	if (!empty($images)) {
-
 		// liste les différents dossiers " logiques " des images.
 		$lsfolder = '';
 		foreach ($images as $image) {
@@ -432,7 +431,9 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 			$form .= "\t".'<label>'.$GLOBALS['lang']['label_dp_description'].'<textarea class="text" id="description" name="description" cols="60" rows="5" placeholder="'.$GLOBALS['lang']['placeholder_description'].'" ></textarea></label>'."\n";
 			$form .= "\t".'<label>'.$GLOBALS['lang']['label_dp_dossier'].'<input type="text" id="dossier" name="dossier" placeholder="'.$GLOBALS['lang']['placeholder_folder'].'" value="" size="60" class="text" /></label>'."\n";
 			$form .= "\t".'<label id="private-chkbox">'.$GLOBALS['lang']['label_file_priv'].'<input type="checkbox" id="statut" name="statut"/></label>';
-			$form .= '<input class="submit blue-square" type="submit" name="upload" value="'.$GLOBALS['lang']['img_upload'].'" />'."\n";
+			$form .= "\t".'<p class="centrer">'."\n";
+			$form .= "\t".'<input class="submit blue-square" type="submit" name="upload" value="'.$GLOBALS['lang']['img_upload'].'" />'."\n";
+			$form .= "\t".'</p>'."\n";
 			$form .= hidden_input('token', new_token(), 'id');
 			$form .= hidden_input('_verif_envoi', '1');
 			$form .= '</div>'."\n";
@@ -500,8 +501,11 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 		$form .= "\t".'<label>'.$GLOBALS['lang']['label_dp_dossier'].'<input type="text" name="dossier" placeholder="'.$GLOBALS['lang']['placeholder_folder'].'" value="'.(!empty($fichiers[0]['bt_dossier']) ? $fichiers[0]['bt_dossier'] : '').'" size="60" class="text" /></label>'."\n";
 		$checked = ($fichiers[0]['bt_statut'] == 0) ? 'checked ' : '';
 		$form .= "\t".'<label for="statut">'.$GLOBALS['lang']['label_file_priv'].'<input type="checkbox" id="statut" name="statut" '.$checked.'/></label>';
-		$form .= "\t".'<input class="submit blue-square" type="submit" name="editer" value="'.$GLOBALS['lang']['envoyer'].'" />'."\n";
-		$form .= "\t".'<input class="submit red-square" type="submit" name="supprimer" value="'.$GLOBALS['lang']['supprimer'].'" onclick="return window.confirm(\''.$GLOBALS['lang']['question_suppr_fichier'].'\')" />'."\n";
+		$form .= "\t".'<p class="centrer">'."\n";
+		$form .= "\t\t".'<input class="submit blue-square" type="submit" name="editer" value="'.$GLOBALS['lang']['envoyer'].'" />'."\n";
+		$form .= "\t\t".'<input class="submit red-square" type="submit" name="supprimer" value="'.$GLOBALS['lang']['supprimer'].'" onclick="return window.confirm(\''.$GLOBALS['lang']['question_suppr_fichier'].'\')" />'."\n";
+		$form .= "\t".'</p>'."\n";
+
 		$form .= hidden_input('_verif_envoi', '1');
 		$form .= hidden_input('is_it_edit', 'yes');
 		$form .= hidden_input('file_id', $fichiers[0]['bt_id']);

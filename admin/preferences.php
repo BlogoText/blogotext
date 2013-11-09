@@ -236,7 +236,7 @@ function afficher_form_prefs($erreurs = '') {
 		echo $fld_update;
 	}
 
-	echo '<div class="submit">';
+	echo '<div class="submit centrer">';
 	echo hidden_input('_verif_envoi', '1');
 	echo hidden_input('token', new_token());
 	echo '<input class="submit blue-square" type="submit" name="enregistrer" value="'.$GLOBALS['lang']['enregistrer'].'" />'."\n";

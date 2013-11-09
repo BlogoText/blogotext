@@ -166,7 +166,7 @@ function liste_themes($chemin) {
 // formulaires ARTICLES //////////
 
 function afficher_form_filtre($type, $filtre) {
-	echo '<form method="get" action="'.$_SERVER['PHP_SELF'].'">'."\n";
+	echo '<form method="get" action="'.$_SERVER['PHP_SELF'].'" onchange="this.submit();">'."\n";
 	echo '<div id="form-filtre">'."\n";
 		filtre($type, $filtre);
 	echo '</div>'."\n";
@@ -296,7 +296,6 @@ function filtre($type, $filtre) { // cette fonction est très gourmande en resso
 		echo '</optgroup>'."\n";
 	}
 	echo '</select> '."\n\n";
-	echo '<input type="submit" value="'.$GLOBALS['lang']['label_afficher'].'" />'."\n";
 }
 
 
@@ -313,7 +312,9 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= '<fieldset>'."\n";
 		$form .= legend($GLOBALS['lang']['label_nouv_lien'], 'legend-link');
 		$form .= "\t".'<input type="text" name="url" value="" size="70" placeholder="http://www.example.com/" class="text" autofocus />'."\n";
-		$form .= "\t".'<input type="submit" value="'.$GLOBALS['lang']['envoyer'].'" class="submit blue-square" />'."\n";
+		$form .= "\t".'<p class="centrer">'."\n";
+		$form .= "\t\t".'<input type="submit" value="'.$GLOBALS['lang']['envoyer'].'" class="submit blue-square" />'."\n";
+		$form .= "\t".'</p>';
 		$form .= '</fieldset>'."\n";
 		$form .= '</form>'."\n\n";
 
@@ -413,7 +414,9 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		if ( ($type == 'image' or $type == 'file') and $GLOBALS['dl_link_to_files'] == 2 ) {
 			$form .= "\t".'<label>'.$GLOBALS['lang']['label_dl_fichier'].'<input type="checkbox" name="add_to_files" /></label>'."\n";
 		}
-		$form .= '<input class="submit blue-square" type="submit" name="enregistrer" id="valid-link" value="'.$GLOBALS['lang']['envoyer'].'" />'."\n";
+		$form .= "\t".'<p class="centrer">'."\n";
+		$form .= "\t\t".'<input class="submit blue-square" type="submit" name="enregistrer" id="valid-link" value="'.$GLOBALS['lang']['envoyer'].'" />'."\n";
+		$form .= "\t".'</p>'."\n";
 		$form .= hidden_input('_verif_envoi', '1');
 		$form .= hidden_input('bt_id', $new_id);
 		$form .= hidden_input('bt_author', $GLOBALS['auteur']);
@@ -436,9 +439,11 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= form_categories_links('links', $editlink['bt_tags']);
 		$form .= "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'"/>'."\n";
 		$form .= "\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
-		$form .= "\t".'<label>'.$GLOBALS['lang']['label_lien_priv'].'<input type="checkbox" name="statut" '.(($editlink['bt_statut'] == 0) ? 'checked ' : '').'/>'.'</label>';
+		$form .= "\t".'<label>'.$GLOBALS['lang']['label_lien_priv'].'<input type="checkbox" name="statut" '.(($editlink['bt_statut'] == 0) ? 'checked ' : '').'/>'.'</label>'."\n";
+		$form .= "\t".'<p class="centrer">'."\n";
 		$form .= "\t".'<input class="submit blue-square" type="submit" name="editer" value="'.$GLOBALS['lang']['envoyer'].'" />'."\n";
 		$form .= "\t".'<input class="submit red-square" type="submit" name="supprimer" value="'.$GLOBALS['lang']['supprimer'].'" onclick="return window.confirm(\''.$GLOBALS['lang']['question_suppr_article'].'\')" />'."\n";
+		$form .= "\t".'</p>'."\n";
 		$form .= hidden_input('ID', $editlink['ID']);
 		$form .= hidden_input('bt_id', $editlink['bt_id']);
 		$form .= hidden_input('bt_author', $editlink['bt_author']);
@@ -593,7 +598,7 @@ function afficher_form_billet($article, $erreurs) {
 		echo '</div>'."\n";
 
     echo '</div>'."\n";
-
+	echo '<p class="centrer">'."\n";
 	echo '<input class="submit blue-square" type="submit" name="enregistrer" value="'.$GLOBALS['lang']['envoyer'].'" tabindex="70" />'."\n";
 	if ($article) {
 		echo '<input class="submit red-square" type="submit" name="supprimer" value="'.$GLOBALS['lang']['supprimer'].'" onclick="return window.confirm(\''.$GLOBALS['lang']['question_suppr_article'].'\')" />'."\n";
@@ -602,6 +607,7 @@ function afficher_form_billet($article, $erreurs) {
 		echo hidden_input('ID', $article['ID']);
 
 	}
+	echo '</p>'."\n";
 	echo hidden_input('_verif_envoi', '1');
 	echo hidden_input('token', new_token());
 
