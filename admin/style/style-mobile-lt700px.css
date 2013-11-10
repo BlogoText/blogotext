@@ -46,12 +46,10 @@
 	}
 
 	#input-rechercher {
-		//border: 1px dashed navy;
 		text-align: right;
 		padding-right: 10px;
 		padding-bottom: 5px;
 	}
-
 
 	#nav a {
 		display: inline-block;
@@ -109,11 +107,6 @@
 		padding-right: 10px;
 	}
 
-
-
-
-
-
 	/* auth page */
 	#pageauth {
 		padding-left: 0;
@@ -121,19 +114,11 @@
 		width: 100%;
 		background-position: center 0%;
 		text-align: center;
-	}
-	#auth {
 		font-size: 140%;
 	}
-
-	#auth input.text {
-		padding: 5px 0;
+	#pageauth input.text {
 		font-size: 110%;
 	}
-
-
-
-
 
 
 	/* links */
@@ -159,47 +144,32 @@
 		display: none;
 	}
 
-	#post-lien input.text, #post-lien #description-box, #post-lien #wrap {
-		min-width: 0;
+	#description-box .preview-img {
+		width: 100%;
+		height: auto;
 	}
 
-
-
-	/* Ecrire */
-
-	#date-and-opts div {
-		float: none;
-	}
-
-	#date-and-opts span {
-		display: block;
-		margin-left: 0;
-		margin-top: 20px;
-	}
-
-	#post-lien input.text, #post-lien textarea.text, #post-lien #description-box {
+	#post-lien .text, #post-lien #description-box {
 		display: block;
 		width: 100%;
 		box-sizing: border-box;
 		-moz-box-sizing: border-box;
-
 	}
 
-	#post-lien p:not(.sinline) label {
-		width: 100%;
+	/* Ecrire */
+	#date-and-opts, #date-and-opts span, #date-and-opts div {
+		margin-left: 0;
+		margin-top: 20px;
 		text-align: left;
-		float: none;
+	}
+
+	#date-and-opts, #date-and-opts > div, #date-and-opts span {
 		display: block;
+		max-width: 400px;
 	}
 
-	#post-lien p.sinline label {
-		width: auto;
-		text-align: left;
+	select, .text {
+		padding: 7px 5px;
 	}
-
-
-
-
-
 
 }

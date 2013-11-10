@@ -143,7 +143,7 @@ else {
 	$xml .= '<copyright>'.$GLOBALS['auteur'].'</copyright>'."\n";
 	foreach ($liste_rss as $elem) {
 		$time = (isset($elem['bt_date'])) ? $elem['bt_date'] : $elem['bt_id'];
-		if ($time > date('YmdHis')) { echo "no..........."; continue; }
+		if ($time > date('YmdHis')) { continue; }
 		$title = (in_array($elem['bt_type'], array('article', 'link', 'note'))) ? $elem['bt_title'] : $elem['bt_author'];
 		// normal code
 		$xml_post = '<item>'."\n";

@@ -65,8 +65,10 @@ echo '<div class="reminder"><span>'.'Pensez à enregistrer votre article.'.'</sp
 // SUBNAV
 if ($post != '') {
 	echo '<div id="subnav">'."\n";
-		echo '<p id="mode"><a href="commentaires.php?post_id='.$article_id.'" id="lien-comments">'.ucfirst(nombre_commentaires($post['bt_nb_comments'])).'</a></p>'."\n";
-		echo '<p id="voir-en-ligne"><a href="'.$post['bt_link'].'">'.$GLOBALS['lang']['lien_article'].'</a></p>'."\n";
+		echo '<p>';
+		echo '<a href="'.$post['bt_link'].'">'.$GLOBALS['lang']['lien_article'].'</a> &nbsp; – &nbsp; ';
+		echo '<a href="commentaires.php?post_id='.$article_id.'">'.ucfirst(nombre_commentaires($post['bt_nb_comments'])).'</a>';
+		echo '</p>'."\n";
 	echo '</div>'."\n";
 }
  	

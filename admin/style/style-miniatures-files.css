@@ -6,32 +6,26 @@
 }
 
 #form-image input.text, #form-image textarea { /* add img form */
-	width: 450px;
-	max-width: 90%;	
+	width: 75%;
 }
 #form-image fieldset label {
-	width: 25%; /* default is 30% in .bordered-formbloc fieldset label (ligne 909)*/
+	width: 80%; /* default is 30% in .bordered-formbloc fieldset label (ligne 909)*/
+	margin: 0 auto;
 }
 
 #form-image #fichier { /* double ID needed for CSS priority rules */
-	width: 300px;
-	max-width: 90%;
+	max-width: 80%;
+	display: block;
+	margin: 80px auto 20px;
 }
 
 .specify-link {
-	margin-top: 7px;
-	margin-bottom: -4px;
 	font-size: 75%;
-	text-decoration: underline;
 	color: gray;
-	cursor: pointer;
 }
 
 #form-image .upload-info {
-	display: inline-block;
-	width: 150px;
-	text-align: right;
-	font-style: italic;
+	float: right;
 	color: gray;
 }
 
@@ -54,7 +48,7 @@
 	margin:1px 0;
 }
 
-#alternate-form-dragndrop, #alternate-form-url { /* hidden by default */
+#alternate-form-url { /* hidden by default */
 	display: none;
 }
 
@@ -80,13 +74,15 @@
 }
 
 #result .success, #result .failure {
-	margin-bottom: 10px;
-	padding: 10px;
-	width: 700px;
-	margin: 10px auto 0;
+	padding: 1px;
+	margin: 5px auto 0;
+	max-width: 500px;
 	border-radius: 5px;
 }
 
+#result .success p, #result .failure p {
+	margin: 5px;
+}
 #result .success {
 	background-color: #77fc9f;
 }
@@ -211,7 +207,6 @@
 	background: #38f;
 	background: linear-gradient(top, #d51, #f84);
 	background: -o-linear-gradient(top, #d51, #f84);
-	background: -ms-linear-gradient(top, #d51, #f84);
 	background: -moz-linear-gradient(top, #d51, #f84);
 	background: -webkit-linear-gradient(top, #d51, #f84);
 	border-radius: 7px;
@@ -449,27 +444,6 @@
 	float: left;
 	line-height: 60px;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

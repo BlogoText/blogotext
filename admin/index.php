@@ -46,23 +46,6 @@ $total_nb_fichiers = sizeof($GLOBALS['liste_fichiers']);
 echo '<div id="axe">'."\n";
 echo '<div id="mainpage">'."\n";
 
-if (!empty($_GET['q'])) {
-	$q = htmlspecialchars($_GET['q']);
-	$nb_commentaires = liste_elements_count("SELECT count(ID) AS nbr FROM commentaires WHERE bt_content LIKE ?", array('%'.$q.'%'));
-	$nb_articles = liste_elements_count("SELECT count(ID) AS nbr FROM articles WHERE ( bt_content LIKE ? OR bt_title LIKE ? )", array('%'.$q.'%', '%'.$q.'%'));
-	$nb_liens = liste_elements_count("SELECT count(ID) AS nbr FROM links WHERE ( bt_content LIKE ? OR bt_title LIKE ? OR bt_link LIKE ? )", array('%'.$q.'%','%'.$q.'%', '%'.$q.'%'));
-	$nb_files = sizeof(liste_base_files('recherche', urldecode($_GET['q']), ''));
-
-
-	echo '<h2>'.$GLOBALS['lang']['recherche'].' "<span style="font-style: italic">'.htmlspecialchars($_GET['q']).'</span>" :</h2>'."\n";
-	echo '<ul id="resultat-recherche">';
-	echo "\t".'<li><a href="commentaires.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_commentaires($nb_commentaires).'</a></li>';
-	echo "\t".'<li><a href="articles.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_articles($nb_articles).'</a></li>';
-	echo "\t".'<li><a href="links.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_liens($nb_liens).'</a></li>';
-	echo "\t".'<li><a href="fichiers.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_fichiers($nb_files).'</a></li>';
-	echo '</ul>';
-}
-
 
 // transforme les valeurs numériques d’un tableau pour les ramener la valeur max du tableau à $maximum. Les autres valeurs du tableau sont à l’échelle
 function scaled_size($tableau, $maximum) {
@@ -87,7 +70,7 @@ function scaled_size($tableau, $maximum) {
 */
 function get_tableau_date($data_type) {
 	$table_months = array();
-	for ($i = 12 ; $i >= 0 ; $i--) {
+	for ($i = 18 ; $i >= 0 ; $i--) {
 		$table_months[date('Ym', mktime(0, 0, 0, date("m")-$i, 1, date("Y")))] = 0;
 	}
 
@@ -102,97 +85,97 @@ function get_tableau_date($data_type) {
 		$req = $GLOBALS['db_handle']->prepare($query);
 		$req->execute();
 		$tab = $req-> fetchAll(PDO::FETCH_ASSOC);
-
 		foreach ($tab as $i => $month) {
 			if (isset($table_months[$month['date']])) {
 				$table_months[$month['date']] = $month['idbydate'];
 			}
 		}
-
 	} catch (Exception $e) {
 		die('Erreur 86459: '.$e->getMessage());
 	}
-
 	return $table_months;
-
 }
 
-// print sur chaque div pour les articles.
-echo '<div id="graphs">'."\n";
-$nothingyet = 0;
 
-if (!$total_artic == 0) {
-	echo '<div class="graphique" id="articles"><h3>'.ucfirst($GLOBALS['lang']['label_articles']).' :</h3>'."\n";
-	$table = scaled_size(get_tableau_date('articles'), 130);
-	foreach ($table as $month => $data) {
-		echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(20-$data['nb_scale'], 0).'px"></div><span class="month-nb">'.$data['nb'].'</span><a href="articles.php?filtre='.$month.'"><span class="month-name">'.substr($month,4,2)." \n ".substr($month,2,2).'</span></a></div>';
-	}
-	echo '</div>'."\n";
-} else {
-	$nothingyet++;
+
+
+
+
+/* Une recherche a été faite : affiche la recherche */
+
+if (!empty($_GET['q'])) {
+	$q = htmlspecialchars($_GET['q']);
+	$nb_commentaires = liste_elements_count("SELECT count(ID) AS nbr FROM commentaires WHERE bt_content LIKE ?", array('%'.$q.'%'));
+	$nb_articles = liste_elements_count("SELECT count(ID) AS nbr FROM articles WHERE ( bt_content LIKE ? OR bt_title LIKE ? )", array('%'.$q.'%', '%'.$q.'%'));
+	$nb_liens = liste_elements_count("SELECT count(ID) AS nbr FROM links WHERE ( bt_content LIKE ? OR bt_title LIKE ? OR bt_link LIKE ? )", array('%'.$q.'%','%'.$q.'%', '%'.$q.'%'));
+	$nb_files = sizeof(liste_base_files('recherche', urldecode($_GET['q']), ''));
+
+	echo '<h2>'.$GLOBALS['lang']['recherche'].' "<span style="font-style: italic">'.htmlspecialchars($_GET['q']).'</span>" :</h2>'."\n";
+	echo '<ul id="resultat-recherche">';
+	echo "\t".'<li><a href="commentaires.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_commentaires($nb_commentaires).'</a></li>';
+	echo "\t".'<li><a href="articles.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_articles($nb_articles).'</a></li>';
+	echo "\t".'<li><a href="links.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_liens($nb_liens).'</a></li>';
+	echo "\t".'<li><a href="fichiers.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_fichiers($nb_files).'</a></li>';
+	echo '</ul>';
 }
 
-if (!$total_comms == 0) {
-	// print sur chaque div pour les com.
-	echo '<div class="graphique" id="commentaires"><h3>'.ucfirst($GLOBALS['lang']['label_commentaires']).' :</h3>'."\n";
-	$table = scaled_size(get_tableau_date('commentaires'), 50);
-	foreach ($table as $month => $data) {
-		echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(20-$data['nb_scale'], 0).'px"></div><a href="commentaires.php?filtre='.$month.'"><span class="month-name">'.mois_en_lettres(substr($month,4,2), 1).' '.substr($month,0,4).' : </span><span class="month-nb">'.nombre_commentaires($data['nb']).'</span></a></div>';
-	}
-	echo '<a href="commentaires.php" class="comm-total">Total : '.nombre_commentaires($total_comms).'</a>'."\n";
-	echo '</div>'."\n";
-} else {
-	$nothingyet++;
-}
+/* sinon, affiche les graphes. */
 
-if (!$total_links == 0) {
-	// print sur chaque div pour les liens.
-	echo '<div class="graphique" id="links"><h3>'.ucfirst($GLOBALS['lang']['label_links']).' :</h3>'."\n";
-	$table = scaled_size(get_tableau_date('links'), 50);
-	foreach ($table as $month => $data) {
-		echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(20-$data['nb_scale'], 0).'px"></div><a href="links.php?filtre='.$month.'"><span class="month-name">'.mois_en_lettres(substr($month,4,2), 1).' '.substr($month,0,4).' : </span><span class="month-nb">'.nombre_liens($data['nb']).'</span></a></div>';
-	}
+else {
+	// print sur chaque div pour les articles.
+	echo '<div id="graphs">'."\n";
+	$nothingyet = 0;
 
-	echo '<a href="links.php" class="links-total">Total : '.nombre_liens($total_links).'</a>'."\n";
-	echo '</div>'."\n";
-} else {
-	$nothingyet++;
-}
-
-echo '</div>'."\n";
-
-
-if (!empty($GLOBALS['liste_fichiers'])) {
-	echo '<div id="miniatures"><h3>'.ucfirst($GLOBALS['lang']['label_images']).' :</h3>'."\n";
-		$nb = 0;
-		foreach ($GLOBALS['liste_fichiers'] as $key => $file) {
-			if ($file['bt_type'] == 'image' and $file['bt_statut'] == 1) {
-				if ($nb < 30-1) {
-					$nb++;
-				} else {
-					break;
-				}
-				$file = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_images'].'/'.$file['bt_filename'];
-				$file_thb = chemin_thb_img($file);
-
-				echo '<a class="miniature" href="'.$file.'" style="background-image: url('.$file_thb.');"></a>'."\n";
-			}
+	if (!$total_artic == 0) {
+		echo '<div class="graphique" id="articles"><h3>'.ucfirst($GLOBALS['lang']['label_articles']).' :</h3>'."\n";
+		$table = scaled_size(get_tableau_date('articles'), 130);
+		foreach ($table as $month => $data) {
+			echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(20-$data['nb_scale'], 0).'px"></div><span class="month-nb">'.$data['nb'].'</span><a href="articles.php?filtre='.$month.'"><span class="month-name">'.substr($month,4,2)." \n ".substr($month,2,2).'</span></a></div>';
 		}
-		echo '<a class="miniature" href="fichiers.php?filtre=image">&nbsp;</a>'."\n";
+		echo '</div>'."\n";
+	} else {
+		$nothingyet++;
+	}
+
+	if (!$total_comms == 0) {
+		// print sur chaque div pour les com.
+		echo '<div class="graphique" id="commentaires"><h3>'.ucfirst($GLOBALS['lang']['label_commentaires']).' :</h3>'."\n";
+		$table = scaled_size(get_tableau_date('commentaires'), 50);
+		foreach ($table as $month => $data) {
+			echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(20-$data['nb_scale'], 0).'px"></div><a href="commentaires.php?filtre='.$month.'"><span class="month-name">'.mois_en_lettres(substr($month,4,2), 1).' '.substr($month,0,4).' : </span><span class="month-nb">'.nombre_commentaires($data['nb']).'</span></a></div>';
+		}
+		echo '<a href="commentaires.php" class="comm-total">Total : '.nombre_commentaires($total_comms).'</a>'."\n";
+		echo '</div>'."\n";
+	} else {
+		$nothingyet++;
+	}
+
+	if (!$total_links == 0) {
+		// print sur chaque div pour les liens.
+		echo '<div class="graphique" id="links"><h3>'.ucfirst($GLOBALS['lang']['label_links']).' :</h3>'."\n";
+		$table = scaled_size(get_tableau_date('links'), 50);
+		foreach ($table as $month => $data) {
+			echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(20-$data['nb_scale'], 0).'px"></div><a href="links.php?filtre='.$month.'"><span class="month-name">'.mois_en_lettres(substr($month,4,2), 1).' '.substr($month,0,4).' : </span><span class="month-nb">'.nombre_liens($data['nb']).'</span></a></div>';
+		}
+
+		echo '<a href="links.php" class="links-total">Total : '.nombre_liens($total_links).'</a>'."\n";
+		echo '</div>'."\n";
+	} else {
+		$nothingyet++;
+	}
+
 	echo '</div>'."\n";
-} else {
-	$nothingyet++;
-}
 
-if ($nothingyet == 4) {
-	echo '
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADoAAABwAgMAAAAyFouxAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QMFDDAtgYm8UQAAAAxQTFRFGBEPg3ue872G////A0Y42AAAAWNJREFUOMul1KGOXDEMheFDQkLOq4WYDMmrXbIk5L6aSciQv2C222rH2YKafZYly7JsATkxr0gVdirVzk4ANA+OyeIzXTnXc93Ac9amf2jmaLdr7/W4rySfB9M7T4NPzs4N9JO3PCcSB8/Uo0vTB9vT6fmDw7T76GwM4KvfdyMWT3x0PqW9OZo+aT47NRk6OjuS7YOz36kbp2tLd0pi5yxtlAZvdmkZI7UgK2cbkiLahFk5x6BFeLNdeKadEWHmrOy0pQhvXHhLgmcLb7zfnWBSEZ443z2hQxs62CAj5+bk1AX5AUZvTkgJ8q6N1C+/3CvjtPw6rCsrQ5PGT37VR3fhvSdttOH92ud3J5s2Iv7L+oej/eyRZ88vj9I7Ph1ZGjKuDENpRD6uDJMundLDNEnUjlimRYyTH8u0WNfJsUxbGrWbWgxaRLi0JI1ckmbpTmLUf8/z5rUEuRa1U6+n+Nf8f/wL/hlQOQcLWpwAAAAASUVORK5CYII=" style="height:112px; width:58px;display:block;margin:30px auto;">
+	if ($nothingyet == 3) {
+		echo '
+	<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADoAAABwAgMAAAAyFouxAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QMFDDAtgYm8UQAAAAxQTFRFGBEPg3ue872G////A0Y42AAAAWNJREFUOMul1KGOXDEMheFDQkLOq4WYDMmrXbIk5L6aSciQv2C222rH2YKafZYly7JsATkxr0gVdirVzk4ANA+OyeIzXTnXc93Ac9amf2jmaLdr7/W4rySfB9M7T4NPzs4N9JO3PCcSB8/Uo0vTB9vT6fmDw7T76GwM4KvfdyMWT3x0PqW9OZo+aT47NRk6OjuS7YOz36kbp2tLd0pi5yxtlAZvdmkZI7UgK2cbkiLahFk5x6BFeLNdeKadEWHmrOy0pQhvXHhLgmcLb7zfnWBSEZ443z2hQxs62CAj5+bk1AX5AUZvTkgJ8q6N1C+/3CvjtPw6rCsrQ5PGT37VR3fhvSdttOH92ud3J5s2Iv7L+oej/eyRZ88vj9I7Ph1ZGjKuDENpRD6uDJMundLDNEnUjlimRYyTH8u0WNfJsUxbGrWbWgxaRLi0JI1ckmbpTmLUf8/z5rUEuRa1U6+n+Nf8f/wL/hlQOQcLWpwAAAAASUVORK5CYII=" style="height:112px; width:58px;display:block;margin:30px auto;">
 
-<div style=" display: inline-block; border: 2px black inset; border-radius: 4px;"><div style="text-align: left;border: 1px white solid; border-radius: 4px;"><div style="border: 1px black inset; padding: 3px 5px; letter-spacing: 2px;">No data yet . . .<br/>
-Why not write <a href="ecrire.php" style="color: inherit">something</a> ?
-</div></div></div>
-';
+	<div style=" display: inline-block; border: 2px black inset; border-radius: 4px;"><div style="text-align: left;border: 1px white solid; border-radius: 4px;"><div style="border: 1px black inset; padding: 3px 5px; letter-spacing: 2px;">No data yet . . .<br/>
+	Why not write <a href="ecrire.php" style="color: inherit">something</a> ?
+	</div></div></div>
+	';
 
+	}
 }
 
 footer('show_last_ip', $begin);

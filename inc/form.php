@@ -15,49 +15,21 @@
 
 function form_select($id, $choix, $defaut, $label) {
 	$form = '<label for="'.$id.'">'.$label.'</label>'."\n";
-	$form .= '<select id="'.$id.'" name="'.$id.'">'."\n";
+	$form .= "\t".'<select id="'.$id.'" name="'.$id.'">'."\n";
 	foreach ($choix as $valeur => $mot) {
-		$form .= '<option value="'.$valeur.'"';
-		$form .= ($defaut == $valeur) ? ' selected="selected"' : '';
-		$form .= '>'.$mot.'</option>'."\n";
+		$form .= "\t\t".'<option value="'.$valeur.'"'.(($defaut == $valeur) ? ' selected="selected" ' : '').'>'.$mot.'</option>'."\n";
 	}
-	$form .= '</select>'."\n";
+	$form .= "\t".'</select>'."\n";
+	$form .= "\n";
 	return $form;
 }
 
 function form_select_no_label($id, $choix, $defaut) {
 	$form = '<select id="'.$id.'" name="'.$id.'">'."\n";
 	foreach ($choix as $valeur => $mot) {
-		$form .= '<option value="'.$valeur.'"';
-		$form .= ($defaut == $valeur) ? ' selected="selected"' : '';
-		$form .= '>'.$mot.'</option>'."\n";
+		$form .= "\t".'<option value="'.$valeur.'"'.(($defaut == $valeur) ? ' selected="selected" ' : '').'>'.$mot.'</option>'."\n";
 	}
 	$form .= '</select>'."\n";
-	return $form;
-}
-
-function form_text($id, $defaut, $label) {
-	$form = '<p>'."\n";
-	$form .= '<label for="'.$id.'">'.$label.'</label>'."\n";
-	$form .= '<input type="text" id="'.$id.'" name="'.$id.'" size="30" value="'.$defaut.'" class="text" />'."\n";
-	$form .= '</p>'."\n";
-	return $form;
-}
-
-function form_password($id, $defaut, $label) {
-	$form = '<p>'."\n";
-	$form .= '<label for="'.$id.'">'.$label.'</label>'."\n";
-	$form .= '<input type="password" id="'.$id.'" name="'.$id.'" size="30" value="'.$defaut.'" class="text" autocomplete="off" />'."\n";
-	$form .= '</p>'."\n";
-	return $form;
-}
-
-function form_radio($name, $id, $value, $label, $checked='') {
-	$coche = ($checked === TRUE) ? 'checked="checked"' : '';
-	$form = '<p>'."\n";
-	$form .= '<label for="'.$id.'">'.$label.'</label>'."\n";
-	$form .= '<input type="radio" name="'.$name.'" value="'.$value.'" id="'.$id.'" '.$coche.' />'."\n";
-	$form .= '</p>'."\n";
 	return $form;
 }
 
@@ -74,12 +46,10 @@ function select_yes_no($name, $defaut, $label) {
 		'1' => $GLOBALS['lang']['oui'],
 		'0' => $GLOBALS['lang']['non']
 	);
-	$form = '<label for="'.$name.'">'.$label.'</label>'."\n";
+	$form = '<label for="'.$name.'" >'.$label.'</label>';
 	$form .= '<select id="'.$name.'" name="'.$name.'">'."\n" ;
 	foreach ($choix as $option => $label) {
-		$form .= '<option value="'.htmlentities($option).'"';
-		$form .= ($option == $defaut) ? ' selected="selected"' : '';
-		$form .= '>'.htmlentities($label).'</option>';
+		$form .= "\t".'<option value="'.htmlentities($option).'"'.(($option == $defaut) ? ' selected="selected" ' : '').'>'.htmlentities($label).'</option>';
 	}
 	$form .= '</select>'."\n";
 	return $form;
@@ -97,18 +67,12 @@ function form_format_date($defaut) {
 		'5' => $jour_l.', '.$mois_l.' '.date('d').', '.date('Y'), // mardi, juillet 05, 2011
 		'6' => date('Y').'-'.date('m').'-'.date('d'),             // 2011-07-05
 	);
-	$form = '<p>'."\n";
-	$form .= '<label for="format_date">'.$GLOBALS['lang']['pref_format_date'].'</label>'."\n";
-	$form .= '<select id="format_date" name="format_date">'."\n";
+	$form = "\t".'<label>'.$GLOBALS['lang']['pref_format_date'].'</label>'."\n";
+	$form .= "\t".'<select name="format_date">'."\n";
 	foreach ($formats as $option => $label) {
-		$form .= '<option value="'.htmlentities($option).'"';
-		if ($defaut == $option) {
-			$form .= ' selected="selected"';
-		}
-		$form .= '>'.$label.'</option>'."\n";
+		$form .= "\t\t".'<option value="'.htmlentities($option).'"'.(($defaut == $option) ? ' selected="selected" ' : '').'>'.$label.'</option>'."\n";
 	}
-	$form .= '</select> '."\n";
-	$form .= '</p>'."\n";
+	$form .= "\t".'</select>'."\n";
 	return $form;
 }
 
@@ -131,22 +95,20 @@ function form_fuseau_horaire($defaut) {
 			$liste_fuseau['UTC'][] = array('tz_name' => 'UTC', 'city' => 'UTC');
 		}
 	}
-	$form = '<p>';
-	$form .= '<label for="fuseau_horaire">'.$GLOBALS['lang']['pref_fuseau_horaire'].'</label>';
-	$form .= '<select id="fuseau_horaire" name="fuseau_horaire">' ;
+	$form = '<label>'.$GLOBALS['lang']['pref_fuseau_horaire'].'</label>'."\n";
+	$form .= '<select name="fuseau_horaire">'."\n";
 	foreach ($liste_fuseau as $continent => $zone) {
-		$form .= '<optgroup label="'.ucfirst(strtolower($continent)).'">'."\n";
+		$form .= "\t".'<optgroup label="'.ucfirst(strtolower($continent)).'">'."\n";
 		foreach ($zone as $fuseau) {
-			$form .= '<option value="'.htmlentities($fuseau['tz_name']).'"';
+			$form .= "\t\t".'<option value="'.htmlentities($fuseau['tz_name']).'"';
 			$form .= ($defaut == $fuseau['tz_name']) ? ' selected="selected"' : '';
 				$timeoffset = date_offset_get(date_create('now', timezone_open($fuseau['tz_name'])) );
 				$formated_toffset = '(UTC'.(($timeoffset < 0) ? '–' : '+').str2(floor((abs($timeoffset)/3600))) .':'.str2(floor((abs($timeoffset)%3600)/60)) .') ';
 			$form .= '>'.$formated_toffset.' '.htmlentities($fuseau['city']).'</option>'."\n";
 		}
-		$form .= '</optgroup>'."\n";
+		$form .= "\t".'</optgroup>'."\n";
 	}
-	$form .= '</select> '."\n";
-	$form .= '</p>'."\n";
+	$form .= '</select>'."\n";
 	return $form;
 	}
 }
@@ -155,50 +117,35 @@ function form_format_heure($defaut) {
 	$formats = array (
 		'0' => date('H\:i\:s'),		// 23:56:04
 		'1' => date('H\:i'),			// 23:56
-		'2' => date('h\:i\:s A'),		// 11:56:04 PM
-		'3' => date('h\:i A'),			// 11:56 PM
+		'2' => date('h\:i\:s A'),	// 11:56:04 PM
+		'3' => date('h\:i A'),		// 11:56 PM
 	);
-	$form = '<p>'."\n";
-	$form .= '<label for="format_heure">'.$GLOBALS['lang']['pref_format_heure'].'</label>'."\n";
-	$form .= '<select id="format_heure" name="format_heure">' ."\n";
+	$form = '<label>'.$GLOBALS['lang']['pref_format_heure'].'</label>'."\n";
+	$form .= '<select name="format_heure">'."\n";
 	foreach ($formats as $option => $label) {
-		$form .= '<option value="'.htmlentities($option).'"';
-		if ($defaut == $option) {
-			$form .= ' selected="selected"';
-		}
-		$form .= '>'.htmlentities($label).'</option>'."\n";
+		$form .= "\t".'<option value="'.htmlentities($option).'"'.(($defaut == $option) ? ' selected="selected" ' : '').'>'.htmlentities($label).'</option>'."\n";
 	}
-	$form .= '</select> '."\n";
-	$form .= '</p>'."\n";
+	$form .= "\t".'</select>'."\n";
 	return $form;
 }
 
 function form_langue($defaut) {
-	$form = '<p>';
-	$form .= '<label for="langue">'.$GLOBALS['lang']['pref_langue'].'</label>';
-	$form .= '<select id="langue" name="langue">' ;
+	$form = '<label>'.$GLOBALS['lang']['pref_langue'].'</label>'."\n";
+	$form .= '<select name="langue">'."\n";
 	foreach ($GLOBALS['langs'] as $option => $label) {
-		$form .= '<option value="'.htmlentities($option).'"';
-		if ($defaut == $option) {
-			$form .= ' selected="selected"';
-		}
-		$form .= '>'.$label.'</option>';
+		$form .= "\t".'<option value="'.htmlentities($option).'"'.(($defaut == $option) ? ' selected="selected" ' : '').'>'.$label.'</option>'."\n";
 	}
-	$form .= '</select> ';
-	$form .= '</p>';
+	$form .= '</select>'."\n";
 	return $form;
 }
 
 function form_langue_install($label) {
-	echo '<p>'."\n";
-	echo "\t".'<label for="langue">'.$label.'</label>'."\n";
-	echo "\t".'<select id="langue" name="langue">'."\n";
+	echo '<label for="langue">'.$label;
+	echo '<select id="langue" name="langue">'."\n";
 	foreach ($GLOBALS['langs'] as $option => $label) {
-		echo "\t\t".'<option value="'.htmlentities($option).'"';
-		echo '>'.$label.'</option>'."\n";
+		echo "\t".'<option value="'.htmlentities($option).'">'.$label.'</option>'."\n";
 	}
-	echo "\t".'</select>'."\n";
-	echo '</p>'."\n";
+	echo '</select></label>'."\n";
 }
 
 function liste_themes($chemin) {
@@ -219,7 +166,7 @@ function liste_themes($chemin) {
 // formulaires ARTICLES //////////
 
 function afficher_form_filtre($type, $filtre) {
-	echo '<form method="get" action="'.$_SERVER['PHP_SELF'].'">'."\n";
+	echo '<form method="get" action="'.$_SERVER['PHP_SELF'].'" onchange="this.submit();">'."\n";
 	echo '<div id="form-filtre">'."\n";
 		filtre($type, $filtre);
 	echo '</div>'."\n";
@@ -348,9 +295,7 @@ function filtre($type, $filtre) { // cette fonction est très gourmande en resso
 		}
 		echo '</optgroup>'."\n";
 	}
-
 	echo '</select> '."\n\n";
-	echo '<input type="submit" value="'.$GLOBALS['lang']['label_afficher'].'" />'."\n";
 }
 
 
@@ -366,8 +311,10 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= '<form method="get" class="bordered-formbloc" id="post-new-lien" action="'.'links.php'.'">'."\n"; // not using PHP_SELF because of if the form is loaded on index.php
 		$form .= '<fieldset>'."\n";
 		$form .= legend($GLOBALS['lang']['label_nouv_lien'], 'legend-link');
-		$form .= "\t".'<input type="text" name="url" id="lien" value="" size="70" placeholder="http://" class="text" tabindex="1" autofocus="" />'."\n";
-		$form .= "\t".'<input type="submit" id="valid-link" value="'.$GLOBALS['lang']['envoyer'].'" class="submit blue-square" tabindex="1" />'."\n";
+		$form .= "\t".'<input type="text" name="url" value="" size="70" placeholder="http://www.example.com/" class="text" autofocus />'."\n";
+		$form .= "\t".'<p class="centrer">'."\n";
+		$form .= "\t\t".'<input type="submit" value="'.$GLOBALS['lang']['envoyer'].'" class="submit blue-square" />'."\n";
+		$form .= "\t".'</p>';
 		$form .= '</fieldset>'."\n";
 		$form .= '</form>'."\n\n";
 
@@ -387,19 +334,15 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 			$url = $GLOBALS['racine'].'?mode=links&amp;id='.$new_id;
 			$form .= legend($GLOBALS['lang']['label_nouv_note'], 'legend-note');
 			$form .= "\t".'<div class="wrap-fields">'."\n";
-			$form .= '<p>'."\n";
 			$form .= hidden_input('url', $url);
 			$form .= hidden_input('type', 'note');
-			$form .= '</p>'."\n";
 
 		// URL non vide
 		} else {
 			$form .= legend($GLOBALS['lang']['label_nouv_lien'], 'legend-link');
 			$form .= "\t".'<div class="wrap-fields">'."\n";
-			$form .= '<p>'."\n";
-			$form .= "\t".'<input type="text" id="lien" name="url" value="'.htmlspecialchars($url).'" size="50" class="text readonly-like" />'."\n";
+			$form .= "\t".'<input type="text" name="url" value="'.htmlspecialchars($url).'" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_url']).'" size="50" class="text readonly-like" />'."\n";
 			$form .= hidden_input('type', 'link');
-			$form .= '</p>'."\n";
 
 			// Test du type de fichier
 			$rep_hdr = get_headers($url, 1);
@@ -452,36 +395,28 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		}
 
 		$link = array('title' => $title, 'url' => htmlspecialchars($url));
-		$form .= '<p>'."\n";
-		$form .= "\t".'<input type="text" id="title" name="title" placeholder="'.$GLOBALS['lang']['label_titre'].'" required="" value="'.$link['title'].'" size="50" class="text" tabindex="1" />'."\n";
-		$form .= '</p>'."\n";
-		$form .= '<p>'."\n";
+		$form .= "\t".'<input type="text" name="title" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_titre']).'" required="" value="'.$link['title'].'" size="50" class="text" autofocus />'."\n";
 		if ($type == 'image') { // si le lien est une image, on ajoute une miniature de l’image;
 			$form .= "\t".'<span id="description-box" class="space-left">'."\n";
-			$form .= '<img src="'.$fdata.'" alt="img" class="preview-img" />';
+			$form .= "\t\t".'<img src="'.$fdata.'" alt="img" class="preview-img" />';
 		} else {
 			$form .= "\t".'<span id="description-box">'."\n";
 		}
-		$form .= "\t\t".'<textarea class="description" name="description" id="description" cols="40" rows="7" placeholder="'.$GLOBALS['lang']['pref_desc'].'" tabindex="2"></textarea>'."\n";
+		$form .= "\t\t".'<textarea class="text" name="description" cols="40" rows="7" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_description']).'"></textarea>'."\n";
 		$form .= "\t".'</span>'."\n";
-		$form .= '</p>'."\n";
 
 		$form .= form_categories_links('links', '');
 
-		$form .= '<p>'."\n";
-		$form .= "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.$GLOBALS['lang']['label_categories'].'" tabindex="3"/>'."\n";
+		$form .= "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'"/>'."\n";
 		$form .= "\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
-		$form .= '</p>'."\n";
 
-		$form .= '<p class="sinline">'."\n";
-		$form .= "\t".'<input type="checkbox" id="statut" name="statut" tabindex="4" />' . '<label for="statut">'.$GLOBALS['lang']['label_lien_priv'].'</label>'."\n";
-		$form .= '</p>'."\n";
-		if ( ($type == 'image' or $type == 'file') and $GLOBALS['dl_link_to_files'] == 2) {
-			$form .= '<p class="sinline">'."\n";
-			$form .= "\t".'<input type="checkbox" id="add_to_files" name="add_to_files" tabindex="4" />' . '<label for="add_to_files">'.$GLOBALS['lang']['label_dl_fichier'].'</label>'."\n";
-			$form .= '</p>'."\n";
+		$form .= "\t".'<label>'.$GLOBALS['lang']['label_lien_priv'].'<input type="checkbox" name="statut" />'.'</label>';
+		if ( ($type == 'image' or $type == 'file') and $GLOBALS['dl_link_to_files'] == 2 ) {
+			$form .= "\t".'<label>'.$GLOBALS['lang']['label_dl_fichier'].'<input type="checkbox" name="add_to_files" /></label>'."\n";
 		}
-		$form .= '<input class="submit blue-square" type="submit" name="enregistrer" id="valid-link" value="'.$GLOBALS['lang']['envoyer'].'" tabindex="5" />'."\n";
+		$form .= "\t".'<p class="centrer">'."\n";
+		$form .= "\t\t".'<input class="submit blue-square" type="submit" name="enregistrer" id="valid-link" value="'.$GLOBALS['lang']['envoyer'].'" />'."\n";
+		$form .= "\t".'</p>'."\n";
 		$form .= hidden_input('_verif_envoi', '1');
 		$form .= hidden_input('bt_id', $new_id);
 		$form .= hidden_input('bt_author', $GLOBALS['auteur']);
@@ -491,36 +426,24 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= '</form>'."\n\n";
 
 	} elseif ($step == 'edit') { // Form pour l'édition d'un lien : les champs sont remplis avec le "wiki_content" et il y a les boutons suppr/activer en plus.
-		$rand = substr(md5(rand(1000,9999)),0,5);
 		$form = '<form method="post" onsubmit="return moveTag();" class="bordered-formbloc" id="post-lien" action="'.$_SERVER['PHP_SELF'].'?id='.$editlink['bt_id'].'">'."\n";
 		$form .= "\t".'<fieldset class="pref">'."\n";
+
 		$form .= legend($GLOBALS['lang']['label_edit_lien'], 'legend-link');
 		$form .= "\t".'<div class="wrap-fields">'."\n";
-
-		$form .= '<p>'."\n";
-		$form .= "\t".'<input type="text" id="url'.$rand.'" name="url" value="'.$editlink['bt_link'].'" size="70" class="text readonly-like" />'."\n";
-		$form .= '</p>'."\n";
-		$form .= '<p>'."\n";
-		$form .= "\t".'<input type="text" id="title'.$rand.'" name="title" placeholder="'.$GLOBALS['lang']['label_titre'].'" required="" value="'.$editlink['bt_title'].'" size="70" class="text" tabindex="1" />'."\n";
-		$form .= '</p>'."\n";
-		$form .= '<p>'."\n";
+		$form .= "\t".'<input type="text" name="url" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_url']).'" required="" value="'.$editlink['bt_link'].'" size="70" class="text readonly-like" /></label>'."\n";
+		$form .= "\t".'<input type="text" name="title" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_titre']).'" required="" value="'.$editlink['bt_title'].'" size="70" class="text" autofocus /></label>'."\n";
 		$form .= "\t".'<span id="description-box">'."\n";
-		$form .= "\t\t".'<textarea class="description text" id="description'.$rand.'" name="description" cols="70" rows="7" placeholder="'.$GLOBALS['lang']['pref_desc'].'" tabindex="2" >'.$editlink['bt_wiki_content'].'</textarea>'."\n";
+		$form .= "\t\t".'<textarea class="description text" name="description" cols="70" rows="7" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_description']).'" >'.$editlink['bt_wiki_content'].'</textarea>'."\n";
 		$form .= "\t".'</span>'."\n";
-		$form .= '</p>'."\n";
 		$form .= form_categories_links('links', $editlink['bt_tags']);
-
-		$form .= '<p>'."\n";
-		$form .= "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.$GLOBALS['lang']['label_categories'].'" tabindex="3"/>'."\n";
-		$form .= "\t".'<input type="hidden" id="categories" name="categories" value="" tabindex="3" />'."\n";
-		$form .= '</p>'."\n";
-
-		$checked = ($editlink['bt_statut'] == 0) ? 'checked ' : '';
-		$form .= '<p class="sinline">';
-		$form .= "\t".'<input type="checkbox" id="statut'.$rand.'" name="statut" '.$checked.'/>' . '<label for="statut'.$rand.'">'.$GLOBALS['lang']['label_lien_priv'].'</label>';
-		$form .= '</p>'."\n";
+		$form .= "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'"/>'."\n";
+		$form .= "\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
+		$form .= "\t".'<label>'.$GLOBALS['lang']['label_lien_priv'].'<input type="checkbox" name="statut" '.(($editlink['bt_statut'] == 0) ? 'checked ' : '').'/>'.'</label>'."\n";
+		$form .= "\t".'<p class="centrer">'."\n";
 		$form .= "\t".'<input class="submit blue-square" type="submit" name="editer" value="'.$GLOBALS['lang']['envoyer'].'" />'."\n";
 		$form .= "\t".'<input class="submit red-square" type="submit" name="supprimer" value="'.$GLOBALS['lang']['supprimer'].'" onclick="return window.confirm(\''.$GLOBALS['lang']['question_suppr_article'].'\')" />'."\n";
+		$form .= "\t".'</p>'."\n";
 		$form .= hidden_input('ID', $editlink['ID']);
 		$form .= hidden_input('bt_id', $editlink['bt_id']);
 		$form .= hidden_input('bt_author', $editlink['bt_author']);
@@ -538,13 +461,13 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 /// formulaires BILLET //////////
 function afficher_form_billet($article, $erreurs) {
 	function s_color($color) {
-		return '<button type="button" class="d" onclick="insertTag(\'[color='.$color.']\',\'[/color]\',\'contenu\');"><span style="background:'.$color.';"></span></button>';
+		return '<button type="button" onclick="insertTag(\'[color='.$color.']\',\'[/color]\',\'contenu\');"><span style="background:'.$color.';"></span></button>';
 	}
 	function s_size($size) {
-		return '<button type="button" class="e" onclick="insertTag(\'[size='.$size.']\',\'[/size]\',\'contenu\');"><span style="font-size:'.$size.'pt;">'.$size.'. Ipsum</span></button>';
+		return '<button type="button" onclick="insertTag(\'[size='.$size.']\',\'[/size]\',\'contenu\');"><span style="font-size:'.$size.'pt;">'.$size.'. Ipsum</span></button>';
 	}
 	function s_u($char) {
-		return '<button type="button" class="f" onclick="insertChar(\''.$char.'\', \'contenu\');"><span>'.$char.'</span></button>';
+		return '<button type="button" onclick="insertChar(\''.$char.'\', \'contenu\');"><span>'.$char.'</span></button>';
 	}
 
 	if ($article != '') {
@@ -587,31 +510,25 @@ function afficher_form_billet($article, $erreurs) {
 	} else {
 		echo '<form id="form-ecrire" method="post" onsubmit="return moveTag();" action="'.$_SERVER['PHP_SELF'].'" >'."\n";
 	}
-		echo '<input id="titre" name="titre" type="text" size="50" value="'.$titredefaut.'" required="" placeholder="'.$GLOBALS['lang']['label_titre'].'" title="'.$GLOBALS['lang']['label_titre'].'" tabindex="30" class="text" spellcheck="true" />'."\n" ;
+		echo '<input id="titre" name="titre" type="text" size="50" value="'.$titredefaut.'" required="" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_titre']).'" tabindex="30" class="text" spellcheck="true" />'."\n" ;
 	echo '<div id="chapo_note">'."\n";
 	echo '<div id="blocchapo">'."\n";
-		echo '<textarea id="chapo" name="chapo" rows="5" cols="60" placeholder="'.$GLOBALS['lang']['label_chapo'].'" title="'.$GLOBALS['lang']['label_chapo'].'" tabindex="35" class="text" >'.$chapodefaut.'</textarea>'."\n" ;
+		echo '<textarea id="chapo" name="chapo" rows="5" cols="60" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_chapo']).'" tabindex="35" class="text" >'.$chapodefaut.'</textarea>'."\n" ;
 	echo '</div>'."\n";
 	echo '<div id="blocnote">'."\n";
-		echo '<textarea id="notes" name="notes" rows="5" cols="30" placeholder="Notes" title="Notes" tabindex="40" class="text" >'.$notesdefaut.'</textarea>'."\n" ;
+		echo '<textarea id="notes" name="notes" rows="5" cols="30" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_notes']).'" tabindex="40" class="text" >'.$notesdefaut.'</textarea>'."\n" ;
 	echo '</div>'."\n";
 	echo '</div>'."\n";
-
-	echo form_categories_links('articles', $categoriesdefaut);
-
-	echo "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.$GLOBALS['lang']['label_categories'].'" tabindex="45"/>'."\n";
-	echo "\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
-
 
 	echo '<p class="formatbut">'."\n";
-	echo "\t".'<button id="button01" class="but" type="button" title="'.$GLOBALS['lang']['bouton-gras'].'" onclick="insertTag(\'[b]\',\'[/b]\',\'contenu\');"><span class="c"></span></button>'."\n";
-	echo "\t".'<button id="button02" class="but" type="button" title="'.$GLOBALS['lang']['bouton-ital'].'" onclick="insertTag(\'[i]\',\'[/i]\',\'contenu\');"><span class="c"></span></button>'."\n";
-	echo "\t".'<button id="button03" class="but" type="button" title="'.$GLOBALS['lang']['bouton-soul'].'" onclick="insertTag(\'[u]\',\'[/u]\',\'contenu\');"><span class="c"></span></button>'."\n";
-	echo "\t".'<button id="button04" class="but" type="button" title="'.$GLOBALS['lang']['bouton-barr'].'" onclick="insertTag(\'[s]\',\'[/s]\',\'contenu\');"><span class="c"></span></button>'."\n";
+	echo "\t".'<button id="button01" class="but" type="button" title="'.$GLOBALS['lang']['bouton-gras'].'" onclick="insertTag(\'[b]\',\'[/b]\',\'contenu\');"><span></span></button>'."\n";
+	echo "\t".'<button id="button02" class="but" type="button" title="'.$GLOBALS['lang']['bouton-ital'].'" onclick="insertTag(\'[i]\',\'[/i]\',\'contenu\');"><span></span></button>'."\n";
+	echo "\t".'<button id="button03" class="but" type="button" title="'.$GLOBALS['lang']['bouton-soul'].'" onclick="insertTag(\'[u]\',\'[/u]\',\'contenu\');"><span></span></button>'."\n";
+	echo "\t".'<button id="button04" class="but" type="button" title="'.$GLOBALS['lang']['bouton-barr'].'" onclick="insertTag(\'[s]\',\'[/s]\',\'contenu\');"><span></span></button>'."\n";
 
 	echo "\t".'<span class="spacer"></span>'."\n";
 	// bouton des couleurs
-	echo "\t".'<span id="button13" class="but but-dropdown" title=""><span class="c"></span><span class="list list-color">'
+	echo "\t".'<span id="button13" class="but but-dropdown" title=""><span></span><span class="list list-color">'
 			.s_color('black').s_color('gray').s_color('silver').s_color('white')
 			.s_color('blue').s_color('green').s_color('red').s_color('yellow')
 			.s_color('fuchsia').s_color('lime').s_color('aqua').s_color('maroon')
@@ -620,12 +537,12 @@ function afficher_form_billet($article, $erreurs) {
 			.'</span></span>'."\n";
 
 	// boutons de la taille de caractère
-	echo "\t".'<span id="button14" class="but but-dropdown" title=""><span class="c"></span><span class="list list-size">'
+	echo "\t".'<span id="button14" class="but but-dropdown" title=""><span></span><span class="list list-size">'
 			.s_size('9').s_size('12').s_size('16').s_size('20')
 			.'</span></span>'."\n";
 
 	// quelques caractères unicode
-	echo "\t".'<span id="button15" class="but but-dropdown" title=""><span class="c"></span><span class="list list-spechr">'
+	echo "\t".'<span id="button15" class="but but-dropdown" title=""><span></span><span class="list list-spechr">'
 			.s_u('æ').s_u('Æ').s_u('œ').s_u('Œ').s_u('é').s_u('É').s_u('è').s_u('È').s_u('ç').s_u('Ç').s_u('ù').s_u('Ù').s_u('à').s_u('À').s_u('ö').s_u('Ö')
 			.s_u('…').s_u('«').s_u('»').s_u('±').s_u('≠').s_u('×').s_u('÷').s_u('ß').s_u('®').s_u('©').s_u('↓').s_u('↑').s_u('←').s_u('→').s_u('ø').s_u('Ø')
 			.s_u('☠').s_u('☣').s_u('☢').s_u('☮').s_u('★').s_u('☯').s_u('☑').s_u('☒').s_u('☐').s_u('♫').s_u('♬').s_u('♪').s_u('♣').s_u('♠').s_u('♦').s_u('❤')
@@ -633,39 +550,34 @@ function afficher_form_billet($article, $erreurs) {
 			.'</span></span>'."\n";
 
 	echo "\t".'<span class="spacer"></span>'."\n";
-	echo "\t".'<button id="button05" class="but" type="button" title="'.$GLOBALS['lang']['bouton-left'].'" onclick="insertTag(\'[left]\',\'[/left]\',\'contenu\');"><span class="c"></span></button>'."\n";
-	echo "\t".'<button id="button06" class="but" type="button" title="'.$GLOBALS['lang']['bouton-center'].'" onclick="insertTag(\'[center]\',\'[/center]\',\'contenu\');"><span class="c"></span></button>'."\n";
-	echo "\t".'<button id="button07" class="but" type="button" title="'.$GLOBALS['lang']['bouton-right'].'" onclick="insertTag(\'[right]\',\'[/right]\',\'contenu\');"><span class="c"></span></button>'."\n";
-	echo "\t".'<button id="button08" class="but" type="button" title="'.$GLOBALS['lang']['bouton-justify'].'" onclick="insertTag(\'[justify]\',\'[/justify]\',\'contenu\');"><span class="c"></span></button>'."\n";
+	echo "\t".'<button id="button05" class="but" type="button" title="'.$GLOBALS['lang']['bouton-left'].'" onclick="insertTag(\'[left]\',\'[/left]\',\'contenu\');"><span></span></button>'."\n";
+	echo "\t".'<button id="button06" class="but" type="button" title="'.$GLOBALS['lang']['bouton-center'].'" onclick="insertTag(\'[center]\',\'[/center]\',\'contenu\');"><span></span></button>'."\n";
+	echo "\t".'<button id="button07" class="but" type="button" title="'.$GLOBALS['lang']['bouton-right'].'" onclick="insertTag(\'[right]\',\'[/right]\',\'contenu\');"><span></span></button>'."\n";
+	echo "\t".'<button id="button08" class="but" type="button" title="'.$GLOBALS['lang']['bouton-justify'].'" onclick="insertTag(\'[justify]\',\'[/justify]\',\'contenu\');"><span></span></button>'."\n";
 
 	echo "\t".'<span class="spacer"></span>'."\n";
-	echo "\t".'<button id="button09" class="but" type="button" title="'.$GLOBALS['lang']['bouton-lien'].'" onclick="insertTag(\'[\',\'|http://]\',\'contenu\');"><span class="c"></span></button>'."\n";
-	echo "\t".'<button id="button10" class="but" type="button" title="'.$GLOBALS['lang']['bouton-cita'].'" onclick="insertTag(\'[quote]\',\'[/quote]\',\'contenu\');"><span class="c"></span></button>'."\n";
-	echo "\t".'<button id="button11" class="but" type="button" title="'.$GLOBALS['lang']['bouton-imag'].'" onclick="insertTag(\'[img]\',\'|alt[/img]\',\'contenu\');"><span class="c"></span></button>'."\n";
-	echo "\t".'<button id="button12" class="but" type="button" title="'.$GLOBALS['lang']['bouton-code'].'" onclick="insertTag(\'[code]\',\'[/code]\',\'contenu\');"><span class="c"></span></button>'."\n";
+	echo "\t".'<button id="button09" class="but" type="button" title="'.$GLOBALS['lang']['bouton-lien'].'" onclick="insertTag(\'[\',\'|http://]\',\'contenu\');"><span></span></button>'."\n";
+	echo "\t".'<button id="button10" class="but" type="button" title="'.$GLOBALS['lang']['bouton-cita'].'" onclick="insertTag(\'[quote]\',\'[/quote]\',\'contenu\');"><span></span></button>'."\n";
+	echo "\t".'<button id="button11" class="but" type="button" title="'.$GLOBALS['lang']['bouton-imag'].'" onclick="insertTag(\'[img]\',\'|alt[/img]\',\'contenu\');"><span></span></button>'."\n";
+	echo "\t".'<button id="button12" class="but" type="button" title="'.$GLOBALS['lang']['bouton-code'].'" onclick="insertTag(\'[code]\',\'[/code]\',\'contenu\');"><span></span></button>'."\n";
 
 	echo "\t".'<span class="spacer"></span>'."\n";
-	echo "\t".'<button id="button16" class="but" type="button" title="'.$GLOBALS['lang']['bouton-lien'].'" onclick="insertChar(\'\n\n** element 1\n** element 2\n\',\'contenu\');"><span class="c"></span></button>'."\n";
-	echo "\t".'<button id="button17" class="but" type="button" title="'.$GLOBALS['lang']['bouton-cita'].'" onclick="insertChar(\'\n\n## element 1\n## element 2\n\',\'contenu\');"><span class="c"></span></button>'."\n";
+	echo "\t".'<button id="button16" class="but" type="button" title="'.$GLOBALS['lang']['bouton-liul'].'" onclick="insertChar(\'\n\n** element 1\n** element 2\n\',\'contenu\');"><span></span></button>'."\n";
+	echo "\t".'<button id="button17" class="but" type="button" title="'.$GLOBALS['lang']['bouton-liol'].'" onclick="insertChar(\'\n\n## element 1\n## element 2\n\',\'contenu\');"><span></span></button>'."\n";
 
 	echo '</p>';
 
-	echo '<textarea id="contenu" name="contenu" rows="20" cols="60" required="" placeholder="'.$GLOBALS['lang']['label_contenu'].'" title="'.$GLOBALS['lang']['label_contenu'].'" tabindex="55" class="text" >'.$contenudefaut.'</textarea>'."\n" ;
+	echo '<textarea id="contenu" name="contenu" rows="20" cols="60" required="" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_contenu']).'" tabindex="55" class="text" >'.$contenudefaut.'</textarea>'."\n" ;
+
+	echo form_categories_links('articles', $categoriesdefaut);
+	echo "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'" tabindex="65"/>'."\n";
+	echo "\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
 
 	if ($GLOBALS['automatic_keywords'] == '0') {
-		echo '<div><input id="mots_cles" name="mots_cles" type="text" size="50" value="'.$motsclesdefaut.'" placeholder="'.$GLOBALS['lang']['label_motscles'].'" title="'.$GLOBALS['lang']['label_motscles'].'" tabindex="60" class="text" /></div>'."\n";
+		echo '<div><input id="mots_cles" name="mots_cles" type="text" size="50" value="'.$motsclesdefaut.'" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_motscle']).'" tabindex="67" class="text" /></div>'."\n";
 	}
 
 	echo '<div id="date-and-opts">'."\n";
-	echo '<div id="opts">'."\n";
-		echo '<span id="formstatut">'."\n";
-			form_statut($statutdefaut);
-		echo '</span>'."\n";
-		echo '<span id="formallowcomment">'."\n";
-			form_allow_comment($allowcommentdefaut);
-		echo '</span>'."\n";
-	echo '</div>'."\n";
-
 	echo '<div id="date">'."\n";
 		echo '<span id="formdate">'."\n";
 			form_annee($defaut_annee);
@@ -676,21 +588,28 @@ function afficher_form_billet($article, $erreurs) {
 			form_heure($defaut_heure, $defaut_minutes, $defaut_secondes);
 		echo '</span>'."\n";
 		echo '</div>'."\n";
-	echo '</div>'."\n";
+		echo '<div id="opts">'."\n";
+			echo '<span id="formstatut">'."\n";
+				form_statut($statutdefaut);
+			echo '</span>'."\n";
+			echo '<span id="formallowcomment">'."\n";
+				form_allow_comment($allowcommentdefaut);
+			echo '</span>'."\n";
+		echo '</div>'."\n";
 
-	echo '<div>';
-		echo '<input class="submit blue-square" type="submit" name="enregistrer" value="'.$GLOBALS['lang']['envoyer'].'" tabindex="65" />'."\n";
-		if ($article) {
-			echo '<input class="submit red-square" type="submit" name="supprimer" value="'.$GLOBALS['lang']['supprimer'].'" onclick="return window.confirm(\''.$GLOBALS['lang']['question_suppr_article'].'\')" />'."\n";
-			echo hidden_input('article_id', $article['bt_id']);
-			echo hidden_input('article_date', $article['bt_date']);
-			echo hidden_input('ID', $article['ID']);
+    echo '</div>'."\n";
+	echo '<p class="centrer">'."\n";
+	echo '<input class="submit blue-square" type="submit" name="enregistrer" value="'.$GLOBALS['lang']['envoyer'].'" tabindex="70" />'."\n";
+	if ($article) {
+		echo '<input class="submit red-square" type="submit" name="supprimer" value="'.$GLOBALS['lang']['supprimer'].'" onclick="return window.confirm(\''.$GLOBALS['lang']['question_suppr_article'].'\')" />'."\n";
+		echo hidden_input('article_id', $article['bt_id']);
+		echo hidden_input('article_date', $article['bt_date']);
+		echo hidden_input('ID', $article['ID']);
 
-		}
-	echo '</div>';
+	}
+	echo '</p>'."\n";
 	echo hidden_input('_verif_envoi', '1');
 	echo hidden_input('token', new_token());
-	echo '<br style="clear:both;"/>'."\n";
 
 	echo '</form>'."\n";
 }
@@ -735,7 +654,6 @@ function form_mois($mois_affiche) {
 
 function form_annee($annee_affiche) {
 	$annees = array();
-
 	for ($annee = date('Y') -3, $annee_max = date('Y') +3; $annee <= $annee_max; $annee++) {
 		$annees[$annee] = $annee;
 	}
@@ -759,7 +677,7 @@ function form_statut($etat) {
 		'1' => $GLOBALS['lang']['label_publie'],
 		'0' => $GLOBALS['lang']['label_invisible']
 	);
-	echo form_select('statut', $choix, $etat, $GLOBALS['lang']['label_statut']);
+	echo form_select('statut', $choix, $etat, $GLOBALS['lang']['label_dp_etat']);
 }
 
 function form_allow_comment($etat) {
@@ -771,7 +689,7 @@ function form_allow_comment($etat) {
 	if ($etat == '') {
 		$etat= '1';
 	}
-	echo form_select('allowcomment', $choix, $etat, $GLOBALS['lang']['label_allowcomment']);
+	echo form_select('allowcomment', $choix, $etat, $GLOBALS['lang']['label_dp_commentaires']);
 }
 
 function form_categories_links($where, $tags_post) {
@@ -779,22 +697,17 @@ function form_categories_links($where, $tags_post) {
 	$html = '';
 	if (!empty($tags)) {
 		$html = '<datalist id="htmlListTags">'."\n";
-		foreach ($tags as $i => $tag) {
-			$html .= "\t".'<option value="'.addslashes($tag['tag']).'"/>'."\n";
-		}
+		foreach ($tags as $i => $tag) $html .= "\t".'<option value="'.addslashes($tag['tag']).'">'."\n";
 		$html .= '</datalist>'."\n";
 	}
-	$html .= '<div id="wrap">'."\n";
-	$html .= "\t".'<ul id="selected">'."\n";
+	$html .= '<ul id="selected">'."\n";
 	$list_tags = explode(',', $tags_post);
 	foreach ($list_tags as $mytag => $mtag) {
 		if (!empty($mtag)) {
-			$html .= "\t".'<li class="tag"><span>'.trim($mtag).'</span>';
-			$html .= "\t".'<a href="javascript:void(0)" onclick="removeTag(this.parentNode)">×</a></li>'."\n";
+			$html .= "\t".'<li><span>'.trim($mtag).'</span><a href="javascript:void(0)" onclick="removeTag(this.parentNode)">×</a></li>'."\n";
 		}
 	}
-	$html .= "\t".'</ul>'."\n";
-	$html .= '</div>'."\n";
+	$html .= '</ul>'."\n";
 	return $html;
 }
 

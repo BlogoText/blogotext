@@ -2,62 +2,57 @@
 -------------------------------------------------------------------------------- */
 
 #pageauth {
-	width: 35%;
+	width: 450px;
+	font-size: 1em;
 	display: block;
 	clear: both;
-	margin: 50px auto 25px;
-	padding-left: 150px;
-	background: url("logo.png") no-repeat left top;
+	margin: 20px auto 20px;
+	text-align: center;
+	background: url("logo.png") no-repeat center 20px;
+	padding-top: 130px;
 }
 
-#pageauth input {
-	padding: 2px;
-}
-
-#pageauth input.text {
-	padding: 2px 2px 2px 6px;
+#pageauth p label {
+	display: inline-block;
 	width: 200px;
 }
 
+#pageauth input.text {
+	width: 200px;
+}
+
+#auth {
+	width: 399px;
+	margin: auto;
+}
+
+#auth p label {
+	text-align: left;
+	width: 200px;
+}
+
+#auth label[for="stay_logged"], #auth label[for="stay_logged"]+input {
+	display: inline;
+}
+
 #pageauth h1 {
-	margin: 0;
-	font-size: 36px;
+	margin: 0 auto 50px;
+	font-size: 3em;
 }
 
 #pageauth h1#step { /* install */
-	font-size: 20px;
+	font-size: 2em;
 	margin: 0;
 	color: #999;
-}
-
-#pageauth .inpauth {
-	margin-top: 15px;
-	padding: 2px 5px;
-	color: #fff;
-	background: #45A6FF;
-	border: 1px solid #2E83D9;
-	font-size: 14px;
-	font-weight: bold;
 }
 
 #freecap {
 	border: 1px dashed silver;
 }
 
-#pageauth label {
-	display: block;
-}
-
 #pageauth label[for="sgdb"] {
 	display: inline;
 }
 
-#pageauth .sinline label {
-	display: inline;
+#pageauth .blue-square {
 }
-
-#pageauth .sinline input {
-	margin-left: 0;
-}
-
-

@@ -14,7 +14,7 @@ html, body {
 	clear: both;
 }
 
-#page { /* the main frame. #axe minus the "filtre" forms, and the "mode" link (« modifier article » and « nb commentaires sur l’article » */
+#page { /* the main frame. #axe minus the "filtre" forms, and the subnav */
 	padding: 20px 1% 20px;
 }
 
@@ -28,6 +28,13 @@ html, body {
 	font-size: 10px;
 }
 
+/* GENERAL STUFF 
+------------------------------------------------------------------- */
+a {
+	color: #45a6ff;
+}
+
+
 #footer a {
 	color: inherit;
 	text-decoration : none;
@@ -35,14 +42,6 @@ html, body {
 
 #footer a:hover {
 	text-decoration : underline;
-}
-
-
-
-/* GENERAL STUFF 
-------------------------------------------------------------------- */
-a {
-	color: #45a6ff;
 }
 
 .centrer {
@@ -76,18 +75,17 @@ h1 {
 	margin-top: 0;
 }
 
+label, input, textarea, select {
+	vertical-align: middle;
+}
+
 label {
 	margin-bottom: 5px;
-}
-
-label.inline {
-	display: inline;
-	margin-right: 10px;
-}
-
-input.inline {
+	color: #666;
+	display: block;
 	margin: 0;
-	display: inline;
+	padding: 3px;
+	text-align: right;
 }
 
 .info { /* ex : « il n'y a aucun commentaire » est un .info */
@@ -146,7 +144,6 @@ html:hover .reminder {
 	clear: both;
 	background: linear-gradient(top, #bdbdbd 2px, #eee 79px, #c4c4c4);
 	background: -o-linear-gradient(top, #bdbdbd 2px, #eee 79px, #c4c4c4);
-	background: -ms-linear-gradient(top, #bdbdbd 2px, #eee 79px, #c4c4c4);
 	background: -moz-linear-gradient(top, #bdbdbd 2px, #eee 79px, #c4c4c4);
 	background: -webkit-linear-gradient(top, #bdbdbd 2px, #eee 79px, #c4c4c4);
 	margin-bottom: 20px;
@@ -252,6 +249,7 @@ FORM RECHERCHE */
 	border: none;
 	box-shadow: none;
 	background-color: transparent;
+	margin: 0;
 }
 
 #q {
@@ -278,20 +276,14 @@ FORM RECHERCHE */
 	margin: 0 1% 10px;
 }
 
-#mode { /* the link above comment/ecrire #page */
-	display: block;
-	float: right;
-	margin: 0;
+#subnav p { /* the link above comment/ecrire #page */
 	color: gray;
-}
-
-#mode a, #voir-en-ligne a {
-	text-decoration: none;
-}
-
-#lien-comments, #voir-en-ligne a {
+	text-align: right;
 	font-weight: bold;
-	margin-right: 0px;
+}
+
+#subnav p a {
+	text-decoration: none;
 }
 
 #form-filtre {
@@ -326,82 +318,75 @@ FORM RECHERCHE */
 .legend-dateheure { background: no-repeat 5px -149px url("legend.png"); }
 .legend-apparence { background: no-repeat 5px -389px url("legend.png"); }
 
-.post-lien p.sinline, .form-commentaire p.sinline {
-	float: right;
+
+#preferences p,
+form[action="maintenance.php"] p {
+	display: table;
+	width: 100%;
 }
 
-p.sinline, p.sinline label, p.sinline input {
+form[action="maintenance.php"] p label,
+#preferences p label {
+	display: table-cell;
+	width: 40%;
 	vertical-align: middle;
 }
 
+#preferences p label+*:first-of-type,
+form[action="maintenance.php"] p label+*:first-of-type {
+	display: table-cell;
+	vertical-align: middle;
+	margin-left: 5px;
+}
 
 /* GENERAL FORM STUFF */
 
-input.text {
+.text, select, *[type='submit'] {
 	border: 1px solid #999;
-	margin: 0;
+	margin: 3px 0 2px;
 	box-shadow: 0px 1px 4px #ccc inset;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	padding: 5px;
+	border-radius: 5px;
+	background: none;
+}
+
+.text {
+	background: white;
 }
 
 textarea {
 	font-family: Verdana, Helvetica, Arial, sans-serif;
 	font-size: 12px;
-	display: block;
-	box-shadow: 0px 1px 4px silver inset;
-	border: 1px solid #9999a3;
 }
 
-input.text:focus, textarea:focus {
-	box-shadow: 0 0 6px rgba(0, 0, 0, 0.15), 0px 1px 4px #ccc inset; 
-} 
-
-.submit {
-	margin-top: 20px;
-	display: block;
-	float: right;
-}
-
-/* .text: type = { text, password, url, email } */
-#form-image input.text, #form-image textarea,
-#pageauth input.text,
-#preferences input.text, #preferences textarea,
-#post-lien input.text, #post-lien textarea, #post-new-lien #lien {
-	border-radius: 5px;
+select {
+	background: #f0f0f0;
+	box-shadow: 0px 4px 6px white inset, 0px 0px 5px #eee;
 }
 
 /*input buttons */
-.red-square, .blue-square {
-	padding: 3px 10px;
-	color: #fff;
-	font-size: 14px;
-	vertical-align: middle;
-	border-radius: 5px;
-	margin-left: 10px;
+*.red-square, *.blue-square {
+	color: white;
+	box-shadow: none;
+	border: 1px solid black;
 }
 
-.blue-square {
+*.blue-square {
+	min-width: 140px;
 	font-weight: bold;
-	background: #45a6ff;
-	border: 1px solid #6df;
-
-	background: -webkit-linear-gradient(#4af, #8df);
-	background:    -moz-linear-gradient(#4af, #8df);
-	background:     -ms-linear-gradient(#4af, #8df);
-	background:      -o-linear-gradient(#4af, #8df);
-	background:         linear-gradient(#4af, #8df);
-	box-shadow: 1px 1px 2px rgba(0, 0, 0, .5);
+	border-color: #389;
+	background: #7ef;
+	background: linear-gradient(#def, #adf 6%, #5bf 50%);
 }
 
-.red-square {
-	background: #cc0000;
-	background: -webkit-linear-gradient(#f11, #f8a);
-	background:    -moz-linear-gradient(#f11, #f8a);
-	background:     -ms-linear-gradient(#f11, #f8a);
-	background:      -o-linear-gradient(#f11, #f8a);
-	background:         linear-gradient(#f11, #f8a);
-	box-shadow: 1px 1px 2px rgba(0, 0, 0, .5);
-
-	border: 1px solid #f62;
+*.red-square {
+	min-width: 100px;
+	margin-left: 50px;
+	border-color: #943;
+	background: #fa9;
+	background: linear-gradient(#faa, #faa 6%, #e44 50%);
 }
 
 /* these are the bordered fieldsets */
@@ -411,29 +396,7 @@ input.text:focus, textarea:focus {
 	border-width: 0 0 1px 1px;
 	padding: 10px;
 	margin: 0 0 10px;
-	border-radius: 5px;
-}
-
-.bordered-formbloc fieldset p {
-	clear: both;
-	margin: 10px 0;
-}
-
-.bordered-formbloc fieldset label {
-	color: #666;
-	float: left;
-	width: 40%;
-	margin: 0 15px 0 0;
-	padding: 3px;
-	text-align: right;
-	vertical-align: middle;
-	line-height: 1em;
-}
-
-.bordered-formbloc fieldset input, .bordered-formbloc fieldset textarea {
-	display: inline;
-	padding: 2px 5px;
-	vertical-align: middle;
+	border-bottom-left-radius: 5px;
 }
 
 legend {
@@ -442,7 +405,6 @@ legend {
 	font-weight: bold;
 	font-size: 14px;
 }
-
 
 q, blockquote {
 	font-style: italic;

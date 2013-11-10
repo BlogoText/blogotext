@@ -481,7 +481,7 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 		echo '<fieldset class="pref valid-center">';
 		echo legend($GLOBALS['lang']['maintenance_import'], 'legend-backup');
 		echo "\t".'<p>'.form_select_no_label('imp-format', $importformats, 'jsonbak');
-		echo '<input type="file" name="file" id="file" /></p>'."\n";
+		echo '<input type="file" name="file" id="file" class="text" /></p>'."\n";
 		echo '<p><input class="submit blue-square" type="submit" name="valider" value="'.$GLOBALS['lang']['valider'].'" /></p>'."\n";
 		echo '</fieldset>'."\n";
 		echo hidden_input('token', $token);
@@ -507,7 +507,7 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 	// vérifie Token
 	if ($erreurs_form = valider_form_maintenance()) {
 		echo '<div class="bordered-formbloc">'."\n";
-		echo '<fieldset class="pref valid-center">';
+		echo '<fieldset class="pref valid-center">'."\n";
 		echo legend($GLOBALS['lang']['bak_restor_done'], 'legend-backup');
 		echo erreurs($erreurs_form);
 		echo '<p><button class="submit blue-square" type="button" onclick="window.location = \'maintenance.php\' ">'.$GLOBALS['lang']['valider'].'</button></p>'."\n";

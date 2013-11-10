@@ -64,49 +64,48 @@ input[type="text"], input[type="url"], input[type="search"], input[type="email"]
 /* LAYOUT
 -------------------------------------------------------- */
 
-#top {
+body > header {
 	padding: 10px 30px 40px;
 	color: #7fbfff;
 	background-color: #fff;
-	background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%, #7fbfff 0.5%, #fff 2%, #fff 70%, #ebf6ff 100%);
-	background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, #7fbfff 0.5%, #fff 2%, #fff 70%, #ebf6ff 100%);
-	background: -ms-linear-gradient(left, rgba(255,255,255,0) 0%, #7fbfff 0.5%, #fff 2%, #fff 70%, #ebf6ff 100%);
-	background: -o-linear-gradient(left, rgba(255,255,255,0) 0%, #7fbfff 0.5%, #fff 2%, #fff 70%, #ebf6ff 100%);
-	background: linear-gradient(left, rgba(255,255,255,0) 0%, #7fbfff 0.5%, #fff 2%, #fff 70%, #ebf6ff 100%);
+	background: -webkit-linear-gradient(left, #ebf6ff, #fff 30%, #fff 80%, #ebf6ff 100%);
+	background: -moz-linear-gradient(left, #ebf6ff, #fff 30%, #fff 80%, #ebf6ff 100%);
+	background: -ms-linear-gradient(left, #ebf6ff, #fff 30%, #fff 80%, #ebf6ff 100%);
+	background: -o-linear-gradient(left, #ebf6ff, #fff 30%, #fff 80%, #ebf6ff 100%);
+	background: linear-gradient(left, #ebf6ff, #fff 30%, #fff 80%, #ebf6ff 100%);
 	box-shadow: 1px 1px 3px rgba(127, 127, 127, 1);
 	margin-bottom: 10px;
 	border-radius: 10px;
 	font-family: "Trebuchet MS", Verdana, Arial, Sans-serif;
 }
 
-#top h1 {
+body > header h1 {
 	margin-left: 20%;
 	text-shadow: 1px 1px 2px rgba(100, 100, 100, .4);
 	letter-spacing: -1px;
 	font-size: 3em;
 }
 
-#top h2 {
+body > header h2 {
 	font-style: italic;
 	margin-top: -1em;
 	text-align: right;
 	text-shadow: 1px 1px 2px rgba(255, 255, 255, 1);
 }
 
-#top h1 a {
+body > header h1 a {
 	text-decoration: none;
 	color: inherit;
 }
 
-#wrapper {
-	background-color: #fff;
+main {
 	border-radius: 10px;
 	background-color: #fff;
-	background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%, #7fbfff 0.5%, #fff 2%, #fff 70%, #ebf6ff 100%);
-	background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, #7fbfff 0.5%, #fff 2%, #fff 70%, #ebf6ff 100%);
-	background: -ms-linear-gradient(left, rgba(255,255,255,0) 0%, #7fbfff 0.5%, #fff 2%, #fff 70%, #ebf6ff 100%);
-	background: -o-linear-gradient(left, rgba(255,255,255,0) 0%, #7fbfff 0.5%, #fff 2%, #fff 70%, #ebf6ff 100%);
-	background: linear-gradient(left, rgba(255,255,255,0) 0%, #7fbfff 0.5%, #fff 2%, #fff 70%, #ebf6ff 100%);
+	background: -webkit-linear-gradient(left, #ebf6ff, #fff 30%, #fff 80%, #ebf6ff 100%);
+	background: -moz-linear-gradient(left, #ebf6ff, #fff 30%, #fff 80%, #ebf6ff 100%);
+	background: -ms-linear-gradient(left, #ebf6ff, #fff 30%, #fff 80%, #ebf6ff 100%);
+	background: -o-linear-gradient(left, #ebf6ff, #fff 30%, #fff 80%, #ebf6ff 100%);
+	background: linear-gradient(left, #ebf6ff, #fff 30%, #fff 80%, #ebf6ff 100%);
 	box-shadow: 1px 1px 3px rgba(127,127,127,1);
 }
 
@@ -128,12 +127,6 @@ input[type="text"], input[type="url"], input[type="search"], input[type="email"]
 -------------------------------------------------------- */
 
 header.titre {
-	background : #f1f3f8;
-	background: -webkit-linear-gradient(left, #fff 0%, #f1f3f8 2%, #f1f3f8 75%, rgba(255,255,255,0) 100%);
-	background: -moz-linear-gradient(left, #fff 0%, #f1f3f8 2%, #f1f3f8 75%, rgba(255,255,255,0) 100%);
-	background: -ms-linear-gradient(left, #fff 0%, #f1f3f8 2%, #f1f3f8 75%, rgba(255,255,255,0) 100%);
-	background: -o-linear-gradient(left, #fff 0%, #f1f3f8 2%, #f1f3f8 75%, rgba(255,255,255,0) 100%);
-	background: linear-gradient(left, #fff 0%, #f1f3f8 2%, #f1f3f8 75%, rgba(255,255,255,0) 100%);
 	text-shadow: 1px 1px 2px #fff;
 	padding : 5px 20px 5px 15px;
 	margin-bottom : 20px;
@@ -171,12 +164,11 @@ h3 img {
 -------------------------------------------------------- */
 
 .news, .lien, .comment {
-	margin: 0 0 30px 10px;
-	padding: 0 10px 10px 10px;
-	border: 0px solid silver;
-	border-width: 0 0 1px 0;
-	border-radius: 0 10px 10px 0;
-	box-shadow: -4px 0px 2px #fff, -2px 3px 2px #cde6ff;
+	margin: 0 0 30px 5px;
+	padding: 0 10px 10px 20px;
+	box-shadow: 0 0 5px 5px white;
+	background: white;
+	border-radius: 3px;
 }
 
 /* article de blog */
@@ -207,8 +199,8 @@ h3 img {
 -------------------------------------------------------- */
 
 .comment {
-	margin-bottom: 20px;
-	padding-top: 25px;
+	margin-bottom: 10px;
+	padding-top: 5px;
 }
 
 .comment h3 {
@@ -239,6 +231,10 @@ h3 img {
 
 #postcom label {
 	margin-top: 5px;
+}
+
+#postcom .infos label {
+	display: block;
 }
 
 .infos input, textarea.commentaire {
@@ -457,21 +453,21 @@ p.formatbut {
 /* FOOTER
 -------------------------------------------------------- */
 
-footer {
+body > footer {
 	margin-top: 10px;
 	padding: 10px;
 	text-align: center;
 	border-radius: 10px;
 	background-color: #fff;
-	background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%, #7fbfff 0.5%, #fff 2%, #fff 70%, #ebf6ff 100%);
-	background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, #7fbfff 0.5%, #fff 2%, #fff 70%, #ebf6ff 100%);
-	background: -ms-linear-gradient(left, rgba(255,255,255,0) 0%, #7fbfff 0.5%, #fff 2%, #fff 70%, #ebf6ff 100%);
-	background: -o-linear-gradient(left, rgba(255,255,255,0) 0%, #7fbfff 0.5%, #fff 2%, #fff 70%, #ebf6ff 100%);
-	background: linear-gradient(left, rgba(255,255,255,0) 0%, #7fbfff 0.5%, #fff 2%, #fff 70%, #ebf6ff 100%);
+	background: -webkit-linear-gradient(left, #ebf6ff, #fff 30%, #fff 80%, #ebf6ff 100%);
+	background: -moz-linear-gradient(left, #ebf6ff, #fff 30%, #fff 80%, #ebf6ff 100%);
+	background: -ms-linear-gradient(left, #ebf6ff, #fff 30%, #fff 80%, #ebf6ff 100%);
+	background: -o-linear-gradient(left, #ebf6ff, #fff 30%, #fff 80%, #ebf6ff 100%);
+	background: linear-gradient(left, #ebf6ff, #fff 30%, #fff 80%, #ebf6ff 100%);
 	box-shadow: 1px 1px 3px rgba(127, 127, 127, 1);
 }
 
-footer a, footer a:visited { color: inherit; }
+body > footer a, body > footer a:visited { color: inherit; }
 
 
 /* OTHERS
@@ -537,18 +533,18 @@ blockquote, q {
 		font-size: 1.1em;
 	}
 
-	#top {
+	body > header {
 		padding-left: 0;
 		padding-right: 0;
 	}
 
-	#top h1 {
+	body > header h1 {
 		padding-left: 0;
 		padding-right: 0;
 		margin-left: 0;
 		text-align: center;
 	}
-	#top h2 {
+	body > header h2 {
 		text-align: center;
 	}
 
@@ -565,28 +561,9 @@ blockquote, q {
 		font-size: 0.8em;
 	}
 
-	nav {
+	#sidebar nav {
 		margin: 10px auto;
 		width: 250px;
-	}
-
-	#tags, #tags, #last_comments {
-		display: none;
-	}
-
-	#navigate {
-		width: 350px;
-	}
-
-	#search {
-		width: 300px;
-	}
-	#input-rechercher, #search {
-		height: 40px;
-		font-size: 120%;
-	}
-	#input-rechercher {
-		width: 120px;
 	}
 
 	#calendrier td {

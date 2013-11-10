@@ -11,19 +11,13 @@
 #
 # *** LICENSE ***
 
-$GLOBALS['langs'] = array("fr" => 'Français', "en" => 'English', "nl" => 'Nederlands', "de" => 'Deutsch');
+$GLOBALS['langs'] = array("fr" => 'Français', "en" => 'English');
 
 if (empty($GLOBALS['lang'])) $GLOBALS['lang'] = '';
 
 switch ($GLOBALS['lang']) {
 	case 'fr':
 		include_once('lang/fr_FR.php');
-		break;
-	case 'de':
-		include_once('lang/de_DE.php');
-		break;
-	case 'nl':
-		include_once('lang/nl_NL.php');
 		break;
 	case 'en':
 		include_once('lang/en_EN.php');

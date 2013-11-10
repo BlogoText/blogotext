@@ -93,6 +93,7 @@ function insertChar(ch, tag) {
 	return $sc;
 }
 
+
 /*
  * unfold blocs, sort of "spoiler" type button
 *
@@ -136,43 +137,18 @@ function SelectAllText(id) {
 function js_switch_upload_form($a) {
 	$sc = '
 function switchUploadForm(where) {
-	var formLink = document.getElementById(\'alternate-form-url\');
-	var formFile = document.getElementById(\'alternate-form-file\');
-	var formDrag = document.getElementById(\'alternate-form-dragndrop\');
-	var imSubmit = document.getElementById(\'img-submit\');
-	var inputUrl = document.getElementById(\'url\');
-	var inputFcr = document.getElementById(\'fichier\');
-	var inputNom = document.getElementById(\'nom_entree\');
+	var link = document.getElementById(\'click-change-form\');
+	var input = document.getElementById(\'fichier\');
 
-
-	if (where == \'to_file\') {
-		formLink.style.display = "none";
-		formDrag.style.display = "none";
-		formFile.style.display = "block";
-		imSubmit.style.display = "block";
-		inputFcr.disabled = "";
-		inputUrl.disabled = "0";
-		inputNom.disabled = "";
+	if (input.type == "file") {
+		link.innerHTML = link.dataset.langFile;
+		input.placeholder = "http://example.com/image.png";
+		input.type = "url";
+		input.focus();
 	}
-
-	if (where == \'to_link\') {
-		formFile.style.display = "none";
-		formDrag.style.display = "none";
-		formLink.style.display = "block"; 
-		imSubmit.style.display = "block";
-		inputFcr.disabled = "0";
-		inputUrl.disabled = "";
-		inputNom.disabled = "";
-	}
-
-	if (where == \'to_drag\') {
-		formLink.style.display = "none";
-		formFile.style.display = "none";
-		formDrag.style.display = "block";
-		imSubmit.style.display = "none";
-		inputFcr.disabled = "0";
-		inputUrl.disabled = "0";
-		inputNom.disabled = "0";
+	else {
+		link.innerHTML = link.dataset.langUrl;
+		input.type = "file";
 	}
 	return false;
 }';
@@ -270,7 +246,8 @@ function js_button_request_delete($a) {
 // create and send form
 function request_delete_form(id) {
 	// prepare XMLHttpRequest
-		//document.getElementById(id).src += \'style/loading.gif\';
+	document.getElementById(id).src = \'style/loading.gif\';
+	document.getElementById(id).style.borderColor = "transparent";
 	var xhr = new XMLHttpRequest();
 	xhr.open(\'POST\', \'_rmfichier.ajax.php\');
 	xhr.onload = function() {
@@ -288,13 +265,11 @@ function request_delete_form(id) {
 	xhr.send(formData);
 }
 ';
-
 	if ($a == 1) {
 		$sc = "\n".'<script type="text/javascript">'."\n".$sc."\n".'</script>'."\n";
 	}
 	return $sc;
 }
-
 
 /*
  * JS to handle drag-n-drop : ondraging files on a <div> opens web request with POST individualy for each file (in case many are draged-n-droped)
@@ -307,7 +282,6 @@ function js_drag_n_drop_handle($a) {
 // variables
 var result = document.getElementById(\'result\'); // text zone where informations about uploaded files are displayed
 var list = []; // file list
-var nbDone = 0; // initialisation of nb files already uploaded during the process.
 
 // pour le input des fichiers publics ou privés.
 function statut_image() {
@@ -318,16 +292,28 @@ function folder_image() {
 	return document.getElementById(\'dossier\').value;
 }
 
+
+var nbDraged = false;
+var nbDone = 0;
+
 // process bunch of files
 function handleDrop(event) {
+
+	document.getElementById(\'count\').style.paddingTop = \'20px\';
+	document.getElementById(\'count\').style.background = \'url(style/loading.gif) center top no-repeat\';
+
+	if (nbDraged !== false) { nbDraged = false; nbDone = 0; }
+
 	filelist = event.dataTransfer.files;
 	if (!filelist || !filelist.length || list.length) return;
 	result.innerHTML += \'\';
 	for (var i = 0; i < filelist.length && i < 500; i++) { // limit is for not having an infinite loop
 		list.push(filelist[i]);
 	}
-	uploadNext();
 
+	nbDraged = list.length;
+
+	uploadNext();
 	return false;
 }
 
@@ -351,25 +337,25 @@ function uploadFile(file) {
 	document.getElementById(\'token\').parentNode.removeChild(document.getElementById(\'token\'));
 	formData.append(\'statut\', statut_image());
 	formData.append(\'description\', \'\');
+	formData.append(\'nom_entree\', document.getElementById(\'nom_entree\').value);
 	formData.append(\'dossier\', folder_image());
-
 	xhr.send(formData);
 }
 
 // upload next file
 function uploadNext() {
+	nbDone++;
 	if (list.length) {
-		var nb = list.length - 1;
-		nbDone +=1;
-
 		var nextFile = list.shift();
 		if (nextFile.size >= '.$max_file_size.') {
 			result.innerHTML += \'<div class="f">File too big</div>\';
 			uploadNext();
 		} else {
 			uploadFile(nextFile);
-			document.getElementById(\'count\').innerHTML = \'Files done: \'+nbDone+\' ; \'+\'Files left: \'+nb;
+			document.getElementById(\'count\').innerHTML = \''.$GLOBALS['lang']['label_dp_fichier'].'\'+nbDone+\'/\'+nbDraged;
 		}
+	} else {
+		document.getElementById(\'count\').style.background = \'\';
 	}
 }
 
@@ -423,9 +409,9 @@ function slideshow(action, image) {
 	newImg.onload = function() {
 		ElemImg.src = newImg.src;
 		var im = curr_img[counter];
-		ElemUlLi[0].innerHTML = \''.$GLOBALS['lang']['label_date'].' : \'+im.id.substring(0,4)+\'/\'+im.id.substring(4,6)+\'/\'+im.id.substring(6,8);
-		ElemUlLi[1].innerHTML = \''.$GLOBALS['lang']['label_dim_img'].' : \'+img_width+\'×\'+img_height;
-		ElemUlLi[2].innerHTML = \''.$GLOBALS['lang']['pref_desc'].' : \'+(im.desc||im.filename[1]);
+		ElemUlLi[0].innerHTML = \''.$GLOBALS['lang']['label_dp_date'].'\'+im.id.substring(0,4)+\'/\'+im.id.substring(4,6)+\'/\'+im.id.substring(6,8);
+		ElemUlLi[1].innerHTML = \''.$GLOBALS['lang']['label_dp_dimensions'].'\'+img_width+\'×\'+img_height;
+		ElemUlLi[2].innerHTML = \''.$GLOBALS['lang']['label_dp_description'].'\'+(im.desc||im.filename[1]);
 		document.getElementById(\'slider-img-a\').href = \'?file_id=\'+im.id;
 		ElemImg.style.marginTop = (Math.round((box_height - Math.min(img_height/ratio_w, box_height))/2))+\'px\';
 	};
@@ -484,8 +470,8 @@ function folder_sort(folder, button) {
 	// reattributes the new list (it’s a global)
 	curr_img = newlist;
 	curr_max = curr_img.length-1;
-	// recreates the images wall with the new list
 
+	// recreates the images wall with the new list
 	image_vignettes();
 
 	// styles on buttons
@@ -562,7 +548,16 @@ $sc = '
 function ask_suppr(button) {
 	var reponse = window.confirm(\''.$GLOBALS['lang']['question_suppr_comment'].'\');
 	if (reponse == true) {
-		button.type = \'submit\';
+		var form = button.parentNode.parentNode.getElementsByTagName(\'form\')[0];
+		var submitButtons = form.getElementsByTagName(\'input\');
+		for (var i = 0, nb = submitButtons.length ; i<nb ; i++) {
+			if (submitButtons[i].name === \'enregistrer\') {
+				submitButtons[i].name = \'supprimer_comm\';
+				submitButtons[i].type = \'text\';
+				break;
+			}
+		}
+		form.submit();
 	}
 	return reponse;
 }
@@ -581,11 +576,9 @@ function switch_form(activeForm, activeButton) {
 	var buttons = document.getElementById(\'list-switch-buttons\').getElementsByTagName(\'button\');
 	for (var i=0, l=buttons.length; i<l; i++) buttons[i].className = \'\';
 	activeButton.className = \'current\';
-
 	var form_export = document.getElementById(\'form_export\');
 	var form_import = document.getElementById(\'form_import\');
 	var form_optimi = document.getElementById(\'form_optimi\');
-
 	form_export.style.display = form_import.style.display = form_optimi.style.display = \'none\';
 	eval(activeForm).style.display = \'block\';
 }

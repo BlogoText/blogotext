@@ -454,7 +454,7 @@ function traiter_form_commentaire($commentaire, $admin) {
 		$result = bdd_commentaire($commentaire, 'supprimer-existant');
 		$redir = $_SERVER['PHP_SELF'].'?'.$query_string.'&msg=confirm_comment_suppr';
 	}
-	// do nothing & die :-o
+	// do nothing & die
 	else {
 		redirection($_SERVER['PHP_SELF'].'?'.$query_string.'&msg=nothing_happend_oO');
 	}

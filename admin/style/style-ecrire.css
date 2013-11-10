@@ -3,10 +3,9 @@
 
 /* apercu */
 #apercu {
-	padding: 1%;
+	padding: 5px;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
-	width: 99%;
 	margin: 0 0 20px 0;
 	border: 1px dashed #ccc;
 }
@@ -26,22 +25,14 @@
 }
 
 /* formulaire à remplir */
-#form-ecrire {
-	margin-right: 10px;
-}
-
 #form-ecrire textarea {
 	resize: vertical;
 }
 
-#titre, #form-ecrire #type_tags, #contenu, #mots_cles {
+#titre, #type_tags, #contenu, #mots_cles, #chapo, #notes {
 	width: 100%;
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
 	clear: both;
-	padding: 5px;
 	margin: 0 0 15px;
-	border-radius: 5px;
 }
 
 #form-ecrire #titre {
@@ -62,23 +53,16 @@
 	border-spacing: 0;
 	border-collapse: collapse;
 	width: 100%;
-	margin-bottom: 5px;
 }
 
-/* browsers scale the width of these box with the ratio of the value of html "cols" attribut they have (since they are table-cells). Damn, good to know that ! */
+/* browsers scale the width of these box with the ratio of the value of html "cols" attribut they have (since they are table-cells). */
 #blocchapo, #blocnotes {
 	display: table-cell;
 }
 
 #chapo, #notes {
-	width: 100%;
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-
-	padding: 5px;
 	height: 100px;
 	background: #f1f1f5;
-	border-radius: 5px;
 }
 
 #notes {
@@ -88,7 +72,7 @@
 
 /* tags */
 #form-ecrire #wrap {
-	padding: 0px;
+	padding: 0;
 	margin: 0;
 }
 
@@ -102,11 +86,9 @@ p.formatbut {
 	margin: 0; padding: 0 5px;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
-
 	background: #cde6ff;
 	background: -webkit-linear-gradient(top, white, #e6e6e6);
 	background:    -moz-linear-gradient(top, white, #e6e6e6);
-	background:     -ms-linear-gradient(top, white, #e6e6e6);
 	background:      -o-linear-gradient(top, white, #e6e6e6);
 	background:         linear-gradient(top, white, #e6e6e6);
 }
@@ -129,7 +111,6 @@ p.formatbut {
 	     -o-transition: border-color .3s;
 	        transition: border-color .3s;
 	border-color: silver;
-	
 }
 
 .formatbut .but:active {
@@ -137,12 +118,11 @@ p.formatbut {
 	background: #cde6ff;
 	background: -webkit-linear-gradient(bottom, white, #d6d6d6);
 	background:    -moz-linear-gradient(bottom, white, #d6d6d6);
-	background:     -ms-linear-gradient(bottom, white, #d6d6d6);
 	background:      -o-linear-gradient(bottom, white, #d6d6d6);
 	background:         linear-gradient(bottom, white, #d6d6d6);
 }
 
-.formatbut .but span.c {
+.formatbut .but > span:nth-of-type(1) {
 	display: inline-block;
 	width: 16px;
 	height: 24px;
@@ -157,25 +137,23 @@ p.formatbut {
 }
 
 /* buttons : works in comment form and in article form */
-#button01 span.c { background-position: -4px   -1px; } /* bold */
-#button02 span.c { background-position: -4px  -21px; } /* ital */
-#button03 span.c { background-position: -4px  -42px; } /* underline */
-#button04 span.c { background-position: -4px  -82px; } /* strike */
-#button05 span.c { background-position: -4px -319px; } /* left align */
-#button06 span.c { background-position: -4px -293px; } /* center align */
-#button07 span.c { background-position: -4px -241px; } /* right align */
-#button08 span.c { background-position: -4px -267px; } /* justify */
-#button09 span.c { background-position: -4px  -62px; } /* link */
-#button10 span.c { background-position: -4px -102px; } /* quote */
-#button11 span.c { background-position: -4px -213px; } /* image */
-#button12 span.c { background-position: -4px -122px; } /* code */
-
-#button13 span.c { background-position: -4px -345px; } /* color edit */
-#button14 span.c { background-position: -4px -187px; } /* font size edit */
-#button15 span.c { background-position: -4px -376px; } /* unicode char insert */
-
-#button16 span.c { background-position: -4px -440px; } /* unicode char insert */
-#button17 span.c { background-position: -4px -408px; } /* unicode char insert */
+#button01 > span:nth-of-type(1) { background-position: -4px   -1px; } /* bold */
+#button02 > span:nth-of-type(1) { background-position: -4px  -21px; } /* ital */
+#button03 > span:nth-of-type(1) { background-position: -4px  -42px; } /* underline */
+#button04 > span:nth-of-type(1) { background-position: -4px  -82px; } /* strike */
+#button05 > span:nth-of-type(1) { background-position: -4px -319px; } /* left align */
+#button06 > span:nth-of-type(1) { background-position: -4px -293px; } /* center align */
+#button07 > span:nth-of-type(1) { background-position: -4px -241px; } /* right align */
+#button08 > span:nth-of-type(1) { background-position: -4px -267px; } /* justify */
+#button09 > span:nth-of-type(1) { background-position: -4px  -62px; } /* link */
+#button10 > span:nth-of-type(1) { background-position: -4px -102px; } /* quote */
+#button11 > span:nth-of-type(1) { background-position: -4px -213px; } /* image */
+#button12 > span:nth-of-type(1) { background-position: -4px -122px; } /* code */
+#button13 > span:nth-of-type(1) { background-position: -4px -345px; } /* color edit */
+#button14 > span:nth-of-type(1) { background-position: -4px -187px; } /* font size edit */
+#button15 > span:nth-of-type(1) { background-position: -4px -376px; } /* unicode char insert */
+#button16 > span:nth-of-type(1) { background-position: -4px -440px; } /* ul list */
+#button17 > span:nth-of-type(1) { background-position: -4px -408px; } /* ol list */
 
 .but-dropdown {
 	position: relative;
@@ -230,7 +208,7 @@ p.formatbut {
 /* list sizes */
 .but-dropdown .list-size {
 	text-align: left;
-	width: 140px;
+	width: 160px;
 	padding: 3px 0;
 }
 
@@ -241,10 +219,18 @@ p.formatbut {
 	display: inline-block;
 	background: white;
 	margin: 0;
-	width: 140px;
+	width: 160px;
 	height: 28px;
 	margin-top: 3px;
 	border: 1px solid transparent;
+}
+
+.but-dropdown .list-size button:first-of-type {
+	height: 23px;
+}
+
+.but-dropdown .list-size button:last-of-type {
+	height: 33px;
 }
 
 .but-dropdown .list-size button span {
@@ -276,10 +262,6 @@ p.formatbut {
 	text-align: center;
 }
 
-.but-dropdown .list-spechr button span {
-
-}
-
 .but-dropdown .list-spechr button:hover {
 	background-color: #ddd;
 }
@@ -288,14 +270,15 @@ p.formatbut {
 /* boutons d’options et date */
 #date-and-opts {
 	width: 100%;
+	display: table;
 }
 
-#date {
-	margin-top: 10px
+#date-and-opts > div {
+	display: table-cell;
 }
 
 #opts {
-	float: right;
+	text-align: right;
 }
 
 #formdate,
@@ -304,29 +287,28 @@ p.formatbut {
 #formallowcomment {
 	display: inline-block;
 	padding-left: 20px;
-	height: 20px;
+	vertical-align: middle;
+	margin: 0 15px;
+}
+
+#formstatut label,
+#formallowcomment label {
+	display: inline;
 }
 
 #formdate {
-	background: url(legend.png) no-repeat -560px -168px;
+	background: url(legend.png) no-repeat -560px -162px;
 }
 
 #formheure {
-	margin-left: 15px;
-	background: url(legend.png) no-repeat 0px -148px;
+	background: url(legend.png) no-repeat 0px -142px;
 }
 
 #formstatut {
-	background: url(legend.png) no-repeat -560px -200px;
+	background: url(legend.png) no-repeat -560px -194px;
 }
 
 #formallowcomment {
-	margin-left: 15px;
-	background: url("comments.png") no-repeat left;
-	background: url(legend.png) no-repeat -560px -232px;
-}
-
-#opts label {
-	margin-right: 5px;
+	background: url(legend.png) no-repeat -560px -226px;
 }
 
