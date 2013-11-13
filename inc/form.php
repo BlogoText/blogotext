@@ -715,9 +715,9 @@ function form_jour($jour_affiche) {
 
 function form_mois($mois_affiche) {
 	$mois = array(
-		"01" => $GLOBALS['lang']['janvier'],	"02" => $GLOBALS['lang']['fevrier'], 
-		"03" => $GLOBALS['lang']['mars'],		"04" => $GLOBALS['lang']['avril'], 
-		"05" => $GLOBALS['lang']['mai'],			"06" => $GLOBALS['lang']['juin'], 
+		"01" => $GLOBALS['lang']['janvier'],	"02" => $GLOBALS['lang']['fevrier'],
+		"03" => $GLOBALS['lang']['mars'],		"04" => $GLOBALS['lang']['avril'],
+		"05" => $GLOBALS['lang']['mai'],			"06" => $GLOBALS['lang']['juin'],
 		"07" => $GLOBALS['lang']['juillet'],	"08" => $GLOBALS['lang']['aout'],
 		"09" => $GLOBALS['lang']['septembre'],	"10" => $GLOBALS['lang']['octobre'],
 		"11" => $GLOBALS['lang']['novembre'],	"12" => $GLOBALS['lang']['decembre']
@@ -747,9 +747,9 @@ function form_annee($annee_affiche) {
 }
 
 function form_heure($heureaffiche, $minutesaffiche, $secondesaffiche) {
-	echo '<input name="heure" type="text" size="2" value="'.$heureaffiche.'" required="" class="text" /> : ';
-	echo '<input name="minutes" type="text" size="2" value="'.$minutesaffiche.'" required="" class="text" /> : ' ;
-	echo '<input name="secondes" type="text" size="2" value="'.$secondesaffiche.'" required="" class="text" />' ;
+	echo '<input name="heure" type="text" size="2" maxlength="2" value="'.$heureaffiche.'" required="" class="text" /> : ';
+	echo '<input name="minutes" type="text" size="2" maxlength="2" value="'.$minutesaffiche.'" required="" class="text" /> : ' ;
+	echo '<input name="secondes" type="text" size="2" maxlength="2" value="'.$secondesaffiche.'" required="" class="text" />' ;
 }
 
 function form_statut($etat) {
