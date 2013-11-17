@@ -310,7 +310,6 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 	if ($step == 1) { // postage de l'URL : un champ affiché en GET
 		$form .= '<form method="get" class="bordered-formbloc" id="post-new-lien" action="'.'links.php'.'">'."\n"; // not using PHP_SELF because of if the form is loaded on index.php
 		$form .= '<fieldset>'."\n";
-		$form .= legend($GLOBALS['lang']['label_nouv_lien'], 'legend-link');
 		$form .= "\t".'<input type="text" name="url" value="" size="70" placeholder="http://www.example.com/" class="text" autofocus />'."\n";
 		$form .= "\t".'<p class="centrer">'."\n";
 		$form .= "\t\t".'<input type="submit" value="'.$GLOBALS['lang']['envoyer'].'" class="submit blue-square" />'."\n";
@@ -332,18 +331,11 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 			$type = 'note';
 			$title = 'Note';
 			$url = $GLOBALS['racine'].'?mode=links&amp;id='.$new_id;
-			$form .= legend($GLOBALS['lang']['label_nouv_note'], 'legend-note');
-			$form .= "\t".'<div class="wrap-fields">'."\n";
 			$form .= hidden_input('url', $url);
 			$form .= hidden_input('type', 'note');
-
+			$form .= "\t".'<div class="wrap-fields wrap-fields-note">'."\n";
 		// URL non vide
 		} else {
-			$form .= legend($GLOBALS['lang']['label_nouv_lien'], 'legend-link');
-			$form .= "\t".'<div class="wrap-fields">'."\n";
-			$form .= "\t".'<input type="text" name="url" value="'.htmlspecialchars($url).'" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_url']).'" size="50" class="text readonly-like" />'."\n";
-			$form .= hidden_input('type', 'link');
-
 			// Test du type de fichier
 			$rep_hdr = get_headers($url, 1);
 			$cnt_type = (isset($rep_hdr['Content-Type'])) ? $rep_hdr['Content-Type'] : 'text/';
@@ -392,6 +384,10 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 					$title = htmlspecialchars($url);
 				}
 			}
+
+			$form .= "\t".'<div class="wrap-fields wrap-fields-'.$type.'">'."\n";
+			$form .= "\t".'<input type="text" name="url" value="'.htmlspecialchars($url).'" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_url']).'" size="50" class="text readonly-like" />'."\n";
+			$form .= hidden_input('type', 'link');
 		}
 
 		$link = array('title' => $title, 'url' => htmlspecialchars($url));
@@ -428,9 +424,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 	} elseif ($step == 'edit') { // Form pour l'édition d'un lien : les champs sont remplis avec le "wiki_content" et il y a les boutons suppr/activer en plus.
 		$form = '<form method="post" onsubmit="return moveTag();" class="bordered-formbloc" id="post-lien" action="'.$_SERVER['PHP_SELF'].'?id='.$editlink['bt_id'].'">'."\n";
 		$form .= "\t".'<fieldset class="pref">'."\n";
-
-		$form .= legend($GLOBALS['lang']['label_edit_lien'], 'legend-link');
-		$form .= "\t".'<div class="wrap-fields">'."\n";
+		$form .= "\t".'<div class="wrap-fields wrap-fields-links">'."\n";
 		$form .= "\t".'<input type="text" name="url" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_url']).'" required="" value="'.$editlink['bt_link'].'" size="70" class="text readonly-like" /></label>'."\n";
 		$form .= "\t".'<input type="text" name="title" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_titre']).'" required="" value="'.$editlink['bt_title'].'" size="70" class="text" autofocus /></label>'."\n";
 		$form .= "\t".'<span id="description-box">'."\n";

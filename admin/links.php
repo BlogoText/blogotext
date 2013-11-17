@@ -136,10 +136,6 @@ echo '<div id="axe">'."\n";
 
 // SUBNAV
 echo '<div id="subnav">'."\n";
-	echo "\t".'<p>';
-		echo "\t\t".ucfirst(nombre_liens($nb_links_displayed)).' '.$GLOBALS['lang']['sur'].' '.liste_elements_count("SELECT count(*) AS nbr FROM links", array(), 'links')."\n";
-	echo "\t".'</p>'."\n";
-
 	// Affichage formulaire filtrage liens
 	if (isset($_GET['filtre'])) {
 		afficher_form_filtre('links', htmlspecialchars($_GET['filtre']));
@@ -154,12 +150,15 @@ echo '<div id="page">'."\n";
 if ($step == 'edit' and !empty($tableau[0]) ) { // edit un lien : affiche le lien au dessus du champ d’édit
 	afficher_liens($tableau[0]);
 	echo afficher_form_link($step, $erreurs_form, $tableau[0]);
-} 
+}
 elseif ($step == 2) { // lien donné dans l’URL
 	echo afficher_form_link($step, $erreurs_form);
 }
 else { // aucun lien à ajouter ou éditer : champ nouveau lien + listage des liens en dessus.
 	echo afficher_form_link(1, $erreurs_form);
+	echo "\t".'<p class="nombre-elem">';
+		echo "\t\t".ucfirst(nombre_liens($nb_links_displayed)).' '.$GLOBALS['lang']['sur'].' '.liste_elements_count("SELECT count(*) AS nbr FROM links", array(), 'links')."\n";
+	echo "\t".'</p>'."\n";
 	foreach ($tableau as $link) {
 		afficher_liens($link);
 	}

@@ -86,7 +86,7 @@ $GLOBALS['lang'] = array(
 'bouton-liul'						=> 'Insérer une liste à puce',
 'bouton-liol'						=> 'Insérer une liste numérotée',
 // Modes
-'ecrire'								=> 'Modifier l’article',
+'ecrire'								=> 'Éditer&thinsp;: ',
 'apercu'								=> 'Aperçu',
 // Labels
 'label_date'						=> 'Date',

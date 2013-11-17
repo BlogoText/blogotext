@@ -137,7 +137,7 @@ else {
 	$liste_rss = array_slice($liste_rss, 0, 20);
 	$invert = (isset($_GET['invertlinks'])) ? TRUE : FALSE;
 	$xml = '<title>'.$GLOBALS['nom_du_site'].'</title>'."\n";
-	$xml .= '<link>'.$GLOBALS['racine'].'index.php?mode='.$modes_url.'</link>'."\n"; 
+	$xml .= '<link>'.$GLOBALS['racine'].'?mode='.$modes_url.'</link>'."\n"; 
 	$xml .= '<description><![CDATA['.$GLOBALS['description'].']]></description>'."\n";
 	$xml .= '<language>fr</language>'."\n"; 
 	$xml .= '<copyright>'.$GLOBALS['auteur'].'</copyright>'."\n";
@@ -148,15 +148,15 @@ else {
 		// normal code
 		$xml_post = '<item>'."\n";
 		$xml_post .= '<title>'.$title.'</title>'."\n";
-		$xml_post .= '<guid isPermaLink="false">'.$GLOBALS['racine'].'index.php?mode=links&amp;id='.$elem['bt_id'].'</guid>'."\n";
+		$xml_post .= '<guid isPermaLink="false">'.$GLOBALS['racine'].'?mode=links&amp;id='.$elem['bt_id'].'</guid>'."\n";
 		$xml_post .= '<pubDate>'.date_create_from_format('YmdHis', $time)->format('r').'</pubDate>'."\n";
 		if ($elem['bt_type'] == 'link') {
 			if ($invert) {
-				$xml_post .= '<link>'.$GLOBALS['racine'].'index.php?mode=links&amp;id='.$elem['bt_id'].'</link>'."\n";
+				$xml_post .= '<link>'.$GLOBALS['racine'].'?mode=links&amp;id='.$elem['bt_id'].'</link>'."\n";
 				$xml_post .= '<description><![CDATA['.rel2abs($elem['bt_content']). '<br/> — (<a href="'.$elem['bt_link'].'">link</a>)]]></description>'."\n";
 			} else {
 				$xml_post .= '<link>'.$elem['bt_link'].'</link>'."\n";
-				$xml_post .= '<description><![CDATA['.rel2abs($elem['bt_content']).'<br/> — (<a href="'.$GLOBALS['racine'].'index.php?mode=links&amp;id='.$elem['bt_id'].'">permalink</a>)]]></description>'."\n";
+				$xml_post .= '<description><![CDATA['.rel2abs($elem['bt_content']).'<br/> — (<a href="'.$GLOBALS['racine'].'?mode=links&amp;id='.$elem['bt_id'].'">permalink</a>)]]></description>'."\n";
 			}
 		} else {
 			$xml_post .= '<link>'.$elem['bt_link'].'</link>'."\n";

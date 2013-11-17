@@ -7,16 +7,42 @@
 
 #post-new-lien .text {
 	width: 100%;
+	background: url(legend.png) -619px 4px no-repeat;
+	padding-left: 24px;
 }
 
 #post-lien .wrap-fields {
 	max-width: 650px;
 	margin: auto;
+	background: url(legend.png) -615px -440px no-repeat;
 }
 
-#post-lien input.readonly-like { /* form nouveau lien (#2) */
+#post-lien .wrap-fields > input:nth-of-type(1) {
+	width: calc( 100% - 24px );
+	margin-left: 24px;
+}
+
+#post-lien .wrap-fields-note {
+	background-position: -579px -440px;
+}
+
+#post-lien .wrap-fields-image {
+	background-position: -494px -440px;
+}
+
+#post-lien .wrap-fields-file {
+	background-position: -530px -440px;
+}
+
+#post-lien input.readonly-like { /* form nouveau lien (#2), le lien de l’URL */
 	color: #999;
-	background-color: #e8e8e8;
+	background: #e8e8e8;
+}
+
+/* stylize title input on note page */
+#post-lien input[name='type'][value='note']+input[name='title'] {
+	background: url(legend.png) -619px -38px no-repeat;
+	padding-left: 24px;
 }
 
 #description-box .preview-img {
@@ -196,5 +222,4 @@
 	text-decoration: none;
 	font-weight: bold;
 }
-
 

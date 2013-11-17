@@ -136,8 +136,8 @@ else {
 	$liste_rss = array_slice($liste_rss, 0, 20);
 	$invert = (isset($_GET['invertlinks'])) ? TRUE : FALSE;
 	$xml = '<title>'.$GLOBALS['nom_du_site'].'</title>'."\n";
-	$xml .= '<link href="'.$GLOBALS['racine'].'index.php?mode='.$modes_url.'"/>'."\n"; 
-	$xml .= '<id>'.$GLOBALS['racine'].'index.php?mode='.$modes_url.'</id>'."\n";
+	$xml .= '<link href="'.$GLOBALS['racine'].'?mode='.$modes_url.'"/>'."\n"; 
+	$xml .= '<id>'.$GLOBALS['racine'].'?mode='.$modes_url.'</id>'."\n";
 	$main_updated = 0;
 	$xml_post = '';
 	foreach ($liste_rss as $elem) {
@@ -156,11 +156,11 @@ else {
 
 		if ($elem['bt_type'] == 'link') {
 			if ($invert) {
-				$xml_post .= '<link href="'.$GLOBALS['racine'].'index.php?mode=links&amp;id='.$elem['bt_id'].'"/>'."\n";
+				$xml_post .= '<link href="'.$GLOBALS['racine'].'?mode=links&amp;id='.$elem['bt_id'].'"/>'."\n";
 				$xml_post .= '<content type="html">'.htmlspecialchars(rel2abs($elem['bt_content']).'<br/> — (<a href="'.$elem['bt_link'].'">link</a>)').'</content>'."\n";
 			} else {
 				$xml_post .= '<link href="'.$elem['bt_link'].'"/>'."\n";
-				$xml_post .= '<content type="html">'.htmlspecialchars(rel2abs($elem['bt_content']).'<br/> — (<a href="'.$GLOBALS['racine'].'index.php?mode=links&id='.$elem['bt_id'].'">permalink</a>)').'</content>'."\n";
+				$xml_post .= '<content type="html">'.htmlspecialchars(rel2abs($elem['bt_content']).'<br/> — (<a href="'.$GLOBALS['racine'].'?mode=links&id='.$elem['bt_id'].'">permalink</a>)').'</content>'."\n";
 			}
 		} else {
 			$xml_post .= '<link href="'.$elem['bt_link'].'"/>'."\n";
