@@ -22,6 +22,7 @@ $GLOBALS['dossier_cache'] = 'cache';
 
 require_once 'config/user.php';
 require_once 'config/prefs.php';
+date_default_timezone_set($GLOBALS['fuseau_horaire']);
 
 function require_all() {
 	require_once 'inc/lang.php';
@@ -53,9 +54,9 @@ if (isset($_GET['id']) and preg_match('#^[0-9]{14}$#', $_GET['id'])) {
 		$query = "SELECT * FROM articles WHERE bt_id=? AND bt_date<=".date('YmdHis')." AND bt_statut=1";
 		$billet = liste_elements($query, array($article_id), 'articles');
 		echo '<title>Commentaires sur '.$billet[0]['bt_title'].' - '.$GLOBALS['nom_du_site'].'</title>'."\n";
-		echo '<link>'.$billet[0]['bt_link'].'</link>'."\n"; 
+		echo '<link>'.$billet[0]['bt_link'].'</link>'."\n";
 		echo '<description><![CDATA['.$GLOBALS['description'].']]></description>'."\n";
-		echo '<language>fr</language>'."\n"; 
+		echo '<language>fr</language>'."\n";
 		echo '<copyright>'.$GLOBALS['auteur'].'</copyright>'."\n";
 		foreach ($liste as $comment) {
 			$dec = decode_id($comment['bt_id']);
@@ -121,7 +122,7 @@ else {
 			$liste_rss = array_merge($liste_rss, $liste['l']);
 			$found = 1; $modes_url .= 'links-';
 		}
-		// si rien : prend blog 
+		// si rien : prend blog
 		if ($found == 0) { $liste_rss = $liste['a']; }
 
 	// si pas de mode, on prend le blog.
@@ -137,9 +138,9 @@ else {
 	$liste_rss = array_slice($liste_rss, 0, 20);
 	$invert = (isset($_GET['invertlinks'])) ? TRUE : FALSE;
 	$xml = '<title>'.$GLOBALS['nom_du_site'].'</title>'."\n";
-	$xml .= '<link>'.$GLOBALS['racine'].'index.php?mode='.$modes_url.'</link>'."\n"; 
+	$xml .= '<link>'.$GLOBALS['racine'].'index.php?mode='.$modes_url.'</link>'."\n";
 	$xml .= '<description><![CDATA['.$GLOBALS['description'].']]></description>'."\n";
-	$xml .= '<language>fr</language>'."\n"; 
+	$xml .= '<language>fr</language>'."\n";
 	$xml .= '<copyright>'.$GLOBALS['auteur'].'</copyright>'."\n";
 	foreach ($liste_rss as $elem) {
 		$time = (isset($elem['bt_date'])) ? $elem['bt_date'] : $elem['bt_id'];
