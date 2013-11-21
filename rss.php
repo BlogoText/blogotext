@@ -48,7 +48,7 @@ if (isset($_GET['id']) and preg_match('#^[0-9]{14}$#', $_GET['id'])) {
 	$GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
 	$article_id = htmlspecialchars($_GET['id']);
 
-	$liste = liste_elements("SELECT * FROM commentaires WHERE bt_article_id=? AND bt_statut=1 ORDER BY bt_id", array($article_id), 'commentaires');
+	$liste = liste_elements("SELECT * FROM commentaires WHERE bt_article_id=? AND bt_statut=1 ORDER BY bt_id DESC", array($article_id), 'commentaires');
 
 	if (!empty($liste)) {
 		$query = "SELECT * FROM articles WHERE bt_id=? AND bt_date<=".date('YmdHis')." AND bt_statut=1";
