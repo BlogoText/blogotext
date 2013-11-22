@@ -87,7 +87,7 @@ function valider_form_preferences() {
 	if (!strlen(trim($_POST['auteur']))) {
 		$erreurs[] = $GLOBALS['lang']['err_prefs_auteur'];
 	}
-	if ($GLOBALS['require_email'] == 1) { 
+	if ($GLOBALS['require_email'] == 1) {
 		if (!preg_match('#^[\w.+~\'*-]+@[\w.-]+\.[a-zA-Z]{2,6}$#i', trim($_POST['email']))) {
 			$erreurs[] = $GLOBALS['lang']['err_prefs_email'] ;
 		}
@@ -157,7 +157,7 @@ function valider_form_link() {
 
 function valider_form_maintenance() {
 	$erreurs = array();
-	$token = (isset($_POST['token'])) ? $_POST['token'] : (isset($_GET['token'])) ? $_GET['token'] : 'false';
+	$token = isset($_POST['token']) ? $_POST['token'] : (isset($_GET['token']) ? $_GET['token'] : 'false');
 	if (!(check_token($token) === TRUE)) {
 		$erreurs[] = $GLOBALS['lang']['err_wrong_token'];
 	}
