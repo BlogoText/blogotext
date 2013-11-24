@@ -379,7 +379,7 @@ function afficher_liste_articles($tableau) {
 		foreach ($tableau as $article) {
 			// ICONE SELON STATUT
 			$out .= "\t".'<li>'."\n";
-			$out .= "\t".'<span class="'.(($article['bt_statut'] == '1') ? 'on' : 'off').'"></span>'."\n";
+			$out .= "\t".'<span class="'.( ($article['bt_statut'] == '1') ? 'on' : 'off').'"></span>'."\n";
 			// TITRE
 			$out .= "\t\t".'<span>'.'<a href="ecrire.php?post_id='.$article['bt_id'].'" title="'.trim($article['bt_abstract']).'">'.$article['bt_title'].'</a>'.'</span>'."\n";
 			// DATE
