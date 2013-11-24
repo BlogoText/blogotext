@@ -1,44 +1,43 @@
 /* TABLE LISTE BILLETS
 --------------------------------------------------------------------------- */
 
-table {
+ul#billets {
 	width: 100%;
-	border-collapse: collapse;
+	padding: 0;
+	margin: 0;
+	display: table;
 }
 
-table a {
+ul#billets a {
 	text-decoration: none;
 }
 
-table th {
-	text-align: left;
-	padding: 3px 0 3px 5px;
-	font-size: 14px;
-	font-family: "Trebuchet MS", Verdana, Helvetica, Arial, sans-serif;
-	border-bottom: 1px solid #ccc;
+ul#billets li {
+	list-style-position: outside;
+	display: table-row;
 }
 
-table td {
-	padding: 5px;
+ul#billets li span {
+	display: table-cell;
+	vertical-align: middle;
+	//border: 1px solid red;
 }
 
-table td:nth-of-type(4), table td:nth-of-type(2) {
-	width: 10%;
+ul#billets li span:nth-of-type(1) {
+	height: 35px;
+	width: 24px;
+	background-position: center center;
 }
 
-table td:nth-of-type(1) {
-	width: 55%;
+ul#billets li span:nth-of-type(4) {
 }
 
-table td:nth-of-type(3) {
-	width: 20%;
+ul#billets li span:nth-of-type(5) {
+	padding-left: 15px;
 }
 
-table tr {
-	border-radius: 10px 10px 0 0;
-}
 
-table tr:nth-of-type(odd) {
+ul#billets li:nth-of-type(odd) {
 	background: #edf3fe;
 	background: -webkit-linear-gradient(left, #edf3fe, #fdfdff, #edf3fe);
 	background:    -moz-linear-gradient(left, #edf3fe, #fdfdff, #edf3fe);
@@ -46,7 +45,7 @@ table tr:nth-of-type(odd) {
 	background:         linear-gradient(left, #edf3fe, #fdfdff, #edf3fe);
 }
 
-table tr:nth-of-type(odd):hover {
+ul#billets li:nth-of-type(odd):hover {
 	background: #edf3fe;
 }
 
@@ -54,32 +53,19 @@ table tr:nth-of-type(odd):hover {
 	color: #000;
 }
 
-table .on, table .off {
-	padding-left: 25px;
+ul#billets .on, ul#billets .off {
 	color: #000;
 	margin: 0;
 }
 
-table .on {
-	background: url("legend.png") no-repeat left -119px;
+ul#billets .on {
+	background: url("tick.png") no-repeat;
 }
 
-table .off {
-	background: url("legend.png") no-repeat left -419px;
+ul#billets .off {
+	background: url("cross.png") no-repeat;
 }
 
-table .lien {
-	text-align: right;
-	padding-right: 10px;
-}
-
-table a:hover {
+ul#billets a:hover {
 	text-decoration: underline;
 }
-
-table .titre {
-	font-family: "Trebuchet MS", Verdana, Helvetica, Arial, sans-serif;
-	font-size: 14px;
-	min-width: 30%;
-}
-

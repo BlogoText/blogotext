@@ -39,7 +39,7 @@ function valider_form_commentaire($commentaire, $mode) {
 			$erreurs[] = $GLOBALS['lang']['err_comm_captcha'];
 		}
 	} else { // mode admin : test token
-		if (!( isset($_POST['token']) and check_token($_POST['token']) === TRUE) ) {
+		if (!( isset($_POST['token']) and check_token($_POST['token'])) ) {
 			$erreurs[] = $GLOBALS['lang']['err_wrong_token'];
 		}
 	}
@@ -49,7 +49,7 @@ function valider_form_commentaire($commentaire, $mode) {
 function valider_form_billet($billet) {
 	$date = decode_id($billet['bt_id']);
 	$erreurs = array();
-	if (isset($_POST['supprimer']) and !( isset($_POST['token']) and check_token($_POST['token']) === TRUE) ) {
+	if (isset($_POST['supprimer']) and !(isset($_POST['token']) and check_token($_POST['token'])) ) {
 		$erreurs[] = $GLOBALS['lang']['err_wrong_token'];
 	}
 	if (!strlen(trim($billet['bt_title']))) {
@@ -81,13 +81,13 @@ function valider_form_billet($billet) {
 
 function valider_form_preferences() {
 	$erreurs = array();
-	if (!( isset($_POST['token']) and check_token($_POST['token']) === TRUE) ) {
+	if (!( isset($_POST['token']) and check_token($_POST['token'])) ) {
 		$erreurs[] = $GLOBALS['lang']['err_wrong_token'];
 	}
 	if (!strlen(trim($_POST['auteur']))) {
 		$erreurs[] = $GLOBALS['lang']['err_prefs_auteur'];
 	}
-	if ($GLOBALS['require_email'] == 1) { 
+	if ($GLOBALS['require_email'] == 1) {
 		if (!preg_match('#^[\w.+~\'*-]+@[\w.-]+\.[a-zA-Z]{2,6}$#i', trim($_POST['email']))) {
 			$erreurs[] = $GLOBALS['lang']['err_prefs_email'] ;
 		}
@@ -115,7 +115,7 @@ function valider_form_preferences() {
 
 function valider_form_fichier($fichier) {
 	$erreurs = array();
-	if (!( isset($_POST['token']) and check_token($_POST['token']) === TRUE) ) {
+	if (!( isset($_POST['token']) and check_token($_POST['token'])) ) {
 		$erreurs[] = $GLOBALS['lang']['err_wrong_token'];
 	}
 	if (!isset($_POST['is_it_edit'])) { // si nouveau fichier, test sur fichier entrant
@@ -145,7 +145,7 @@ function valider_form_fichier($fichier) {
 
 function valider_form_link() {
 	$erreurs = array();
-	if (!( isset($_POST['token']) and check_token($_POST['token']) === TRUE) ) {
+	if (!( isset($_POST['token']) and check_token($_POST['token'])) ) {
 		$erreurs[] = $GLOBALS['lang']['err_wrong_token'];
 	}
 
@@ -157,8 +157,8 @@ function valider_form_link() {
 
 function valider_form_maintenance() {
 	$erreurs = array();
-	$token = (isset($_POST['token'])) ? $_POST['token'] : (isset($_GET['token'])) ? $_GET['token'] : 'false';
-	if (!(check_token($token) === TRUE)) {
+	$token = isset($_POST['token']) ? $_POST['token'] : (isset($_GET['token']) ? $_GET['token'] : 'false');
+	if (!check_token($token)) {
 		$erreurs[] = $GLOBALS['lang']['err_wrong_token'];
 	}
 	return $erreurs;

@@ -167,9 +167,7 @@ function liste_themes($chemin) {
 
 function afficher_form_filtre($type, $filtre) {
 	echo '<form method="get" action="'.$_SERVER['PHP_SELF'].'" onchange="this.submit();">'."\n";
-	echo '<div id="form-filtre">'."\n";
 		filtre($type, $filtre);
-	echo '</div>'."\n";
 	echo '</form>'."\n";
 }
 

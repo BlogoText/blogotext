@@ -375,17 +375,15 @@ function liste_tags($billet, $html_link) {
 function afficher_liste_articles($tableau) {
 	if (!empty($tableau)) {
 		$i = 0;
-		$out = '<table id="billets">'."\n";
+		$out = '<ul id="billets">'."\n";
 		foreach ($tableau as $article) {
 			// ICONE SELON STATUT
-			$class = ($article['bt_statut'] == '1') ? 'on' : 'off';
-			$out .= '<tr>'."\n";
+			$out .= "\t".'<li>'."\n";
+			$out .= "\t".'<span class="'.(($article['bt_statut'] == '1') ? 'on' : 'off').'"></span>'."\n";
 			// TITRE
-			$out .= '<td class="titre">';
-			$out .= '<a class="'.$class.'" href="ecrire.php?post_id='.$article['bt_id'].'" title="'.$article['bt_abstract'].'">'.$article['bt_title'].'</a>';
-			$out .= '</td>'."\n";
+			$out .= "\t\t".'<span>'.'<a href="ecrire.php?post_id='.$article['bt_id'].'" title="'.trim($article['bt_abstract']).'">'.$article['bt_title'].'</a>'.'</span>'."\n";
 			// DATE
-			$out .= '<td><a class="black" href="'.$_SERVER['PHP_SELF'].'?filtre='.substr($article['bt_date'],0,8).'">'.date_formate($article['bt_date']).'</a> - '.heure_formate($article['bt_date']).'</td>';
+			$out .= "\t\t".'<span><a class="black" href="'.$_SERVER['PHP_SELF'].'?filtre='.substr($article['bt_date'],0,8).'">'.date_formate($article['bt_date']).'</a> - '.heure_formate($article['bt_date']).'</span>'."\n";
 			// NOMBRE COMMENTS
 			if ($article['bt_nb_comments'] == 1) {
 				$texte = $article['bt_nb_comments'].' '.$GLOBALS['lang']['label_commentaire'];
@@ -394,18 +392,18 @@ function afficher_liste_articles($tableau) {
 			} else {
 				$texte = '&nbsp;';
 			}
-			$out .= '<td class="nb-commentaires"><a href="commentaires.php?post_id='.$article['bt_id'].'">'.$texte.'</a></td>'."\n";
+			$out .= "\t\t".'<span><a href="commentaires.php?post_id='.$article['bt_id'].'">'.$texte.'</a></span>'."\n";
 			// STATUT
 			if ( $article['bt_statut'] == '1') {
-				$out .= '<td class="lien"><a href="'.$article['bt_link'].'">'.$GLOBALS['lang']['lien_article'].'</a></td>';
+				$out .= "\t\t".'<span><a href="'.$article['bt_link'].'">'.$GLOBALS['lang']['lien_article'].'</a></span>'."\n";
 			} else {
-				$out .= '<td class="lien"><a href="'.$article['bt_link'].'">'.$GLOBALS['lang']['preview'].'</a></td>';
+				$out .= "\t\t".'<span><a href="'.$article['bt_link'].'">'.$GLOBALS['lang']['preview'].'</a></span>'."\n";
 			}
-			$out .= '</tr>'."\n";
+			$out .= "\t".'</li>'."\n";
 			$i++;
 		}
 
-		$out .= '</table>'."\n\n";
+		$out .= '</ul>'."\n\n";
 		echo $out;
 	} else {
 		echo info($GLOBALS['lang']['note_no_article']);

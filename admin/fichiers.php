@@ -84,6 +84,18 @@ echo '</div>'."\n";
 
 echo '<div id="axe">'."\n";
 
+
+// SUBNAV
+echo '<div id="subnav">'."\n";
+	// Affichage formulaire filtrage liens
+	if (isset($_GET['filtre'])) {
+		afficher_form_filtre('fichiers', htmlspecialchars($_GET['filtre']));
+	} else {
+		afficher_form_filtre('fichiers', '');
+	}
+echo '</div>'."\n";
+
+
 // SUBNAV
 echo '<div id="page">'."\n";
 
