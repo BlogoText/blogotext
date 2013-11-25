@@ -411,7 +411,6 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 	
 	if (empty($fichiers)) { // si PAS fichier donnée : formulaire nouvel envoi.
 		$form .= '<fieldset class="pref" >'."\n";
-		$form .= '<legend class="legend-addfile">'.$GLOBALS['lang']['label_fichier_ajout'].'</legend>'."\n";
 
 		$form .= '<div id="form-dragndrop">'."\n";
 			$form .= '<p class="gray-section" id="dragndrop-area" ondragenter="return false;" ondragover="return false;" ondrop="return handleDrop(event);" >'."\n";
@@ -451,7 +450,6 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 		}
 
 		$form .= '<fieldset class="edit-fichier">'."\n";
-		$form .= legend($GLOBALS['lang']['label_votre_fichier'], 'legend-fichier');
 
 		// codes d’intégrations pour les médias
 		// Video

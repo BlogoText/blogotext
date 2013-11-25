@@ -172,4 +172,28 @@
 		padding: 7px 5px;
 	}
 
+	/* articles list */
+
+	ul#billets li span:nth-of-type(3) {
+		width: 60px;
+		padding: 0 5px;
+		text-align: center;
+	}
+	ul#billets li span:nth-of-type(4) {
+		padding: 0 5px;
+	}
+	ul#billets li span:nth-of-type(5) {
+		padding-left: 5px;
+	}
+
+	/* graphiques */
+	#articles .month-nb {
+		width: 14px;
+		font-size: 9px;
+	}
+
+	/* commentaires */
+	#articles .month {
+		width: 14px;
+	}
 }

@@ -15,7 +15,13 @@ html, body {
 }
 
 #page { /* the main frame. #axe minus the "filtre" forms, and the subnav */
-	padding: 20px 1% 20px;
+	padding: 0px 1% 20px;
+}
+
+#page > p.nombre-elem {
+	font-weight: bold;
+	text-align: center;
+	margin: 15px auto 20px;
 }
 
 /* Footer */
@@ -286,11 +292,6 @@ FORM RECHERCHE */
 	text-decoration: none;
 }
 
-#form-filtre {
-	margin-bottom: 15px;
-}
-
-
 /* PAGE INDEX 
 ------------------------------------------------------------------------- */
 
@@ -379,6 +380,9 @@ select {
 	border-color: #389;
 	background: #7ef;
 	background: linear-gradient(#def, #adf 6%, #5bf 50%);
+	background: -o-linear-gradient(#def, #adf 6%, #5bf 50%);
+	background: -moz-linear-gradient(#def, #adf 6%, #5bf 50%);
+	background: -webkit-linear-gradient(#def, #adf 6%, #5bf 50%);
 }
 
 *.red-square {
@@ -387,6 +391,9 @@ select {
 	border-color: #943;
 	background: #fa9;
 	background: linear-gradient(#faa, #faa 6%, #e44 50%);
+	background: -o-linear-gradient(#faa, #faa 6%, #e44 50%);
+	background: -moz-linear-gradient(#faa, #faa 6%, #e44 50%);
+	background: -webkit-linear-gradient(#faa, #faa 6%, #e44 50%);
 }
 
 /* these are the bordered fieldsets */
@@ -440,3 +447,4 @@ q, blockquote {
 #e_json, #e_html, #e_zip {
 	display: none;
 }
+

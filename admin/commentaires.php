@@ -136,27 +136,26 @@ echo '<div id="axe">'."\n";
 
 // SUBNAV
 echo '<div id="subnav">'."\n";
-echo '<p>'."\n";
-if ($param_makeup['menu_theme'] == 'for_article') {
-	echo '<a href="ecrire.php?post_id='.$article_id.'">'.$GLOBALS['lang']['ecrire'].' : '.$article_title.'</a> &nbsp; – &nbsp; '.ucfirst(nombre_commentaires(count($commentaires)));
-} elseif ($param_makeup['menu_theme'] == 'for_comms') {
-	echo ucfirst(nombre_commentaires(count($commentaires))).' '.$GLOBALS['lang']['sur'].' '.$nb_total_comms;
-}
-echo '</p>'."\n";
-
-// Affichage formulaire filtrage commentaires
-
-if (isset($_GET['filtre'])) {
-	afficher_form_filtre('commentaires', htmlspecialchars($_GET['filtre']));
-} else {
-	afficher_form_filtre('commentaires', '');
-}
-
+	// Affichage formulaire filtrage commentaires
+	if (isset($_GET['filtre'])) {
+		afficher_form_filtre('commentaires', htmlspecialchars($_GET['filtre']));
+	} else {
+		afficher_form_filtre('commentaires', '');
+	}
 echo '</div>'."\n";
 
 echo erreurs($erreurs_form);
 
 echo '<div id="page">'."\n";
+
+echo '<p class="nombre-elem">'."\n";
+if ($param_makeup['menu_theme'] == 'for_article') {
+	echo '<a href="ecrire.php?post_id='.$article_id.'">'.$GLOBALS['lang']['ecrire'].$article_title.'</a> &nbsp; – &nbsp; '.ucfirst(nombre_commentaires(count($commentaires)));
+} elseif ($param_makeup['menu_theme'] == 'for_comms') {
+	echo ucfirst(nombre_commentaires(count($commentaires))).' '.$GLOBALS['lang']['sur'].' '.$nb_total_comms;
+}
+echo '</p>'."\n";
+
 
 // COMMENTAIRES
 if (count($commentaires) > 0) {
@@ -175,9 +174,6 @@ if ($param_makeup['menu_theme'] == 'for_article') {
 	echo $GLOBALS['form_commentaire'];
 }
 echo '<script type="text/javascript">';
-echo js_unfold(0);
-echo js_inserttag(0);
-echo js_comm_reply(0);
 echo js_comm_question_suppr(0);
 echo '</script>';
 

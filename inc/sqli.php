@@ -498,16 +498,11 @@ function bdd_commentaire($commentaire, $what) {
 				$commentaire['bt_subscribe'],
 				$commentaire['bt_statut']
 			));
-
 			// remet à jour le nombre de commentaires associés à l’article.
-			if ($GLOBALS['sgdb'] == 'sqlite') {
-				$query = "UPDATE articles SET bt_nb_comments = (SELECT count(a.bt_id) FROM articles a INNER JOIN commentaires c ON (c.bt_article_id = a.bt_id) WHERE articles.bt_id = a.bt_id GROUP BY a.bt_id) WHERE articles.bt_id=? ";
-			}
-			if ($GLOBALS['sgdb'] == 'mysql') {
-				$query = "UPDATE articles SET bt_nb_comments = (SELECT count(articles.bt_id) FROM commentaires WHERE commentaires.bt_article_id = articles.bt_id) WHERE bt_id=?";
-			}
-			$req2 = $GLOBALS['db_handle']->prepare($query);
-			$req2->execute( array($commentaire['bt_article_id']) );
+			$nb_comments_art = liste_elements_count("SELECT count(*) AS nbr FROM commentaires WHERE bt_article_id=? and bt_statut=1", array($commentaire['bt_article_id']));
+			$req2 = $GLOBALS['db_handle']->prepare('UPDATE articles SET bt_nb_comments=? WHERE bt_id=?');
+			$req2->execute( array($nb_comments_art, $commentaire['bt_article_id']) );
+
 			return TRUE;
 		} catch (Exception $e) {
 			return 'Erreur : '.$e->getMessage();

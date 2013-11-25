@@ -22,6 +22,7 @@ $GLOBALS['dossier_cache'] = 'cache';
 
 require_once 'config/user.php';
 require_once 'config/prefs.php';
+date_default_timezone_set($GLOBALS['fuseau_horaire']);
 
 function require_all() {
 	require_once 'inc/lang.php';
@@ -37,7 +38,7 @@ function require_all() {
 }
 
 echo '<feed xmlns="http://www.w3.org/2005/Atom">'."\n";
-echo '<author><name>'.$GLOBALS['auteur'].'</name></author>'."\n"; 
+echo '<author><name>'.$GLOBALS['auteur'].'</name></author>'."\n";
 echo '<link rel="self" href="'.$GLOBALS['racine'].'atom.php'.((!empty($_SERVER['QUERY_STRING'])) ? '?'.(htmlspecialchars($_SERVER['QUERY_STRING'])) : '').'" />'."\n";
 // ATOM DU BLOG
 /* si y'a un ID en paramètre : flux sur fil commentaires de l'article "ID" */
@@ -46,13 +47,13 @@ if (isset($_GET['id']) and preg_match('#^[0-9]{14}$#', $_GET['id'])) {
 	$GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
 	$article_id = htmlspecialchars($_GET['id']);
 
-	$liste = liste_elements("SELECT * FROM commentaires WHERE bt_article_id=? AND bt_statut=1 ORDER BY bt_id", array($article_id), 'commentaires');
+	$liste = liste_elements("SELECT * FROM commentaires WHERE bt_article_id=? AND bt_statut=1 ORDER BY bt_id DESC", array($article_id), 'commentaires');
 
 	if (!empty($liste)) {
 		$query = "SELECT * FROM articles WHERE bt_id=? AND bt_date<=".date('YmdHis')." AND bt_statut=1";
 		$billet = liste_elements($query, array($article_id), 'articles');
 		echo '<title>Commentaires sur '.$billet[0]['bt_title'].' - '.$GLOBALS['nom_du_site'].'</title>'."\n";
-		echo '<link href="'.$billet[0]['bt_link'].'" />'."\n"; 
+		echo '<link href="'.$billet[0]['bt_link'].'" />'."\n";
 		echo '<id>'.$billet[0]['bt_link'].'</id>';
 
 		foreach ($liste as $comment) {
@@ -120,7 +121,7 @@ else {
 			$liste_rss = array_merge($liste_rss, $liste['l']);
 			$found = 1; $modes_url .= 'links-';
 		}
-		// si rien : prend blog 
+		// si rien : prend blog
 		if ($found == 0) { $liste_rss = $liste['a']; }
 
 	// si pas de mode, on prend le blog.
@@ -136,8 +137,8 @@ else {
 	$liste_rss = array_slice($liste_rss, 0, 20);
 	$invert = (isset($_GET['invertlinks'])) ? TRUE : FALSE;
 	$xml = '<title>'.$GLOBALS['nom_du_site'].'</title>'."\n";
-	$xml .= '<link href="'.$GLOBALS['racine'].'index.php?mode='.$modes_url.'"/>'."\n"; 
-	$xml .= '<id>'.$GLOBALS['racine'].'index.php?mode='.$modes_url.'</id>'."\n";
+	$xml .= '<link href="'.$GLOBALS['racine'].'?mode='.$modes_url.'"/>'."\n"; 
+	$xml .= '<id>'.$GLOBALS['racine'].'?mode='.$modes_url.'</id>'."\n";
 	$main_updated = 0;
 	$xml_post = '';
 	foreach ($liste_rss as $elem) {
@@ -156,11 +157,11 @@ else {
 
 		if ($elem['bt_type'] == 'link') {
 			if ($invert) {
-				$xml_post .= '<link href="'.$GLOBALS['racine'].'index.php?mode=links&amp;id='.$elem['bt_id'].'"/>'."\n";
+				$xml_post .= '<link href="'.$GLOBALS['racine'].'?mode=links&amp;id='.$elem['bt_id'].'"/>'."\n";
 				$xml_post .= '<content type="html">'.htmlspecialchars(rel2abs($elem['bt_content']).'<br/> — (<a href="'.$elem['bt_link'].'">link</a>)').'</content>'."\n";
 			} else {
 				$xml_post .= '<link href="'.$elem['bt_link'].'"/>'."\n";
-				$xml_post .= '<content type="html">'.htmlspecialchars(rel2abs($elem['bt_content']).'<br/> — (<a href="'.$GLOBALS['racine'].'index.php?mode=links&id='.$elem['bt_id'].'">permalink</a>)').'</content>'."\n";
+				$xml_post .= '<content type="html">'.htmlspecialchars(rel2abs($elem['bt_content']).'<br/> — (<a href="'.$GLOBALS['racine'].'?mode=links&id='.$elem['bt_id'].'">permalink</a>)').'</content>'."\n";
 			}
 		} else {
 			$xml_post .= '<link href="'.$elem['bt_link'].'"/>'."\n";

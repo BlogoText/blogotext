@@ -6,10 +6,10 @@
 	font-size: 1em;
 	display: block;
 	clear: both;
-	margin: 20px auto 20px;
+	margin: 10px auto 10px;
 	text-align: center;
 	background: url("logo.png") no-repeat center 20px;
-	padding-top: 130px;
+	padding-top: 120px;
 }
 
 #pageauth p label {
@@ -22,7 +22,7 @@
 }
 
 #auth {
-	width: 399px;
+	width: 299px;
 	margin: auto;
 }
 
@@ -36,7 +36,7 @@
 }
 
 #pageauth h1 {
-	margin: 0 auto 50px;
+	margin: 0 auto 30px;
 	font-size: 3em;
 }
 
@@ -54,5 +54,3 @@
 	display: inline;
 }
 
-#pageauth .blue-square {
-}

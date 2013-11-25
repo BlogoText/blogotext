@@ -215,7 +215,7 @@ function insert_table_commentaires($tableau) {
 function recompte_commentaires() {
 	try {
 		if ($GLOBALS['sgdb'] == 'sqlite') {
-			$query = "UPDATE articles SET bt_nb_comments = COALESCE((SELECT count(a.bt_id) FROM articles a INNER JOIN commentaires c ON (c.bt_article_id = a.bt_id) WHERE articles.bt_id = a.bt_id GROUP BY a.bt_id), 0)";
+			$query = "UPDATE articles SET bt_nb_comments = COALESCE((SELECT count(a.bt_id) FROM articles a INNER JOIN commentaires c ON (c.bt_article_id = a.bt_id) WHERE articles.bt_id = a.bt_id AND c.bt_statut=1 GROUP BY a.bt_id), 0)";
 		} elseif ($GLOBALS['sgdb'] == 'mysql') {
 			$query = "UPDATE articles SET bt_nb_comments = COALESCE((SELECT count(articles.bt_id) FROM commentaires WHERE commentaires.bt_article_id = articles.bt_id), 0)";
 		}
@@ -519,7 +519,7 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 		if (isset($_GET['do'])) {
 			if ($_GET['do'] == 'export') {
 				// Export in JSON file
-				if ($_GET['exp-format'] == 'json') {
+				if (@$_GET['exp-format'] == 'json') {
 					$data_array = array('articles' => array(), 'liens' => array(), 'commentaires' => array());
 					// list links (nth last)
 					if ($_GET['incl-links'] == 1) {
@@ -547,15 +547,15 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 					$file_archive = creer_fichier_json($data_array);
 
 				// Export links in HTML format
-				} elseif ($_GET['exp-format'] == 'html') {
+				} elseif (@$_GET['exp-format'] == 'html') {
 					$nb = htmlspecialchars($_GET['nb-links']);
 					$limit = (is_numeric($nb) and $nb != -1 ) ? $nb : '';
 					$file_archive = creer_fich_html($limit);
 
 				// Export a ZIP archive
-				} elseif ($_GET['exp-format'] == 'zip') {
+				} elseif (@$_GET['exp-format'] == 'zip') {
 					$dossiers = array();
-					if ($_GET['incl-sqlit'] == 1) {
+					if (@$_GET['incl-sqlit'] == 1) {
 						$dossiers[] = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_db'];
 					}
 					if ($_GET['incl-files'] == 1) {
@@ -646,7 +646,4 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 	}
 }
 
-echo js_switch_form_maintenant(1);
-
 footer('', $begin);
-

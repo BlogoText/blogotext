@@ -4,12 +4,11 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2012 Timo Van Neerden <ti-mo@myopera.com>
+# 2010-2013 Timo Van Neerden <ti-mo@myopera.com>
 #
-# BlogoText is free software, you can redistribute it under the terms of the
-# Creative Commons Attribution-NonCommercial 2.0 France Licence
+# BlogoText is free software.
+# You can redistribute it under the terms of the MIT / X11 Licence.
 #
-# Also, any distributors of non-official releases MUST warn the final user of it, by any visible way before the download.
 # *** LICENSE ***
 
 $begin = microtime(TRUE);
@@ -66,10 +65,6 @@ echo '<div id="axe">'."\n";
 
 // SUBNAV
 echo '<div id="subnav">'."\n";
-		echo '<p>'."\n";
-			echo ucfirst(nombre_articles(count($tableau))).' '.$GLOBALS['lang']['sur'].' '.liste_elements_count("SELECT count(*) AS nbr FROM articles", array());
-		echo '</p>'."\n";
-
 		if (isset($_GET['filtre'])) {
 			afficher_form_filtre('articles', htmlspecialchars($_GET['filtre']));
 		} else {
@@ -78,6 +73,10 @@ echo '<div id="subnav">'."\n";
 	echo '</div>'."\n";
 
 echo '<div id="page">'."\n";
+
+echo '<p class="nombre-elem">'."\n";
+	echo ucfirst(nombre_articles(count($tableau))).' '.$GLOBALS['lang']['sur'].' '.liste_elements_count("SELECT count(*) AS nbr FROM articles", array());
+echo '</p>'."\n";
 
 afficher_liste_articles($tableau);
 

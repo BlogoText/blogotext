@@ -4,12 +4,11 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2013 Timo Van Neerden <ti-mo@myopera.com>
+# 2010-2013 Timo Van Neerden <timo@neerden.eu>
 #
-# BlogoText is free software, you can redistribute it under the terms of the
-# Creative Commons Attribution-NonCommercial 2.0 France Licence
+# BlogoText is free software.
+# You can redistribute it under the terms of the MIT / X11 Licence.
 #
-# Also, any distributors of non-official releases MUST warn the final user of it, by any visible way before the download.
 # *** LICENSE ***
 
 $GLOBALS['BT_ROOT_PATH'] = '../';
@@ -136,10 +135,6 @@ echo '<div id="axe">'."\n";
 
 // SUBNAV
 echo '<div id="subnav">'."\n";
-	echo "\t".'<p>';
-		echo "\t\t".ucfirst(nombre_liens($nb_links_displayed)).' '.$GLOBALS['lang']['sur'].' '.liste_elements_count("SELECT count(*) AS nbr FROM links", array(), 'links')."\n";
-	echo "\t".'</p>'."\n";
-
 	// Affichage formulaire filtrage liens
 	if (isset($_GET['filtre'])) {
 		afficher_form_filtre('links', htmlspecialchars($_GET['filtre']));
@@ -154,19 +149,19 @@ echo '<div id="page">'."\n";
 if ($step == 'edit' and !empty($tableau[0]) ) { // edit un lien : affiche le lien au dessus du champ d’édit
 	afficher_liens($tableau[0]);
 	echo afficher_form_link($step, $erreurs_form, $tableau[0]);
-} 
+}
 elseif ($step == 2) { // lien donné dans l’URL
 	echo afficher_form_link($step, $erreurs_form);
 }
 else { // aucun lien à ajouter ou éditer : champ nouveau lien + listage des liens en dessus.
 	echo afficher_form_link(1, $erreurs_form);
+	echo "\t".'<p class="nombre-elem">';
+		echo "\t\t".ucfirst(nombre_liens($nb_links_displayed)).' '.$GLOBALS['lang']['sur'].' '.liste_elements_count("SELECT count(*) AS nbr FROM links", array(), 'links')."\n";
+	echo "\t".'</p>'."\n";
 	foreach ($tableau as $link) {
 		afficher_liens($link);
 	}
 }
-
-// affichage
-echo js_addcategories_links(1);
 
 footer('', $begin);
 

@@ -86,7 +86,7 @@ $GLOBALS['lang'] = array(
 'bouton-liul'						=> 'Insert a list',
 'bouton-liol'						=> 'Insert a ordered list',
 // Modes
-'ecrire'								=> 'Edit article',
+'ecrire'								=> 'Edit: ',
 'apercu'								=> 'Preview',
 // Labels
 'label_date'						=> 'Date',

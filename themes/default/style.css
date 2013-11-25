@@ -52,7 +52,6 @@ input[type="text"], input[type="url"], input[type="search"], input[type="email"]
 	/* for accessibility */
 	background-color: white !important;
 	color: black !important;
-
 	box-shadow: 1px 1px 2px silver;
 }
 
@@ -60,6 +59,10 @@ input[type="text"], input[type="url"], input[type="search"], input[type="email"]
 	box-shadow: 1px 1px 5px silver;
 }
 
+/* old browser compatibility */
+article, aside, figcaption, figure, footer, header, hgroup, nav, section, main {
+	display: block;
+}
 
 /* LAYOUT
 -------------------------------------------------------- */
