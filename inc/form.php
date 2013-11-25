@@ -561,7 +561,16 @@ function afficher_form_billet($article, $erreurs) {
 
 	echo '</p>';
 
-	echo '<textarea id="contenu" name="contenu" rows="20" cols="60" required="" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_contenu']).'" tabindex="55" class="text" >'.$contenudefaut.'</textarea>'."\n" ;
+	echo '<textarea id="contenu" name="contenu" rows="20" cols="60" required="" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_contenu']).'" tabindex="55" class="text">'.$contenudefaut.'</textarea>'."\n" ;
+
+	echo '<script>window.addEventListener("beforeunload", function (e) {
+  // From https://developer.mozilla.org/en-US/docs/Web/Reference/Events/beforeunload
+  var confirmationMessage = "This page will be closed, losing potential changes. Please confirm.";
+    if(document.getElementById("contenu").value == "") confirmationMessage = "";
+
+  (e || window.event).returnValue = confirmationMessage;     //Gecko + IE
+  return confirmationMessage;                                //Webkit, Safari, Chrome etc.
+});</script>'."\n";
 
 	echo form_categories_links('articles', $categoriesdefaut);
 	echo "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'" tabindex="65"/>'."\n";
