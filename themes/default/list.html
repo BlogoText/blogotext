@@ -9,58 +9,54 @@
 	<meta name="viewport" content="width=device-width, user-scalable=yes" />
 	<meta name="keywords" content="{keywords}" />
 	<meta name="description" content="{blog_description}" />
-	<link type="text/css" rel="stylesheet" href="{style}/style.css" />
+	<link rel="stylesheet" href="{style}/style.css" />
 	<link type="application/rss+xml" rel="alternate" title="RSS 2.0 - Articles" href="{rss}" />
-	<style type="text/css">
-	#email-adress { display: none!important; }
-	</style>
-
 </head>
 <body>
 
 <header>
-	<h1><a href="{racine_du_site}">{blog_nom}</a></h1>
+	<h1><a href="{racine_du_site}" title="{blog_nom} - {blog_description}">{blog_nom}</a></h1>
 	<h2>{blog_description}</h2>
 </header>
 <main>
 	<section id="sidebar">
 		<nav id="navigate">
-			<h3><img src="themes/default/search.png" alt="icon" /> Rechercher</h3>
+			<h3><img src="{style}/search.png" alt="icon" /> Rechercher</h3>
 			{recherche}
 			{calendrier}
 			<hr/>
 		</nav>
 		<nav id="last_comments">
-			<h3><img src="themes/default/icon_comment.png" alt="icon" /> Derniers commentaires</h3>
+			<h3><img src="{style}/icon_comment.png" alt="icon" /> Derniers commentaires</h3>
 			{commentaires_encart}
 			<hr/>
 		</nav>
 		<nav id="tags">
-			<h3><img src="themes/default/icon_tag.png" alt="icon" /> Tags</h3>
+			<h3><img src="{style}/icon_tag.png" alt="icon" /> Tags</h3>
 			{categories_encart}
 			<hr/>
 		</nav>
 		<nav id="liens">
 			<h3>Autres</h3>
 			<ul>
-				<li><a href="index.php">Blog</a></li>
-				<li><a href="index.php?mode=links">Liens</a></li>
-				<li><a href="index.php?mode=comments">Derniers commentaires</a></li>
+				<li><a href="index.php" title="">Blog</a></li>
+				<li><a href="index.php?mode=links" title="">Liens</a></li>
+				<li><a href="index.php?mode=comments" title="">Derniers commentaires</a></li>
 			</ul>
 			<hr/>
 		</nav>
 		<nav id="random">
 			<h3>Un article au hasard</h3>
 				<ul>
-					<li><a href="?random">Un article au hasard ?</a></li>
+					<li><a href="?random" title="">Un article au hasard ?</a></li>
 				</ul>
 			<hr/>
 		</nav>
 		<nav id="rss">
 			<h4>Fils RSS</h4>
 			<ul>
-				<li><a href="rss.php"><img src="themes/default/feed.png" alt="icon" /> RSS</a> : Blog</li>
-				<li><a href="rss.php?mode=links"><img src="themes/default/feed.png" alt="icon" /> RSS</a> : Liens</li>
+				<li><a href="rss.php" title=""><img src="{style}/feed.png" alt="icon" /> RSS</a> : Blog</li>
+				<li><a href="rss.php?mode=links" title=""><img src="{style}/feed.png" alt="icon" /> RSS</a> : Liens</li>
 			</ul>
 			<hr/>
 		</nav>
@@ -76,17 +72,15 @@
 			// **** le texte que vous mettez ici (dans la "boucle") ne sera pas éxécuté ni affiché. ****
 
 		{/BOUCLE_posts}
-		
 	</section>
 
 	<br style="clear:both;" />
 	{pagination}
 </main>
 
+<footer><b>{blog_auteur}</b>, tous droits réservés – Publié avec <a href="http://lehollandaisvolant.net/blogotext/" title="BlogoText">BlogoText</a> – Thème par <a href="http://lehollandaisvolant.net/" title="Timo van Neerden">Timo van Neerden</a></footer>
 
-<footer><b>{blog_auteur}</b>, tous droits réservés – Publié avec <a href="http://lehollandaisvolant.net/blogotext/">BlogoText</a> – Thème par <a href="http://lehollandaisvolant.net/">Timo van Neerden</a></footer>
-
-<script type="text/javascript">
+<script>
 /* Tag script found at : http://www.siteduzero.com/tutoriel-3-34703-insertion-de-balises-dans-une-zone-de-texte.html */
 function insertTag(startTag, endTag, tag, tagType) {
 	var field = document.getElementById(tag);
