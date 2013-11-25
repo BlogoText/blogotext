@@ -215,7 +215,7 @@ function insert_table_commentaires($tableau) {
 function recompte_commentaires() {
 	try {
 		if ($GLOBALS['sgdb'] == 'sqlite') {
-			$query = "UPDATE articles SET bt_nb_comments = COALESCE((SELECT count(a.bt_id) FROM articles a INNER JOIN commentaires c ON (c.bt_article_id = a.bt_id) WHERE articles.bt_id = a.bt_id GROUP BY a.bt_id), 0)";
+			$query = "UPDATE articles SET bt_nb_comments = COALESCE((SELECT count(a.bt_id) FROM articles a INNER JOIN commentaires c ON (c.bt_article_id = a.bt_id) WHERE articles.bt_id = a.bt_id AND c.bt_statut=1 GROUP BY a.bt_id), 0)";
 		} elseif ($GLOBALS['sgdb'] == 'mysql') {
 			$query = "UPDATE articles SET bt_nb_comments = COALESCE((SELECT count(articles.bt_id) FROM commentaires WHERE commentaires.bt_article_id = articles.bt_id), 0)";
 		}
