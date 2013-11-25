@@ -22,7 +22,7 @@
 }
 
 #auth {
-	width: 399px;
+	width: 299px;
 	margin: auto;
 }
 
@@ -52,8 +52,5 @@
 
 #pageauth label[for="sgdb"] {
 	display: inline;
-}
-
-#pageauth .blue-square {
 }
 

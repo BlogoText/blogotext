@@ -6,10 +6,9 @@
 # 2006      Frederic Nassar.
 # 2010-2013 Timo Van Neerden <ti-mo@myopera.com>
 #
-# BlogoText is free software, you can redistribute it under the terms of the
-# Creative Commons Attribution-NonCommercial 2.0 France Licence
+# BlogoText is free software.
+# You can redistribute it under the terms of the MIT / X11 Licence.
 #
-# Also, any distributors of non-official releases MUST warn the final user of it, by any visible way before the download.
 # *** LICENSE ***
 
 if ( !file_exists('../config/user.php') || !file_exists('../config/prefs.php') ) {
@@ -68,7 +67,6 @@ if (isset($_POST['_verif_envoi']) and valider_form() === TRUE) { // OK : getting
 		echo '<p><label for="user">'.ucfirst($GLOBALS['lang']['label_dp_identifiant']).'</label><input class="text" type="text" id="user" name="nom_utilisateur" placeholder="John Doe" value="" /></p>'."\n";
 		echo '<p><label for="password">'.ucfirst($GLOBALS['lang']['label_dp_motdepasse']).'</label><input class="text" id="password" type="password" placeholder="••••••••••••" name="mot_de_passe" value="" /></p>'."\n";
 		if (isset($GLOBALS['connexion_captcha']) and ($GLOBALS['connexion_captcha'] == "1")) {
-			echo js_reload_captcha(1);
 			echo '<p><label for="word">'.ucfirst($GLOBALS['lang']['label_dp_word_captcha']).'</label><input class="text" type="text" id="word" name="word" value="" /></p>'."\n";
 			echo '<p><a href="#" onclick="new_freecap();return false;" title="'.$GLOBALS['lang']['label_dp_changer_captcha'].'"><img src="../inc/freecap/freecap.php" id="freecap"></a></p>'."\n";
 		}

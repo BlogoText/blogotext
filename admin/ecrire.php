@@ -4,12 +4,11 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2012 Timo Van Neerden <ti-mo@myopera.com>
+# 2010-2013 Timo Van Neerden <ti-mo@myopera.com>
 #
-# BlogoText is free software, you can redistribute it under the terms of the
-# Creative Commons Attribution-NonCommercial 2.0 France Licence
+# BlogoText is free software.
+# You can redistribute it under the terms of the MIT / X11 Licence.
 #
-# Also, any distributors of non-official releases MUST warn the final user of it, by any visible way before the download.
 # *** LICENSE ***
 
 $GLOBALS['BT_ROOT_PATH'] = '../';
@@ -79,12 +78,6 @@ if ($post != '') {
 	apercu($post);
 }
 afficher_form_billet($post, $erreurs_form);
-
-echo '<script type="text/javascript">';
-echo js_inserttag(0);
-echo js_addcategories(0);
-echo js_addcategories_links(0);
-echo '</script>';
 
 footer('', $begin);
 

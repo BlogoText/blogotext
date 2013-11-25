@@ -139,14 +139,9 @@ else {
 }
 
 echo '<script type="text/javascript">'."\n";
-echo js_select_text_on_focus(0);
-echo js_switch_upload_form(0);
 echo js_drag_n_drop_handle(0);
-echo js_button_request_delete(0);
-echo js_lazyload_img(0);
 echo js_folder_sort_img(0);
 echo js_show_slideshow(0);
-echo js_detect_arrow_keys(0);
 echo "\n".'</script>'."\n";
 
 footer('', $begin);

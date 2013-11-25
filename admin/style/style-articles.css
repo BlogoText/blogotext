@@ -20,7 +20,6 @@ ul#billets li {
 ul#billets li span {
 	display: table-cell;
 	vertical-align: middle;
-	//border: 1px solid red;
 }
 
 ul#billets li span:nth-of-type(1) {
@@ -29,13 +28,20 @@ ul#billets li span:nth-of-type(1) {
 	background-position: center center;
 }
 
-ul#billets li span:nth-of-type(4) {
+ul#billets li span:nth-of-type(3) {
+	width: 160px;
+	padding: 0 10px;
+	text-align: center;
 }
+
+ul#billets li span:nth-of-type(4) {
+	padding: 0 10px;
+}
+
 
 ul#billets li span:nth-of-type(5) {
 	padding-left: 15px;
 }
-
 
 ul#billets li:nth-of-type(odd) {
 	background: #edf3fe;
@@ -68,4 +74,8 @@ ul#billets .off {
 
 ul#billets a:hover {
 	text-decoration: underline;
+}
+
+ul#billets li span:nth-of-type(2) a, ul#billets li span:nth-of-type(3) a {
+	color: inherit;
 }

@@ -174,9 +174,6 @@ if ($param_makeup['menu_theme'] == 'for_article') {
 	echo $GLOBALS['form_commentaire'];
 }
 echo '<script type="text/javascript">';
-echo js_unfold(0);
-echo js_inserttag(0);
-echo js_comm_reply(0);
 echo js_comm_question_suppr(0);
 echo '</script>';
 

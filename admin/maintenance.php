@@ -646,7 +646,4 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 	}
 }
 
-echo js_switch_form_maintenant(1);
-
 footer('', $begin);
-
