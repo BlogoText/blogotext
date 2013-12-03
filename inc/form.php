@@ -167,7 +167,9 @@ function liste_themes($chemin) {
 
 function afficher_form_filtre($type, $filtre) {
 	echo '<form method="get" action="'.$_SERVER['PHP_SELF'].'" onchange="this.submit();">'."\n";
+	echo '<div id="form-filtre">'."\n";
 		filtre($type, $filtre);
+	echo '</div>'."\n";
 	echo '</form>'."\n";
 }
 
@@ -561,16 +563,6 @@ function afficher_form_billet($article, $erreurs) {
 
 	echo '<textarea id="contenu" name="contenu" rows="20" cols="60" required="" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_contenu']).'" tabindex="55" class="text">'.$contenudefaut.'</textarea>'."\n" ;
 
-	echo '<script>var contenuLoad = document.getElementById("contenu").value;
-window.addEventListener("beforeunload", function (e) {
-  // From https://developer.mozilla.org/en-US/docs/Web/Reference/Events/beforeunload
-  var confirmationMessage = "This page will be closed, losing potential changes. Please confirm.";
-    if(document.getElementById("contenu").value == contenuLoad) confirmationMessage = "";
-
-  (e || window.event).returnValue = confirmationMessage;     //Gecko + IE
-  return confirmationMessage;                                //Webkit, Safari, Chrome etc.
-});</script>'."\n";
-
 	echo form_categories_links('articles', $categoriesdefaut);
 	echo "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'" tabindex="65"/>'."\n";
 	echo "\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
@@ -603,7 +595,7 @@ window.addEventListener("beforeunload", function (e) {
 	echo '<p class="centrer">'."\n";
 	echo '<input class="submit blue-square" type="submit" name="enregistrer" onclick="contenuLoad=document.getElementById(\'contenu\').value" value="'.$GLOBALS['lang']['envoyer'].'" tabindex="70" />'."\n";
 	if ($article) {
-		echo '<input class="submit red-square" type="submit" name="supprimer" value="'.$GLOBALS['lang']['supprimer'].'" onclick="return window.confirm(\''.$GLOBALS['lang']['question_suppr_article'].'\')" />'."\n";
+		echo '<input class="submit red-square" type="submit" name="supprimer" value="'.$GLOBALS['lang']['supprimer'].'" onclick="contenuLoad = document.getElementById(\'contenu\').value; return window.confirm(\''.$GLOBALS['lang']['question_suppr_article'].'\')" />'."\n";
 		echo hidden_input('article_id', $article['bt_id']);
 		echo hidden_input('article_date', $article['bt_date']);
 		echo hidden_input('ID', $article['ID']);

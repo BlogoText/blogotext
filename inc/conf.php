@@ -183,6 +183,11 @@ function init_post_comment($id, $mode) {
 			$comment_id = date('YmdHis');
 		}
 
+		// verif url.
+		if (!empty($_POST['webpage'])) {
+			$url = htmlspecialchars(stripslashes(clean_txt(  (strpos($_POST['webpage'], 'http://')===0 or strpos($_POST['webpage'], 'https://')===0)? $_POST['webpage'] : 'http://'.$_POST['webpage'] )));
+		} else { $url = $_POST['wabpage']; }
+
 		$comment = array (
 			'bt_id'				=> $comment_id,
 			'bt_article_id'		=> $id,
@@ -191,7 +196,7 @@ function init_post_comment($id, $mode) {
 			'bt_author'			=> htmlspecialchars(stripslashes(clean_txt($_POST['auteur']))),
 			'bt_email'			=> htmlspecialchars(stripslashes(clean_txt($_POST['email']))),
 			'bt_link'			=> '', // this is empty, 'cause bt_link is created on reading of DB, not writen in DB (usefull if we change server or site name some day).
-			'bt_webpage'		=> htmlspecialchars(stripslashes(clean_txt($_POST['webpage']))),
+			'bt_webpage'		=> $url,
 			'bt_subscribe'		=> (isset($_POST['subscribe']) and $_POST['subscribe'] == 'on') ? '1' : '0',
 			'bt_statut'			=> $status,
 		);

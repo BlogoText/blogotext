@@ -79,5 +79,7 @@ if ($post != '') {
 }
 afficher_form_billet($post, $erreurs_form);
 
+echo js_alert_before_quit(1);
+
 footer('', $begin);
 

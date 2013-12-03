@@ -380,9 +380,8 @@ function afficher_liste_articles($tableau) {
 		foreach ($tableau as $article) {
 			// ICONE SELON STATUT
 			$out .= "\t".'<li>'."\n";
-			$out .= "\t".'<span class="'.( ($article['bt_statut'] == '1') ? 'on' : 'off').'"></span>'."\n";
 			// TITRE
-			$out .= "\t\t".'<span>'.'<a href="ecrire.php?post_id='.$article['bt_id'].'" title="'.trim($article['bt_abstract']).'">'.$article['bt_title'].'</a>'.'</span>'."\n";
+			$out .= "\t\t".'<span><span class="'.( ($article['bt_statut'] == '1') ? 'on' : 'off').'"></span>'.'<a href="ecrire.php?post_id='.$article['bt_id'].'" title="'.trim($article['bt_abstract']).'">'.$article['bt_title'].'</a>'.'</span>'."\n";
 			// DATE
 			$out .= "\t\t".'<span><a href="'.$_SERVER['PHP_SELF'].'?filtre='.substr($article['bt_date'],0,8).'">'.date_formate($article['bt_date']).'</a> - '.heure_formate($article['bt_date']).'</span>'."\n";
 			// NOMBRE COMMENTS
