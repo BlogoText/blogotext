@@ -526,6 +526,7 @@ blockquote, q {
 	padding: 30px;
 }
 
+#email-adress { display: none!important; }
 
 @media (max-width: 799px) {
 
