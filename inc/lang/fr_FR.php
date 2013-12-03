@@ -268,6 +268,7 @@ $GLOBALS['lang'] = array(
 'question_suppr_image'			=> 'Cette image sera définitivement supprimée !',
 'question_suppr_comment'		=> 'Ce commentaire sera définitivement supprimé !',
 'question_suppr_fichier'		=> 'Ce fichier sera définitivement supprimé !',
+'question_quit_page'				=> 'Vos modifications n’ont pas été enregistrées. Quitter la page provoquera la perte des données.',
 // Confirmations
 'confirm_article_suppr'			=> 'L’article a été supprimé',
 'confirm_article_ajout'			=> 'L’article a été enregistré',

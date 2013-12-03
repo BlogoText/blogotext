@@ -13,33 +13,39 @@ ul#billets a {
 }
 
 ul#billets li {
+	border-radius: 10px;
 	list-style-position: outside;
 	display: table-row;
+	height: 35px;
 }
 
-ul#billets li span {
+ul#billets li > span {
 	display: table-cell;
 	vertical-align: middle;
 }
 
-ul#billets li span:nth-of-type(1) {
-	height: 35px;
-	width: 24px;
-	background-position: center center;
+ul#billets li > span:first-of-type span {
+	display: inline-block;
+	vertical-align: middle;
 }
 
-ul#billets li span:nth-of-type(3) {
+ul#billets li > span:nth-of-type(1) span {
+	height: 20px;
+	width: 20px;
+}
+
+ul#billets li > span:nth-of-type(2) {
 	width: 160px;
 	padding: 0 10px;
 	text-align: center;
 }
 
-ul#billets li span:nth-of-type(4) {
+ul#billets li > span:nth-of-type(3) {
 	padding: 0 10px;
 }
 
 
-ul#billets li span:nth-of-type(5) {
+ul#billets li > span:nth-of-type(4) {
 	padding-left: 15px;
 }
 
@@ -62,20 +68,21 @@ ul#billets li:nth-of-type(odd):hover {
 ul#billets .on, ul#billets .off {
 	color: #000;
 	margin: 0;
+	background: url(legend.png) no-repeat;
 }
 
 ul#billets .on {
-	background: url("tick.png") no-repeat;
+	background-position: 0 -119px;
 }
 
 ul#billets .off {
-	background: url("cross.png") no-repeat;
+	background-position: 0 -419px;
 }
 
 ul#billets a:hover {
 	text-decoration: underline;
 }
 
-ul#billets li span:nth-of-type(2) a, ul#billets li span:nth-of-type(3) a {
+ul#billets li > span:nth-of-type(1) a, ul#billets li > span:nth-of-type(2) a {
 	color: inherit;
 }
