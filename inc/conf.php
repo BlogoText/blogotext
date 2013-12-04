@@ -186,7 +186,7 @@ function init_post_comment($id, $mode) {
 		// verif url.
 		if (!empty($_POST['webpage'])) {
 			$url = htmlspecialchars(stripslashes(clean_txt(  (strpos($_POST['webpage'], 'http://')===0 or strpos($_POST['webpage'], 'https://')===0)? $_POST['webpage'] : 'http://'.$_POST['webpage'] )));
-		} else { $url = $_POST['wabpage']; }
+		} else { $url = $_POST['webpage']; }
 
 		$comment = array (
 			'bt_id'				=> $comment_id,
