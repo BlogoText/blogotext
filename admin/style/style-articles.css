@@ -26,6 +26,7 @@ ul#billets li > span {
 
 ul#billets li > span:first-of-type span {
 	display: inline-block;
+	margin-left: 5px;
 	vertical-align: middle;
 }
 
@@ -43,7 +44,6 @@ ul#billets li > span:nth-of-type(2) {
 ul#billets li > span:nth-of-type(3) {
 	padding: 0 10px;
 }
-
 
 ul#billets li > span:nth-of-type(4) {
 	padding-left: 15px;

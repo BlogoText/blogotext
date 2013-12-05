@@ -493,7 +493,11 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 		echo legend($GLOBALS['lang']['maintenance_optim'], 'legend-sweep');
 
 		echo "\t".'<p>'.select_yes_no('opti-file', 0, $GLOBALS['lang']['bak_opti_miniature']).'</p>'."\n";
-		echo "\t".'<p>'.select_yes_no('opti-vacu', 0, $GLOBALS['lang']['bak_opti_vacuum']).'</p>'."\n";
+		if ($GLOBALS['sgdb'] == 'sqlite') {
+			echo "\t".'<p>'.select_yes_no('opti-vacu', 0, $GLOBALS['lang']['bak_opti_vacuum']).'</p>'."\n";
+		} else {
+			echo hidden_input('opti-vacu', 0);
+		}
 		echo "\t".'<p>'.select_yes_no('opti-comm', 0, $GLOBALS['lang']['bak_opti_recountcomm']).'</p>'."\n";
 
 	echo '<p><button class="submit blue-square" type="submit" name="do" value="optim">'.$GLOBALS['lang']['valider'].'</button></p>'."\n";
