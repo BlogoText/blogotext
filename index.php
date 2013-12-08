@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2013 Timo Van Neerden <ti-mo@myopera.com>
+# 2010-2013 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -276,7 +276,7 @@ else {
 	// paramètre de page "p"
 	if (isset($_GET['p']) and is_numeric($_GET['p']) and $_GET['p'] >= 1) {
 		$sql_p = 'LIMIT '.$GLOBALS['max_bill_acceuil'] * $_GET['p'].', '.$GLOBALS['max_bill_acceuil'];
-	} elseif (!isset($_GET['d'])) {
+	} elseif (!isset($_GET['d']) ) {
 		$sql_p = 'LIMIT '.$GLOBALS['max_bill_acceuil'];
 	} else {
 		$sql_p = '';
@@ -295,6 +295,7 @@ else {
 	}
 
 	$query .= $glue.$sql_a_p.$sql_order.$sql_p;
+	//die ($query);
 
 	$tableau = liste_elements($query, $array, $where);
 	$GLOBALS['param_pagination'] = array('nb' => count($tableau), 'nb_par_page' => $GLOBALS['max_bill_acceuil']);

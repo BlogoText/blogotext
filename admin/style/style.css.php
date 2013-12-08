@@ -37,6 +37,9 @@ readfile('style-articles.css');
 /* Page de styles plus généraux */
 readfile('style-style.css');
 
+/* Page de styles plus mobile < 850px de large */
+readfile('style-mobile-lt850px.css');
+
 /* Page de styles plus mobile < 700px de large */
 readfile('style-mobile-lt700px.css');
 

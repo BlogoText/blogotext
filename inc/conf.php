@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2013 Timo Van Neerden <ti-mo@myopera.com>
+# 2010-2013 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -87,12 +87,12 @@ $GLOBALS['files_ext'] = array(
 	'image'			=> array('png', 'gif', 'bmp', 'jpg', 'jpeg', 'ico', 'svg', 'tif', 'tiff'),
 	'music'			=> array('mp3', 'wave', 'wav', 'ogg', 'wma', 'flac', 'aac', 'mid', 'midi'), // more ?
 	'presentation'	=> array('ppt', 'pptx', 'pps', 'ppsx', 'odp'),
-	'pdf'				=> array('pdf', 'ps', 'psd'),
+	'pdf'			=> array('pdf', 'ps', 'psd'),
 	'spreadsheet'	=> array('xls', 'xlsx', 'xlt', 'xltx', 'ods', 'ots', 'csv'),
-	'text_document'=> array('doc', 'docx', 'rtf', 'odt', 'ott'),
+	'text_document'	=> array('doc', 'docx', 'rtf', 'odt', 'ott'),
 	'text-code'		=> array('txt', 'css', 'py', 'c', 'cpp', 'dat', 'ini', 'inf', 'text', 'conf', 'sh'), // more ?
 	'video'			=> array('mp4', 'ogv', 'avi', 'mpeg', 'mpg', 'flv', 'webm', 'mov', 'divx', 'rm', 'rmvb', 'wmv'), // more ?
-	'other' => array(''), // par défaut
+	'other'			=> array(''), // par défaut
 );
 
 
@@ -142,22 +142,22 @@ function init_post_article() { //no $mode : it's always admin.
 	$id = (isset($_POST['article_id']) and preg_match('#\d{14}#', $_POST['article_id'])) ? $_POST['article_id'] : $date;
 
 	$article = array (
-		'bt_id' => $id,
-		'bt_date' => $date,
-		'bt_title' => htmlspecialchars(stripslashes(protect_markup(clean_txt($_POST['titre'])))),
-		'bt_abstract' => htmlspecialchars(stripslashes(protect_markup(clean_txt($_POST['chapo'])))),
-		'bt_notes' => htmlspecialchars(stripslashes(protect_markup(clean_txt($_POST['notes'])))),
-		'bt_content' => $formated,
-		'bt_wiki_content' => stripslashes(protect_markup(clean_txt($_POST['contenu']))),
-		'bt_link' => '', // this one is not needed yet. Maybe in the futur. I dunno why it is still in the DB…
-		'bt_keywords' => $keywords,
-		'bt_categories' => htmlspecialchars(traiter_tags($_POST['categories'])), // htmlSpecialChars() nedded to escape the (") since tags are put in a <input/>. (') are escaped in form_categories(), with addslashes – not here because of JS problems :/
-		'bt_statut' => $_POST['statut'],
-		'bt_allow_comments' => $_POST['allowcomment'],
+		'bt_id'				=> $id,
+		'bt_date'			=> $date,
+		'bt_title'			=> htmlspecialchars(stripslashes(protect_markup(clean_txt($_POST['titre'])))),
+		'bt_abstract'		=> htmlspecialchars(stripslashes(protect_markup(clean_txt($_POST['chapo'])))),
+		'bt_notes'			=> htmlspecialchars(stripslashes(protect_markup(clean_txt($_POST['notes'])))),
+		'bt_content'		=> $formated,
+		'bt_wiki_content'	=> stripslashes(protect_markup(clean_txt($_POST['contenu']))),
+		'bt_link'			=> '', // this one is not needed yet. Maybe in the futur. I dunno why it is still in the DB…
+		'bt_keywords'		=> $keywords,
+		'bt_categories'		=> htmlspecialchars(traiter_tags($_POST['categories'])), // htmlSpecialChars() nedded to escape the (") since tags are put in a <input/>. (') are escaped in form_categories(), with addslashes – not here because of JS problems :/
+		'bt_statut'			=> $_POST['statut'],
+		'bt_allow_comments'	=> $_POST['allowcomment'],
 	);
 
 	if ( isset($_POST['ID']) and is_numeric($_POST['ID']) ) { // ID only added on edit.
-		$article['ID'] = $_POST['ID']; 
+		$article['ID'] = $_POST['ID'];
 	}
 	return $article;
 }
@@ -183,21 +183,26 @@ function init_post_comment($id, $mode) {
 			$comment_id = date('YmdHis');
 		}
 
+		// verif url.
+		if (!empty($_POST['webpage'])) {
+			$url = htmlspecialchars(stripslashes(clean_txt(  (strpos($_POST['webpage'], 'http://')===0 or strpos($_POST['webpage'], 'https://')===0)? $_POST['webpage'] : 'http://'.$_POST['webpage'] )));
+		} else { $url = $_POST['webpage']; }
+
 		$comment = array (
-			'bt_id' => $comment_id,
-			'bt_article_id' => $id,
-			'bt_content' => formatage_commentaires(htmlspecialchars(clean_txt($_POST['commentaire'].$edit_msg), ENT_NOQUOTES)),
-			'bt_wiki_content' => stripslashes(protect_markup(clean_txt($_POST['commentaire']))),
-			'bt_author' => htmlspecialchars(stripslashes(clean_txt($_POST['auteur']))),
-			'bt_email' => htmlspecialchars(stripslashes(clean_txt($_POST['email']))),
-			'bt_link' => '', // this is empty, 'cause bt_link is created on reading of DB, not writen in DB (usefull if we change server or site name some day).
-			'bt_webpage' => htmlspecialchars(stripslashes(clean_txt($_POST['webpage']))),
-			'bt_subscribe' => (isset($_POST['subscribe']) and $_POST['subscribe'] == 'on') ? '1' : '0',
-			'bt_statut' => $status,
+			'bt_id'				=> $comment_id,
+			'bt_article_id'		=> $id,
+			'bt_content'		=> formatage_commentaires(htmlspecialchars(clean_txt($_POST['commentaire'].$edit_msg), ENT_NOQUOTES)),
+			'bt_wiki_content'	=> stripslashes(protect_markup(clean_txt($_POST['commentaire']))),
+			'bt_author'			=> htmlspecialchars(stripslashes(clean_txt($_POST['auteur']))),
+			'bt_email'			=> htmlspecialchars(stripslashes(clean_txt($_POST['email']))),
+			'bt_link'			=> '', // this is empty, 'cause bt_link is created on reading of DB, not writen in DB (usefull if we change server or site name some day).
+			'bt_webpage'		=> $url,
+			'bt_subscribe'		=> (isset($_POST['subscribe']) and $_POST['subscribe'] == 'on') ? '1' : '0',
+			'bt_statut'			=> $status,
 		);
 	}
 	if ( isset($_POST['ID']) and is_numeric($_POST['ID']) ) { // ID only added on edit.
-		$comment['ID'] = $_POST['ID']; 
+		$comment['ID'] = $_POST['ID'];
 	}
 
 	return $comment;
@@ -214,18 +219,18 @@ function init_post_link2() { // second init : the whole link data needs to be st
 	}
 	$statut = (isset($_POST['statut'])) ? 0 : 1;
 	$link = array (
-		'bt_id' => $id,
-		'bt_type' => htmlspecialchars($_POST['type']),
-		'bt_content' => formatage_links(htmlspecialchars(stripslashes(protect_markup(clean_txt($_POST['description']))), ENT_NOQUOTES)), // formatage_wiki() ne parse que les tags BBCode. Le HTML est converti en texte.
-		'bt_wiki_content' => htmlspecialchars(stripslashes(protect_markup(clean_txt($_POST['description'])))),
-		'bt_author' => $author,
-		'bt_title' => htmlspecialchars(stripslashes(protect_markup(clean_txt($_POST['title'])))),
-		'bt_link' => $url,
-		'bt_tags' => htmlspecialchars(traiter_tags($_POST['categories'])),
-		'bt_statut'=> $statut
+		'bt_id'				=> $id,
+		'bt_type'			=> htmlspecialchars($_POST['type']),
+		'bt_content'		=> formatage_links(htmlspecialchars(stripslashes(protect_markup(clean_txt($_POST['description']))), ENT_NOQUOTES)), // formatage_wiki() ne parse que les tags BBCode. Le HTML est converti en texte.
+		'bt_wiki_content'	=> htmlspecialchars(stripslashes(protect_markup(clean_txt($_POST['description'])))),
+		'bt_author'			=> $author,
+		'bt_title'			=> htmlspecialchars(stripslashes(protect_markup(clean_txt($_POST['title'])))),
+		'bt_link'			=> $url,
+		'bt_tags'			=> htmlspecialchars(traiter_tags($_POST['categories'])),
+		'bt_statut'			=> $statut
 	);
 	if ( isset($_POST['ID']) and is_numeric($_POST['ID']) ) { // ID only added on edit.
-		$link['ID'] = $_POST['ID']; 
+		$link['ID'] = $_POST['ID'];
 	}
 
 	return $link;

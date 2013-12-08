@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2013 Timo Van Neerden <ti-mo@myopera.com>
+# 2010-2013 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -167,7 +167,9 @@ function liste_themes($chemin) {
 
 function afficher_form_filtre($type, $filtre) {
 	echo '<form method="get" action="'.$_SERVER['PHP_SELF'].'" onchange="this.submit();">'."\n";
+	echo '<div id="form-filtre">'."\n";
 		filtre($type, $filtre);
+	echo '</div>'."\n";
 	echo '</form>'."\n";
 }
 
@@ -559,7 +561,7 @@ function afficher_form_billet($article, $erreurs) {
 
 	echo '</p>';
 
-	echo '<textarea id="contenu" name="contenu" rows="20" cols="60" required="" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_contenu']).'" tabindex="55" class="text" >'.$contenudefaut.'</textarea>'."\n" ;
+	echo '<textarea id="contenu" name="contenu" rows="20" cols="60" required="" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_contenu']).'" tabindex="55" class="text">'.$contenudefaut.'</textarea>'."\n" ;
 
 	echo form_categories_links('articles', $categoriesdefaut);
 	echo "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'" tabindex="65"/>'."\n";
@@ -591,13 +593,12 @@ function afficher_form_billet($article, $erreurs) {
 
     echo '</div>'."\n";
 	echo '<p class="centrer">'."\n";
-	echo '<input class="submit blue-square" type="submit" name="enregistrer" value="'.$GLOBALS['lang']['envoyer'].'" tabindex="70" />'."\n";
+	echo '<input class="submit blue-square" type="submit" name="enregistrer" onclick="contenuLoad=document.getElementById(\'contenu\').value" value="'.$GLOBALS['lang']['envoyer'].'" tabindex="70" />'."\n";
 	if ($article) {
-		echo '<input class="submit red-square" type="submit" name="supprimer" value="'.$GLOBALS['lang']['supprimer'].'" onclick="return window.confirm(\''.$GLOBALS['lang']['question_suppr_article'].'\')" />'."\n";
+		echo '<input class="submit red-square" type="submit" name="supprimer" value="'.$GLOBALS['lang']['supprimer'].'" onclick="contenuLoad = document.getElementById(\'contenu\').value; return window.confirm(\''.$GLOBALS['lang']['question_suppr_article'].'\')" />'."\n";
 		echo hidden_input('article_id', $article['bt_id']);
 		echo hidden_input('article_date', $article['bt_date']);
 		echo hidden_input('ID', $article['ID']);
-
 	}
 	echo '</p>'."\n";
 	echo hidden_input('_verif_envoi', '1');
