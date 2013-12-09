@@ -493,7 +493,7 @@ function afficher_form_billet($article, $erreurs) {
 		$categoriesdefaut = '';
 		$titredefaut = '';
 		$notesdefaut = '';
-		$statutdefaut = '1';
+		$statutdefaut = '0';
 		$allowcommentdefaut = '1';
 	}
 	if ($erreurs) {
