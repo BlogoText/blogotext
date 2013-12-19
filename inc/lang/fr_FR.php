@@ -23,10 +23,10 @@ $GLOBALS['lang'] = array(
 'install_remdp'					=> 'Confirmez votre mot de passe&thinsp;: ',
 'install_choose_sgdb'			=> 'Choisissez votre SGDB&thinsp;: ',
 'install_sqlite_no_more_todo'	=> 'Aucune configuration supplémentaire n’est nécessaire avec SQLite.',
-'install_err_mysql_usr_empty'	=> 'L’utilisateur MySQL est vide.',
-'install_err_mysql_pss_empty'	=> 'Le mot de passe MySQL est vide.',
-'install_err_mysql_hst_empty'	=> 'Le « hostname » MySQL est vide.',
-'install_err_mysql_dba_empty'	=> 'Le nom de la base de donnée MySQL est vide.',
+'install_err_mysql_usr_empty'	=> 'L’utilisateur MySQL n’a pas été indiqué.',
+'install_err_mysql_pss_empty'	=> 'Le mot de passe MySQL n’a pas été indiqué.',
+'install_err_mysql_hst_empty'	=> 'Le « hostname » MySQL n’a pas été indiqué.',
+'install_err_mysql_dba_empty'	=> 'Le nom de la base de donnée MySQL n’a pas été indiqué.',
 'install_err_mysql_connect'	=> 'Échec lors de la connexion à MySQL avec ces informations.',
 'first_titre' 						=> 'Mon premier article',
 'first_edit' 						=> 'Éditez-moi',
@@ -69,7 +69,7 @@ $GLOBALS['lang'] = array(
 'byte_symbol'						=> 'o',
 'using'								=> 'avec',
 'rendered'							=> 'généré en',
-'recherche'							=> 'Les résulstats de recherche pour',
+'recherche'							=> 'Les résultats de recherche pour',
 // Boutons formatage commentaires
 'bouton-gras'						=> 'gras',
 'bouton-ital'						=> 'italique',
@@ -86,7 +86,7 @@ $GLOBALS['lang'] = array(
 'bouton-liul'						=> 'Insérer une liste à puce',
 'bouton-liol'						=> 'Insérer une liste numérotée',
 // Modes
-'ecrire'								=> 'Éditer&thinsp;: ',
+'ecrire'								=> 'Modifier l’article ',
 'apercu'								=> 'Aperçu',
 // Labels
 'label_date'						=> 'Date',
@@ -373,7 +373,7 @@ $GLOBALS['lang'] = array(
 // page backup
 'bak_succes_save'					=> 'Sauvegarde réussie',
 'maintenance_export'				=> 'Créer une sauvegarde',
-'maintenance_incl_quoi'			=> 'Que voulez vous dans votre sauvegarde ?',
+'maintenance_incl_quoi'			=> 'Que voulez vous dans votre sauvegarde&thinsp;?',
 'maintenance_import'				=> 'Restaurer une sauvegarde',
 'bak_choosefile'					=> 'Choisir un fichier',
 'bak_restor_done'					=> 'Restauration effectuée',
@@ -382,8 +382,8 @@ $GLOBALS['lang'] = array(
 'bak_comments_do'					=> 'Inclure les commentaires des articles',
 'bak_links_do'						=> 'Inclure les liens',
 'bak_number_articles'			=> 'Nombre d’articles',
-'bak_combien_images'				=> 'Combien d’images ?',
-'bak_combien_linx'				=> 'Combien de liens ?',
+'bak_combien_images'				=> 'Combien d’images&thinsp;?',
+'bak_combien_linx'				=> 'Combien de liens&thinsp;?',
 'bak_import_btjson'				=> 'Importer un fichier JSON de BlogoText',
 'bak_import_wordpress'			=> 'Importer un fichier XML de WordPress',
 'bak_import_netscape'			=> 'Importer un fichier HTML de liens Netscape',
@@ -402,7 +402,7 @@ $GLOBALS['lang'] = array(
 // vérifier les mises à jours
 'maint_chk_update'				=> 'Mises à jour',
 'maint_update_youisgood'		=> 'Blogotext est à jour',
-'maint_update_youisbad'			=> 'Une nouvelle version de Blogotext est disponible !',
+'maint_update_youisbad'			=> 'Une nouvelle version de Blogotext est disponible&thinsp;!',
 'maint_update_go_dl_it'			=> 'Vous pouvez la télécharger à l’adresse&thinsp;:',
 
 'succes'								=> 'Succès',
