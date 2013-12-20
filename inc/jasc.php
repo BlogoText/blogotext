@@ -14,7 +14,7 @@
 
 
 /*
- * JS to handle drag-n-drop : ondraging files on a <div> opens web request with POST individualy for each file (in case many are draged-n-droped)
+ * JS to handle drag-n-drop : ondraging files on a <div> opens web request with POST individually for each file (in case many are draged-n-droped)
 *
 */
 function js_drag_n_drop_handle($a) {
@@ -73,7 +73,7 @@ function uploadFile(file) {
 		uploadNext();
 	};
 	// prepare and send FormData
-	var formData = new FormData();  
+	var formData = new FormData();
 	formData.append(\'fichier\', file);
 	formData.append(\'token\', document.getElementById(\'token\').value);
 	document.getElementById(\'token\').parentNode.removeChild(document.getElementById(\'token\'));

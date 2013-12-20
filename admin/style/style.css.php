@@ -10,7 +10,7 @@ else {
 
 header("Content-type: text/css; charset: UTF-8");
 
-/* FOR MAINTAINANCE : CSS FILES ARE SPLITED IN MULTIPLE FILES
+/* FOR MAINTENANCE : CSS FILES ARE SPLITED IN MULTIPLE FILES
 -------------------------------------------------------------*/
 
 /* Résumé page : for the graphs and the thumbnails */
