@@ -195,7 +195,7 @@ function init_post_comment($id, $mode) {
 			'bt_wiki_content'	=> stripslashes(protect_markup(clean_txt($_POST['commentaire']))),
 			'bt_author'			=> htmlspecialchars(stripslashes(clean_txt($_POST['auteur']))),
 			'bt_email'			=> htmlspecialchars(stripslashes(clean_txt($_POST['email']))),
-			'bt_link'			=> '', // this is empty, 'cause bt_link is created on reading of DB, not writen in DB (usefull if we change server or site name some day).
+			'bt_link'			=> '', // this is empty, 'cause bt_link is created on reading of DB, not written in DB (useful if we change server or site name some day).
 			'bt_webpage'		=> $url,
 			'bt_subscribe'		=> (isset($_POST['subscribe']) and $_POST['subscribe'] == 'on') ? '1' : '0',
 			'bt_statut'			=> $status,

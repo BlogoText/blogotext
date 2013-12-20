@@ -19,11 +19,11 @@ function extraire_mots($texte) {
 
 	// supprime les balises
 	$texte = preg_replace('#<[^>]*>#', ' ', $texte);
-     
+
 	// supprime la pontuation
 	$texte = preg_replace('#[[:punct:]]#', ' ', $texte);
 
-	// supprime les espaces multiples 
+	// supprime les espaces multiples
 	$texte = trim(preg_replace('# {2,}#', ' ', $texte));
 
 	$tableau = explode(' ', $texte);
@@ -47,8 +47,8 @@ function extraire_mots($texte) {
 	// on recherche les mots trouvés plusieurs fois dans la liste, qui seront les mots clés en priorité
 	$tableau = array_unique($tableau);
 
-	
-	$n = 3; // nb occurences
+
+	$n = 3; // nb occurrences
 	$liste = array();
 
 	// on recherche les mots trouvés 3 fois. S’il y a plus de 7 mots, on s’arrête
@@ -111,7 +111,7 @@ function diacritique($texte, $majuscules, $espaces) {
 	$texte = htmlentities($texte, ENT_QUOTES, 'UTF-8'); // é => &eacute;
 	$texte = preg_replace('#&(.)(acute|grave|circ|uml|cedil|tilde|ring|slash|caron);#', '$1', $texte); // &eacute => e
 	$texte = preg_replace('#(\t|\n|\r)#', ' ' , $texte); // retours à la ligne => espaces
-	$texte = preg_replace('#&([a-z]{2})lig;#i', '$1', $texte); // EX : œ => oe ; æ => ae 
+	$texte = preg_replace('#&([a-z]{2})lig;#i', '$1', $texte); // EX : œ => oe ; æ => ae
 	$texte = preg_replace('#&[\w\#]*;#U', '', $texte); // les autres (&quote; par exemple) sont virés
 	$texte = preg_replace('#[^\w -]#U', '', $texte); // on ne garde que chiffres, lettres _, -, et espaces.
 	if ($espaces == '0')
@@ -209,12 +209,12 @@ function formatage_wiki($texte) {
 	$texte_formate = preg_replace($tofind, $toreplace, $texte);
 
 	// remplace les balises [codes] modifiées par la balise code non formatée et précédement mises en mémoire.
-	// ceci permet de formater l’ensemble du message, sauf les balises [code], 
+	// ceci permet de formater l’ensemble du message, sauf les balises [code],
 	if ($nb_balises_code_avant) {
 		$nb_balises_code_apres = preg_match_all('#\[code\](.*?)\[/code\]#s', $texte_formate, $balises_code_apres, PREG_SET_ORDER);
 		foreach ($balises_code as $i => $code) {
 			$texte_formate = str_replace($balises_code_apres[$i][0], '<pre>'.htmlspecialchars($balises_code[$i][1]).'</pre>', $texte_formate);
-			
+
 		}
 	}
 
@@ -228,7 +228,7 @@ function formatage_commentaires($texte) {
 	$texte = preg_replace('#\[([^|]+)\|(\s*javascript.*)\]#i', '$1', $texte);
 
 	$tofindc = array(
-		'#\[quote\](.+?)\[/quote\]#s',									// citation } les citation imbriquées marchent pour **deux niveaux** seulement, 
+		'#\[quote\](.+?)\[/quote\]#s',									// citation } les citation imbriquées marchent pour **deux niveaux** seulement,
 		'#\[quote\](.+?)\[/quote\]#s',									//          } [quote][quote]bla[/quote][quote]bla[/quote][/quote] marchent et donnent le résultat attendu.
 																					//				} !!!! : [quote*][quote**][quote]bla[/quote**][/quote*][/quote] fait que les balises avec *, ** matchent.
 		'#<p>(\r|\n)+#s',										// code
@@ -296,7 +296,7 @@ function formatage_links($texte) {
 //		'$1<br/>'."\n",														// br : retour à la ligne sans saut de ligne
 	);
 
-	// ceci permet de formater l’ensemble du message, sauf les balises [code], 
+	// ceci permet de formater l’ensemble du message, sauf les balises [code],
 	$nb_balises_code_avant = preg_match_all('#\[code\](.*?)\[/code\]#s', $texte, $balises_code, PREG_SET_ORDER);
 	$texte_formate = preg_replace($tofind, $toreplace, ' '.$texte.' ');
 	if ($nb_balises_code_avant) {

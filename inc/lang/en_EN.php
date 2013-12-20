@@ -219,7 +219,7 @@ $GLOBALS['lang'] = array(
 've'									=> 'Fr',
 'sa'									=> 'Sa',
 'di'									=> 'Su',
-// Jours	
+// Jours
 'lundi'								=> 'Monday',
 'mardi'								=> 'Tuesday',
 'mercredi'							=> 'Wednesday',
@@ -333,7 +333,7 @@ $GLOBALS['lang'] = array(
 'pref_allow_global_coms'		=> 'Close comments on every article: ',
 'pref_connexion_captcha'		=> 'Use captach on login (<a href="?test_captcha" target="_blank"><b>test before!</b></a>): ',
 'pref_all'							=> 'All',
-'pref_go_to_mainteance'			=> 'Go on maintainance page.',
+'pref_go_to_maintenance'		=> 'Go on maintenance page.',
 'pref_label_bookmark_lien'		=> 'Bookmark this link, to share any page in BlogoText by cliking on it.',
 'pref_alert_bookmark_link'		=> 'Links sharing bookmarklet: ',
 'pref_linx_dl_auto'				=> 'Automaticaly download shared files?',

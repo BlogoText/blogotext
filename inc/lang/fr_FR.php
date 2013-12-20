@@ -333,7 +333,7 @@ $GLOBALS['lang'] = array(
 'pref_allow_global_coms'		=> 'Fermeture des commentaires sur tous les articles&thinsp;: ',
 'pref_connexion_captcha'		=> 'Activer le captcha à la connexion (<a href="?test_captcha" target="_blank"><b>tester avant !</b></a>)&thinsp;: ',
 'pref_all'							=> 'Tout',
-'pref_go_to_mainteance'			=> 'Accéder à la page de maintenance.',
+'pref_go_to_maintenance'		=> 'Accéder à la page de maintenance.',
 'pref_label_bookmark_lien'		=> 'Gardez ce lien en favori. Cliquez ensuite dessus pour sauver n’importe quelle page dans Blogotext.',
 'pref_alert_bookmark_link'		=> 'Bookmarklet pour partager des liens&nbsp;: ',
 'pref_linx_dl_auto'				=> 'Ajouter automatiquement les fichiers partagés à vos fichiers&nbsp;?',
