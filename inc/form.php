@@ -268,7 +268,8 @@ function filtre($type, $filtre) { // cette fonction est très gourmande en resso
 				echo ($filtre == 'auteur.'.$nom['bt_author']) ? ' selected="selected"' : '';
 
 				if (strlen($nom['bt_author']) > 40) {
-					$pseudo = substr(diacritique($nom['bt_author'], 1, 1), 0, 39).'…';
+					mb_internal_encoding('UTF-8');
+					$pseudo = mb_substr($nom['bt_author'], 0, 39).'…';
 				} else { $pseudo = $nom['bt_author']; }
 
 				echo '>'.$pseudo.' ('.$nom['nb'].')'.'</option>'."\n";

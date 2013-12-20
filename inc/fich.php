@@ -272,7 +272,7 @@ function open_serialzd_file($fichier) {
 
 function get_external_file($url, $timeout) {
 	$context = stream_context_create(array('http'=>array(
-			'user_agent' => 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:23.0) Gecko/20100101 Firefox/23.0',
+			'user_agent' => 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:23.0 BlogoText-UA) Gecko/20100101 Firefox/23.0',
 			'timeout' => $timeout
 		))); // Timeout : time until we stop waiting for the response.
 	$data = @file_get_contents($url, false, $context, -1, 4000000); // We download at most 4 Mb from source.

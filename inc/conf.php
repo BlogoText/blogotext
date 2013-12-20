@@ -101,9 +101,9 @@ function init_list_articles($article) {
 	if (!empty($article)) {
 		// pour ne plus rendre obligatoire le chapô : s'il est vide, on le recrée à partir du début du bt_content
 		if (isset($article['bt_abstract']) and empty($article['bt_abstract'])) {
-			$abstract = array();
-			$abstract = explode("|", wordwrap($article['bt_content'], 250, "|"), 2);
-			$article['bt_abstract'] = strip_tags($abstract[0])."…";
+			mb_internal_encoding('UTF-8');
+			$abstract = mb_substr(strip_tags($article['bt_content']), 0, 249);
+			$article['bt_abstract'] = $abstract."…";
 		}
 		$dec_id = decode_id($article['bt_id']);
 		$article = array_merge($article, decode_id($article['bt_date']));

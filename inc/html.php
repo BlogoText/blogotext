@@ -275,19 +275,23 @@ function afficher_calendrier() {
 }
 
 function encart_commentaires() {
+	mb_internal_encoding('UTF-8');
 	$query = "SELECT c.bt_author, c.bt_id, c.bt_article_id, c.bt_content, a.bt_title FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id WHERE c.bt_statut=1 AND a.bt_statut=1 ORDER BY c.bt_id DESC LIMIT 5";
 	$tableau = liste_elements($query, array(), 'commentaires');
 	if (isset($tableau)) {
-		$listeLastComments = '<ul class="encart_lastcom">';
+		$listeLastComments = '<ul class="encart_lastcom">'."\n";
 		foreach ($tableau as $i => $comment) {
 			$comment['contenu_abbr'] = strip_tags($comment['bt_content']);
+			// limits length of comment abbreviation and name 
 			if (strlen($comment['contenu_abbr']) >= 60) {
-				$abstract = explode("|", wordwrap($comment['contenu_abbr'], 60, "|"), 2);
-				$comment['contenu_abbr'] = $abstract[0]."…";
+				$comment['contenu_abbr'] = mb_substr($comment['contenu_abbr'], 0, 59).'…';
 			}
-			$listeLastComments .= '<li title="'.date_formate($comment['bt_id']).'"><b>'.$comment['bt_author'].'</b> '.$GLOBALS['lang']['sur'].' <b>'.$comment['bt_title'].'</b><br/><a href="'.$comment['bt_link'].'">'.$comment['contenu_abbr'].'</a>'.'</li>';
+			if (strlen($comment['bt_author']) >= 30) {
+				$comment['bt_author'] = mb_substr($comment['bt_author'], 0, 29).'…';
+			}
+			$listeLastComments .= '<li title="'.date_formate($comment['bt_id']).'"><b>'.$comment['bt_author'].'</b> '.$GLOBALS['lang']['sur'].' <b>'.$comment['bt_title'].'</b><br/><a href="'.$comment['bt_link'].'">'.$comment['contenu_abbr'].'</a>'.'</li>'."\n";
 		}
-		$listeLastComments .= '</ul>';
+		$listeLastComments .= '</ul>'."\n";
 		return $listeLastComments;
 	} else {
 		return $GLOBALS['lang']['no_comments'];
