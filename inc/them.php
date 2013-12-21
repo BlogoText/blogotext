@@ -200,8 +200,8 @@ function extract_boucles($texte, $balise, $incl) {
 	}
 	$debut = strpos($texte, '{'.$balise.'}') + $len_balise_d;
 	$fin = strpos($texte, '{/'.$balise.'}') + $len_balise_f;
-	$lenght = $fin - $debut;
-	$return = substr($texte, $debut, $lenght);
+	$length = $fin - $debut;
+	$return = substr($texte, $debut, $length);
 	return $return;
 }
 

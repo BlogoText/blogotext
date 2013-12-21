@@ -30,7 +30,7 @@
 +-------------------------------------------------------------------------+
 | http://www.puremango.co.uk                                              |
 |                                                                         |
-| Freecap is an independant Image Captcha generator.                      |
+| Freecap is an independent Image Captcha generator.                      |
 |                                                                         |
 | (c) 2006 Howard Yend                                                    |
 |                                                                         |

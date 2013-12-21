@@ -331,7 +331,7 @@ function valid_install_2() {
 		$erreurs[] = $GLOBALS['lang']['err_prefs_mdp_diff'] ;
 	}
 
-	if ( !strlen(trim($_POST['racine'])) or !preg_match('#^https?://[a-zA-Z0-9_/.-]*/$#', $_POST['racine']) ) {
+	if ( !strlen(trim($_POST['racine'])) or !preg_match('#^(https?://).*/$#', $_POST['racine']) ) {
 		$erreurs[] = $GLOBALS['lang']['err_prefs_racine'];
 	} elseif (!preg_match('/^https?:\/\//', $_POST['racine'])) {
 		$erreurs[] = $GLOBALS['lang']['err_prefs_racine_http'];

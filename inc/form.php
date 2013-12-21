@@ -266,7 +266,13 @@ function filtre($type, $filtre) { // cette fonction est très gourmande en resso
 			if (!empty($nom['nb']) ) {
 				echo '<option value="auteur.'.$nom['bt_author'].'"';
 				echo ($filtre == 'auteur.'.$nom['bt_author']) ? ' selected="selected"' : '';
-				echo '>'.$nom['bt_author'].' ('.$nom['nb'].')'.'</option>'."\n";
+
+				if (strlen($nom['bt_author']) > 40) {
+					mb_internal_encoding('UTF-8');
+					$pseudo = mb_substr($nom['bt_author'], 0, 39).'…';
+				} else { $pseudo = $nom['bt_author']; }
+
+				echo '>'.$pseudo.' ('.$nom['nb'].')'.'</option>'."\n";
 			}
 		}
 		echo '</optgroup>'."\n";

@@ -210,7 +210,7 @@ function afficher_form_prefs($erreurs = '') {
 
 		$fld_maintenance = '<fieldset class="pref">';
 		$fld_maintenance .= legend($GLOBALS['lang']['titre_maintenance'], 'legend-sweep');
-		$fld_maintenance .= '<p><a href="maintenance.php">'.$GLOBALS['lang']['pref_go_to_mainteance'].'</a></p>';
+		$fld_maintenance .= '<p><a href="maintenance.php">'.$GLOBALS['lang']['pref_go_to_maintenance'].'</a></p>';
 		$fld_maintenance .= '</fieldset>';
 	echo $fld_maintenance;
 

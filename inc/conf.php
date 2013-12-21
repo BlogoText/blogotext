@@ -101,9 +101,9 @@ function init_list_articles($article) {
 	if (!empty($article)) {
 		// pour ne plus rendre obligatoire le chapô : s'il est vide, on le recrée à partir du début du bt_content
 		if (isset($article['bt_abstract']) and empty($article['bt_abstract'])) {
-			$abstract = array();
-			$abstract = explode("|", wordwrap($article['bt_content'], 250, "|"), 2);
-			$article['bt_abstract'] = strip_tags($abstract[0])."…";
+			mb_internal_encoding('UTF-8');
+			$abstract = mb_substr(strip_tags($article['bt_content']), 0, 249);
+			$article['bt_abstract'] = $abstract."…";
 		}
 		$dec_id = decode_id($article['bt_id']);
 		$article = array_merge($article, decode_id($article['bt_date']));
@@ -195,7 +195,7 @@ function init_post_comment($id, $mode) {
 			'bt_wiki_content'	=> stripslashes(protect_markup(clean_txt($_POST['commentaire']))),
 			'bt_author'			=> htmlspecialchars(stripslashes(clean_txt($_POST['auteur']))),
 			'bt_email'			=> htmlspecialchars(stripslashes(clean_txt($_POST['email']))),
-			'bt_link'			=> '', // this is empty, 'cause bt_link is created on reading of DB, not writen in DB (usefull if we change server or site name some day).
+			'bt_link'			=> '', // this is empty, 'cause bt_link is created on reading of DB, not written in DB (useful if we change server or site name some day).
 			'bt_webpage'		=> $url,
 			'bt_subscribe'		=> (isset($_POST['subscribe']) and $_POST['subscribe'] == 'on') ? '1' : '0',
 			'bt_statut'			=> $status,
