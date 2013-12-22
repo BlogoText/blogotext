@@ -337,7 +337,7 @@ function lien_pagination() {
 		$lien_suivant = '';
 	} else {
 		$lien_precede = '<a href="'.htmlspecialchars($_SERVER['PHP_SELF']).'?'.$qstring.'&amp;p='.($page_courante-1).'" rel="prev">&#171; '.$GLOBALS['lang']['label_precedent'].'</a>';
-		$lien_suivant = '<a href="'.htmlspecialchars($_SERVER['PHP_SELF']).'?'.$qstring.'&amp;p='.($page_courante+1).'" rel="next">'.$GLOBALS['lang']['label_suivant'].' &#8827;</a>';
+		$lien_suivant = '<a href="'.htmlspecialchars($_SERVER['PHP_SELF']).'?'.$qstring.'&amp;p='.($page_courante+1).'" rel="next">'.$GLOBALS['lang']['label_suivant'].' &#187;</a>';
 	}
 
 	$glue = ' – ';
