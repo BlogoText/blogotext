@@ -23,6 +23,9 @@ $GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
 
 // TRAITEMENT
 $erreurs_form = array();
+
+//
+
 if (isset($_POST['_verif_envoi'])) {
 	$billet = init_post_article();
 	$erreurs_form = valider_form_billet($billet);
@@ -70,7 +73,7 @@ if ($post != '') {
 		echo '</p>'."\n";
 	echo '</div>'."\n";
 }
- 	
+
 echo '<div id="page">'."\n";
 
 // EDIT
