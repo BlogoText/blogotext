@@ -58,13 +58,13 @@ if (isset($_POST['_verif_envoi']) and valider_form() === TRUE) { // OK : getting
 
 	// Handle saved data/URL redirect if POST request made
 	$location = 'index.php';
-	if(isset($_COOKIE['BT-saved-url'])){
-		$location = $_COOKIE['BT-saved-url'];
-		setcookie('BT-saved-url', NULL);
+	if(isset($_SESSION['BT-saved-url'])){
+		$location = $_SESSION['BT-saved-url'];
+		unset($_SESSION['BT-saved-url']);
 	}
-	if(isset($_COOKIE['BT-post-token'])){
+	if(isset($_SESSION['BT-post-token'])){
 		// The login was right, so we give a token because the previous one expired with the session
-		setcookie('BT-post-token', new_token());
+		$_SESSION['BT-post-token'] = new_token();
 	}
 
 	header('Location: '.$location);

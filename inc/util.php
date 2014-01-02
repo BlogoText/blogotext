@@ -93,16 +93,16 @@ function check_session() {
 }
 
 
-// this will look if session expired and kill it, otherwise restore it
+// This will look if session expired and kill it, otherwise restore it
 function operate_session() {
 	if (check_session() === FALSE) { // session is not good
 		fermer_session(); // destroy it
 	} else {
-		// Load saved POST data from cookie, some might consider it as dirty :)
-		foreach($_COOKIE as $key => $value){
+		// Restore data lost if possible
+		foreach($_SESSION as $key => $value){
 			if(substr($key, 0, 8) === 'BT-post-'){
 				$_POST[substr($key, 8)] = $value;
-				setcookie($key, NULL);
+				unset($_SESSION[$key]);
 			}
 		}
 		return TRUE;
@@ -112,13 +112,14 @@ function operate_session() {
 function fermer_session() {
 	unset($_SESSION['nom_utilisateur'], $_SESSION['user_id']);
 	setcookie('BT-admin-stay-logged', NULL);
-	// Saving client-side the possible lost data (writing article for example)
-	foreach($_POST as $key => $value){
-		setcookie('BT-post-'.$key, $value);
-	}
-	setcookie('BT-saved-url', $_SERVER['REQUEST_URI']);
 	session_destroy(); // destroy session
+	// Saving server-side the possible lost data (writing article for example)
+	session_start();
 	session_regenerate_id(true); // change l'ID au cas ou
+	foreach($_POST as $key => $value){
+		$_SESSION['BT-post-'.$key] = $value;
+	}
+	$_SESSION['BT-saved-url'] = $_SERVER['REQUEST_URI'];
 	redirection('auth.php');
 	exit();
 }
