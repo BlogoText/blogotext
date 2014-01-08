@@ -92,16 +92,13 @@ function conversions_theme($texte, $solo_art, $cnt_mode) {
 	$texte = str_replace($GLOBALS['balises']['blog_email'], $GLOBALS['email'], $texte);
 	$texte = str_replace($GLOBALS['balises']['blog_nom'], $GLOBALS['nom_du_site'], $texte);
 
-
-	if ($cnt_mode == 'post') {
-		if (isset($solo_art['bt_title'])) {
+	if ($cnt_mode == 'post' and !empty($solo_art)) {
 			$texte = str_replace($GLOBALS['balises']['article_titre_page'], $solo_art['bt_title'].' - ', $texte);
+			$texte = str_replace($GLOBALS['balises']['article_titre'], $solo_art['bt_title'], $texte);
 			$texte = str_replace($GLOBALS['balises']['article_titre_echape'], urlencode($solo_art['bt_title']), $texte);
-			$texte = str_replace($GLOBALS['balises']['article_lien'], $solo_art['bt_link'], $texte);
-		}
-		if (isset($solo_art['bt_keywords'])) {
 			$texte = str_replace($GLOBALS['balises']['blog_motscles'], $solo_art['bt_keywords'], $texte);
-		}
+			$texte = str_replace($GLOBALS['balises']['article_lien'], $solo_art['bt_link'], $texte);
+			$texte = str_replace($GLOBALS['balises']['article_chapo'], $solo_art['bt_abstract'], $texte);
 	}
 
 	// si remplacé, ceci ne sert à rien. Si pas remplacé, ça sert.
