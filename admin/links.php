@@ -70,8 +70,8 @@ if (isset($_POST['_verif_envoi'])) {
 		if (!isset($_POST['is_it_edit']) and $GLOBALS['dl_link_to_files'] >= 1) {
 
 			// dl_link_to_files : 0 = never ; 1 = always ; 2 = ask with checkbox
-			if ( ($GLOBALS['dl_link_to_files'] == 1) or ($GLOBALS['dl_link_to_files'] == 2 and isset($_POST['add_to_files'])) ) {
-				//echo 'ok';die;
+			if ( isset($_POST['add_to_files']) ) {
+				$_POST['fichier'] = $link['bt_link'];
 				$fichier = init_post_fichier();
 				$erreurs = valider_form_fichier($fichier);
 

@@ -68,7 +68,7 @@ if (isset($_POST['_verif_envoi']) and valider_form() === TRUE) { // OK : getting
 		echo '<p><label for="password">'.ucfirst($GLOBALS['lang']['label_dp_motdepasse']).'</label><input class="text" id="password" type="password" placeholder="••••••••••••" name="mot_de_passe" value="" /></p>'."\n";
 		if (isset($GLOBALS['connexion_captcha']) and ($GLOBALS['connexion_captcha'] == "1")) {
 			echo '<p><label for="word">'.ucfirst($GLOBALS['lang']['label_dp_word_captcha']).'</label><input class="text" type="text" id="word" name="word" value="" /></p>'."\n";
-			echo '<p><a href="#" onclick="new_freecap();return false;" title="'.$GLOBALS['lang']['label_dp_changer_captcha'].'"><img src="../inc/freecap/freecap.php" id="freecap"></a></p>'."\n";
+			echo '<p><a href="#" onclick="new_freecap();return false;" title="'.$GLOBALS['lang']['label_dp_changer_captcha'].'"><img src="../inc/freecap/freecap.php" id="freecap" alt="captcha"></a></p>'."\n";
 		}
 
 		echo '<p><label for="stay_logged">'.$GLOBALS['lang']['label_stay_logged'].'</label><input type="checkbox" id="stay_logged" name="stay_logged" /></p>'."\n";
