@@ -202,7 +202,7 @@ function afficher_form_commentaire($article_id, $mode, $erreurs='', $comm_id='')
 
 		$form .= "\t\t".'<label>'.$GLOBALS['lang']['label_dp_webpage'].'<input type="url" name="webpage" placeholder="http://www.example.com" value="'.$defaut['webpage'].'" size="25" /></label>'."\n";
 
-		$form .= "\t\t".'<label>'.$GLOBALS['lang']['label_dp_captcha'].'<b>'.en_lettres($GLOBALS['captcha']['x']).'</b> &#x0002B; <b>'.en_lettres($GLOBALS['captcha']['y']).'</b> <input type="number" name="captcha" autocomplete="off" value="" size="25" class="text" /></label>'."\n";
+		$form .= "\t\t".'<label>'.$GLOBALS['lang']['label_dp_captcha'].'<b>'.en_lettres($GLOBALS['captcha']['x']).'</b> &#x0002B; <b>'.en_lettres($GLOBALS['captcha']['y']).'</b> <input type="number" name="captcha" autocomplete="off" value="" class="text" /></label>'."\n";
 
 		$form .= "\t\t".hidden_input('_token', $GLOBALS['captcha']['hash']);
 		$form .= "\t\t".hidden_input('_verif_envoi', '1');

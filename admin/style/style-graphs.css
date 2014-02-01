@@ -49,11 +49,7 @@
 
 #articles .month-bar {
 	background: red;
-
-	background: -webkit-linear-gradient(left, #f00, #F55);
-	background: -moz-linear-gradient(left, #f00, #F55);
-	background: -o-linear-gradient(left, #f00, #F55);
-	background: linear-gradient(left, #f00, #F55);
+	background: linear-gradient(to right, #f00, #F55);
 	border-radius: 1px 1px 0 0;
 }
 
@@ -85,10 +81,7 @@
 
 #commentaires .month-bar {
 	background: #87ceeb;
-	background: -webkit-linear-gradient(left, #0be, #9df);
-	background: -moz-linear-gradient(left, #0be, #9df);
-	background: -o-linear-gradient(left, #0be, #9df);
-	background: linear-gradient(left, #0be, #9df);
+	background: linear-gradient(to right, #0be, #9df);
 	border-radius: 1px 1px 0 0;
 }
 
@@ -99,11 +92,7 @@
 
 #links .month-bar {
 	background: orange;
-
-	background: -webkit-linear-gradient(left, #f90, #FFCB88);
-	background: -moz-linear-gradient(left, #f90, #FFCB88);
-	background: -o-linear-gradient(left, #f90, #FFCB88);
-	background: linear-gradient(left, #f90, #FFCB88);
+	background: linear-gradient(to right, #f90, #FFCB88);
 
 	border-radius: 1px 1px 0 0;
 }

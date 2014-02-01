@@ -205,10 +205,7 @@
 	font-size: 130%;
 	font-weight: bold;
 	background: #38f;
-	background: linear-gradient(top, #d51, #f84);
-	background: -o-linear-gradient(top, #d51, #f84);
-	background: -moz-linear-gradient(top, #d51, #f84);
-	background: -webkit-linear-gradient(top, #d51, #f84);
+	background: linear-gradient(to bottom, #d51, #f84);
 	border-radius: 7px;
 	color: white;
 	border: 1px solid #f00;

@@ -148,12 +148,9 @@ html:hover .reminder {
 #top {
 	height: 112px;
 	clear: both;
-	background: linear-gradient(top, #bdbdbd 2px, #eee 79px, #c4c4c4);
-	background: -o-linear-gradient(top, #bdbdbd 2px, #eee 79px, #c4c4c4);
-	background: -moz-linear-gradient(top, #bdbdbd 2px, #eee 79px, #c4c4c4);
-	background: -webkit-linear-gradient(top, #bdbdbd 2px, #eee 79px, #c4c4c4);
+	background: linear-gradient(to bottom, #bdbdbd 2px, #eee 79px, #c4c4c4);
 	margin-bottom: 20px;
-	box-shadow: 0 -4px 12px silver inset;
+	box-shadow: 0px -10px 4px -10px #888888 inset;
 }
 
 #top h1 {
@@ -192,7 +189,7 @@ html:hover .reminder {
 #nav a.current {
 	border-color: #c8c8c8;
 	background-color: #fff;
-	box-shadow: 0 5px 0px #fff, 0 0px 4px silver;
+	box-shadow: 0 5px 0px #fff, 0 0px 4px #888;
 }
 
 #lien-index    { background-position: center  -34px; }
@@ -390,10 +387,7 @@ select {
 	font-weight: bold;
 	border-color: #389;
 	background: #7ef;
-	background: linear-gradient(#def, #adf 6%, #5bf 50%);
-	background: -o-linear-gradient(#def, #adf 6%, #5bf 50%);
-	background: -moz-linear-gradient(#def, #adf 6%, #5bf 50%);
-	background: -webkit-linear-gradient(#def, #adf 6%, #5bf 50%);
+	background: linear-gradient(to bottom, #def, #adf 6%, #5bf 50%);
 }
 
 *.red-square {
@@ -401,10 +395,7 @@ select {
 	margin-left: 50px;
 	border-color: #943;
 	background: #fa9;
-	background: linear-gradient(#faa, #faa 6%, #e44 50%);
-	background: -o-linear-gradient(#faa, #faa 6%, #e44 50%);
-	background: -moz-linear-gradient(#faa, #faa 6%, #e44 50%);
-	background: -webkit-linear-gradient(#faa, #faa 6%, #e44 50%);
+	background: linear-gradient(to bottom, #faa, #faa 6%, #e44 50%);
 }
 
 /* these are the bordered fieldsets */
