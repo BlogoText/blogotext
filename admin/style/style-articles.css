@@ -51,10 +51,7 @@ ul#billets li > span:nth-of-type(4) {
 
 ul#billets li:nth-of-type(odd) {
 	background: #edf3fe;
-	background: -webkit-linear-gradient(left, #edf3fe, #fdfdff, #edf3fe);
-	background:    -moz-linear-gradient(left, #edf3fe, #fdfdff, #edf3fe);
-	background:      -o-linear-gradient(left, #edf3fe, #fdfdff, #edf3fe);
-	background:         linear-gradient(left, #edf3fe, #fdfdff, #edf3fe);
+	background: linear-gradient(to right, #edf3fe, #fdfdff, #edf3fe);
 }
 
 ul#billets li:nth-of-type(odd):hover {

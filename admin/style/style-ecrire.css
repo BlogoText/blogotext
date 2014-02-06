@@ -87,10 +87,7 @@ p.formatbut {
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	background: #cde6ff;
-	background: -webkit-linear-gradient(top, white, #e6e6e6);
-	background:    -moz-linear-gradient(top, white, #e6e6e6);
-	background:      -o-linear-gradient(top, white, #e6e6e6);
-	background:         linear-gradient(top, white, #e6e6e6);
+	background: linear-gradient(to bottom, white, #e6e6e6);
 }
 
 .formatbut .but {
@@ -105,21 +102,14 @@ p.formatbut {
 }
 
 .formatbut .but:hover {
-	-webkit-transition: border-color .3s;
-	   -moz-transition: border-color .3s;
-	    -ms-transition: border-color .3s;
-	     -o-transition: border-color .3s;
-	        transition: border-color .3s;
+	transition: border-color .3s;
 	border-color: silver;
 }
 
 .formatbut .but:active {
 	border-color: gray;
 	background: #cde6ff;
-	background: -webkit-linear-gradient(bottom, white, #d6d6d6);
-	background:    -moz-linear-gradient(bottom, white, #d6d6d6);
-	background:      -o-linear-gradient(bottom, white, #d6d6d6);
-	background:         linear-gradient(bottom, white, #d6d6d6);
+	background: linear-gradient(to top, white, #d6d6d6);
 }
 
 .formatbut .but > span:nth-of-type(1) {

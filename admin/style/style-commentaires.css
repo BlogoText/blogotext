@@ -4,10 +4,7 @@
 .commentbloc {
 	padding : 5px 15px 5px 30px;
 	background: #edf3fe url("comment.png") no-repeat 5px 5px;
-	background: url("comment.png") no-repeat 5px 5px, -webkit-linear-gradient(right, white 60%, #edf3fe );
-	background: url("comment.png") no-repeat 5px 5px,    -moz-linear-gradient(right, white 60%, #edf3fe );
-	background: url("comment.png") no-repeat 5px 5px,      -o-linear-gradient(right, white 60%, #edf3fe );
-	background: url("comment.png") no-repeat 5px 5px,         linear-gradient(right, white 60%, #edf3fe );
+	background: url("comment.png") no-repeat 5px 5px, linear-gradient(to left, white 60%, #edf3fe );
 	border: 1px solid #ccc;
 	border-width: 1px 1px 0 1px;
 }

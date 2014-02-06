@@ -38,7 +38,6 @@ if (check_session() === TRUE) { // return to index if session is already open.
 	exit;
 }
 
-
 // Auth checking :
 if (isset($_POST['_verif_envoi']) and valider_form() === TRUE) { // OK : getting in.
 	$ip = (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) ? htmlspecialchars($_SERVER['HTTP_X_FORWARDED_FOR']) : htmlspecialchars($_SERVER['REMOTE_ADDR']);
@@ -47,14 +46,27 @@ if (isset($_POST['_verif_envoi']) and valider_form() === TRUE) { // OK : getting
 
 	if (!empty($_POST['stay_logged'])) { // if user wants to stay logged
 		$user_id = hash_password($GLOBALS['mdp'].$GLOBALS['identifiant'].$GLOBALS['salt'], md5($_SERVER['HTTP_USER_AGENT'].$ip.$GLOBALS['salt']));
-		setcookie('BT-admin-stay-logged', $user_id, time()+365*42*60*60, null, null, false, true);
-
+		setcookie('BT-admin-stay-logged', $user_id, time()+365*24*60*60, null, null, false, true);
+		session_set_cookie_params(365*24*60*60); // set expiration time to the browser
 	} else {
 		$_SESSION['stay_logged_mode'] = 0;
 		session_regenerate_id(true);
 	}
+
 	fichier_ip();
-	header('Location: index.php');
+
+	// Handle saved data/URL redirect if POST request made
+	$location = 'index.php';
+	if(isset($_SESSION['BT-saved-url'])){
+		$location = $_SESSION['BT-saved-url'];
+		unset($_SESSION['BT-saved-url']);
+	}
+	if(isset($_SESSION['BT-post-token'])){
+		// The login was right, so we give a token because the previous one expired with the session
+		$_SESSION['BT-post-token'] = new_token();
+	}
+
+	header('Location: '.$location);
 
 } else { // On sort…
 		// …et affiche la page d'auth
@@ -68,7 +80,7 @@ if (isset($_POST['_verif_envoi']) and valider_form() === TRUE) { // OK : getting
 		echo '<p><label for="password">'.ucfirst($GLOBALS['lang']['label_dp_motdepasse']).'</label><input class="text" id="password" type="password" placeholder="••••••••••••" name="mot_de_passe" value="" /></p>'."\n";
 		if (isset($GLOBALS['connexion_captcha']) and ($GLOBALS['connexion_captcha'] == "1")) {
 			echo '<p><label for="word">'.ucfirst($GLOBALS['lang']['label_dp_word_captcha']).'</label><input class="text" type="text" id="word" name="word" value="" /></p>'."\n";
-			echo '<p><a href="#" onclick="new_freecap();return false;" title="'.$GLOBALS['lang']['label_dp_changer_captcha'].'"><img src="../inc/freecap/freecap.php" id="freecap"></a></p>'."\n";
+			echo '<p><a href="#" onclick="new_freecap();return false;" title="'.$GLOBALS['lang']['label_dp_changer_captcha'].'"><img src="../inc/freecap/freecap.php" id="freecap" alt="captcha"></a></p>'."\n";
 		}
 
 		echo '<p><label for="stay_logged">'.$GLOBALS['lang']['label_stay_logged'].'</label><input type="checkbox" id="stay_logged" name="stay_logged" /></p>'."\n";

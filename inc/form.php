@@ -413,9 +413,15 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= "\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
 
 		$form .= "\t".'<label>'.$GLOBALS['lang']['label_lien_priv'].'<input type="checkbox" name="statut" />'.'</label>';
+		// download of file is asked
 		if ( ($type == 'image' or $type == 'file') and $GLOBALS['dl_link_to_files'] == 2 ) {
 			$form .= "\t".'<label>'.$GLOBALS['lang']['label_dl_fichier'].'<input type="checkbox" name="add_to_files" /></label>'."\n";
 		}
+		// download of file is systematic
+		elseif ( ($type == 'image' or $type == 'file') and $GLOBALS['dl_link_to_files'] == 1 ) {
+			$form .= hidden_input('add_to_files', 'on');
+		}
+
 		$form .= "\t".'<p class="centrer">'."\n";
 		$form .= "\t\t".'<input class="submit blue-square" type="submit" name="enregistrer" id="valid-link" value="'.$GLOBALS['lang']['envoyer'].'" />'."\n";
 		$form .= "\t".'</p>'."\n";
@@ -423,6 +429,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= hidden_input('bt_id', $new_id);
 		$form .= hidden_input('bt_author', $GLOBALS['auteur']);
 		$form .= hidden_input('token', new_token());
+		$form .= hidden_input('dossier', '');
 		$form .= '</div>'."\n";
 		$form .= '</fieldset>'."\n";
 		$form .= '</form>'."\n\n";
