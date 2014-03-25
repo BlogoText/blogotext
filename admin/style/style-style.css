@@ -143,6 +143,11 @@ html:hover .reminder {
 	        transition: opacity 3s 600s ease-out; 
 }
 
+input[type="submit"]{
+	cursor:pointer;
+}
+
+
 /* TOP 
 ------------------------------------------------------------------------ */
 #top {

@@ -272,11 +272,12 @@ function open_serialzd_file($fichier) {
 
 function get_external_file($url, $timeout) {
 	$context = stream_context_create(array('http'=>array(
-			'user_agent' => 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:23.0 BlogoText-UA) Gecko/20100101 Firefox/23.0',
+			'user_agent' => 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:26.0 BlogoText-UA) Gecko/20100101 Firefox/26.0',
 			'timeout' => $timeout
 		))); // Timeout : time until we stop waiting for the response.
 	$data = @file_get_contents($url, false, $context, -1, 4000000); // We download at most 4 Mb from source.
 	if (isset($data) and isset($http_response_header[0]) and (strpos($http_response_header[0], '200 OK') !== FALSE) ) {
+		//debug($http_response_header[0]);
 		return $data;
 	}
 	else {

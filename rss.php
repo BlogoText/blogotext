@@ -153,11 +153,11 @@ else {
 		$xml_post .= '<pubDate>'.date_create_from_format('YmdHis', $time)->format('r').'</pubDate>'."\n";
 		if ($elem['bt_type'] == 'link') {
 			if ($invert) {
-				$xml_post .= '<link>'.$GLOBALS['racine'].'?mode=links&amp;id='.$elem['bt_id'].'</link>'."\n";
+				$xml_post .= '<link>'.$GLOBALS['racine'].'?id='.$elem['bt_id'].'</link>'."\n";
 				$xml_post .= '<description><![CDATA['.rel2abs($elem['bt_content']). '<br/> — (<a href="'.$elem['bt_link'].'">link</a>)]]></description>'."\n";
 			} else {
 				$xml_post .= '<link>'.$elem['bt_link'].'</link>'."\n";
-				$xml_post .= '<description><![CDATA['.rel2abs($elem['bt_content']).'<br/> — (<a href="'.$GLOBALS['racine'].'?mode=links&amp;id='.$elem['bt_id'].'">permalink</a>)]]></description>'."\n";
+				$xml_post .= '<description><![CDATA['.rel2abs($elem['bt_content']).'<br/> — (<a href="'.$GLOBALS['racine'].'?id='.$elem['bt_id'].'">permalink</a>)]]></description>'."\n";
 			}
 		} else {
 			$xml_post .= '<link>'.$elem['bt_link'].'</link>'."\n";

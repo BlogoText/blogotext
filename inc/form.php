@@ -378,13 +378,13 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 					$charset = (!empty($meta[1])) ? strtolower(str_replace(array("'", '"'), array('', ''), $meta[1]) ) : 'utf-8';
 				}
 				// récupère le titre, dans le tableau $titles, rempli par preg_match()
+
+				$ext_file = html_entity_decode( (($charset == 'iso-8859-1') ? utf8_encode($ext_file) : $ext_file), ENT_QUOTES | ENT_HTML5, 'UTF-8');
 				preg_match('#<title>(.*)</title>#Usi', $ext_file, $titles);
 
 				if (!empty($titles[1])) {
 					$html_title = trim($titles[1]);
-					// ré-encode le titre en UTF-8 en fonction de son encodage.
-					$title = html_entity_decode( (($charset == 'iso-8859-1') ? utf8_encode($html_title) : $html_title), ENT_QUOTES | ENT_HTML5, 'UTF-8');
-					$title = htmlspecialchars($title);
+					$title = htmlspecialchars($html_title);
 				// si pas de titre : on utilise l’URL.
 				} else {
 					$title = htmlspecialchars($url);

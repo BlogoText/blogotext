@@ -157,11 +157,11 @@ else {
 
 		if ($elem['bt_type'] == 'link') {
 			if ($invert) {
-				$xml_post .= '<link href="'.$GLOBALS['racine'].'?mode=links&amp;id='.$elem['bt_id'].'"/>'."\n";
+				$xml_post .= '<link href="'.$GLOBALS['racine'].'?id='.$elem['bt_id'].'"/>'."\n";
 				$xml_post .= '<content type="html">'.htmlspecialchars(rel2abs($elem['bt_content']).'<br/> — (<a href="'.$elem['bt_link'].'">link</a>)').'</content>'."\n";
 			} else {
 				$xml_post .= '<link href="'.$elem['bt_link'].'"/>'."\n";
-				$xml_post .= '<content type="html">'.htmlspecialchars(rel2abs($elem['bt_content']).'<br/> — (<a href="'.$GLOBALS['racine'].'?mode=links&id='.$elem['bt_id'].'">permalink</a>)').'</content>'."\n";
+				$xml_post .= '<content type="html">'.htmlspecialchars(rel2abs($elem['bt_content']).'<br/> — (<a href="'.$GLOBALS['racine'].'?id='.$elem['bt_id'].'">permalink</a>)').'</content>'."\n";
 			}
 		} else {
 			$xml_post .= '<link href="'.$elem['bt_link'].'"/>'."\n";
