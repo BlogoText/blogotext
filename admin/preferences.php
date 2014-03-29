@@ -209,6 +209,11 @@ function afficher_form_prefs($erreurs = '') {
 	echo $fld_cfg_linx;
 
 		$fld_maintenance = '<fieldset class="pref">';
+
+		$fld_maintenance .= '<p>'."\n";
+		$fld_maintenance .= select_yes_no('check_update', $GLOBALS['check_update'], $GLOBALS['lang']['pref_check_update'] );
+		$fld_maintenance .= '</p>'."\n";
+
 		$fld_maintenance .= legend($GLOBALS['lang']['titre_maintenance'], 'legend-sweep');
 		$fld_maintenance .= '<p><a href="maintenance.php">'.$GLOBALS['lang']['pref_go_to_maintenance'].'</a></p>';
 		$fld_maintenance .= '</fieldset>';

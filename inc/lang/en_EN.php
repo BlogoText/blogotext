@@ -338,6 +338,7 @@ $GLOBALS['lang'] = array(
 'pref_alert_bookmark_link'		=> 'Links sharing bookmarklet: ',
 'pref_linx_dl_auto'				=> 'Automaticaly download shared files?',
 'pref_ask_everytime'				=> 'Ask each time',
+'pref_check_update'				=> 'Check updates automatically',
 'maintenance_optim'				=> 'Cleanup database',
 // Notes
 'note_no_article'					=> 'No articles',
