@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2013 Timo Van Neerden <timo@neerden.eu>
+# 2010-2014 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -109,8 +109,10 @@ if (!isset($_GET['url']) and !isset($_GET['ajout'])) {
 			$tableau = liste_elements($query, array(), 'links');
 		}
 	} elseif (!empty($_GET['q'])) { // mot clé
-		$query = "SELECT * FROM links WHERE ( bt_content LIKE ? OR bt_title LIKE ? OR bt_link LIKE ? ) ORDER BY bt_id DESC";
-		$tableau = liste_elements($query, array('%'.$_GET['q'].'%', '%'.$_GET['q'].'%', '%'.$_GET['q'].'%'), 'links');
+		$arr = parse_search($_GET['q']);
+		$sql_where = implode(array_fill(0, count($arr), '( bt_content || bt_title || bt_link ) LIKE ? '), 'AND '); // AND operator between words
+		$query = "SELECT * FROM links WHERE ".$sql_where."ORDER BY bt_id DESC";
+		$tableau = liste_elements($query, $arr, 'links');
 	} elseif (!empty($_GET['id']) and is_numeric($_GET['id'])) { // édition d’un lien spécifique
 		$query = "SELECT * FROM links WHERE bt_id=?";
 		$tableau = liste_elements($query, array($_GET['id']), 'links');

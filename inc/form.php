@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2013 Timo Van Neerden <timo@neerden.eu>
+# 2010-2014 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -374,7 +374,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 				// sinon cherche le charset dans le code HTML.
 				else {
 					// cherche la balise "meta charset"
-					preg_match('#<meta .*charset=([^\s]*)\s+/?>#Usi', $ext_file, $meta);
+					preg_match('#<meta .*charset=([^\s]*)\s*/?>#Usi', $ext_file, $meta);
 					$charset = (!empty($meta[1])) ? strtolower(str_replace(array("'", '"'), array('', ''), $meta[1]) ) : 'utf-8';
 				}
 				// récupère le titre, dans le tableau $titles, rempli par preg_match()
