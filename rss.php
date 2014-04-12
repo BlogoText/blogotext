@@ -101,6 +101,10 @@ else {
 	// this function exists in SQLI.PHP. It is replaced here, because including sqli.php and the other files takes 10x more cpu load than this
 	if (file_exists($fcache)) {
 		$liste = unserialize(base64_decode(substr(file_get_contents($fcache), strlen('<?php /* '), -strlen(' */'))));
+		if (!is_array($liste)) {
+			$liste = array();
+			unlink($fcache);
+		}
 	}
 
 	$liste_rss = array();
