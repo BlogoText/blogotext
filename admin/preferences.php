@@ -209,6 +209,11 @@ function afficher_form_prefs($erreurs = '') {
 	echo $fld_cfg_linx;
 
 		$fld_maintenance = '<fieldset class="pref">';
+
+		$fld_maintenance .= '<p>'."\n";
+		$fld_maintenance .= select_yes_no('check_update', $GLOBALS['check_update'], $GLOBALS['lang']['pref_check_update'] );
+		$fld_maintenance .= '</p>'."\n";
+
 		$fld_maintenance .= legend($GLOBALS['lang']['titre_maintenance'], 'legend-sweep');
 		$fld_maintenance .= '<p><a href="maintenance.php">'.$GLOBALS['lang']['pref_go_to_maintenance'].'</a></p>';
 		$fld_maintenance .= '</fieldset>';
@@ -216,23 +221,25 @@ function afficher_form_prefs($erreurs = '') {
 
 	// check if a new Blogotext version is available (code from Shaarli, by Sebsauvage).
 	// Get latest version number at most once a day.
-	if ( !is_file($GLOBALS['last-online-file']) or (filemtime($GLOBALS['last-online-file']) < time()-(24*60*60)) ) {
-		$last_version = get_external_file('http://lehollandaisvolant.net/blogotext/version.php', 6);
-		if (empty($last_version)) { $last_version = $GLOBALS['version']; }
-		// If failed, nevermind. We don't want to bother the user with that.
-		file_put_contents($GLOBALS['last-online-file'], $last_version); // touch file date
-	}
-	// Compare versions:
-	$newestversion = file_get_contents($GLOBALS['last-online-file']);
-	if (version_compare($newestversion, $GLOBALS['version']) == 1) {
-			$fld_update = '<fieldset class="pref">';
-			$fld_update .= legend($GLOBALS['lang']['maint_chk_update'], 'legend-update');
-			$fld_update .= '<p>'."\n";
-			$fld_update .= '<label>'.$GLOBALS['lang']['maint_update_youisbad'].' ('.$newestversion.'). '.$GLOBALS['lang']['maint_update_go_dl_it'].'</label>'."\n";
-			$fld_update .= '<a href="http://lehollandaisvolant.net/blogotext/">lehollandaisvolant.net/blogotext/</a>.';
-			$fld_update .= '<p>'."\n";
-			$fld_update .= '</fieldset></div>'."\n";
-		echo $fld_update;
+	if ($GLOBALS['check_update'] == 1) {
+		if ( !is_file($GLOBALS['last-online-file']) or (filemtime($GLOBALS['last-online-file']) < time()-(24*60*60)) ) {
+			$last_version = get_external_file('http://lehollandaisvolant.net/blogotext/version.php', 6);
+			if (empty($last_version)) { $last_version = $GLOBALS['version']; }
+			// If failed, nevermind. We don't want to bother the user with that.
+			file_put_contents($GLOBALS['last-online-file'], $last_version); // touch file date
+		}
+		// Compare versions:
+		$newestversion = file_get_contents($GLOBALS['last-online-file']);
+		if (version_compare($newestversion, $GLOBALS['version']) == 1) {
+				$fld_update = '<fieldset class="pref">';
+				$fld_update .= legend($GLOBALS['lang']['maint_chk_update'], 'legend-update');
+				$fld_update .= '<p>'."\n";
+				$fld_update .= '<label>'.$GLOBALS['lang']['maint_update_youisbad'].' ('.$newestversion.'). '.$GLOBALS['lang']['maint_update_go_dl_it'].'</label>'."\n";
+				$fld_update .= '<a href="http://lehollandaisvolant.net/blogotext/">lehollandaisvolant.net/blogotext/</a>.';
+				$fld_update .= '<p>'."\n";
+				$fld_update .= '</fieldset></div>'."\n";
+			echo $fld_update;
+		}
 	}
 
 	echo '<div class="submit centrer">';

@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2013 Timo Van Neerden <timo@neerden.eu>
+# 2010-2014 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -22,8 +22,8 @@ $GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
 
 $tableau = array();
 if (!empty($_GET['q'])) {
-	$query = "SELECT * FROM articles WHERE ( bt_content LIKE ? OR bt_title LIKE ? ) ORDER BY bt_date DESC";
-	$tableau = liste_elements($query, array('%'.urldecode($_GET['q']).'%', '%'.urldecode($_GET['q']).'%'), 'articles');
+	$query = "SELECT * FROM articles WHERE ( bt_content || bt_title || bt_link) LIKE ? ORDER BY bt_date DESC";
+	$tableau = liste_elements($query, array('%'.urldecode($_GET['q']).'%'), 'articles');
 }
 
 elseif ( !empty($_GET['filtre']) ) {

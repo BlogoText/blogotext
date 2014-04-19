@@ -100,6 +100,10 @@ else {
 	// this function exists in SQLI.PHP. It is replaced here, because including sqli.php and the other files takes 10x more cpu load than this
 	if (file_exists($fcache)) {
 		$liste = unserialize(base64_decode(substr(file_get_contents($fcache), strlen('<?php /* '), -strlen(' */'))));
+		if (!is_array($liste)) {
+			$liste = array();
+			unlink($fcache);
+		}
 	}
 
 	$liste_rss = array();
@@ -157,11 +161,11 @@ else {
 
 		if ($elem['bt_type'] == 'link') {
 			if ($invert) {
-				$xml_post .= '<link href="'.$GLOBALS['racine'].'?mode=links&amp;id='.$elem['bt_id'].'"/>'."\n";
+				$xml_post .= '<link href="'.$GLOBALS['racine'].'?id='.$elem['bt_id'].'"/>'."\n";
 				$xml_post .= '<content type="html">'.htmlspecialchars(rel2abs($elem['bt_content']).'<br/> — (<a href="'.$elem['bt_link'].'">link</a>)').'</content>'."\n";
 			} else {
 				$xml_post .= '<link href="'.$elem['bt_link'].'"/>'."\n";
-				$xml_post .= '<content type="html">'.htmlspecialchars(rel2abs($elem['bt_content']).'<br/> — (<a href="'.$GLOBALS['racine'].'?mode=links&id='.$elem['bt_id'].'">permalink</a>)').'</content>'."\n";
+				$xml_post .= '<content type="html">'.htmlspecialchars(rel2abs($elem['bt_content']).'<br/> — (<a href="'.$GLOBALS['racine'].'?id='.$elem['bt_id'].'">permalink</a>)').'</content>'."\n";
 			}
 		} else {
 			$xml_post .= '<link href="'.$elem['bt_link'].'"/>'."\n";

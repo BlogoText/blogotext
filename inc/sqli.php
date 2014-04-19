@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2013 Timo Van Neerden <timo@neerden.eu>
+# 2010-2014 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -119,7 +119,7 @@ function create_tables() {
 				try {
 
 					$options_pdo[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
-					$db_handle = new PDO('mysql:host='.$GLOBALS['mysql_host'].';dbname='.$GLOBALS['mysql_db'].";charset=utf8", $GLOBALS['mysql_login'], $GLOBALS['mysql_passwd'], $options_pdo);
+					$db_handle = new PDO('mysql:host='.$GLOBALS['mysql_host'].';dbname='.$GLOBALS['mysql_db'].";charset=utf8;sql_mode=PIPES_AS_CONCAT;", $GLOBALS['mysql_login'], $GLOBALS['mysql_passwd'], $options_pdo);
 					// check each wanted table
 					$wanted_tables = array('commentaires', 'articles', 'links');
 					foreach ($wanted_tables as $i => $name) {

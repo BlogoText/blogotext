@@ -16,27 +16,18 @@ function extraire_mots($texte) {
 	$texte = str_replace("\r", '', $texte);
 	$texte = str_replace("\n", ' ', $texte);
 	$texte = str_replace("\t", ' ', $texte);
-
-	// supprime les balises
-	$texte = preg_replace('#<[^>]*>#', ' ', $texte);
-
-	// supprime la pontuation
-	$texte = preg_replace('#[[:punct:]]#', ' ', $texte);
-
-	// supprime les espaces multiples
-	$texte = trim(preg_replace('# {2,}#', ' ', $texte));
-
+	$texte = preg_replace('#<[^>]*>#', ' ', $texte); // supprime les balises
+	$texte = preg_replace('#[[:punct:]]#', ' ', $texte); // supprime la pontuation
+	$texte = trim(preg_replace('# {2,}#', ' ', $texte)); // supprime les espaces multiples
 	$tableau = explode(' ', $texte);
 	foreach ($tableau as $i => $mots) {
-		// supprime les mots trop courts (typiquement les déterminants, particules, etc.
-		if (strlen(trim($mots)) <= 4) {
+		if (strlen(trim($mots)) <= 4) {// supprime les mots trop courts (le, les, à, de…)
 			unset($tableau[$i]);
 		}
-		// supprime les mots contenant des chiffres
-		elseif (preg_match('#\d#', $mots)) {
+		elseif (preg_match('#\d#', $mots)) {// supprime les mots contenant des chiffres
 			unset($tableau[$i]);
 		}
-		// supprime les mots contenant des caractères spéciaux autre que les diacritiques (c’est mieux)
+		// supprime les caractères unicodes trop complexes
 		elseif ( preg_match('#\?#', utf8_decode(preg_replace('#&(.)(acute|grave|circ|uml|cedil|tilde|ring|slash|caron);#', '$1', $mots))) ) {
 			unset($tableau[$i]);
 		}
@@ -47,7 +38,6 @@ function extraire_mots($texte) {
 	// on recherche les mots trouvés plusieurs fois dans la liste, qui seront les mots clés en priorité
 	$tableau = array_unique($tableau);
 
-
 	$n = 3; // nb occurrences
 	$liste = array();
 
@@ -56,7 +46,6 @@ function extraire_mots($texte) {
 	// si toujours moins de 7 mots, on les prends tous.
 	//  Ceci permet de garder en prio les mots présents le plus de fois.
 	while ($n > 0 and count($liste) < 7) {
-
 		foreach($tableau as $i => $mot) {
 			if (substr_count($texte, $mot) == $n) {
 				$liste[] = $mot;
@@ -64,7 +53,6 @@ function extraire_mots($texte) {
 		}
 		$n--;
 	}
-
 
 	$retour = implode($liste, ', ');
 	return $retour;
@@ -224,9 +212,7 @@ function formatage_wiki($texte) {
 
 function formatage_commentaires($texte) {
 	$texte = " ".$texte;
-
 	$texte = preg_replace('#\[([^|]+)\|(\s*javascript.*)\]#i', '$1', $texte);
-
 	$tofindc = array(
 		'#\[quote\](.+?)\[/quote\]#s',									// citation } les citation imbriquées marchent pour **deux niveaux** seulement,
 		'#\[quote\](.+?)\[/quote\]#s',									//          } [quote][quote]bla[/quote][quote]bla[/quote][/quote] marchent et donnent le résultat attendu.
@@ -278,7 +264,7 @@ function formatage_commentaires($texte) {
 
 function formatage_links($texte) {
 	$tofind = array(
-		'#([^"\[\]])((http|ftp)s?://([^"\'\[\]<>\s]+))#i',			// Regex URL /((http|ftp)+(s)?:\/\/[^<>\s]+)/i",
+		'#(((?:https?|ftp)://|magnet:)\S+[a-zA-Z0-9]/?)#si',		// Regex URL #([^"\[\]|])((http|ftp)s?://([^"\'\[\]<>\s]+))#i
 		'#\[([^[]+)\|([^[]+)\]#',											// a href
 		'#\[b\](.*?)\[/b\]#s',												// strong
 		'#\[i\](.*?)\[/i\]#s',												// italic
@@ -287,7 +273,7 @@ function formatage_links($texte) {
 //		'#(.*?)\r#',															// br : retour à la ligne sans saut de ligne
 	);
 	$toreplace = array(
-		'$1<a href="$2">$2</a>',											// url
+		'<a href="$0">$0</a>',											// url  '$1<a href="$2">$2</a>'
 		'<a href="$2">$1</a>',												// a href
 		'<span style="font-weight: bold;">$1</span>',				// strong
 		'<span style="font-style: italic;">$1</span>',				// italic

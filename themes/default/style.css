@@ -55,6 +55,10 @@ input[type="text"], input[type="url"], input[type="search"], input[type="email"]
 	box-shadow: 1px 1px 2px silver;
 }
 
+input[type="submit"]{
+	cursor:pointer;
+}
+
 #form-commentaire input:focus {
 	box-shadow: 1px 1px 5px silver;
 }

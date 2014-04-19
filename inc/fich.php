@@ -75,6 +75,7 @@ function fichier_prefs() {
 		$comm_defaut_status = $_POST['comm_defaut_status'];
 		$automatic_keywords = $_POST['auto_keywords'];
 		$require_email = $_POST['require_email'];
+		$auto_check_updates = $_POST['check_update'];
 		// linx
 //		$autoriser_liens_public = $_POST['allow_public_linx'];
 //		$linx_defaut_status = $_POST['linx_defaut_status'];
@@ -103,6 +104,7 @@ function fichier_prefs() {
 		$comm_defaut_status = '1';
 		$automatic_keywords = '1';
 		$require_email = '0';
+		$auto_check_updates = 1;
 		// linx
 //		$autoriser_liens_public = '0';
 //		$linx_defaut_status = '1';
@@ -132,6 +134,7 @@ function fichier_prefs() {
 	$prefs .= "\$GLOBALS['comm_defaut_status']= '".$comm_defaut_status."';\n";
 	$prefs .= "\$GLOBALS['automatic_keywords']= '".$automatic_keywords."';\n";
 	$prefs .= "\$GLOBALS['require_email']= '".$require_email."';\n";
+	$prefs .= "\$GLOBALS['check_update']= '".$auto_check_updates."';\n";
 //	$prefs .= "\$GLOBALS['allow_public_linx']= '".$autoriser_liens_public."';\n";
 //	$prefs .= "\$GLOBALS['linx_defaut_status']= '".$linx_defaut_status."';\n";
 	$prefs .= "\$GLOBALS['max_linx_admin']= '".$nombre_liens_admin."';\n";
@@ -272,11 +275,12 @@ function open_serialzd_file($fichier) {
 
 function get_external_file($url, $timeout) {
 	$context = stream_context_create(array('http'=>array(
-			'user_agent' => 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:23.0 BlogoText-UA) Gecko/20100101 Firefox/23.0',
+			'user_agent' => 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:26.0 BlogoText-UA) Gecko/20100101 Firefox/26.0',
 			'timeout' => $timeout
 		))); // Timeout : time until we stop waiting for the response.
 	$data = @file_get_contents($url, false, $context, -1, 4000000); // We download at most 4 Mb from source.
 	if (isset($data) and isset($http_response_header[0]) and (strpos($http_response_header[0], '200 OK') !== FALSE) ) {
+		//debug($http_response_header[0]);
 		return $data;
 	}
 	else {
