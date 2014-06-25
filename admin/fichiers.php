@@ -139,6 +139,7 @@ else {
 }
 
 echo '<script type="text/javascript">'."\n";
+echo 'document.onkeydown = checkKey;'."\n";
 echo js_drag_n_drop_handle(0);
 echo js_folder_sort_img(0);
 echo js_show_slideshow(0);

@@ -180,7 +180,7 @@ function filtre($type, $filtre) { // cette fonction est très gourmande en resso
 	if ($type == 'articles') {
 		echo '<option value="">'.$GLOBALS['lang']['label_article_derniers'].'</option>'."\n";
 		$query = "SELECT DISTINCT substr(bt_date, 1, 6) AS date FROM articles ORDER BY bt_id DESC";
-		$tab_tags = list_all_tags('articles');
+		$tab_tags = list_all_tags('articles', FALSE);
 		$BDD = 'sqlite';
 	// Commentaires
 	} elseif ($type == 'commentaires') {
@@ -192,7 +192,7 @@ function filtre($type, $filtre) { // cette fonction est très gourmande en resso
 	} elseif ($type == 'links') {
 		echo '<option value="">'.$GLOBALS['lang']['label_link_derniers'].'</option>'."\n";
 		// $tab_auteur = nb_entries_as('links', 'bt_author'); // uncomment when readers will be able to post links
-		$tab_tags = list_all_tags('links');
+		$tab_tags = list_all_tags('links', FALSE);
 		$query = "SELECT DISTINCT substr(bt_id, 1, 6) AS date FROM links ORDER BY bt_id DESC";
 		$BDD = 'sqlite';
 	// Fichiers
@@ -699,7 +699,7 @@ function form_allow_comment($etat) {
 }
 
 function form_categories_links($where, $tags_post) {
-	$tags = list_all_tags($where);
+	$tags = list_all_tags($where, FALSE);
 	$html = '';
 	if (!empty($tags)) {
 		$html = '<datalist id="htmlListTags">'."\n";
@@ -708,6 +708,18 @@ function form_categories_links($where, $tags_post) {
 	}
 	$html .= '<ul id="selected">'."\n";
 	$list_tags = explode(',', $tags_post);
+
+
+	// remove diacritics, so that "ééé" does not passe after "zzz" and reindexes
+	foreach ($list_tags as $i => $tag) {
+		$list_tags[$i] = array('t' => trim($tag), 'tt' => diacritique(trim($tag), FALSE, FALSE));
+	}
+	$list_tags = array_reverse(tri_selon_sous_cle($list_tags, 'tt'));
+
+	foreach ($list_tags as $i => $tag) {
+		$list_tags[$i] = $tag['t'];
+	}
+
 	foreach ($list_tags as $mytag => $mtag) {
 		if (!empty($mtag)) {
 			$html .= "\t".'<li><span>'.trim($mtag).'</span><a href="javascript:void(0)" onclick="removeTag(this.parentNode)">×</a></li>'."\n";
@@ -715,5 +727,73 @@ function form_categories_links($where, $tags_post) {
 	}
 	$html .= '</ul>'."\n";
 	return $html;
+}
+
+
+
+/* form config RSS feeds: allow changing feeds (title, url) or remove a feed */
+function afficher_form_rssconf($errors='') {
+	if (!empty($errors)) {
+		echo erreurs($errors);
+	}
+	$out = '';
+	// Form edit + list feeds.
+	$out .= '<form id="form-rss-config" method="post" class="bordered-formbloc" action="feed.php?config">'."\n";
+	$out .= '<fieldset class="pref">'."\n";
+	$out .= '<legend class="legend-link">'.'Your feeds :'.'</legend>'."\n";
+	$out .= '<ul>'."\n";
+	foreach($GLOBALS['liste_flux'] as $i => $flux) {
+		$out .= "\t".'<li>'."\n";
+		$out .= "\t\t".'<p '.( ($flux['iserror'] > 2) ? 'class="feed-error" ' : ''  ).'>'.$flux['title'].' '.( ($flux['iserror'] > 2) ? '('.$flux['iserror'].' last requests were errors.)' : '' ).'</p>'."\n";
+		$out .= "\t\t".'<div>'."\n";
+		$out .= "\t\t".'<p>'."\n";
+		$out .= "\t\t\t".'<label for="i_'.$flux['checksum'].'">'.$GLOBALS['lang']['rss_label_titre_flux'].'</label>'."\n";
+		$out .= "\t\t\t".'<input id="i_'.$flux['checksum'].'" name="i_'.$flux['checksum'].'" type="text" class="text" value="'.htmlspecialchars($flux['title']).'">'."\n";
+		$out .= "\t\t".'</p><p>'."\n";
+		$out .= "\t\t\t".'<label for="j_'.$flux['checksum'].'">'.$GLOBALS['lang']['rss_label_url_flux'].'</label>'."\n";
+		$out .= "\t\t\t".'<input id="j_'.$flux['checksum'].'" name="j_'.$flux['checksum'].'" type="text" class="text" value="'.htmlspecialchars($flux['link']).'">'."\n";
+		$out .= "\t\t\t".'<button type="button" class="red-square text" onclick="markAsRemove(this)">'.$GLOBALS['lang']['supprimer'].'</button>'."\n";
+		$out .= "\t\t".'</p><p>'."\n";
+		$out .= "\t\t\t".'<label for="l_'.$flux['checksum'].'">'.$GLOBALS['lang']['rss_label_dossier'].'</label>'."\n";
+		$out .= "\t\t\t".'<input id="l_'.$flux['checksum'].'" name="l_'.$flux['checksum'].'" type="text" class="text" value="'.htmlspecialchars($flux['folder']).'">'."\n";
+		$out .= "\t\t".'<input class="remove-feed nodisplay" name="k_'.$flux['checksum'].'" type="hidden" value="1">'."\n";
+		$out .= "\t\t".'</div>'."\n";
+		$out .= "\t".'</li>'."\n";
+	}
+
+	$out .= '</ul>'."\n";
+	$out .= '<p class="centrer">'."\n";
+	$out .= "\t".'<input class="submit blue-square" type="submit" name="send" value="'.$GLOBALS['lang']['envoyer'].'" />'."\n";
+	$out .= '</p>'."\n";
+	$out .= hidden_input('token', new_token());
+	$out .= hidden_input('verif_envoi', 1);
+	$out .= '</fieldset>'."\n";
+	$out .= '</form>'."\n";
+
+	// form add new feed.
+	$out .= '<form id="form-rss-add" method="post" class="bordered-formbloc" action="feed.php?config">'."\n";
+	$out .= '<fieldset class="pref">'."\n";
+	$out .= '<legend class="legend-link">'.'Add a feed:'.'</legend>'."\n";
+	$out .= "\t\t\t".'<label for="new-feed">'.'New Feed :'.'</label>'."\n";
+	$out .= "\t\t\t".'<input id="new-feed" name="new-feed" type="text" class="text" value="" placeholder="http://www.example.org/rss">'."\n";
+
+	$out .= '<p class="centrer">'."\n";
+	$out .= "\t".'<input class="submit blue-square" type="submit" name="send" value="'.$GLOBALS['lang']['envoyer'].'" />'."\n";
+	$out .= '</p>'."\n";
+	$out .= hidden_input('token', new_token());
+	$out .= hidden_input('verif_envoi', 1);
+	$out .= '</fieldset>'."\n";
+	$out .= '</form>'."\n";
+
+
+
+
+
+
+
+
+
+
+	return $out;
 }
 

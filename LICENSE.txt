@@ -4,7 +4,7 @@
 | Blogotext is a lightweight PHP-only Blog engine.                        |
 |                                                                         |
 | (c) 2006      Frederic Nassar.                                          |
-| (c) 2010-2013 Timo van Neerden, AKA Le Hollandais Volant                |
+| (c) 2010-2014 Timo van Neerden, AKA Le Hollandais Volant                |
 |                                                                         |
 | Blogotext is redistributed under the terms of the X11 / MIT Licence     |
 |                                      http://opensource.org/licenses/MIT |

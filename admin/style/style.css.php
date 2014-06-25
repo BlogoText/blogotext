@@ -34,6 +34,9 @@ readfile('style-commentaires.css');
 /* Page des articles : liste sous la forme d’un tableau */
 readfile('style-articles.css');
 
+/* Page des flux RSS */
+readfile('style-rss.css');
+
 /* Page de styles plus généraux */
 readfile('style-style.css');
 

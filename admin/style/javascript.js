@@ -135,6 +135,7 @@ function chkHit(e) {
 		moveTag;
 		return false;
 	}
+	return true;
 }
 
 function moveTag() {
@@ -253,7 +254,7 @@ function request_delete_form(id) {
 
 
 /*
-	JS : Lazy load images (not sure if really needed in 2.0.2.5)
+	JS : Lazy load images (not sure if really needed in > 2.0.2.5)
 */
 
 function lazy_load() {
@@ -265,9 +266,9 @@ function lazy_load() {
 /*
 	JS : for slideshow : detects the → and ← keypress to change image.
 */
-document.onkeydown = checkKey;
 
 function checkKey(e) {
+	if (!document.getElementById('slider')) return true;
 	if (document.getElementById('slider').style.display != 'block') return true;
 	e = e || window.event;
 	var evt = document.createEvent("MouseEvents"); // créer un évennement souris
@@ -283,8 +284,8 @@ function checkKey(e) {
 		e.preventDefault();
 		button.dispatchEvent(evt);
 	}
-	e.preventDefault();
-
+	//e.preventDefault();
+	return true;
 }
 
 
@@ -295,6 +296,10 @@ function checkKey(e) {
 /*
 	in page maintenance : switch visibility of forms.
 */
+if (window.location.hash == '#form_export' || window.location.hash == '#form_import' || window.location.hash == '#form_optimi') {
+	var activeForm = window.location.hash.substr(1);
+	document.getElementById(activeForm).style.display = 'block';
+}
 
 function switch_form(activeForm, activeButton) {
 	var buttons = document.getElementById('list-switch-buttons').getElementsByTagName('button');
@@ -304,7 +309,8 @@ function switch_form(activeForm, activeButton) {
 	var form_import = document.getElementById('form_import');
 	var form_optimi = document.getElementById('form_optimi');
 	form_export.style.display = form_import.style.display = form_optimi.style.display = 'none';
-	eval(activeForm).style.display = 'block';
+
+	document.getElementById(activeForm).style.display = 'block';
 }
 
 function switch_export_type(activeForm) {
@@ -312,7 +318,7 @@ function switch_export_type(activeForm) {
 	var e_html = document.getElementById('e_html');
 	var e_zip = document.getElementById('e_zip');
 	e_json.style.display = e_html.style.display = e_zip.style.display = 'none';
-	eval(activeForm).style.display = 'block';
+	document.getElementById(activeForm).style.display = 'block';
 }
 
 function hide_forms(blocs) {
@@ -323,7 +329,7 @@ function hide_forms(blocs) {
 	var checked = false;
 	for (var i = 0, length = radios.length; i < length; i++) {
 		if (!radios[i].checked) {
-			eval('e_'+radios[i].value).innerHTML = '';
+			document.getElementById('e_'+radios[i].value).innerHTML = '';
 		}
 	}
 }

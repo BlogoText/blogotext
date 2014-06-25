@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2013 Timo Van Neerden <timo@neerden.eu>
+# 2010-2014 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -20,6 +20,7 @@ $begin = microtime(TRUE);
 
 $GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
 $GLOBALS['liste_fichiers'] = open_serialzd_file($GLOBALS['fichier_liste_fichiers']);
+$GLOBALS['liste_flux'] = open_serialzd_file($GLOBALS['fichier_liste_fluxrss']);
 
 afficher_top($GLOBALS['lang']['titre_maintenance']);
 echo '<div id="top">'."\n";
@@ -379,6 +380,45 @@ function importer_wordpress($xml) {
 	return $return;
 }
 
+// Parse et importe un fichier de liste de flux OPML
+function importer_opml($opml_content) {
+	$GLOBALS['array_new'] = array();
+
+	function parseOpmlRecursive($xmlObj) {
+		// si c’est un sous dossier avec d’autres flux à l’intérieur : note le nom du dossier
+		$folder = $xmlObj->attributes()->text;
+		foreach($xmlObj->children() as $child) {
+			if (!empty($child['xmlUrl'])) {
+				$url = (string)$child['xmlUrl'];
+				$title = ( !empty($child['text']) ) ? (string)$child['text'] : (string)$child['title'];
+				$GLOBALS['array_new'][$url] = array(
+					'link' => $url,
+					'title' => ucfirst($title),
+					'favicon' => 'style/rss-feed-icon.png',
+					'checksum' => '0',
+					'time' => '0',
+					'folder' => (string)$folder,
+					'iserror' => 0,
+				);
+			}
+	 		parseOpmlRecursive($child);
+		}
+	}
+	$opmlFile = new SimpleXMLElement($opml_content);
+	parseOpmlRecursive($opmlFile->body);
+
+	$old_len = count($GLOBALS['liste_flux']);
+	$GLOBALS['liste_flux'] = array_reverse(tri_selon_sous_cle($GLOBALS['liste_flux'], 'title'));
+	$GLOBALS['liste_flux'] = array_merge($GLOBALS['array_new'], $GLOBALS['liste_flux']);
+	file_put_contents($GLOBALS['fichier_liste_fluxrss'], '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_flux']))).' */');
+
+
+	return (count($GLOBALS['liste_flux']) - $old_len);
+}
+
+
+
+
 
 // based on Shaarli by Sebsauvage
 function parse_html($content) {
@@ -476,7 +516,12 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 	echo '</form>'."\n";
 
 	// Form import
-	$importformats = array('jsonbak'=>$GLOBALS['lang']['bak_import_btjson'], 'xmlwp'=>$GLOBALS['lang']['bak_import_wordpress'], 'htmllinks'=>$GLOBALS['lang']['bak_import_netscape'] );
+	$importformats = array(
+			'jsonbak' => $GLOBALS['lang']['bak_import_btjson'],
+			'xmlwp' => $GLOBALS['lang']['bak_import_wordpress'],
+			'htmllinks' => $GLOBALS['lang']['bak_import_netscape'],
+			'rssopml' => $GLOBALS['lang']['bak_import_rssopml'] );
+
 	echo '<form action="maintenance.php" method="post" enctype="multipart/form-data" class="bordered-formbloc" id="form_import">'."\n";
 		echo '<fieldset class="pref valid-center">';
 		echo legend($GLOBALS['lang']['maintenance_import'], 'legend-backup');
@@ -499,6 +544,8 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 			echo hidden_input('opti-vacu', 0);
 		}
 		echo "\t".'<p>'.select_yes_no('opti-comm', 0, $GLOBALS['lang']['bak_opti_recountcomm']).'</p>'."\n";
+
+		echo "\t".'<p>'.select_yes_no('opti-rss', 0, $GLOBALS['lang']['bak_opti_supprreadrss']).'</p>'."\n";
 
 	echo '<p><button class="submit blue-square" type="submit" name="do" value="optim">'.$GLOBALS['lang']['valider'].'</button></p>'."\n";
 		echo '</fieldset>'."\n";
@@ -589,9 +636,11 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 				}
 
 			} elseif ($_GET['do'] == 'optim') {
+					// recount files DB
 					if ($_GET['opti-file'] == 1) {
 						rebuilt_file_db();
 					}
+					// vacuum SQLite DB
 					if ($_GET['opti-vacu'] == 1) {
 						try {
 							$req = $GLOBALS['db_handle']->prepare('VACUUM');
@@ -600,8 +649,18 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 							die('Erreur 1429 vacuum : '.$e->getMessage());
 						}
 					}
-					if ($_GET['opti-comm'] == 1) { // recount comms/articles
+					// recount comms/articles
+					if ($_GET['opti-comm'] == 1) {
 						recompte_commentaires();
+					}
+					// delete old RSS entries
+					if ($_GET['opti-rss'] == 1) { 
+						try {
+							$req = $GLOBALS['db_handle']->prepare('DELETE FROM rss WHERE bt_statut=0');
+							$req->execute(array());
+						} catch (Exception $e) {
+							die('Erreur : 7873 : rss delete old entries : '.$e->getMessage());
+						}
 					}
 					echo '<form action="maintenance.php" method="get" class="bordered-formbloc">'."\n";
 					echo '<fieldset class="pref valid-center">';
@@ -629,6 +688,10 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 					case 'xmlwp':
 						$xml = file_get_contents($_FILES['file']['tmp_name']);
 						$message = importer_wordpress($xml);
+					break;
+					case 'rssopml':
+						$xml = file_get_contents($_FILES['file']['tmp_name']);
+						$message['feeds'] = importer_opml($xml);
 					break;
 					default: die('nothing'); break;
 				}

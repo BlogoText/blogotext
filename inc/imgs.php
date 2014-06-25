@@ -414,7 +414,7 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 
 		$form .= '<div id="form-dragndrop">'."\n";
 			$form .= '<p class="gray-section" id="dragndrop-area" ondragenter="return false;" ondragover="return false;" ondrop="return handleDrop(event);" >'."\n";
-			$form .= "\t".'<span id="dragndrop-mssg">'.$GLOBALS['lang']['img_drop_files_here'];
+			$form .= "\t".'<span id="dragndrop-mssg">'.$GLOBALS['lang']['img_drop_files_here']."\n";
 			$form .= "\t\t".'<input name="fichier" id="fichier" type="file" required="" class="text" />'."\n";
 			$form .= "\t".'</span>'."\n";
 			$form .= "\t".'<span class="upload-info">'.$GLOBALS['lang']['max_file_size'].$max_file_size.'</span>'."\n";

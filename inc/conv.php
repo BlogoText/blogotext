@@ -93,8 +93,6 @@ function clean_txt_array($array) {
 
 function diacritique($texte, $majuscules, $espaces) {
 	$texte = strip_tags($texte);
-	if ($majuscules == '0')
-		$texte = strtolower($texte);
 	$texte = html_entity_decode($texte, ENT_QUOTES, 'UTF-8'); // &eacute => é ; é => é ; (uniformise)
 	$texte = htmlentities($texte, ENT_QUOTES, 'UTF-8'); // é => &eacute;
 	$texte = preg_replace('#&(.)(acute|grave|circ|uml|cedil|tilde|ring|slash|caron);#', '$1', $texte); // &eacute => e
@@ -102,6 +100,8 @@ function diacritique($texte, $majuscules, $espaces) {
 	$texte = preg_replace('#&([a-z]{2})lig;#i', '$1', $texte); // EX : œ => oe ; æ => ae
 	$texte = preg_replace('#&[\w\#]*;#U', '', $texte); // les autres (&quote; par exemple) sont virés
 	$texte = preg_replace('#[^\w -]#U', '', $texte); // on ne garde que chiffres, lettres _, -, et espaces.
+	if ($majuscules == '0')
+		$texte = strtolower($texte);
 	if ($espaces == '0')
 		$texte = preg_replace('#[ ]+#', '-', $texte); // les espaces deviennent des tirets.
 	return $texte;
@@ -264,7 +264,7 @@ function formatage_commentaires($texte) {
 
 function formatage_links($texte) {
 	$tofind = array(
-		'#(((?:https?|ftp)://|magnet:)\S+[a-zA-Z0-9]/?)#si',		// Regex URL #([^"\[\]|])((http|ftp)s?://([^"\'\[\]<>\s]+))#i
+		'#([^"\[\]|])((http|ftp)s?://([^"\'\[\]<>\s]+))#i',		// Regex URL 
 		'#\[([^[]+)\|([^[]+)\]#',											// a href
 		'#\[b\](.*?)\[/b\]#s',												// strong
 		'#\[i\](.*?)\[/i\]#s',												// italic
@@ -273,7 +273,7 @@ function formatage_links($texte) {
 //		'#(.*?)\r#',															// br : retour à la ligne sans saut de ligne
 	);
 	$toreplace = array(
-		'<a href="$0">$0</a>',											// url  '$1<a href="$2">$2</a>'
+		'$1<a href="$2">$2</a>',												// url  '$1<a href="$2">$2</a>'
 		'<a href="$2">$1</a>',												// a href
 		'<span style="font-weight: bold;">$1</span>',				// strong
 		'<span style="font-style: italic;">$1</span>',				// italic

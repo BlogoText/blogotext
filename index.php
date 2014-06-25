@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2013 Timo Van Neerden <timo@neerden.eu>
+# 2010-2014 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -73,9 +73,14 @@ if ($_SERVER['PHP_SELF'] !== $_SERVER['SCRIPT_NAME']) {
 
 // Random article :-)
 if (isset($_GET['random'])) {
-	$om = ($GLOBALS['sgdb'] == 'sqlite') ? 'om' : '';
-	$query = "SELECT * FROM articles WHERE bt_date <= ".date('YmdHis')." AND bt_statut=1 ORDER BY rand$om() LIMIT 0, 1";
-	$tableau = liste_elements($query, array(), 'articles');
+	try {
+		// getting nb articles, gen random num, then select one article is much faster than "sql(order by rand limit 1)"
+		$result = $GLOBALS['db_handle']->query("SELECT count(ID) FROM articles")->fetch();
+		$rand = mt_rand(0, $result[0] - 1);
+		$tableau = liste_elements("SELECT * FROM articles LIMIT $rand, 1", array(), 'articles');
+	} catch (Exception $e) {
+		die('Erreur rand: '.$e->getMessage());
+	}
 
 	header('Location: '.$tableau[0]['bt_link']);
 	exit;
@@ -105,10 +110,10 @@ if ( isset($_GET['d']) and preg_match('#^\d{4}/\d{2}/\d{2}/\d{2}/\d{2}/\d{2}#', 
 	$id = substr($tab['0'].$tab['1'].$tab['2'].$tab['3'].$tab['4'].$tab['5'], '0', '14');
 	// 'admin' connected is allowed to see draft articles, but not 'public'. Same for article posted with a date in the future.
 	if (empty($_SESSION['user_id'])) {
-		$query = "SELECT * FROM articles WHERE bt_id=? AND bt_date <=? AND bt_statut=1";
+		$query = "SELECT * FROM articles WHERE bt_id=? AND bt_date <=? AND bt_statut=1 LIMIT 1";
 		$billets = liste_elements($query, array($id, date('YmdHis')), 'articles');
 	} else {
-		$query = "SELECT * FROM articles WHERE bt_id=?";
+		$query = "SELECT * FROM articles WHERE bt_id=? LIMIT 1";
 		$billets = liste_elements($query, array($id), 'articles');
 	}
 	if ( !empty($billets[0]) ) {

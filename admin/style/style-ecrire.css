@@ -10,10 +10,6 @@
 	border: 1px dashed #ccc;
 }
 
-#apercu pre, #apercu code {
-	white-space: pre-wrap;
-}
-
 #apercu p {
 	margin-top: 5px;
 	margin-bottom: 5px;
