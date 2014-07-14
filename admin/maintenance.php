@@ -283,6 +283,45 @@ function creer_fichier_json($data_array) {
 	return (file_put_contents($path, json_encode($data_array)) === FALSE) ? FALSE : $path;
 }
 
+/* Crée la liste des RSS et met tout ça dans un fichier OPML */
+function creer_fichier_opml() {
+	$path = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_backup'].'/backup-data-'.date('Ymd-His').'.opml';
+	// sort feeds by folder
+	$folders = array();
+	foreach ($GLOBALS['liste_flux'] as $i => $feed) {
+		$folders[$feed['folder']][] = $feed;
+	}
+	ksort($folders);
+
+	$html  = '<?xml version="1.0" encoding="utf-8"?>'."\n";
+	$html .= '<opml version="1.0">'."\n";
+	$html .= "\t".'<head>'."\n";
+	$html .= "\t\t".'<title>Newsfeeds '.$GLOBALS['nom_application'].' '.$GLOBALS['version'].' on '.date('Y/m/d').'</title>'."\n";
+	$html .= "\t".'</head>'."\n";
+	$html .= "\t".'<body>'."\n";
+
+	function esc($a) {
+		return htmlspecialchars($a, ENT_QUOTES, 'UTF-8');
+	}
+
+	foreach ($folders as $i => $folder) {
+		$outline = '';
+		foreach ($folder as $j => $feed) {
+			$outline .= ($i ? "\t" : '')."\t\t".'<outline text="'.esc($feed['title']).'" title="'.esc($feed['title']).'" type="rss" xmlUrl="'.esc($feed['link']).'" />'."\n";
+		}
+		if ($i != '') {
+			$html .= "\t\t".'<outline text="'.esc($i).'" title="'.esc($i).'" >'."\n";
+			$html .= $outline;
+			$html .= "\t\t".'</outline>'."\n";	
+		} else {
+			$html .= $outline;
+		}
+	}
+
+	$html .= "\t".'</body>'."\n".'</opml>';
+
+	return (file_put_contents($path, $html) === FALSE) ? FALSE : $path;
+}
 
 /* CONVERTI UN FICHIER AU FORMAT xml DE WORDPRESS en un tableau (sans enregistrer le fichier BT) */
 function importer_wordpress($xml) {
@@ -485,6 +524,8 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 			'<input type="radio" name="exp-format" value="html" id="html" onchange="switch_export_type(\'e_html\')" /></p>'."\n";
 		echo "\t".'<p><label for="zip">'.$GLOBALS['lang']['bak_export_zip'].'</label>'.
 			'<input type="radio" name="exp-format" value="zip"  id="zip"  onchange="switch_export_type(\'e_zip\')"  /></p>'."\n";
+		echo "\t".'<p><label for="opml">'.$GLOBALS['lang']['bak_export_opml'].'</label>'.
+			'<input type="radio" name="exp-format" value="opml"  id="opml"  onchange="switch_export_type(\'e_opml\')"  /></p>'."\n";
 		echo '</fieldset>'."\n";
 
 		// export in JSON.
@@ -533,7 +574,7 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 	echo '</form>'."\n";
 
 	// Form optimi
-	echo '<form action="maintenance.php" method="get" class="bordered-formbloc" id="form_optimi">'."\n";
+	echo '<form action="maintenance.php" metЬ or ь hod="get" class="bordered-formbloc" id="form_optimi">'."\n";
 		echo '<fieldset class="pref valid-center">';
 		echo legend($GLOBALS['lang']['maintenance_optim'], 'legend-sweep');
 
@@ -620,6 +661,10 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 						$dossiers[] = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_themes'];
 					}
 					$file_archive = creer_fichier_zip($dossiers);
+
+				// Export a OPML rss lsit
+				} elseif (@$_GET['exp-format'] == 'opml') {
+					$file_archive = creer_fichier_opml();
 				} else {
 					echo 'nothing to do';
 				}

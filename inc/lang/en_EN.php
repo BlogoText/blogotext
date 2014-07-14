@@ -396,6 +396,7 @@ $GLOBALS['lang'] = array(
 'bak_export_json'					=> 'Create a JSON file with various data',
 'bak_export_netscape'			=> 'Create a Netscape export file with links',
 'bak_export_zip'					=> 'Create a ZIP archive with database and other files',
+'bak_export_opml'					=> 'Create an OPML file with a list of RSS feeds',
 'bak_incl_sqlit'					=> 'Include SQLite file',
 'bak_incl_confi'					=> 'Include configuration files',
 'bak_incl_files'					=> 'Include images and files',

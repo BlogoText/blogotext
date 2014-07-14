@@ -297,7 +297,7 @@ function get_external_file($url, $timeout=10) {
 function c_get_external_file($feeds) {
 	// uses chunks of 40 feeds because Curl has problems with too big (~150) "multi" requests.
 	// $feeds = array_splice($feeds, 60, 20);
-	$chunks = array_chunk($feeds, 40, true);
+	$chunks = array_chunk($feeds, 30, true);
 	$results = array();
 	$total_feed = count($feeds);
 	echo '0/'.$total_feed.' '; ob_flush(); flush(); // for Ajax
@@ -495,7 +495,7 @@ function feed2array($feed_content, $feedlink) {
 				// place le statut
 				$flux['items'][$c]['bt_statut'] = '1';
 				// place le dossier
-				$flux['items'][$c]['bt_folder'] = $GLOBALS['liste_flux'][$feedlink]['folder'];
+				$flux['items'][$c]['bt_folder'] = (isset($GLOBALS['liste_flux'][$feedlink]['folder']) ? $GLOBALS['liste_flux'][$feedlink]['folder'] : '' ) ;
 
 			}
 		} else {
