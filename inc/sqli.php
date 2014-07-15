@@ -152,6 +152,7 @@ function create_tables() {
 /* Open a base */
 function open_base() {
 	$handle = create_tables();
+	$handle->setAttribute(PDO::ATTR_EMULATE_PREPARES, FALSE);
 	return $handle;
 }
 
