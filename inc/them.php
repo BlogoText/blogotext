@@ -242,11 +242,11 @@ function afficher_index($tableau, $type) {
 	elseif ($type == 'post') {
 		$billet = $tableau;
 
+		$HTML_comms = '';
 		// get list comments
 		if ($billet['bt_nb_comments'] != 0) {
 			$query = "SELECT * FROM commentaires WHERE bt_article_id=? AND bt_statut=1 ORDER BY bt_id LIMIT ? ";
 			$commentaires = liste_elements($query, array($billet['bt_id'], $billet['bt_nb_comments']), 'commentaires');
-			$HTML_comms = '';
 
 			// parse & apply template comments
 			$template_comments = extract_boucles($theme_post, $GLOBALS['boucles']['commentaires'], 'excl');
