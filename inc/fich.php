@@ -421,7 +421,7 @@ function get_new_feeds($feedlink, $md5='') {
 					$GLOBALS['liste_flux'][$url]['checksum'] = $new_md5;
 					$GLOBALS['liste_flux'][$url]['iserror'] = 0;
 				} else {
-					//echo '<b>'.$url.'</b> - «'.htmlspecialchars(substr($content, 0, 120)).'»<br/>'; } // debug
+					//echo '<b>'.$url.'</b> - «'.htmlspecialchars(substr($content, 0, 120)).'»<br/>'; // debug
 					$GLOBALS['liste_flux'][$url]['iserror'] += 1;
 				}
 			}
@@ -461,7 +461,7 @@ function feed2array($feed_content, $feedlink) {
 
 			if (!empty($feed_obj->channel->item)){ $items = $feed_obj->channel->item; }
 			if (!empty($feed_obj->entry)){ $items = $feed_obj->entry; }
-			if (empty($items)) { return false; }
+			if (empty($items)) { return $flux; }
 
 			//aff($feed_obj);
 			foreach ($items as $item) {
