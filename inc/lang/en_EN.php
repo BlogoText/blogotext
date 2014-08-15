@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2013 Timo Van Neerden <timo@neerden.eu>
+# 2010-2014 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -307,7 +307,7 @@ $GLOBALS['lang'] = array(
 'prefs_legend_apparence'		=> 'Appearance',
 'prefs_legend_securite'			=> 'Security',
 'prefs_legend_langdateheure'	=> 'Language, date and time',
-'prefs_legend_configblog'		=> 'Blog settings',
+'prefs_legend_configblog'		=> 'Blog &amp; comments settings',
 'prefs_legend_configlinx'		=> 'Links settings',
 'prefs_legend_image'				=> 'Send an image',
 'pref_auteur'						=> 'Author: ',
@@ -332,6 +332,8 @@ $GLOBALS['lang'] = array(
 'pref_automatic_keywords'		=> 'Let BlogoText select keywords: ',
 'pref_force_email'				=> 'Email is required to comment: ',
 'pref_theme'						=> 'Theme: ',
+'pref_afficher_rss'				=> 'Show RSS tabs:',
+'pref_afficher_liens'			=> 'Show links tab:',
 'pref_categories'					=> 'Use tags for articles: ',
 'pref_commentaires'				=> 'Use comments: ',
 'pref_allow_global_coms'		=> 'Close comments on every article: ',
@@ -417,7 +419,7 @@ $GLOBALS['lang'] = array(
 'rss_label_titre_flux'			=> 'Feed Title:',
 'rss_label_url_flux'				=> 'Feed Link:',
 'rss_label_dossier'				=> 'Folder (optional) :',
-'rss_label_config'				=> 'Édit feed list',
+'rss_label_config'				=> 'Edit feed list',
 'rss_nothing_here_note'			=> 'Nothing here? Import an OPML file here: ',
 'rss_jsalert_new_link'			=> 'RSS/Atom complete link:',
 'rss_raccourcis_clavier'		=> 'Ctrl+Up = Read previous entry, Ctrl+Down = Read next entry.',

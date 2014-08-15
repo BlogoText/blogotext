@@ -71,6 +71,8 @@ function fichier_prefs() {
 		$global_com_rule = $_POST['global_comments'];
 		$connexion_captcha = $_POST['connexion_captcha'];
 		$activer_categories = $_POST['activer_categories'];
+		$afficher_rss = $_POST['aff_onglet_rss'];
+		$afficher_liens = $_POST['aff_onglet_liens'];
 		$theme_choisi = addslashes(clean_txt($_POST['theme']));
 		$comm_defaut_status = $_POST['comm_defaut_status'];
 		$automatic_keywords = $_POST['auto_keywords'];
@@ -100,6 +102,8 @@ function fichier_prefs() {
 		$global_com_rule = '0';
 		$connexion_captcha = '0';
 		$activer_categories = '1';
+		$afficher_rss = '1';
+		$afficher_liens = '1';
 		$theme_choisi = 'default';
 		$comm_defaut_status = '1';
 		$automatic_keywords = '1';
@@ -129,6 +133,8 @@ function fichier_prefs() {
 	$prefs .= "\$GLOBALS['fuseau_horaire'] = '".$fuseau_horaire."';\n";
 	$prefs .= "\$GLOBALS['connexion_captcha']= '".$connexion_captcha."';\n";
 	$prefs .= "\$GLOBALS['activer_categories']= '".$activer_categories."';\n";
+	$prefs .= "\$GLOBALS['onglet_rss']= '".$afficher_rss."';\n";
+	$prefs .= "\$GLOBALS['onglet_liens']= '".$afficher_liens."';\n";
 	$prefs .= "\$GLOBALS['theme_choisi']= '".$theme_choisi."';\n";
 	$prefs .= "\$GLOBALS['global_com_rule']= '".$global_com_rule."';\n";
 	$prefs .= "\$GLOBALS['comm_defaut_status']= '".$comm_defaut_status."';\n";

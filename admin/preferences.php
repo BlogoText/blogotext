@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2013 Timo Van Neerden <timo@neerden.eu>
+# 2010-2014 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -23,6 +23,7 @@ if (isset($_POST['_verif_envoi'])) {
 	} else {
 		if ( (fichier_user() === TRUE) and (fichier_prefs() === TRUE) ) {
 		redirection($_SERVER['PHP_SELF'].'?msg=confirm_prefs_maj');
+		exit();
 		}
 	}
 } else {
@@ -116,12 +117,24 @@ function afficher_form_prefs($erreurs = '') {
 		$fld_apparence .= legend($GLOBALS['lang']['prefs_legend_apparence'], 'legend-apparence');
 
 		$fld_apparence .= '<p>'."\n";
+		$fld_apparence .= form_select('theme', liste_themes($GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_themes']), $GLOBALS['theme_choisi'],$GLOBALS['lang']['pref_theme']);
+		$fld_apparence .= '</p>'."\n";
+
+		$fld_apparence .= '<p>'."\n";
 		$fld_apparence .= form_select('nb_maxi', array('5'=>'5', '10'=>'10', '15'=>'15', '20'=>'20', '25'=>'25', '50'=>'50'), $GLOBALS['max_bill_acceuil'],$GLOBALS['lang']['pref_nb_maxi']);
 		$fld_apparence .= '</p>'."\n";
 
 		$fld_apparence .= '<p>'."\n";
-		$fld_apparence .= form_select('theme', liste_themes($GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_themes']), $GLOBALS['theme_choisi'],$GLOBALS['lang']['pref_theme']);
+		$fld_apparence .= form_select('nb_maxi', array('5'=>'5', '10'=>'10', '15'=>'15', '20'=>'20', '25'=>'25', '50'=>'50'), $GLOBALS['max_bill_acceuil'],$GLOBALS['lang']['pref_nb_maxi']);
 		$fld_apparence .= '</p>'."\n";
+
+		$fld_apparence .= '<p>'."\n";
+		$fld_apparence .= select_yes_no('aff_onglet_rss', $GLOBALS['onglet_rss'], $GLOBALS['lang']['pref_afficher_rss'] );
+		$fld_apparence .= '</p>'."\n";
+		$fld_apparence .= '<p>'."\n";
+		$fld_apparence .= select_yes_no('aff_onglet_liens', $GLOBALS['onglet_liens'], $GLOBALS['lang']['pref_afficher_liens'] );
+		$fld_apparence .= '</p>'."\n";
+
 		$fld_apparence .= '</fieldset>';
 	echo $fld_apparence;
 
