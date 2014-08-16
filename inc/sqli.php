@@ -77,7 +77,7 @@ function create_tables() {
 	$GLOBALS['dbase_structure']['rss'] = "CREATE TABLE ".$if_not_exists." rss
 		(
 			ID INTEGER PRIMARY KEY $auto_increment,
-			bt_id BIGINT,
+			bt_id TEXT,
 			bt_date BIGINT,
 			bt_title TEXT,
 			bt_link TEXT,
