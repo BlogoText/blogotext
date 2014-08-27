@@ -19,7 +19,7 @@ if (!empty($GLOBALS['fuseau_horaire'])) {
 }
 
 // BLOGOTEXT VERSION (do not change it)
-$GLOBALS['version'] = '2.0.2.6';
+$GLOBALS['version'] = '2.0.9.9';
 $GLOBALS['last-online-file'] = '../config/version.txt';
 
 // MINIMAL REQUIRED PHP VERSION
@@ -44,6 +44,7 @@ $GLOBALS['dossier_config'] = 'config';
 
 $GLOBALS['db_location'] = 'database.sqlite';    // data storage file (for sqlite)
 $GLOBALS['fichier_liste_fichiers'] = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_db'].'/'.'files.php'; // files/image info storage.
+$GLOBALS['fichier_liste_fluxrss'] = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_db'].'/'.'rss.php'; // RSS-feeds list info storage.
 
 
 // DATABASE 'sqlite' or 'mysql' are supported yet.
@@ -53,6 +54,7 @@ if (is_file($mysql_file) and is_readable($mysql_file) and file_get_contents($mys
 } else {
 	$GLOBALS['sgdb'] = 'sqlite';
 }
+
 
 
 // regenerate captcha (always)

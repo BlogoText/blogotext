@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2013 Timo Van Neerden <timo@neerden.eu>
+# 2010-2014 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -44,6 +44,7 @@ $GLOBALS['lang'] = array(
 'desactiver'	 					=> 'Desactivate',
 'mesarticles' 						=> 'My articles',
 'mesliens'	 						=> 'My links',
+'mesabonnements'					=> 'My subscriptions',
 'nouveau' 							=> 'New article',
 'supprimer' 						=> 'Delete',
 'voir'		 						=> 'See',
@@ -123,6 +124,7 @@ $GLOBALS['lang'] = array(
 'label_links'						=> 'links',
 'label_image'						=> 'image',
 'label_images'						=> 'images',
+'label_feeds'						=> 'feeds',
 'label_fichier'					=> 'file',
 'label_fichiers'					=> 'files',
 'label_note'						=> 'note',
@@ -263,6 +265,8 @@ $GLOBALS['lang'] = array(
 'err_comm_article_id'			=> 'Article ID is wrong',
 'err_lien_vide'					=> 'URL is empty',
 'err_wrong_token'					=> 'Security coin is wrong.',
+'err_feed_exists'					=> 'Feed alreday exists.',
+'err_feed_wrong_param'			=> 'Wrong request.',
 // Questions
 'question_suppr_article'		=> 'This article and its comments will be deleted!',
 'question_suppr_image'			=> 'This image will be deleted!',
@@ -303,7 +307,7 @@ $GLOBALS['lang'] = array(
 'prefs_legend_apparence'		=> 'Appearance',
 'prefs_legend_securite'			=> 'Security',
 'prefs_legend_langdateheure'	=> 'Language, date and time',
-'prefs_legend_configblog'		=> 'Blog settings',
+'prefs_legend_configblog'		=> 'Blog &amp; comments settings',
 'prefs_legend_configlinx'		=> 'Links settings',
 'prefs_legend_image'				=> 'Send an image',
 'pref_auteur'						=> 'Author: ',
@@ -328,6 +332,8 @@ $GLOBALS['lang'] = array(
 'pref_automatic_keywords'		=> 'Let BlogoText select keywords: ',
 'pref_force_email'				=> 'Email is required to comment: ',
 'pref_theme'						=> 'Theme: ',
+'pref_afficher_rss'				=> 'Show RSS tabs:',
+'pref_afficher_liens'			=> 'Show links tab:',
 'pref_categories'					=> 'Use tags for articles: ',
 'pref_commentaires'				=> 'Use comments: ',
 'pref_allow_global_coms'		=> 'Close comments on every article: ',
@@ -388,9 +394,11 @@ $GLOBALS['lang'] = array(
 'bak_import_btjson'				=> 'Import a JSON backup from Blogotext',
 'bak_import_wordpress'			=> 'Import an XML backup from WordPress',
 'bak_import_netscape'			=> 'Import links from a Netscape file',
+'bak_import_rssopml'				=> 'Import an OPML RSS feeds list',
 'bak_export_json'					=> 'Create a JSON file with various data',
 'bak_export_netscape'			=> 'Create a Netscape export file with links',
 'bak_export_zip'					=> 'Create a ZIP archive with database and other files',
+'bak_export_opml'					=> 'Create an OPML file with a list of RSS feeds',
 'bak_incl_sqlit'					=> 'Include SQLite file',
 'bak_incl_confi'					=> 'Include configuration files',
 'bak_incl_files'					=> 'Include images and files',
@@ -398,7 +406,24 @@ $GLOBALS['lang'] = array(
 'bak_opti_miniature'				=> 'Recreate image thumbnails',
 'bak_opti_vacuum'					=> 'Rebuilt/Clean up database',
 'bak_opti_recountcomm'			=> 'Rebuilt/Recount articles comments',
+'bak_opti_supprreadrss'			=> 'Remove read RSS items',
 'bak_dl_fichier'					=> 'Download file.',
+// page RSS
+'rss_label_all_feeds'			=> 'All feeds',
+'rss_label_refresh'				=> 'Refresh',
+'rss_label_markasread'			=> 'Mark as read',
+'rss_label_unfoldall'			=> 'Unfold all',
+'rss_label_addfeed'				=> 'Add a feed',
+'rss_label_clean'					=> 'Clean',
+'rss_label_unread'				=> 'Unread',
+'rss_label_titre_flux'			=> 'Feed Title:',
+'rss_label_url_flux'				=> 'Feed Link:',
+'rss_label_dossier'				=> 'Folder (optional) :',
+'rss_label_config'				=> 'Edit feed list',
+'rss_nothing_here_note'			=> 'Nothing here? Import an OPML file here: ',
+'rss_jsalert_new_link'			=> 'RSS/Atom complete link:',
+'rss_raccourcis_clavier'		=> 'Ctrl+Up = Read previous entry, Ctrl+Down = Read next entry.',
+
 
 // vérifier les mises à jours
 'maint_chk_update'				=> 'Updates',

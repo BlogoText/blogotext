@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2013 Timo Van Neerden <timo@neerden.eu>
+# 2010-2014 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -44,6 +44,7 @@ $GLOBALS['lang'] = array(
 'desactiver'	 					=> 'Désactiver',
 'mesarticles' 						=> 'Mes articles',
 'mesliens'	 						=> 'Mes liens',
+'mesabonnements'					=> 'Mes abonnements',
 'nouveau' 							=> 'Nouvel article',
 'supprimer' 						=> 'Supprimer',
 'voir'		 						=> 'Voir',
@@ -123,6 +124,7 @@ $GLOBALS['lang'] = array(
 'label_links'						=> 'liens',
 'label_image'						=> 'image',
 'label_images'						=> 'images',
+'label_feeds'						=> 'flux RSS',
 'label_fichier'					=> 'fichier',
 'label_fichiers'					=> 'fichiers',
 'label_note'						=> 'note',
@@ -263,6 +265,8 @@ $GLOBALS['lang'] = array(
 'err_comm_article_id'			=> 'L’ID Article n’est pas valide',
 'err_lien_vide'					=> 'L’URL est vide',
 'err_wrong_token'					=> 'Le jeton de sécurité est expiré ou invalide.',
+'err_feed_exists'					=> 'Le flux existe déjà.',
+'err_feed_wrong_param'			=> 'Mauvaise requête.',
 // Questions
 'question_suppr_article'		=> 'Cet article et ses commentaires seront définitivement supprimés !',
 'question_suppr_image'			=> 'Cette image sera définitivement supprimée !',
@@ -303,7 +307,7 @@ $GLOBALS['lang'] = array(
 'prefs_legend_apparence'		=> 'Apparence',
 'prefs_legend_securite'			=> 'Sécurité',
 'prefs_legend_langdateheure'	=> 'Langue, date et heure',
-'prefs_legend_configblog'		=> 'Options pour le blog',
+'prefs_legend_configblog'		=> 'Options pour le blog et les commentaires',
 'prefs_legend_configlinx'		=> 'Options pour les liens',
 'prefs_legend_image'				=> 'Envoyer une image',
 'pref_auteur'						=> 'Auteur&thinsp;: ',
@@ -317,7 +321,7 @@ $GLOBALS['lang'] = array(
 'pref_format_date'				=> 'Format de la date&thinsp;: ',
 'pref_format_heure'				=> 'Format de l’heure&thinsp;: ',
 'pref_racine'						=> 'Adresse du blog (URL)&thinsp;: ',
-'pref_nb_maxi'						=> 'Nombre d’articles sur l’accueil&thinsp;: ',
+'pref_nb_maxi'						=> 'Nombre d’articles sur le blog&thinsp;: ',
 'pref_nb_list'						=> 'Nombre d’articles dans la liste admin&thinsp;: ',
 'pref_nb_list_com'				=> 'Nombre de commentaires dans la liste admin&thinsp;: ',
 'pref_nb_list_linx'				=> 'Nombre de liens dans la liste admin&thinsp;: ',
@@ -327,7 +331,9 @@ $GLOBALS['lang'] = array(
 'pref_comm_black_list'			=> 'Dés qu’ils sont postés.',
 'pref_automatic_keywords'		=> 'Laisser Blogotext choisir les mots-clés meta&thinsp;: ',
 'pref_force_email'				=> 'L’email est exigée pour commenter&thinsp;: ',
-'pref_theme'						=> 'Thème&thinsp;: ',
+'pref_theme'						=> 'Thème du blog&thinsp;: ',
+'pref_afficher_rss'				=> 'Afficher l’onglet des RSS&thinsp;:',
+'pref_afficher_liens'			=> 'Afficher l’onglet des liens&thinsp;:',
 'pref_categories'					=> 'Classement des billets par catégories&thinsp;: ',
 'pref_commentaires'				=> 'Utiliser les commentaires&thinsp;: ',
 'pref_allow_global_coms'		=> 'Fermeture des commentaires sur tous les articles&thinsp;: ',
@@ -388,9 +394,11 @@ $GLOBALS['lang'] = array(
 'bak_import_btjson'				=> 'Importer un fichier JSON de BlogoText',
 'bak_import_wordpress'			=> 'Importer un fichier XML de WordPress',
 'bak_import_netscape'			=> 'Importer un fichier HTML de liens Netscape',
-'bak_export_json'					=> 'Créer un fichier JSON contenant diverses données',
+'bak_import_rssopml'				=> 'Importer un fichier OPML de liste de flux RSS',
+'bak_export_json'					=> 'Exporter les données du blog dans un fichier JSON',
 'bak_export_netscape'			=> 'Exporter les liens sous forme de favoris Netscape',
 'bak_export_zip'					=> 'Créer un ZIP de la base de données et des fichiers',
+'bak_export_opml'					=> 'Exporter la liste des flux RSS dans un fichier OPML',
 'bak_incl_sqlit'					=> 'Inclure la base SQLite',
 'bak_incl_confi'					=> 'Inclure les fichier de config',
 'bak_incl_files'					=> 'Inclure les images et les fichiers',
@@ -398,7 +406,23 @@ $GLOBALS['lang'] = array(
 'bak_opti_miniature'				=> 'Recréer les miniatures des images',
 'bak_opti_vacuum'					=> 'Reconstruire la base de donnée',
 'bak_opti_recountcomm'			=> 'Reconstruire l’association articles/commentaires',
+'bak_opti_supprreadrss'			=> 'Supprimer les entrées RSS lues',
 'bak_dl_fichier'					=> 'Télécharger le fichier.',
+// page RSS
+'rss_label_all_feeds'			=> 'Tous les flux',
+'rss_label_refresh'				=> 'Recharger',
+'rss_label_markasread'			=> 'Marquer comme lu',
+'rss_label_unfoldall'			=> 'Tout déplier',
+'rss_label_addfeed'				=> 'Ajouter un flux',
+'rss_label_clean'					=> 'Nettoyer',
+'rss_label_unread'				=> 'Non lus',
+'rss_label_titre_flux'			=> 'Titre du flux :',
+'rss_label_url_flux'				=> 'Url du flux :',
+'rss_label_dossier'				=> 'Dossier (optionnel)',
+'rss_label_config'				=> 'Éditer la liste des flux',
+'rss_nothing_here_note'			=> 'Rien ici ? Importez un fichier OPML en cliquant ici : ',
+'rss_jsalert_new_link'			=> 'Url complète du flux RSS/Atom :',
+'rss_raccourcis_clavier'		=> 'Ctrl+Haut = lire l’élément précédent, Ctrl+Bas = lire l’élément suivant.',
 
 // vérifier les mises à jours
 'maint_chk_update'				=> 'Mises à jour',

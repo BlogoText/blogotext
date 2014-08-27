@@ -29,10 +29,10 @@ $GLOBALS['liste_fichiers'] = open_serialzd_file($GLOBALS['fichier_liste_fichiers
 foreach ($GLOBALS['liste_fichiers'] as $key => $file) {
 	$liste_fileid[] = $file['bt_id'];
 }
-$time = time();
 
 
 if (isset($_FILES['fichier'])) {
+	$time = time();
 	$fichier = init_post_fichier();
 
 	// avoid ID collisions

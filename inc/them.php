@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2013 Timo Van Neerden <timo@neerden.eu>
+# 2010-2014 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -242,13 +242,13 @@ function afficher_index($tableau, $type) {
 	elseif ($type == 'post') {
 		$billet = $tableau;
 
-		// get list commens
-		$query = "SELECT * FROM commentaires WHERE bt_article_id=? AND bt_statut=1 ORDER BY bt_id";
-		$commentaires = liste_elements($query, array($billet['bt_id']), 'commentaires');
 		$HTML_comms = '';
+		// get list comments
+		if ($billet['bt_nb_comments'] != 0) {
+			$query = "SELECT * FROM commentaires WHERE bt_article_id=? AND bt_statut=1 ORDER BY bt_id LIMIT ? ";
+			$commentaires = liste_elements($query, array($billet['bt_id'], $billet['bt_nb_comments']), 'commentaires');
 
-		// parse & apply template comments
-		if (!empty($commentaires)) {
+			// parse & apply template comments
 			$template_comments = extract_boucles($theme_post, $GLOBALS['boucles']['commentaires'], 'excl');
 
 			foreach ($commentaires as $element) {

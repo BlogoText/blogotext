@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2013 Timo Van Neerden <timo@neerden.eu>
+# 2010-2014 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -131,7 +131,7 @@ function valider_form_fichier($fichier) {
 		}
 		elseif (isset($_POST['url'])) {
 			if ( empty($_POST['url']) ) {
-				$erreurs[] = 'aucune url spécifiée';
+				$erreurs[] = $GLOBALS['lang']['err_lien_vide'];
 			}
 		}
 
@@ -140,6 +140,34 @@ function valider_form_fichier($fichier) {
 			$erreurs[] = 'nom de fichier invalide';
 		}
 	}
+	return $erreurs;
+}
+
+function valider_form_rss() {
+	$erreurs = array();
+	if (!( isset($_POST['token']) and check_token($_POST['token'])) ) {
+		$erreurs[] = $GLOBALS['lang']['err_wrong_token'];
+	}
+	// on feed add: URL needs to be valid, not empty, and must not already be in DB
+	if (isset($_POST['add-feed'])) {
+		if (empty($_POST['add-feed'])) {
+			$erreurs[] = $GLOBALS['lang']['err_lien_vide'];
+		}
+		if (!preg_match('#^(https?://[\S]+)[a-z]{2,6}[-\#_\w?%*:.;=+\(\)/&~$,]*$#', trim($_POST['add-feed'])) ) {
+			$erreurs[] = $GLOBALS['lang']['err_comm_webpage'];
+		}
+		if (array_key_exists($_POST['add-feed'], $GLOBALS['liste_flux'])) {
+			$erreurs[] = $GLOBALS['lang']['err_feed_exists'];
+		}
+
+	}
+
+	elseif (isset($_POST['mark-as-read'])) {
+		if ( !(in_array($_POST['mark-as-read'], array('all', 'site', 'post', 'folder'))) ) {
+			$erreurs[] = $GLOBALS['lang']['err_feed_wrong_param'];
+		}
+	}
+
 	return $erreurs;
 }
 
