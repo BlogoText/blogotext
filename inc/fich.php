@@ -309,7 +309,7 @@ function c_get_external_file($feeds) {
 	echo '0/'.$total_feed.' '; ob_flush(); flush(); // for Ajax
 
 	foreach ($chunks as $chunk) {
-		set_time_limit (20);
+		set_time_limit (30);
 		$curl_arr = array();
 		$master = curl_multi_init();
 		$total_feed_chunk = count($chunk)+count($results);
@@ -321,7 +321,7 @@ function c_get_external_file($feeds) {
 					CURLOPT_RETURNTRANSFER => TRUE,
 					CURLOPT_FOLLOWLOCATION => TRUE,
 					CURLOPT_CONNECTTIMEOUT => 0, // 0 = indefinately
-					CURLOPT_TIMEOUT => 15,
+					CURLOPT_TIMEOUT => 25,
 					CURLOPT_USERAGENT => $_SERVER['HTTP_USER_AGENT'],
 					CURLOPT_SSL_VERIFYPEER => FALSE,
 					CURLOPT_SSL_VERIFYHOST => FALSE,
