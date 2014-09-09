@@ -138,11 +138,13 @@ else {
 	foreach ($liste_rss as $key => $item) {
 		 $bt_id[$key] = (isset($item['bt_date'])) ? $item['bt_date'] : $item['bt_id'];
 	}
-	array_multisort($bt_id, SORT_DESC, $liste_rss);
+	if (!empty($liste_rss)) {
+		array_multisort($bt_id, SORT_DESC, $liste_rss);
+	}
 	$liste_rss = array_slice($liste_rss, 0, 20);
 	$invert = (isset($_GET['invertlinks'])) ? TRUE : FALSE;
 	$xml .= '<title>'.$GLOBALS['nom_du_site'].'</title>'."\n";
-	$xml .= '<link>'.$GLOBALS['racine'].'?mode='.(trim($modes_url, '-')).'</link>'."\n"; 
+	$xml .= '<link>'.$GLOBALS['racine'].((empty(trim($modes_url, '-'))) ? '' : '?mode='.(trim($modes_url, '-'))).'</link>'."\n"; 
 	$xml .= '<description><![CDATA['.$GLOBALS['description'].']]></description>'."\n";
 	$xml .= '<language>fr</language>'."\n";
 	$xml .= '<copyright>'.$GLOBALS['auteur'].'</copyright>'."\n";
