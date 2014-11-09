@@ -288,6 +288,9 @@ $GLOBALS['lang'] = array(
 'confirm_link_ajout'				=> 'Link has been added',
 'confirm_link_suppr'				=> 'Link has been removed',
 'confirm_link_edit'				=> 'Link has been updated',
+'confirm_feed_update'			=> 'The feeds have been updated.',
+'confirm_feeds_edit'				=> 'The feeds have been edited.',
+'confirm_feed_ajout'				=> 'The feed has been added.',
 // No-onfiramtion
 'error_image_add'					=> 'File could not have been added',
 // Redirections
