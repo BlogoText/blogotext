@@ -426,6 +426,7 @@ $GLOBALS['lang'] = array(
 'rss_nothing_here_note'			=> 'Nothing here? Import an OPML file here: ',
 'rss_jsalert_new_link'			=> 'RSS/Atom complete link:',
 'rss_raccourcis_clavier'		=> 'Ctrl+Up = Read previous entry, Ctrl+Down = Read next entry.',
+'rss_nouveau_flux'				=> 'new entries.',
 
 
 // vérifier les mises à jours

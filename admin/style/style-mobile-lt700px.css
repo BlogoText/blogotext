@@ -199,6 +199,7 @@
 	/* paged des RSS */
 	#posts-menu {
 		text-align: center;
+		border-left: none;
 	}
 	#posts-menu button {
 		margin: 5px;

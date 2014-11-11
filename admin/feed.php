@@ -82,7 +82,7 @@ else {
 	$out_html .= "\t\t\t\t".'<li><button type="button" onclick="window.location.href=\'maintenance.php#form_import\'" title="Import/export"></button></li>'."\n";
 	$out_html .= "\t\t\t\t".'<li><button type="button" onclick="return cleanList();" title="'.$GLOBALS['lang']['rss_label_clean'].'"></button></li>'."\n";
 	$out_html .= "\t\t\t".'</ul>'."\n";
-	$out_html .= "\t\t\t".'<span id="message-return"></span>'."\n";
+	$out_html .= "\t\t\t".'<span id="message-return">'.(isset($_GET['nbnew']) ? htmlspecialchars($_GET['nbnew']).' '.$GLOBALS['lang']['rss_nouveau_flux'] : '' ).'</span>'."\n";
 	$out_html .= "\t\t".'</div>'."\n";
 	$out_html .= "\t".'<ul id="feed-list">'."\n";
 	$out_html .= feed_list_html();
