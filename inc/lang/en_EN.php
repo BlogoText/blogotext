@@ -288,6 +288,9 @@ $GLOBALS['lang'] = array(
 'confirm_link_ajout'				=> 'Link has been added',
 'confirm_link_suppr'				=> 'Link has been removed',
 'confirm_link_edit'				=> 'Link has been updated',
+'confirm_feed_update'			=> 'The feeds have been updated.',
+'confirm_feeds_edit'				=> 'The feeds have been edited.',
+'confirm_feed_ajout'				=> 'The feed has been added.',
 // No-onfiramtion
 'error_image_add'					=> 'File could not have been added',
 // Redirections
@@ -423,6 +426,7 @@ $GLOBALS['lang'] = array(
 'rss_nothing_here_note'			=> 'Nothing here? Import an OPML file here: ',
 'rss_jsalert_new_link'			=> 'RSS/Atom complete link:',
 'rss_raccourcis_clavier'		=> 'Ctrl+Up = Read previous entry, Ctrl+Down = Read next entry.',
+'rss_nouveau_flux'				=> 'new entries.',
 
 
 // vérifier les mises à jours

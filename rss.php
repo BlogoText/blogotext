@@ -144,7 +144,7 @@ else {
 	$liste_rss = array_slice($liste_rss, 0, 20);
 	$invert = (isset($_GET['invertlinks'])) ? TRUE : FALSE;
 	$xml .= '<title>'.$GLOBALS['nom_du_site'].'</title>'."\n";
-	$xml .= '<link>'.$GLOBALS['racine'].((empty(trim($modes_url, '-'))) ? '' : '?mode='.(trim($modes_url, '-'))).'</link>'."\n"; 
+	$xml .= '<link>'.$GLOBALS['racine'].((trim($modes_url, '-') == '') ? '' : '?mode='.(trim($modes_url, '-'))).'</link>'."\n"; 
 	$xml .= '<description><![CDATA['.$GLOBALS['description'].']]></description>'."\n";
 	$xml .= '<language>fr</language>'."\n";
 	$xml .= '<copyright>'.$GLOBALS['auteur'].'</copyright>'."\n";

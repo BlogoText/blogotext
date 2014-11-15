@@ -282,7 +282,7 @@ function open_serialzd_file($fichier) {
 
 function get_external_file($url, $timeout=10) {
 	$headers = array(
-		'user_agent' => 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:29.0 BlogoText-UA) Gecko/20100101 Firefox/29.0',
+		'user_agent' => 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:33.0 BlogoText-UA) Gecko/20100101 Firefox/33.0',
 		'timeout' => $timeout,
 		'header'=> "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n",
 		'connection' => 'close',
@@ -392,16 +392,22 @@ function refresh_rss($feeds) {
 						$GLOBALS['liste_flux'][$feeds[$url]['link']]['time'] = $item['bt_date'];
 					}
 			}
-			// if list of new elements is !empty, save new elements
 			if (!empty($items)) {
-				$count_new += count($items);
-				$ret = bdd_rss($items, 'enregistrer-nouveau');
-				if ($ret !== TRUE) {
-					echo $ret;
-				}
+				$all_flux = array_merge($all_flux, $items);
 			}
 		}
 	}
+
+	// if list of new elements is !empty, save new elements
+	if (!empty($all_flux)) {
+		$count_new = count($all_flux);
+		$ret = bdd_rss($all_flux, 'enregistrer-nouveau');
+		if ($ret !== TRUE) {
+			echo $ret;
+		}
+	}
+
+
 	// save last success time
 	file_put_contents($GLOBALS['fichier_liste_fluxrss'], '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_flux']))).' */');
 	return $count_new;
@@ -410,7 +416,7 @@ function refresh_rss($feeds) {
 
 
 function get_new_feeds($feedlink, $md5='') {
-	if (!$feeds = c_get_external_file($feedlink, 15)) {
+	if (!$feeds = c_get_external_file($feedlink)) {
 		return FALSE;
 	}
 	$return = array();

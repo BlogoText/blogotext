@@ -234,10 +234,7 @@ function afficher_calendrier() {
 	if ( ($ce_mois != date('m')) || ($annee != date('Y')) ) {
 		$html .= '&nbsp;<a href="'.$next_mois.'">&#187;</a>';
 	}
-	$html .= '</caption>'."\n";
-	//$html .= '<tr><th><abbr>';
-	//$html .= implode('</abbr></th><th><abbr>', $jours_semaine);
-	//$html .= '</abbr></th></tr><tr>';
+	$html .= '</caption>'."\n".'<tr>'."\n";
 	if ($decalage_jour > 0) {
 		for ($i = 0; $i < $decalage_jour; $i++) {
 			$html .=  '<td></td>';
@@ -271,9 +268,9 @@ function afficher_calendrier() {
 		for ($i = $decalage_jour; $i < 7; $i++) {
 			$html .= '<td> </td>';
 		}
-		$html .= '</tr>';
+		$html .= '</tr>'."\n";
 	}
-	$html .= '</table>';
+	$html .= '</table>'."\n";
 	return $html;
 }
 

@@ -195,4 +195,29 @@
 	#articles .month {
 		width: 14px;
 	}
+
+	/* paged des RSS */
+	#posts-menu {
+		text-align: center;
+		border-left: none;
+	}
+	#posts-menu button {
+		margin: 5px;
+	}
+	#message-return {
+		display: block;
+		margin: 10px auto;
+	}
+	#feed-list {
+		display: none;
+	}
+	#rss-list {
+		padding-right: 0%;
+		padding-left: 0%;
+		margin: auto 0;
+	}
+	#post-list > li {
+		padding-top: 6px;
+		padding-bottom: 6px;
+	}
 }

@@ -40,6 +40,7 @@ if (isset($_POST['refresh_all'])) {
 	echo $nb_new;
 }
 
+
 // delete old entries
 if (isset($_POST['delete_old'])) {
 	$erreurs = valider_form_rss();
@@ -59,6 +60,7 @@ if (isset($_POST['delete_old'])) {
 	}
 
 }
+
 
 // add new RSS link to serialized-DB
 if (isset($_POST['add-feed'])) {

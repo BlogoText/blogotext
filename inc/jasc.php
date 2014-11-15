@@ -289,11 +289,12 @@ function rss_feedlist(RssPosts) {
 		li.id = \'i_\'+item.id;
 		li.classList.add(\'li-post-bloc\');
 		li.dataset.feedUrl = item.feed;
+		li.onclick = function(){ return openItem(this); };
 		if (item.statut == 0) { li.classList.add(\'read\'); }
 
 		// new line with the title
 		var title = document.createElement("p");
-		title.innerHTML = \'<a href="\'+item.link+\'" onclick="return openItem(this);" target="_blank">\'+item.title+\'</a>\';
+		title.innerHTML = \'<a href="\'+item.link+\'" target="_blank">\'+item.title+\'</a>\';
 		title.title = item.title;
 		title.classList.add(\'post-title\');
 
@@ -429,7 +430,11 @@ function refresh_all_feeds(refreshLink) {
 
 	xhr.onprogress = function() {
 		if (glLength != this.responseText.length) {
-			notifNode.innerHTML = this.responseText.substr(glLength);
+			
+			var posSpace = (this.responseText.substr(0, this.responseText.length-1)).lastIndexOf(" ");
+
+
+			notifNode.innerHTML = this.responseText.substr(posSpace);//+" "+glLength+" "+posSpace;
 			glLength = this.responseText.length;
 		}
 	}
@@ -437,13 +442,14 @@ function refresh_all_feeds(refreshLink) {
 		var resp = this.responseText;
 
 		// update status
-		notifNode.innerHTML = resp.substr(resp.indexOf("Success")+40+7)+\' new feeds (please reload page)\';
+		var nbNewFeeds = resp.substr(resp.indexOf("Success")+40+7);
+		notifNode.innerHTML = nbNewFeeds+\' new feeds (please reload page)\';
 		token = resp.substr(resp.indexOf("Success")+7, 40);
 
 		// if new feeds, reload page.
 		refreshLink.dataset.refreshOngoing = 0;
 		loading_animation(\'off\');
-		window.location.href = window.location.href.split("?")[0]+\'?msg=confirm_feed_update\';
+		window.location.href = window.location.href.split("?")[0]+\'?msg=confirm_feed_update&nbnew=\'+nbNewFeeds;
 		return false;
 	};
 
@@ -473,31 +479,31 @@ function refresh_all_feeds(refreshLink) {
 
 function js_rss_openitem($a) {
 $sc = '
-function openItem(thislink) {
-	// on clic on title on an open post : open link in new tab.
-	if (thislink.parentNode.parentNode.classList.contains(\'open-post\')) { return true; }
+function openItem(thisPost) {
+	// on clic on open post : open link in new tab.
+	if (thisPost.classList.contains(\'open-post\')) { return true; }
 	// on clic on item, close the previous opened item
 	var open_post = document.getElementById(\'post-list\').getElementsByClassName(\'open-post\')[0];
 	if (open_post) open_post.classList.remove(\'open-post\');
 
 	// open this post
-	thislink.parentNode.parentNode.classList.add(\'open-post\');
+	thisPost.classList.add(\'open-post\');
 
 	// remove comments tag in content
-	var content = thislink.parentNode.parentNode.getElementsByClassName(\'rss-item-content\')[0];
+	var content = thisPost.getElementsByClassName(\'rss-item-content\')[0];
 	if (content.childNodes[0].nodeType == 8) {
 		content.innerHTML = content.childNodes[0].data;
 	}
 
 	// jump to post (anchor + 50px)
-	var rect = thislink.parentNode.parentNode.getBoundingClientRect();
+	var rect = thisPost.getBoundingClientRect();
 	var isVisible = ( (rect.top < 0) || (rect.bottom > window.innerHeight) ) ? false : true ;
 	if (!isVisible) {
-		window.location.hash = thislink.parentNode.parentNode.id;
+		window.location.hash = thisPost.id;
 		window.scrollBy(0,-50);
 	}
 
-	markAsRead(\'post\', thislink.parentNode.parentNode.id.substr(2));
+	markAsRead(\'post\', thisPost.id.substr(2));
 	return false;
 }
 
@@ -600,7 +606,7 @@ function addNewFeed() {
 
 		var resp = this.responseText;
 		// en cas d’erreur, arrête ; le message d’erreur est mis dans le #count-posts
-		if (resp.indexOf("Success") != 0) {
+		if (resp.indexOf("Success") == -1) {
 			loading_animation(\'off\');
 			notifNode.innerHTML = resp;
 			return false;

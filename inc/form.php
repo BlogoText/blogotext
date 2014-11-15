@@ -316,7 +316,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 	if ($step == 1) { // postage de l'URL : un champ affiché en GET
 		$form .= '<form method="get" class="bordered-formbloc" id="post-new-lien" action="'.'links.php'.'">'."\n"; // not using PHP_SELF because of if the form is loaded on index.php
 		$form .= '<fieldset>'."\n";
-		$form .= "\t".'<input type="text" name="url" value="" size="70" placeholder="http://www.example.com/" class="text" autofocus />'."\n";
+		$form .= "\t".'<input type="text" name="url" value="" size="70" placeholder="http://www.example.com/" class="text" autofocus autocomplete="off" />'."\n";
 		$form .= "\t".'<p class="centrer">'."\n";
 		$form .= "\t\t".'<input type="submit" value="'.$GLOBALS['lang']['envoyer'].'" class="submit blue-square" />'."\n";
 		$form .= "\t".'</p>';
