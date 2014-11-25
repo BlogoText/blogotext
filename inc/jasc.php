@@ -219,33 +219,7 @@ image_vignettes();
 }
 
 
-
-function js_comm_question_suppr($a) {
-$sc = '
-function ask_suppr(button) {
-	var reponse = window.confirm(\''.$GLOBALS['lang']['question_suppr_comment'].'\');
-	if (reponse == true) {
-		var form = button.parentNode.parentNode.getElementsByTagName(\'form\')[0];
-		var submitButtons = form.getElementsByTagName(\'input\');
-		for (var i = 0, nb = submitButtons.length ; i<nb ; i++) {
-			if (submitButtons[i].name === \'enregistrer\') {
-				submitButtons[i].name = \'supprimer_comm\';
-				submitButtons[i].type = \'text\';
-				break;
-			}
-		}
-		form.submit();
-	}
-	return reponse;
-}
-';
-	if ($a == 1) {
-		$sc = "\n".'<script type="text/javascript">'."\n".$sc."\n".'</script>'."\n";
-	} else {
-		$sc = "\n".$sc."\n";
-	}
-	return $sc;
-}
+// If article form has been changed, ask for confirmation before closing page/tab.
 
 
 function js_alert_before_quit($a) {
@@ -267,8 +241,16 @@ window.addEventListener("beforeunload", function (e) {
 	return $sc;
 }
 
-/* 
- Below: for RSS */
+/*
+ *
+ *
+ *
+ *
+ *  Below: for RSS reader
+ *
+ *
+ *
+*/
 
 function js_rss_json_list($a) {
 $sc = '
@@ -954,4 +936,119 @@ function testKey(e) {
 }
 
 
+/*
+ *
+ *
+ *
+ * Below for comments processing
+ *
+*/
+
+// deleting a comment
+function js_comm_delete($a) {
+$sc = '
+
+function suppr_comm(button) {
+	var reponse = window.confirm(\''.$GLOBALS['lang']['question_suppr_comment'].'\');
+	if (reponse == true) {
+
+		var xhr = new XMLHttpRequest();
+		xhr.open(\'POST\', \'commentaires.php\', true);
+		xhr.onload = function() {
+			var resp = this.responseText;
+
+
+			if (resp.indexOf("Success") == 0) {
+				csrf_token = resp.substr(7, 40);
+				var div_bloc = document.getElementById(button.parentNode.parentNode.id);
+				div_bloc.classList.add(\'deleteFadeOut\');
+				div_bloc.style.height = div_bloc.offsetHeight+\'px\';
+				div_bloc.addEventListener(\'animationend\', function(event){event.target.parentNode.removeChild(event.target);}, false);
+				div_bloc.addEventListener(\'webkitAnimationEnd\', function(event){event.target.parentNode.removeChild(event.target);}, false);
+
+			} else {
+				// place error in special NODE, maybe the notif node~
+				alert(this.responseText);
+			}
+
+
+
+		};
+		xhr.onerror = function(e) {
+			alert(\'An error happened. Reload page and try again. Contact dev with error code "#com-rem-B42" if error persists\');
+		};
+
+		// prepare and send FormData
+		var formData = new FormData();
+		formData.append(\'token\', csrf_token);
+		formData.append(\'_verif_envoi\', 1);
+
+
+		formData.append(\'com_supprimer\', button.dataset.commId);
+		formData.append(\'com_article_id\', button.dataset.commArtId);
+
+		xhr.send(formData);
+
+	}
+	return reponse;
+}
+
+';
+	if ($a == 1) {
+		$sc = "\n".'<script type="text/javascript">'."\n".$sc."\n".'</script>'."\n";
+	} else {
+		$sc = "\n".$sc."\n";
+	}
+	return $sc;
+}
+
+// hide/unhide a comm
+function js_comm_activate($a) {
+$sc = '
+
+function activate_comm(button) {
+
+	var xhr = new XMLHttpRequest();
+	xhr.open(\'POST\', \'commentaires.php\', true);
+	xhr.onload = function() {
+		var resp = this.responseText;
+
+
+		if (resp.indexOf("Success") == 0) {
+			csrf_token = resp.substr(7, 40);
+			var div_bloc = document.getElementById(button.parentNode.parentNode.id);
+			div_bloc.classList.toggle(\'privatebloc\');
+			button.textContent = ((button.textContent === "'.$GLOBALS['lang']['activer'].'") ? "'.$GLOBALS['lang']['desactiver'].'" : "'.$GLOBALS['lang']['activer'].'" );
+
+		} else {
+			// place error in special NODE, maybe the notif node~
+			alert(this.responseText);
+		}
+
+	};
+	xhr.onerror = function(e) {
+		alert(\'An error happened. Reload page and try again. Contact dev with error code "#com-activ-H28" if error persists\');
+	};
+
+	// prepare and send FormData
+	var formData = new FormData();
+	formData.append(\'token\', csrf_token);
+	formData.append(\'_verif_envoi\', 1);
+
+
+	formData.append(\'com_activer\', button.dataset.commId);
+	formData.append(\'com_article_id\', button.dataset.commArtId);
+
+	xhr.send(formData);
+
+}
+
+';
+	if ($a == 1) {
+		$sc = "\n".'<script type="text/javascript">'."\n".$sc."\n".'</script>'."\n";
+	} else {
+		$sc = "\n".$sc."\n";
+	}
+	return $sc;
+}
 

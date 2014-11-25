@@ -405,15 +405,9 @@ function afficher_liste_articles($tableau) {
 			// TITRE
 			$out .= "\t\t".'<span><span class="'.( ($article['bt_statut'] == '1') ? 'on' : 'off').'"></span>'.'<a href="ecrire.php?post_id='.$article['bt_id'].'" title="'.trim($article['bt_abstract']).'">'.$article['bt_title'].'</a>'.'</span>'."\n";
 			// DATE
-			$out .= "\t\t".'<span><a href="'.$_SERVER['PHP_SELF'].'?filtre='.substr($article['bt_date'],0,8).'">'.date_formate($article['bt_date']).'</a> - '.heure_formate($article['bt_date']).'</span>'."\n";
+			$out .= "\t\t".'<span><a href="'.$_SERVER['PHP_SELF'].'?filtre='.substr($article['bt_date'],0,8).'">'.date_formate($article['bt_date']).'</a> @ '.heure_formate($article['bt_date']).'</span>'."\n";
 			// NOMBRE COMMENTS
-			if ($article['bt_nb_comments'] == 1) {
-				$texte = $article['bt_nb_comments'].' '.$GLOBALS['lang']['label_commentaire'];
-			} elseif ($article['bt_nb_comments'] > 1) {
-				$texte = $article['bt_nb_comments'].' '.$GLOBALS['lang']['label_commentaires'];
-			} else {
-				$texte = '&nbsp;';
-			}
+			$texte = $article['bt_nb_comments'];
 			$out .= "\t\t".'<span><a href="commentaires.php?post_id='.$article['bt_id'].'">'.$texte.'</a></span>'."\n";
 			// STATUT
 			if ( $article['bt_statut'] == '1') {

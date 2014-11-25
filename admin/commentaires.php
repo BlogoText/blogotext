@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2013 Timo Van Neerden <timo@neerden.eu>
+# 2010-2014 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -32,10 +32,32 @@ $article_title='';
 // TRAITEMENT
 $erreurs_form = array();
 if (isset($_POST['_verif_envoi'])) {
-	$comment = init_post_comment($_POST['comment_article_id'], 'admin');
-	$erreurs_form = valider_form_commentaire($comment, 'admin');
-	if (empty($erreurs_form)) {
-		traiter_form_commentaire($comment, 'admin');
+
+	if (isset($_POST['com_supprimer'])) {
+		$erreurs_form = valider_form_commentaire_ajax($_POST['com_supprimer']);
+		if (empty($erreurs_form)) {
+			traiter_form_commentaire($_POST['com_supprimer'], 'admin');
+		} else {
+			echo implode("\n", $erreurs_form);
+			die();
+		}
+	}
+	elseif (isset($_POST['com_activer'])) {
+		$erreurs_form = valider_form_commentaire_ajax($_POST['com_activer']);
+		if (empty($erreurs_form)) {
+			traiter_form_commentaire($_POST['com_activer'], 'admin');
+		} else {
+			echo implode("\n", $erreurs_form);
+			die();
+		}
+
+	}
+	else {
+		$comment = init_post_comment($_POST['comment_article_id'], 'admin');
+		$erreurs_form = valider_form_commentaire($comment, 'admin');
+		if (empty($erreurs_form)) {
+			traiter_form_commentaire($comment, 'admin');
+		}
 	}
 }
 
@@ -103,20 +125,20 @@ else {
 function afficher_commentaire($comment, $with_link) {
 	afficher_form_commentaire($comment['bt_article_id'], 'admin', '', $comment);
 	echo '<div class="commentbloc'.(!$comment['bt_statut'] ? ' privatebloc' : '').'" id="'.article_anchor($comment['bt_id']).'">'."\n";
-	if ($comment['bt_statut'] == '0') {
-		echo '<img class="img_inv_flag" src="style/deny.png" title="'.$GLOBALS['lang']['comment_is_invisible'].'" alt="icon"/>';
-	}
+	echo '<img class="img_inv_flag" src="style/deny.png" title="'.$GLOBALS['lang']['comment_is_invisible'].'" alt="icon"/>'."\n";
 	echo '<span onclick="reply(\'[b]@['.str_replace('\'', '\\\'', $comment['bt_author']).'|#'.article_anchor($comment['bt_id']).'] :[/b] \'); ">@</span> ';
 	echo '<h3 class="titre-commentaire">'.$comment['auteur_lien'].'</h3>'."\n";
 	echo '<p class="email"><a href="mailto:'.$comment['bt_email'].'">'.$comment['bt_email'].'</a></p>'."\n";
 	echo $comment['bt_content'];
 	echo '<p class="p-edit-button">'."\n";
-	echo $GLOBALS['lang']['le'].' '.date_formate($comment['bt_id']).', '.heure_formate($comment['bt_id']);
+	echo '<span class="comm-link-span-title">'.$GLOBALS['lang']['le'].' '.date_formate($comment['bt_id']).', '.heure_formate($comment['bt_id']);
 	if ($with_link == 1 and !empty($comment['bt_title'])) {
 		echo ' '.$GLOBALS['lang']['sur'].' <a href="'.$_SERVER['PHP_SELF'].'?post_id='.$comment['bt_article_id'].'">'.$comment['bt_title'].'</a>';
 	}
-	echo "\t".'<button class="comm-link cl-suppr" type="button" onclick="ask_suppr(this);" title="'.$GLOBALS['lang']['supprimer'].'"></button>'."\n";
-	echo "\t".'<button class="comm-link cl-edit" type="button" onclick="unfold(this);" title="'.$GLOBALS['lang']['editer'].'"></button> ';
+	echo '</span>'."\n";
+	echo "\t".'<button class="comm-link cl-suppr" type="button" onclick="suppr_comm(this);" data-comm-id="'.$comment['ID'].'" data-comm-art-id="'.$comment['bt_article_id'].'">'.$GLOBALS['lang']['supprimer'].'</button>'."\n";
+	echo "\t".'<button class="comm-link cl-edit" type="button" onclick="unfold(this);">'.$GLOBALS['lang']['editer'].'</button> ';
+	echo "\t".'<button class="comm-link cl-activ" type="button" onclick="activate_comm(this);" data-comm-id="'.$comment['ID'].'" data-comm-art-id="'.$comment['bt_article_id'].'">'.$GLOBALS['lang'][(!$comment['bt_statut'] ? '' : 'des').'activer'].'</button> ';
 	echo '</p>'."\n";
 	echo $GLOBALS['form_commentaire'];
 	echo '</div>'."\n\n";
@@ -174,7 +196,9 @@ if ($param_makeup['menu_theme'] == 'for_article') {
 	echo $GLOBALS['form_commentaire'];
 }
 echo '<script type="text/javascript">';
-echo js_comm_question_suppr(0);
+echo js_comm_delete(0);
+echo js_comm_activate(0);
+echo 'var csrf_token = \''.new_token().'\'';
 echo '</script>';
 
 footer('', $begin);

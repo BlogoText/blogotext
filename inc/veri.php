@@ -46,6 +46,18 @@ function valider_form_commentaire($commentaire, $mode) {
 	return $erreurs;
 }
 
+function valider_form_commentaire_ajax($commentaire) {
+	$erreurs = array();
+	if ( !is_numeric($commentaire) ) { // comment has to be on a valid ID
+		$erreurs[] = $GLOBALS['lang']['err_comm_article_id'];
+	}
+	// test token
+	if (!( isset($_POST['token']) and check_token($_POST['token'])) ) {
+		$erreurs[] = $GLOBALS['lang']['err_wrong_token'];
+	}
+	return $erreurs;
+}
+
 function valider_form_billet($billet) {
 	$date = decode_id($billet['bt_id']);
 	$erreurs = array();
