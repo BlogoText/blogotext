@@ -477,12 +477,12 @@ function openItem(thisPost) {
 		content.innerHTML = content.childNodes[0].data;
 	}
 
-	// jump to post (anchor + 50px)
+	// jump to post (anchor + 30px)
 	var rect = thisPost.getBoundingClientRect();
 	var isVisible = ( (rect.top < 0) || (rect.bottom > window.innerHeight) ) ? false : true ;
 	if (!isVisible) {
 		window.location.hash = thisPost.id;
-		window.scrollBy(0,-50);
+		window.scrollBy(0,-10);
 	}
 
 	markAsRead(\'post\', thisPost.id.substr(2));
@@ -574,7 +574,7 @@ $sc = '
 // show form for new rss feed
 function addNewFeed() {
 	var newLink = window.prompt(\''.$GLOBALS['lang']['rss_jsalert_new_link'].'\', \'\');
-
+	var notifDiv = document.createElement(\'div\');
 	// empty string : stops here
 	if (!newLink) return false;
 
@@ -603,7 +603,10 @@ function addNewFeed() {
 	};
 	xhr.onerror = function(e) {
 		loading_animation(\'off\');
-		alert(\'Some JSON/AJAX error happened: \'+e.target.status);
+		// adding notif
+		notifDiv.textContent = \''.$GLOBALS['lang']['error_phpajax'].'\'+e.target.status;
+		notifDiv.classList.add(\'no_confirmation\');
+		document.getElementById(\'top\').appendChild(notifDiv);
 	};
 	// prepare and send FormData
 	var formData = new FormData();
@@ -647,6 +650,7 @@ $sc = '
 // mark as read code.
 // $what is either "all", "site" for marking one feed as read, "folder", or "post" for marking just one ID as read, $url contains id, folder or feed url
 function markAsRead(what, url) {
+	var notifDiv = document.createElement(\'div\');
 	var notifNode = document.getElementById(\'message-return\');
 	var gCount = document.getElementById(\'count-posts\').getElementsByTagName(\'button\')[0];
 
@@ -781,7 +785,11 @@ function markAsRead(what, url) {
 
 	xhr.onerror = function(e) {
 		loading_animation(\'off\');
-		alert(\'Some JSON/AJAX error happened: \'+e.target.status);
+		// adding notif
+		notifDiv.textContent = \''.$GLOBALS['lang']['error_phpajax'].'\'+e.target.status;
+		notifDiv.classList.add(\'no_confirmation\');
+		document.getElementById(\'top\').appendChild(notifDiv);
+
 	};
 
 	// prepare and send FormData
@@ -813,7 +821,8 @@ function js_rss_clean_db($a) {
 	$sc = '
 // demande confirmation pour supprimer les vieux articles.
 function cleanList() {
-	var reponse = window.confirm(\'Tous les articles lus seront supprimés de la BDD ?\');
+	var notifDiv = document.createElement(\'div\');
+	var reponse = window.confirm(\''.$GLOBALS['lang']['question_clean_rss'].'\');
 	if (!reponse) return false;
 
 	loading_animation(\'on\');
@@ -822,6 +831,7 @@ function cleanList() {
 	xhr.open(\'POST\', \'_rss.ajax.php\', true);
 	xhr.onload = function() {
 		var resp = this.responseText;
+		token = resp.substr(7, 40);
 		if (resp.indexOf("Success") == 0) {
 			// rebuilt array with only unread items
 			var list = new Array();
@@ -834,14 +844,26 @@ function cleanList() {
 			Rss = list;
 			rss_feedlist(Rss);
 
-		} else { alert(resp); }
+			// adding notif
+			notifDiv.textContent = \''.$GLOBALS['lang']['confirm_feed_clean'].'\';
+			notifDiv.classList.add(\'confirmation\');
+			document.getElementById(\'top\').appendChild(notifDiv);
+
+		} else {
+			notifDiv.textContent = \'Error: \'+resp;
+			notifDiv.classList.add(\'no_confirmation\');
+			document.getElementById(\'top\').appendChild(notifDiv);
+		}
 
 
 		loading_animation(\'off\');
 	};
 	xhr.onerror = function(e) {
 		loading_animation(\'off\');
-		alert(\'Some JSON/AJAX error happened: \'+e.target.status);
+		// adding notif
+		notifDiv.textContent = \''.$GLOBALS['lang']['error_phpajax'].'\'+e.target.status;
+		notifDiv.classList.add(\'confirmation\');
+		document.getElementById(\'top\').appendChild(notifDiv);
 	};
 
 	// prepare and send FormData
@@ -912,7 +934,7 @@ function testKey(e) {
 		elmt.dispatchEvent(evt);
 		e.preventDefault();
 		window.location.hash = elmt.parentNode.parentNode.id;
-		window.scrollBy(0,-50);
+		window.scrollBy(0,-10);
 	}
 	else if (e.keyCode == \'40\' && e.ctrlKey && openPost.nextElementSibling != null) {
 		// down
@@ -921,7 +943,7 @@ function testKey(e) {
 		elmt.dispatchEvent(evt);
 		e.preventDefault();
 		window.location.hash = elmt.parentNode.parentNode.id;
-		window.scrollBy(0,-50);
+		window.scrollBy(0,-10);
 	}
 	return true;
 }
@@ -950,40 +972,47 @@ $sc = '
 
 function suppr_comm(button) {
 	var reponse = window.confirm(\''.$GLOBALS['lang']['question_suppr_comment'].'\');
-	if (reponse == true) {
+	var div_bloc = document.getElementById(button.parentNode.parentNode.id);
 
+	if (reponse == true) {
 		var xhr = new XMLHttpRequest();
 		xhr.open(\'POST\', \'commentaires.php\', true);
+
+		xhr.onprogress = function() {
+			div_bloc.classList.toggle(\'ajaxloading\');
+		}
+
 		xhr.onload = function() {
 			var resp = this.responseText;
-
-
 			if (resp.indexOf("Success") == 0) {
 				csrf_token = resp.substr(7, 40);
-				var div_bloc = document.getElementById(button.parentNode.parentNode.id);
 				div_bloc.classList.add(\'deleteFadeOut\');
 				div_bloc.style.height = div_bloc.offsetHeight+\'px\';
 				div_bloc.addEventListener(\'animationend\', function(event){event.target.parentNode.removeChild(event.target);}, false);
 				div_bloc.addEventListener(\'webkitAnimationEnd\', function(event){event.target.parentNode.removeChild(event.target);}, false);
-
+				// adding notif
+				notifDiv.textContent = \''.$GLOBALS['lang']['confirm_comment_suppr'].'\';
+				notifDiv.classList.add(\'confirmation\');
+				document.getElementById(\'top\').appendChild(notifDiv);
 			} else {
-				// place error in special NODE, maybe the notif node~
-				alert(this.responseText);
+				// adding notif
+				notifDiv.textContent = this.responseText;
+				notifDiv.classList.add(\'no_confirmation\');
+				document.getElementById(\'top\').appendChild(notifDiv);
 			}
-
-
-
+			div_bloc.classList.toggle(\'ajaxloading\');
 		};
 		xhr.onerror = function(e) {
-			alert(\'An error happened. Reload page and try again. Contact dev with error code "#com-rem-B42" if error persists\');
+			notifDiv.textContent = \''.$GLOBALS['lang']['error_comment_suppr'].'\'+e.target.status;
+			notifDiv.classList.add(\'no_confirmation\');
+			document.getElementById(\'top\').appendChild(notifDiv);
+			div_bloc.classList.toggle(\'ajaxloading\');
 		};
 
 		// prepare and send FormData
 		var formData = new FormData();
 		formData.append(\'token\', csrf_token);
 		formData.append(\'_verif_envoi\', 1);
-
-
 		formData.append(\'com_supprimer\', button.dataset.commId);
 		formData.append(\'com_article_id\', button.dataset.commArtId);
 
@@ -1007,27 +1036,34 @@ function js_comm_activate($a) {
 $sc = '
 
 function activate_comm(button) {
-
+	var notifDiv = document.createElement(\'div\');
+	var div_bloc = document.getElementById(button.parentNode.parentNode.id);
 	var xhr = new XMLHttpRequest();
 	xhr.open(\'POST\', \'commentaires.php\', true);
+
+	xhr.onprogress = function() {
+		div_bloc.classList.toggle(\'ajaxloading\');
+	}
+
 	xhr.onload = function() {
 		var resp = this.responseText;
-
-
 		if (resp.indexOf("Success") == 0) {
 			csrf_token = resp.substr(7, 40);
-			var div_bloc = document.getElementById(button.parentNode.parentNode.id);
 			div_bloc.classList.toggle(\'privatebloc\');
 			button.textContent = ((button.textContent === "'.$GLOBALS['lang']['activer'].'") ? "'.$GLOBALS['lang']['desactiver'].'" : "'.$GLOBALS['lang']['activer'].'" );
 
 		} else {
-			// place error in special NODE, maybe the notif node~
-			alert(this.responseText);
+			notifDiv.textContent = \''.$GLOBALS['lang']['error_comment_valid'].'\'+\' \'+resp;
+			notifDiv.classList.add(\'no_confirmation\');
+			document.getElementById(\'top\').appendChild(notifDiv);
 		}
-
+		div_bloc.classList.toggle(\'ajaxloading\');
 	};
 	xhr.onerror = function(e) {
-		alert(\'An error happened. Reload page and try again. Contact dev with error code "#com-activ-H28" if error persists\');
+		notifDiv.textContent = \''.$GLOBALS['lang']['error_comment_valid'].'\'+e.target.status+\' (#com-activ-H28)\';
+		notifDiv.classList.add(\'no_confirmation\');
+		document.getElementById(\'top\').appendChild(notifDiv);
+		div_bloc.classList.toggle(\'ajaxloading\');
 	};
 
 	// prepare and send FormData

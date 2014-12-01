@@ -6,6 +6,7 @@
 	background: url("comment.png") no-repeat 5px 5px white;
 	border: 1px solid #ccc;
 	border-width: 1px 1px 0 1px;
+	position: relative; /* for shadow on hover to get over the other comment-blocs */
 }
 
 .commentbloc:nth-of-type(odd):not(.privatebloc) {
@@ -27,7 +28,6 @@
 .commentbloc:hover {
 	box-shadow: 0px 0px 4px #aaa, 1px 1px 5px #aaa;
 	z-index: +1;
-	position: relative; /* for shadow to get over the other comment-blocs */
 }
 
 
@@ -173,6 +173,14 @@
 
 .cl-activ {
 	background: url(legend.png) 2px -358px no-repeat;
+}
+
+.ajaxloading:before {
+	content: " ";
+	display: block;
+	position: absolute;
+	top: 0; left: 0; right: 0; bottom: 0;
+	background: rgba(255, 255, 255, .5) center center url(loading.gif) no-repeat;
 }
 
 /* Ajax removing comment animation */

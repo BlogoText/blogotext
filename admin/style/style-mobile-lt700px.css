@@ -179,6 +179,7 @@
 
 		ul#billets li > span {
 			vertical-align: middle;
+			display: inline-block;
 		}
 
 		ul#billets li > span:first-of-type span {
@@ -194,18 +195,9 @@
 		}
 
 
-		ul#billets li > span:nth-of-type(2) { /*date*/
-			display: inline-block;
-		}
-
 		ul#billets li > span:nth-of-type(3) { /*comms*/
-			display: inline-block;
 			margin-left: 5px;
 			margin-right: 10px;
-		}
-
-		ul#billets li > span:nth-of-type(4) { /*view online*/
-			display: inline-block;
 		}
 
 	/* graphiques */

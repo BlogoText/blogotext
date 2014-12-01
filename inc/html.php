@@ -33,11 +33,11 @@ function afficher_menu($active) {
 }
 
 function confirmation($message) {
-	echo '<div class="confirmation"><span>'.$message.'</span></div>'."\n";
+	echo '<div class="confirmation">'.$message.'</div>'."\n";
 }
 
 function no_confirmation($message) {
-	echo '<div class="no_confirmation"><span>'.$message.'</span></div>'."\n";
+	echo '<div class="no_confirmation">'.$message.'</div>'."\n";
 }
 
 function legend($legend, $class='') {
