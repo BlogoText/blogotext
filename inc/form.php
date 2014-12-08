@@ -343,7 +343,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		// URL non vide
 		} else {
 			// Test du type de fichier
-			$rep_hdr = get_headers($url, 1);
+			$rep_hdr = get_headers($url, 0);
 			$cnt_type = (isset($rep_hdr['Content-Type'])) ? $rep_hdr['Content-Type'] : 'text/';
 			$cnt_type = (is_array($cnt_type)) ? $cnt_type[0] : $cnt_type;
 
