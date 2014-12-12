@@ -256,6 +256,7 @@
 #post-list > li.open-post {
 	background: 9px 17px url(rss-feed-icon.png) no-repeat, linear-gradient(to bottom, #bbb 0px, #eee 50px);
 	color: inherit;
+	cursor: auto;
 }
 
 #post-list > li.open-post .rss-item-content {

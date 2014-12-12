@@ -128,7 +128,7 @@ function afficher_form_commentaire($article_id, $mode, $erreurs='', $comm_id='')
 			$form .= "\t\t".hidden_input('comment_id', $actual_comment['bt_id']);
 			$form .= "\t\t".hidden_input('status', $actual_comment['bt_statut']);
 			$form .= "\t\t".hidden_input('ID', $actual_comment['ID']);
-			$form .= "\t\t".hidden_input('token', $actual_comment['comm-token']);
+			//$form .= "\t\t".hidden_input('token', $actual_comment['comm-token']);
 			$form .= "\t".'</fieldset><!--end syst-->'."\n";
 		} else {
 			$form = "\n".'<form id="form-commentaire" class="form-commentaire" method="post" action="'.$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'].'#erreurs" >'."\n";

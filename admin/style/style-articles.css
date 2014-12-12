@@ -5,7 +5,6 @@ ul#billets {
 	width: 100%;
 	padding: 0;
 	margin: 0;
-	display: table;
 }
 
 ul#billets a {
@@ -13,39 +12,54 @@ ul#billets a {
 }
 
 ul#billets li {
-	border-radius: 10px;
-	list-style-position: outside;
-	display: table-row;
-	height: 35px;
+	padding-left: 5px;
+	padding-right: 10px;
+	border-radius: 7px;
+	list-style: none;
+	min-height: 35px;
+	line-height: 35px;
+	display: flex;
+	align-items: center;
 }
 
 ul#billets li > span {
-	display: table-cell;
 	vertical-align: middle;
 }
 
 ul#billets li > span:first-of-type span {
 	display: inline-block;
-	margin-left: 5px;
 	vertical-align: middle;
-}
-
-ul#billets li > span:nth-of-type(1) span {
 	height: 20px;
 	width: 20px;
 }
 
-ul#billets li > span:nth-of-type(2) {
-	width: 160px;
+ul#billets li > span:nth-of-type(1) { /*title*/
+	flex: 1;
+}
+
+ul#billets li > span:nth-of-type(1),
+ul#billets li > span:nth-of-type(1) a {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+
+ul#billets li > span:nth-of-type(2) { /*date*/
 	padding: 0 10px;
 	text-align: center;
 }
 
-ul#billets li > span:nth-of-type(3) {
-	padding: 0 10px;
+
+ul#billets li > span:nth-of-type(3) { /*comms*/
+	padding: 0 0 0 22px;
+	margin-right: 20px;
+	margin-left: 20px;
+	height: 30px;
+	background: url('legend.png') no-repeat scroll -560px -225px transparent;
 }
 
-ul#billets li > span:nth-of-type(4) {
+ul#billets li > span:nth-of-type(4) { /*view online*/
 	padding-left: 15px;
 }
 

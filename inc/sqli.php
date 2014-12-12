@@ -438,37 +438,58 @@ function bdd_lien($link, $what) {
 	}
 }
 
+// Called when a new comment is posted (public side or admin side) or on edit/activating/removing
+//  when adding, redirects with message after processing
+//  when edit/activating/removing, dies with message after processing (message is then caught with AJAX)
 
 function traiter_form_commentaire($commentaire, $admin) {
 	$msg_param_to_trim = (isset($_GET['msg'])) ? '&msg='.$_GET['msg'] : '';
 	$query_string = str_replace($msg_param_to_trim, '', $_SERVER['QUERY_STRING']);
 
-	// add new comment
+	// add new comment (admin + public)
 	if (isset($_POST['enregistrer']) and empty($_POST['is_it_edit'])) {
 		$result = bdd_commentaire($commentaire, 'enregistrer-nouveau');
 		if ($result === TRUE) {
-			rafraichir_cache();
 			send_emails($commentaire['bt_id']); // send emails new comment posted to people that are subscriben
 			$redir = $_SERVER['PHP_SELF'].'?'.$query_string.'&msg=confirm_comment_ajout';
-			if ($admin == 'admin') {
-				redirection($redir);
-			}
 		}
 		else { die($result); }
 	}
-	// edit existing comment.
+	// edit existing comment (admin)
 	elseif (	isset($_POST['enregistrer']) and $admin == 'admin'
 	  and isset($_POST['is_it_edit']) and $_POST['is_it_edit'] == 'yes'
 	  and isset($commentaire['ID']) ) {
 		$result = bdd_commentaire($commentaire, 'editer-existant');
 		$redir = $_SERVER['PHP_SELF'].'?'.$query_string.'&msg=confirm_comment_edit';
 	}
-	// remove existing comment.
-	elseif (isset($_POST['supprimer_comm']) and isset($commentaire['ID']) and $admin == 'admin' ) {
-		$result = bdd_commentaire($commentaire, 'supprimer-existant');
-		$redir = $_SERVER['PHP_SELF'].'?'.$query_string.'&msg=confirm_comment_suppr';
+	// remove existing comment (admin) #ajax call
+	elseif (isset($_POST['com_supprimer']) and $admin == 'admin' ) {
+		$comm = array('ID' => htmlspecialchars($_POST['com_supprimer']), 'bt_article_id' => htmlspecialchars($_POST['com_article_id']));
+		$result = bdd_commentaire($comm, 'supprimer-existant');
+		// Ajax response
+		if ($result === TRUE) {
+			rafraichir_cache();
+			//echo var_dump($comm);
+			echo 'Success'.new_token();
+		}
+		else { echo 'Error'.new_token(); }
+		exit;
 	}
-	// do nothing & die
+	// change status of comm (admin) #ajax call
+	elseif (isset($_POST['com_activer']) and $admin == 'admin' ) {
+		$comm = array('ID' => htmlspecialchars($_POST['com_activer']), 'bt_article_id' => htmlspecialchars($_POST['com_article_id']));
+		$result = bdd_commentaire($comm, 'activer-existant');
+		// Ajax response
+		if ($result === TRUE) {
+			rafraichir_cache();
+			//echo var_dump($comm);
+			echo 'Success'.new_token();
+		}
+		else { echo 'Error'.new_token(); }
+		exit;
+	}
+
+	// do nothing & die (admin + public)
 	else {
 		redirection($_SERVER['PHP_SELF'].'?'.$query_string.'&msg=nothing_happend_oO');
 	}
@@ -559,8 +580,8 @@ function bdd_commentaire($commentaire, $what) {
 			return 'Erreur : '.$e->getMessage();
 		}
 	}
-	// SUPPRESSION D'UN COMMENTAIRE
 
+	// SUPPRESSION D'UN COMMENTAIRE
 	elseif ($what == 'supprimer-existant') {
 		try {
 			$req = $GLOBALS['db_handle']->prepare('DELETE FROM commentaires WHERE ID=?');
@@ -570,6 +591,22 @@ function bdd_commentaire($commentaire, $what) {
 			$nb_comments_art = liste_elements_count("SELECT count(*) AS nbr FROM commentaires WHERE bt_article_id=? and bt_statut=1", array($commentaire['bt_article_id']));
 			$req2 = $GLOBALS['db_handle']->prepare('UPDATE articles SET bt_nb_comments=? WHERE bt_id=?');
 
+			$req2->execute( array($nb_comments_art, $commentaire['bt_article_id']) );
+			return TRUE;
+		} catch (Exception $e) {
+			return 'Erreur : '.$e->getMessage();
+		}
+	}
+
+	// CHANGEMENT STATUS COMMENTAIRE
+	elseif ($what == 'activer-existant') {
+		try {
+			$req = $GLOBALS['db_handle']->prepare('UPDATE commentaires SET bt_statut=ABS(bt_statut-1) WHERE ID=?');
+			$req->execute(array($commentaire['ID']));
+
+			// remet à jour le nombre de commentaires associés à l’article.
+			$nb_comments_art = liste_elements_count("SELECT count(*) AS nbr FROM commentaires WHERE bt_article_id=? and bt_statut=1", array($commentaire['bt_article_id']));
+			$req2 = $GLOBALS['db_handle']->prepare('UPDATE articles SET bt_nb_comments=? WHERE bt_id=?');
 			$req2->execute( array($nb_comments_art, $commentaire['bt_article_id']) );
 			return TRUE;
 		} catch (Exception $e) {

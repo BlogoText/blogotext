@@ -273,6 +273,7 @@ $GLOBALS['lang'] = array(
 'question_suppr_comment'		=> 'Ce commentaire sera définitivement supprimé !',
 'question_suppr_fichier'		=> 'Ce fichier sera définitivement supprimé !',
 'question_quit_page'				=> 'Vos modifications n’ont pas été enregistrées. Quitter la page provoquera la perte des données.',
+'question_clean_rss'				=> 'Tous les articles lus seront supprimés de la BDD ?',
 // Confirmations
 'confirm_article_suppr'			=> 'L’article a été supprimé.',
 'confirm_article_ajout'			=> 'L’article a été enregistré.',
@@ -291,8 +292,12 @@ $GLOBALS['lang'] = array(
 'confirm_feed_update'			=> 'Les flux ont été mis à jour.',
 'confirm_feeds_edit'				=> 'Les flux ont été édités.',
 'confirm_feed_ajout'				=> 'Le flux a été ajouté.',
+'confirm_feed_clean'				=> 'Tous les anciens éléments ont été supprimés.',
 // No-onfiramtion
 'error_image_add'					=> 'Le fichier n’a pas pu être ajoutée',
+'error_phpajax'					=> 'Une erreur PHP/Ajax s’est produite :',
+'error_comment_suppr'			=> 'Le commentaire n’a pas été supprimé suite à une erreur.',
+'error_comment_valid'			=> 'Le statut du commentaire n’a pas été modifié suite à une erreur.',
 // Redirections
 'retour_liste'						=> '« Liste des articles',
 // Titres des pages

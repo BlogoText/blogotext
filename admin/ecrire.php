@@ -62,7 +62,6 @@ afficher_menu(pathinfo($_SERVER['PHP_SELF'], PATHINFO_BASENAME));
 echo '</div>'."\n";
 
 echo '<div id="axe">'."\n";
-echo '<div class="reminder"><span>'.'Pensez à enregistrer votre article.'.'</span></div>'."\n";
 
 // SUBNAV
 if ($post != '') {

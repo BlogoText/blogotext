@@ -103,46 +103,36 @@ label {
 
 
 /* Message de confirmation ou d’erreur */
-.confirmation, .no_confirmation, .reminder {
-	position: absolute;
-	top: 7px; left: 7px;
-	width: 140px; height: 55px; line-height: 55px;
-	padding: 0 5px;
+.confirmation, .no_confirmation {
+	border: 1px solid #f6db7b;
+	width: 360px;
+	max-width: calc( 100% - 40px );
+	position: fixed;
+	top: 10px; left: 10px;
+	padding: 15px 10px;
+	text-align: left;
 	font-weight: bold;
-	text-align: center;
-	color : white;
-	text-shadow: black 1px 1px 3px;
-	border-radius: 4px ;
-	box-shadow: rgba(0, 0, 0, .8) 2px 2px 4px inset, rgba(0,0,0,.7) 2px 2px 15px inset;
-}
+	border-radius: 5px;
+	box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3), 0px 1px 0px rgba(255, 255, 255, 0.6) inset;
+	animation: disapear 3s 2s;
+	-webkit-animation: disapear 3s 2s;
+	-webkit-animation-fill-mode: forwards; 
+	animation-fill-mode: forwards;
 
-.confirmation span, .no_confirmation span, .reminder span {
-	line-height: 1.7em;
-	vertical-align: middle;
-	display: inline-block;
 }
 
 .confirmation {
-	background: rgba(80, 220, 80, .7);
+	background: rgba(153, 255, 177, .98);
+	background: repeating-linear-gradient(-45deg, transparent, transparent 20px, rgba(255,255,255,0.1) 20px, rgba(255,255,255,0.1) 40px ), rgba(153, 255, 177, .98);
+	border: 1px solid #7ce294;
+	color: #444;
 }
 
 .no_confirmation {
-	background: #ff4841;
-}
-
-.reminder {
-	background: #ffb54c;
-	border: 1px solid #ff6b0d;
-	opacity: 0;
-}
-
-/* ce popup CSS apparaît au bout d'un délai (600s = 10 min) et prévient l'utilisateur qu'il devrait sauver son travail */
-html:hover .reminder {
-	opacity: .9;
-	-webkit-transition: opacity 3s 600s ease-out; 
-	   -moz-transition: opacity 3s 600s ease-out; 
-	     -o-transition: opacity 3s 600s ease-out; 
-	        transition: opacity 3s 600s ease-out; 
+	background: rgba(237, 54, 76, .98);
+	background: repeating-linear-gradient(-45deg, transparent, transparent 20px, rgba(255,255,255,0.1) 20px, rgba(255,255,255,0.1) 40px ), rgba(237, 54, 76, .98);
+	border: 1px solid #ed0e27;
+	color: #fff;
 }
 
 input[type="submit"],

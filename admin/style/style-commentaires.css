@@ -3,14 +3,14 @@
 
 .commentbloc {
 	padding : 5px 15px 5px 30px;
-	background: #edf3fe url("comment.png") no-repeat 5px 5px;
-	background: url("comment.png") no-repeat 5px 5px, linear-gradient(to left, white 60%, #edf3fe );
+	background: url("comment.png") no-repeat 5px 5px white;
 	border: 1px solid #ccc;
 	border-width: 1px 1px 0 1px;
+	position: relative; /* for shadow on hover to get over the other comment-blocs */
 }
 
-.commentbloc:nth-of-type(even) {
-	background: url("comment.png") no-repeat 5px 5px white;
+.commentbloc:nth-of-type(odd):not(.privatebloc) {
+	background: url("comment.png") no-repeat 5px 5px, linear-gradient(to left, white 60%, #edf3fe );
 }
 
 .commentbloc:first-of-type {
@@ -28,23 +28,27 @@
 .commentbloc:hover {
 	box-shadow: 0px 0px 4px #aaa, 1px 1px 5px #aaa;
 	z-index: +1;
-	position: relative; /* for shadow to get over the other comment-blocs */
 }
 
 
 .p-edit-button {
-	visibility: hidden;
 	margin-bottom: 5px;
 	color: gray;
 	font-style: italic;
 }
 
+.comm-link-span-title {
+	visibility: hidden;
+}
+
 .p-edit-button button {
 	float: right;
+	opacity: .3;
 }
 
 .comm-edit-hidden-bloc {
 	display: none;
+	clear: both;
 }
 
 .commentbloc h3, .commentbloc .email {
@@ -62,6 +66,7 @@
 
 .commentbloc .img_inv_flag {
 	float: right;
+	visibility: hidden;
 }
 
 .commentbloc a {
@@ -72,20 +77,28 @@
 .commentbloc:hover a {
 	color: #45a6ff;
 }
-.commentbloc:hover .email, .commentbloc:hover .p-edit-button {
+.commentbloc:hover .email, .commentbloc:hover .comm-link-span-title {
 	visibility: visible;
+}
+
+.commentbloc:hover .p-edit-button button {
+	opacity: 1;
 }
 
 .privatebloc {
 	border-left-color: #333;
+	background: url("comment.png") no-repeat 5px 5px, linear-gradient(to left, white 60%, #ddd);
 }
 
 .privatebloc h3, .privatebloc h3 a {
 	font-style: italic;
 }
 
-.privatebloc a {
+.privatebloc a, .privatebloc:hover a {
 	color: black;
+}
+.privatebloc .img_inv_flag {
+	visibility: visible;
 }
 
 #erreurs, .erreurs {
@@ -140,13 +153,59 @@
 	text-align: right;
 }
 
+.commentbloc .comm-link {
+	vertical-align: middle;
+	margin-left: 5px;
+	padding-left: 18px;
+/*	display: inline-block;
+	width: 20px;
+*/	height: 23px;
+	border: 1px solid silver;
+	border-radius: 6px;
+}
 .cl-suppr {
-	background: url(legend.png) 0px -417px no-repeat;
-	border: 0;
+	background: url(legend.png) 2px -417px no-repeat;
 }
 
 .cl-edit {
-	background: url(legend.png) -557px -103px no-repeat;
-	border: 0;
+	background: url(legend.png) -558px -104px no-repeat;
 }
 
+.cl-activ {
+	background: url(legend.png) 2px -358px no-repeat;
+}
+
+.ajaxloading:before {
+	content: " ";
+	display: block;
+	position: absolute;
+	top: 0; left: 0; right: 0; bottom: 0;
+	background: rgba(255, 255, 255, .5) center center url(loading.gif) no-repeat;
+}
+
+/* Ajax removing comment animation */
+.deleteFadeOut {
+	opacity: 1;
+	animation: disapear .6s;
+	-webkit-animation: disapear .6s;
+}
+
+@-webkit-keyframes disapear{
+	100% {
+		height: 0;
+		opacity: 0;
+	}
+}
+
+@keyframes disapear{  
+	99% {
+		height: 0;
+		opacity: 0;
+		left: 10px;
+	}
+	100% {
+		left: -1000px;
+		height: 0;
+		opacity: 0;
+	}
+}
