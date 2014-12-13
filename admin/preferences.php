@@ -125,10 +125,6 @@ function afficher_form_prefs($erreurs = '') {
 		$fld_apparence .= '</p>'."\n";
 
 		$fld_apparence .= '<p>'."\n";
-		$fld_apparence .= form_select('nb_maxi', array('5'=>'5', '10'=>'10', '15'=>'15', '20'=>'20', '25'=>'25', '50'=>'50'), $GLOBALS['max_bill_acceuil'],$GLOBALS['lang']['pref_nb_maxi']);
-		$fld_apparence .= '</p>'."\n";
-
-		$fld_apparence .= '<p>'."\n";
 		$fld_apparence .= select_yes_no('aff_onglet_rss', $GLOBALS['onglet_rss'], $GLOBALS['lang']['pref_afficher_rss'] );
 		$fld_apparence .= '</p>'."\n";
 		$fld_apparence .= '<p>'."\n";
