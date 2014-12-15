@@ -33,6 +33,7 @@ if (isset($_POST['nom_utilisateur'])) {
 	file_put_contents($GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_config'].'/'.'xauthlog.php', $data, FILE_APPEND);
 }
 
+
 if (check_session() === TRUE) { // return to index if session is already open.
 	header('Location: index.php');
 	exit;
