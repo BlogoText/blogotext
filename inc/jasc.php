@@ -350,7 +350,7 @@ function sortSite(origine) {
 		}
 	}
 	rss_feedlist(newList);
-	window.location.hash = \'rss-list\';
+	if (newList.length != 0) window.location.hash = \'rss-list\';
 	return false;
 }
 
