@@ -197,11 +197,20 @@ function extract_boucles($texte, $balise, $incl) {
 	else {// la $balise est inclue : bli{p}blabla{/p}blo => {p}blabla{/p}
 		$len_balise_f = strlen('{/'.$balise.'}');
 	}
-	$debut = strpos($texte, '{'.$balise.'}') + $len_balise_d;
-	$fin = strpos($texte, '{/'.$balise.'}') + $len_balise_f;
-	$length = $fin - $debut;
-	$return = substr($texte, $debut, $length);
-	return $return;
+
+	$debut = strpos($texte, '{'.$balise.'}');
+	$fin = strpos($texte, '{/'.$balise.'}');
+
+	if ($debut !== FALSE and $fin !== FALSE) {
+		$debut += $len_balise_d;
+		$fin += $len_balise_f;
+
+		$length = $fin - $debut;
+		$return = substr($texte, $debut, $length);
+		return $return;
+	} else { // $balises n’est pas dans le texte : retourne le texte sans changements.
+		return $texte;
+	}
 }
 
 // only used by the main page of the blog (not on admin) : shows main blog page.
