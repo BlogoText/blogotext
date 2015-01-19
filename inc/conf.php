@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2014 Timo Van Neerden <timo@neerden.eu>
+# 2010-2015 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -109,7 +109,7 @@ function init_list_articles($article) {
 		}
 		$dec_id = decode_id($article['bt_id']);
 		$article = array_merge($article, decode_id($article['bt_date']));
-		$article['lien'] = $_SERVER['PHP_SELF'].'?d='.$dec_id['annee'].'/'.$dec_id['mois'].'/'.$dec_id['jour'].'/'.$dec_id['heure'].'/'.$dec_id['minutes'].'/'.$dec_id['secondes'].'-'.titre_url($article['bt_title']);
+		$article['lien'] = basename($_SERVER['PHP_SELF']).'?d='.$dec_id['annee'].'/'.$dec_id['mois'].'/'.$dec_id['jour'].'/'.$dec_id['heure'].'/'.$dec_id['minutes'].'/'.$dec_id['secondes'].'-'.titre_url($article['bt_title']);
 		$article['bt_link'] = $GLOBALS['racine'].'?d='.$dec_id['annee'].'/'.$dec_id['mois'].'/'.$dec_id['jour'].'/'.$dec_id['heure'].'/'.$dec_id['minutes'].'/'.$dec_id['secondes'].'-'.titre_url($article['bt_title']);
 	}
 	return $article;
@@ -215,7 +215,7 @@ function init_post_link2() { // second init : the whole link data needs to be st
 	$id = htmlspecialchars(stripslashes(protect_markup(clean_txt($_POST['bt_id']))));
 	$author = htmlspecialchars(stripslashes(protect_markup(clean_txt($_POST['bt_author']))));
 	if (empty($_POST['url'])) {
-		$url = $GLOBALS['racine'].'index.php?mode=links&amp;id='.$id;
+		$url = $GLOBALS['racine'].'?mode=links&amp;id='.$id;
 	} else {
 		$url = htmlspecialchars(stripslashes(protect_markup(clean_txt($_POST['url']))));
 	}

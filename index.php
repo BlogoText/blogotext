@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2014 Timo Van Neerden <timo@neerden.eu>
+# 2010-2015 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -94,9 +94,9 @@ if ((isset($_GET['unsub']) and $_GET['unsub'] == 1) and (isset($_GET['comment'])
 		$res = unsubscribe(htmlspecialchars($_GET['comment']), $_GET['mail'], 0);
 	}
 	if ($res == TRUE) {
-		header('Location: '.$_SERVER['PHP_SELF'].'?unsubsribe=yes');
+		header('Location: '.basename($_SERVER['PHP_SELF']).'?unsubsribe=yes');
 	} else {
-		header('Location: '.$_SERVER['PHP_SELF'].'?unsubsribe=no');
+		header('Location: '.basename($_SERVER['PHP_SELF']).'?unsubsribe=no');
 	}
 }
 

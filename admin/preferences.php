@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2014 Timo Van Neerden <timo@neerden.eu>
+# 2010-2015 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -22,7 +22,7 @@ if (isset($_POST['_verif_envoi'])) {
 		afficher_form_prefs($erreurs_form);
 	} else {
 		if ( (fichier_user() === TRUE) and (fichier_prefs() === TRUE) ) {
-		redirection($_SERVER['PHP_SELF'].'?msg=confirm_prefs_maj');
+		redirection(basename($_SERVER['PHP_SELF']).'?msg=confirm_prefs_maj');
 		exit();
 		}
 	}
@@ -41,14 +41,14 @@ function afficher_form_prefs($erreurs = '') {
 	afficher_top($GLOBALS['lang']['preferences']);
 	echo '<div id="top">';
 	afficher_msg($GLOBALS['lang']['preferences']);
-	afficher_menu(pathinfo($_SERVER['PHP_SELF'], PATHINFO_BASENAME));
+	afficher_menu(basename($_SERVER['PHP_SELF']));
 	echo '</div>';
 
 	echo '<div id="axe">'."\n";
 	echo '<div id="page">'."\n";
 	echo erreurs($erreurs);
 
-	echo '<form id="preferences" class="bordered-formbloc" method="post" action="'.$_SERVER['PHP_SELF'].'" >' ;
+	echo '<form id="preferences" class="bordered-formbloc" method="post" action="'.basename($_SERVER['PHP_SELF']).'" >' ;
 		$fld_user = '<fieldset class="pref">';
 		$fld_user .= legend($GLOBALS['lang']['prefs_legend_utilisateur'], 'legend-user');
 
@@ -268,7 +268,7 @@ function afficher_form_captcha() {
 	afficher_top($GLOBALS['lang']['preferences']);
 	echo '<div id="top">';
 	afficher_msg($GLOBALS['lang']['preferences']);
-	afficher_menu(pathinfo($_SERVER['PHP_SELF'], PATHINFO_BASENAME));
+	afficher_menu(basename($_SERVER['PHP_SELF']));
 	echo '</div>';
 
 	echo '<div id="axe">'."\n";
@@ -283,7 +283,7 @@ function afficher_form_captcha() {
 	} else {
 		$word_ok = FALSE;
 	}
-	echo '<form action="'.$_SERVER['PHP_SELF'].'?test_captcha" method="post" class="bordered-formbloc" >'."\n";
+	echo '<form action="'.basename($_SERVER['PHP_SELF']).'?test_captcha" method="post" class="bordered-formbloc" >'."\n";
 	echo '<fieldset class="pref">';
 	echo legend('Captcha', 'legend-config');
 	echo '<p>';

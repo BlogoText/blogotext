@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2014 Timo Van Neerden <timo@neerden.eu>
+# 2010-2015 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -227,11 +227,11 @@ function get_entry($base_handle, $table, $entry, $id, $retour_mode) {
 function traiter_form_billet($billet) {
 	if ( isset($_POST['enregistrer']) and !isset($billet['ID']) ) {
 		$result = bdd_article($billet, 'enregistrer-nouveau');
-		$redir = $_SERVER['PHP_SELF'].'?post_id='.$billet['bt_id'].'&msg=confirm_article_maj';
+		$redir = basename($_SERVER['PHP_SELF']).'?post_id='.$billet['bt_id'].'&msg=confirm_article_maj';
 	}
 	elseif ( isset($_POST['enregistrer']) and isset($billet['ID']) ) {
 		$result = bdd_article($billet, 'modifier-existant');
-		$redir = $_SERVER['PHP_SELF'].'?post_id='.$billet['bt_id'].'&msg=confirm_article_ajout';
+		$redir = basename($_SERVER['PHP_SELF']).'?post_id='.$billet['bt_id'].'&msg=confirm_article_ajout';
 	}
 	elseif ( isset($_POST['supprimer']) and isset($_POST['ID']) and is_numeric($_POST['ID']) ) {
 		$result = bdd_article($billet, 'supprimer-existant');
@@ -348,17 +348,17 @@ function traiter_form_link($link) {
 	$query_string = str_replace(((isset($_GET['msg'])) ? '&msg='.$_GET['msg'] : ''), '', $_SERVER['QUERY_STRING']);
 	if ( isset($_POST['enregistrer'])) {
 		$result = bdd_lien($link, 'enregistrer-nouveau');
-		$redir = $_SERVER['PHP_SELF'].'?id='.$link['bt_id'].'&msg=confirm_link_edit';
+		$redir = basename($_SERVER['PHP_SELF']).'?id='.$link['bt_id'].'&msg=confirm_link_edit';
 	}
 
 	elseif (isset($_POST['editer'])) {
 		$result = bdd_lien($link, 'modifier-existant');
-		$redir = $_SERVER['PHP_SELF'].'?id='.$link['bt_id'].'&msg=confirm_link_edit';
+		$redir = basename($_SERVER['PHP_SELF']).'?id='.$link['bt_id'].'&msg=confirm_link_edit';
 	}
 
 	elseif ( isset($_POST['supprimer'])) {
 		$result = bdd_lien($link, 'supprimer-existant');
-		$redir = $_SERVER['PHP_SELF'].'?msg=confirm_link_suppr';
+		$redir = basename($_SERVER['PHP_SELF']).'?msg=confirm_link_suppr';
 	}
 
 	if ($result === TRUE) {
@@ -451,7 +451,7 @@ function traiter_form_commentaire($commentaire, $admin) {
 		$result = bdd_commentaire($commentaire, 'enregistrer-nouveau');
 		if ($result === TRUE) {
 			send_emails($commentaire['bt_id']); // send emails new comment posted to people that are subscriben
-			$redir = $_SERVER['PHP_SELF'].'?'.$query_string.'&msg=confirm_comment_ajout';
+			$redir = basename($_SERVER['PHP_SELF']).'?'.$query_string.'&msg=confirm_comment_ajout';
 		}
 		else { die($result); }
 	}
@@ -460,7 +460,7 @@ function traiter_form_commentaire($commentaire, $admin) {
 	  and isset($_POST['is_it_edit']) and $_POST['is_it_edit'] == 'yes'
 	  and isset($commentaire['ID']) ) {
 		$result = bdd_commentaire($commentaire, 'editer-existant');
-		$redir = $_SERVER['PHP_SELF'].'?'.$query_string.'&msg=confirm_comment_edit';
+		$redir = basename($_SERVER['PHP_SELF']).'?'.$query_string.'&msg=confirm_comment_edit';
 	}
 	// remove existing comment (admin) #ajax call
 	elseif (isset($_POST['com_supprimer']) and $admin == 'admin' ) {
@@ -491,7 +491,7 @@ function traiter_form_commentaire($commentaire, $admin) {
 
 	// do nothing & die (admin + public)
 	else {
-		redirection($_SERVER['PHP_SELF'].'?'.$query_string.'&msg=nothing_happend_oO');
+		redirection(basename($_SERVER['PHP_SELF']).'?'.$query_string.'&msg=nothing_happend_oO');
 	}
 
 	if ($result === TRUE) {
@@ -800,7 +800,7 @@ function traiter_form_rssconf() {
 	$GLOBALS['liste_flux'] = array_reverse(tri_selon_sous_cle($GLOBALS['liste_flux'], 'title'));
 	file_put_contents($GLOBALS['fichier_liste_fluxrss'], '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_flux']))).' */');
 
-	$redir = $_SERVER['PHP_SELF'].'?'.$query_string.'&msg=confirm_feeds_edit';
+	$redir = basename($_SERVER['PHP_SELF']).'?'.$query_string.'&msg=confirm_feeds_edit';
 	redirection($redir);
 
 }

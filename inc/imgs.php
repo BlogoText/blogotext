@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2014 Timo Van Neerden <timo@neerden.eu>
+# 2010-2015 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -183,7 +183,7 @@ function traiter_form_fichier($fichier) {
 			$new_fichier = bdd_fichier($fichier, 'ajout-nouveau', 'download', $_POST['fichier']);
 		}
 		$fichier = (is_null($new_fichier)) ? $fichier : $new_fichier;
-		redirection($_SERVER['PHP_SELF'].'?file_id='.$fichier['bt_id'].'&msg=confirm_fichier_ajout');
+		redirection(basename($_SERVER['PHP_SELF']).'?file_id='.$fichier['bt_id'].'&msg=confirm_fichier_ajout');
 	}
 	// édition d’une entrée d’un fichier
 	elseif ( isset($_POST['editer']) and !isset($_GET['suppr']) ) {
@@ -194,11 +194,11 @@ function traiter_form_fichier($fichier) {
 	elseif ( (isset($_POST['supprimer']) and preg_match('#^\d{14}$#', $_POST['file_id'])) ) {
 		$response = bdd_fichier($fichier, 'supprimer-existant', '', $_POST['file_id']);
 		if ($response == 'error_suppr_file_suppr_error') {
-			redirection($_SERVER['PHP_SELF'].'?errmsg=error_fichier_suppr&what=file_suppr_error');
+			redirection(basename($_SERVER['PHP_SELF']).'?errmsg=error_fichier_suppr&what=file_suppr_error');
 		} elseif ($response == 'no_such_file_on_disk') {
-			redirection($_SERVER['PHP_SELF'].'?msg=error_fichier_suppr&what=but_no_such_file_on_disk2');
+			redirection(basename($_SERVER['PHP_SELF']).'?msg=error_fichier_suppr&what=but_no_such_file_on_disk2');
 		} elseif ($response == 'success') {
-			redirection($_SERVER['PHP_SELF'].'?msg=confirm_fichier_suppr');
+			redirection(basename($_SERVER['PHP_SELF']).'?msg=confirm_fichier_suppr');
 		}
 	}
 }
@@ -236,7 +236,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var) {
 				if (move_uploaded_file($new_file, $dossier.'/'. $dest) ) {
 					$fichier['bt_checksum'] = sha1_file($dossier.'/'. $dest);
 				} else {
-					redirection($_SERVER['PHP_SELF'].'?errmsg=error_fichier_ajout_2');
+					redirection(basename($_SERVER['PHP_SELF']).'?errmsg=error_fichier_ajout_2');
 					exit;
 				}
 			}
@@ -244,7 +244,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var) {
 			elseif ( $comment == 'download' and copy($sup_var, $dossier.'/'. $dest) ) {
 				$fichier['bt_filesize'] = filesize($dossier.'/'. $dest);
 			} else {
-				redirection($_SERVER['PHP_SELF'].'?errmsg=error_fichier_ajout');
+				redirection(basename($_SERVER['PHP_SELF']).'?errmsg=error_fichier_ajout');
 				exit;
 			}
 
@@ -283,7 +283,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var) {
 					}
 				// error rename ficher
 				} else {
-					redirection($_SERVER['PHP_SELF'].'?file_id='.$fichier['bt_id'].'&errmsg=error_fichier_rename');
+					redirection(basename($_SERVER['PHP_SELF']).'?file_id='.$fichier['bt_id'].'&errmsg=error_fichier_rename');
 				}
 			}
 			list($fichier['bt_dim_w'], $fichier['bt_dim_h']) = getimagesize($dossier.'/'.$new_filename); // reupdate filesize.
@@ -297,7 +297,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var) {
 
 			$GLOBALS['liste_fichiers'] = tri_selon_sous_cle($GLOBALS['liste_fichiers'], 'bt_id');
 			file_put_contents($GLOBALS['fichier_liste_fichiers'], '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_fichiers']))).' */'); // écrit dans le fichier, la liste
-			redirection($_SERVER['PHP_SELF'].'?file_id='.$fichier['bt_id'].'&edit&msg=confirm_fichier_edit');
+			redirection(basename($_SERVER['PHP_SELF']).'?file_id='.$fichier['bt_id'].'&edit&msg=confirm_fichier_edit');
 	}
 
 	// suppression d’un fichier (de la BDD et du disque)
@@ -377,7 +377,7 @@ function init_post_fichier() { //no $mode : it's always admin.
 				$type = detection_type_fichier($ext);
 			} else {
 				// ERROR
-				redirection($_SERVER['PHP_SELF'].'?errmsg=error_image_add');
+				redirection(basename($_SERVER['PHP_SELF']).'?errmsg=error_image_add');
 				return FALSE;
 			}
 		}
@@ -407,7 +407,7 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 	if ($erreurs) {
 		echo erreurs($erreurs);
 	}
-	$form = '<form id="form-image" class="bordered-formbloc" enctype="multipart/form-data" method="post" action="'.$_SERVER['PHP_SELF'].'">'."\n";
+	$form = '<form id="form-image" class="bordered-formbloc" enctype="multipart/form-data" method="post" action="'.basename($_SERVER['PHP_SELF']).'">'."\n";
 	
 	if (empty($fichiers)) { // si PAS fichier donnée : formulaire nouvel envoi.
 		$form .= '<fieldset class="pref" >'."\n";

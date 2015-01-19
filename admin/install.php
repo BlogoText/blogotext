@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2013 Timo Van Neerden <timo@neerden.eu>
+# 2010-2015 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -185,7 +185,7 @@ function afficher_form_3($erreurs='') {
 	echo '<h1>'.$GLOBALS['nom_application'].'</h1>'."\n";
 	echo '<h1 id="step">'.$GLOBALS['lang']['install'].'</h1>'."\n";
 	echo erreurs($erreurs);
-	echo '<form method="post" action="'.$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'].'">'."\n";
+	echo '<form method="post" action="'.basename($_SERVER['PHP_SELF']).'?'.$_SERVER['QUERY_STRING'].'">'."\n";
 
 	
 	echo '<p><label>'.$GLOBALS['lang']['install_choose_sgdb'].'</label>';

@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2014 Timo Van Neerden <timo@neerden.eu>
+# 2010-2015 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -166,7 +166,7 @@ function liste_themes($chemin) {
 // formulaires ARTICLES //////////
 
 function afficher_form_filtre($type, $filtre) {
-	echo '<form method="get" action="'.$_SERVER['PHP_SELF'].'" onchange="this.submit();">'."\n";
+	echo '<form method="get" action="'.basename($_SERVER['PHP_SELF']).'" onchange="this.submit();">'."\n";
 	echo '<div id="form-filtre">'."\n";
 		filtre($type, $filtre);
 	echo '</div>'."\n";
@@ -324,7 +324,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= '</form>'."\n\n";
 
 	} elseif ($step == 2) { // Form de l'URL, avec titre, description, en POST cette fois, et qu'il faut vérifier avant de stoquer dans la BDD.
-		$form .= '<form method="post" onsubmit="return moveTag();" class="bordered-formbloc" id="post-lien" action="'.$_SERVER['PHP_SELF'].'">'."\n";
+		$form .= '<form method="post" onsubmit="return moveTag();" class="bordered-formbloc" id="post-lien" action="'.basename($_SERVER['PHP_SELF']).'">'."\n";
 		$form .= '<fieldset>'."\n";
 
 		$url = $_GET['url'];
@@ -435,7 +435,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= '</form>'."\n\n";
 
 	} elseif ($step == 'edit') { // Form pour l'édition d'un lien : les champs sont remplis avec le "wiki_content" et il y a les boutons suppr/activer en plus.
-		$form = '<form method="post" onsubmit="return moveTag();" class="bordered-formbloc" id="post-lien" action="'.$_SERVER['PHP_SELF'].'?id='.$editlink['bt_id'].'">'."\n";
+		$form = '<form method="post" onsubmit="return moveTag();" class="bordered-formbloc" id="post-lien" action="'.basename($_SERVER['PHP_SELF']).'?id='.$editlink['bt_id'].'">'."\n";
 		$form .= "\t".'<fieldset class="pref">'."\n";
 		$form .= "\t".'<div class="wrap-fields wrap-fields-links">'."\n";
 		$form .= "\t".'<input type="text" name="url" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_url']).'" required="" value="'.$editlink['bt_link'].'" size="70" class="text readonly-like" /></label>'."\n";
@@ -513,9 +513,9 @@ function afficher_form_billet($article, $erreurs) {
 		echo erreurs($erreurs);
 	}
 	if (isset($article['bt_id'])) {
-		echo '<form id="form-ecrire" method="post" onsubmit="return moveTag();" action="'.$_SERVER['PHP_SELF'].'?post_id='.$article['bt_id'].'" >'."\n";
+		echo '<form id="form-ecrire" method="post" onsubmit="return moveTag();" action="'.basename($_SERVER['PHP_SELF']).'?post_id='.$article['bt_id'].'" >'."\n";
 	} else {
-		echo '<form id="form-ecrire" method="post" onsubmit="return moveTag();" action="'.$_SERVER['PHP_SELF'].'" >'."\n";
+		echo '<form id="form-ecrire" method="post" onsubmit="return moveTag();" action="'.basename($_SERVER['PHP_SELF']).'" >'."\n";
 	}
 		echo '<input id="titre" name="titre" type="text" size="50" value="'.$titredefaut.'" required="" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_titre']).'" tabindex="30" class="text" spellcheck="true" />'."\n" ;
 	echo '<div id="chapo_note">'."\n";
