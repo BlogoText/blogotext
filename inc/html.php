@@ -442,9 +442,9 @@ function feed_list_html() {
 	foreach ($GLOBALS['liste_flux'] as $i => $feed) {
 		$folders[$feed['folder']][] = $feed;
 	}
-	ksort($folders);
+	krsort($folders);
 
-
+	// creates html : lists RSS feeds without folder separately from feeds with a folder
 	foreach ($folders as $i => $folder) {
 		$li_html = "";
 		$folder_count = 0;

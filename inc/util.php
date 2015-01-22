@@ -119,7 +119,10 @@ function fermer_session() {
 	foreach($_POST as $key => $value){
 		$_SESSION['BT-post-'.$key] = $value;
 	}
-	$_SESSION['BT-saved-url'] = $_SERVER['REQUEST_URI'];
+
+	if (strrpos($_SERVER['REQUEST_URI'], '/logout.php') != strlen($_SERVER['REQUEST_URI']) - strlen('/logout.php')) {
+		$_SESSION['BT-saved-url'] = $_SERVER['REQUEST_URI'];
+	}
 	redirection('auth.php');
 	exit();
 }
