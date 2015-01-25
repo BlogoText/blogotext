@@ -772,12 +772,21 @@ function traiter_form_rssconf() {
 					die('Error : Rss?conf RM-from db: '.$e->getMessage());
 				}
 			}
-			// title or folders have changed
+			// title, url or folders have changed
 			else {
 				// title has change
 				$GLOBALS['liste_flux'][$i]['title'] = $_POST['i_'.$feed['checksum']];
-				// folder has changed
-				$GLOBALS['liste_flux'][$i]['folder'] = $_POST['l_'.$feed['checksum']];
+				// folder has changed : update & change folder where it must be changed
+				if ($GLOBALS['liste_flux'][$i]['folder'] != $_POST['l_'.$feed['checksum']]) {
+					$GLOBALS['liste_flux'][$i]['folder'] = $_POST['l_'.$feed['checksum']];
+					try {
+						$req = $GLOBALS['db_handle']->prepare('UPDATE rss SET bt_folder=? WHERE bt_feed=?');
+						$req->execute(array($_POST['l_'.$feed['checksum']], $feed['link']));
+					} catch (Exception $e) {
+						die('Error : Rss?conf Update-feed db: '.$e->getMessage());
+					}
+				}
+
 				// URL has change
 				if ($_POST['j_'.$feed['checksum']] != $GLOBALS['liste_flux'][$i]['link']) {
 					$a = $GLOBALS['liste_flux'][$i];
