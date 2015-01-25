@@ -429,6 +429,7 @@ $GLOBALS['lang'] = array(
 'rss_label_config'				=> 'Edit feed list',
 'rss_nothing_here_note'			=> 'Nothing here? Import an OPML file here: ',
 'rss_jsalert_new_link'			=> 'RSS/Atom complete link:',
+'rss_jsalert_new_link_folder'	=> 'Put feed in folder (or leave empty):',
 'rss_raccourcis_clavier'		=> 'Ctrl+Up = Read previous entry, Ctrl+Down = Read next entry.',
 'rss_nouveau_flux'				=> 'new entries.',
 

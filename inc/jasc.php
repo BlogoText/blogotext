@@ -574,6 +574,7 @@ $sc = '
 // show form for new rss feed
 function addNewFeed() {
 	var newLink = window.prompt(\''.$GLOBALS['lang']['rss_jsalert_new_link'].'\', \'\');
+	var newFolder = window.prompt(\''.$GLOBALS['lang']['rss_jsalert_new_link_folder'].'\', \'\');
 	var notifDiv = document.createElement(\'div\');
 	// empty string : stops here
 	if (!newLink) return false;
@@ -612,6 +613,7 @@ function addNewFeed() {
 	var formData = new FormData();
 	formData.append(\'token\', token);
 	formData.append(\'add-feed\', newLink);
+	formData.append(\'add-feed-folder\', newFolder);
 	xhr.send(formData);
 
 	return false;
