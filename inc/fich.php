@@ -289,7 +289,7 @@ function get_external_file($url, $timeout=10) {
 	$context = stream_context_create(array('http'=> $headers));
 	$data = @file_get_contents($url, false, $context, -1, 4000000); // We download at most 4 Mb from source.
 	if (isset($data) and isset($http_response_header[0]) and ( strpos($http_response_header[0], '200 OK') | (strpos($http_response_header[0], '302 Found') ) | (strpos($http_response_header[0], '301 Moved') | (strpos($http_response_header[0], '302 Moved')) ) !== FALSE ) ) {
-		return $data;
+		return array('body' => $data, 'headers' => http_parse_headers($http_response_header));
 	} else {
 		return array();
 	}
@@ -563,3 +563,18 @@ function send_rss_json($rss_entries) {
 }
 
 
+if (!function_exists('http_parse_headers')) {
+	function http_parse_headers($raw_headers) {
+		$headers = [];
+
+		foreach ($raw_headers as $i => $h) {
+			$h = explode(':', $h, 2);
+
+			if (isset($h[1])) {
+				$headers[$h[0]] = trim($h[1]);
+			}
+		}
+
+		return $headers;
+	}
+}

@@ -233,10 +233,11 @@ function afficher_form_prefs($erreurs = '') {
 	if ($GLOBALS['check_update'] == 1) {
 		if ( !is_file($GLOBALS['last-online-file']) or (filemtime($GLOBALS['last-online-file']) < time()-(24*60*60)) ) {
 			$last_version = get_external_file('http://lehollandaisvolant.net/blogotext/version.php', 6);
-			if (empty($last_version)) { $last_version = $GLOBALS['version']; }
+			if (empty($last_version['body'])) { $last_version = $GLOBALS['version']; }
 			// If failed, nevermind. We don't want to bother the user with that.
-			file_put_contents($GLOBALS['last-online-file'], $last_version); // touch file date
+			file_put_contents($GLOBALS['last-online-file'], $last_version['body']); // touch file date
 		}
+
 		// Compare versions:
 		$newestversion = file_get_contents($GLOBALS['last-online-file']);
 		if (version_compare($newestversion, $GLOBALS['version']) == 1) {

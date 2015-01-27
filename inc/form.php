@@ -342,9 +342,11 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 			$form .= "\t".'<div class="wrap-fields wrap-fields-note">'."\n";
 		// URL non vide
 		} else {
+
 			// Test du type de fichier
-			$rep_hdr = get_headers($url, 0);
-			$cnt_type = (isset($rep_hdr['Content-Type'])) ? $rep_hdr['Content-Type'] : 'text/';
+			$rep_hdr = get_headers($url, 1);
+			$cnt_type = (isset($rep_hdr['Content-Type'])) ? (is_array($rep_hdr['Content-Type']) ? $rep_hdr['Content-Type'][count($rep_hdr['Content-Type'])-1] : $rep_hdr['Content-Type']) : 'text/';
+			//debug($rep_hdr);
 			$cnt_type = (is_array($cnt_type)) ? $cnt_type[0] : $cnt_type;
 
 			// lien est une image
@@ -364,22 +366,24 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 				}
 			}
 
-			// URL est un lien normal
+			// URL est un lien normal : on récupère la page entière (pas juste les headers)
 			elseif ($ext_file = get_external_file($url, 15) ) {
 				$charset = 'utf-8';
+
 				// cherche le charset dans les headers
-				if (preg_match('#charset=(.*);?#', $cnt_type, $hdr_charset) and !empty($hdr_charset[1])) {
+				if (preg_match('#charset=(.*);?#', $ext_file['headers']['Content-Type'], $hdr_charset) and !empty($hdr_charset[1])) {
 					$charset = $hdr_charset[1];
 				}
+
 				// sinon cherche le charset dans le code HTML.
 				else {
 					// cherche la balise "meta charset"
-					preg_match('#<meta .*charset=([^\s]*)\s*/?>#Usi', $ext_file, $meta);
+					preg_match('#<meta .*charset=([^\s]*)\s*/?>#Usi', $ext_file['body'], $meta);
 					$charset = (!empty($meta[1])) ? strtolower(str_replace(array("'", '"'), array('', ''), $meta[1]) ) : 'utf-8';
 				}
-				// récupère le titre, dans le tableau $titles, rempli par preg_match()
 
-				$ext_file = html_entity_decode( (($charset == 'iso-8859-1') ? utf8_encode($ext_file) : $ext_file), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+				// récupère le titre, dans le tableau $titles, rempli par preg_match()
+				$ext_file = html_entity_decode( (($charset == 'iso-8859-1') ? utf8_encode($ext_file['body']) : $ext_file['body']), ENT_QUOTES | ENT_HTML5, 'UTF-8');
 				preg_match('#<title>(.*)</title>#Usi', $ext_file, $titles);
 
 				if (!empty($titles[1])) {
@@ -784,15 +788,6 @@ function afficher_form_rssconf($errors='') {
 	$out .= hidden_input('verif_envoi', 1);
 	$out .= '</fieldset>'."\n";
 	$out .= '</form>'."\n";
-
-
-
-
-
-
-
-
-
 
 	return $out;
 }
