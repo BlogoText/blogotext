@@ -228,9 +228,9 @@ var contenuLoad = document.getElementById("contenu").value;
 window.addEventListener("beforeunload", function (e) {
 	// From https://developer.mozilla.org/en-US/docs/Web/Reference/Events/beforeunload
 	var confirmationMessage = \''.$GLOBALS['lang']['question_quit_page'].'\';
-	if(document.getElementById("contenu").value == contenuLoad) { confirmationMessage = null };
-	(e || window.event).returnValue = confirmationMessage || \'\' ;	//Gecko + IE ; Gecko show popup if "null" but not if empty str,
-	return confirmationMessage;													// Webkit.
+	if(document.getElementById("contenu").value == contenuLoad) { return true; };
+	(e || window.event).returnValue = confirmationMessage || \'\' ;	//Gecko + IE
+	return confirmationMessage;													// Webkit : ignore this.
 });
 ';
 	if ($a == 1) {
