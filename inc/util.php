@@ -269,11 +269,17 @@ function parse_search($q) {
 	return $txt_query;
 }
 
-
-
+/* for testing/dev purpose: shows a variable. */
 function debug($data) {
 	echo '<pre>';
 	print_r($data);
 	die;
+}
+
+/* remove the folders "." and ".." from the list of files returned by scandir(). */
+function rm_dots_dir($array) {
+	if (($key = array_search('..', $array)) !== FALSE) { unset($array[$key]); }
+	if (($key = array_search('.', $array)) !== FALSE) { unset($array[$key]); }
+	return ($array);
 }
 

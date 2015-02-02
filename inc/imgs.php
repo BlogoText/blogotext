@@ -312,20 +312,18 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var) {
 			}
 			// remove physical file on disk if it exists
 			if (is_file($dossier.'/'.$fichier['bt_filename']) and isset($tbl_id)) {
-				$liste_fichiers = scandir($dossier); // liste les fichiers réels dans le dossier
-				if (in_array($fichier['bt_filename'], $liste_fichiers) and !($fichier['bt_filename'] == '..' or $fichier['bt_filename'] == '.')) {
-					if (TRUE === unlink($dossier.'/'.$fichier['bt_filename'])) { // fichier physique effacé
-						if ($fichier['bt_type'] == 'image') { // supprimer aussi la miniature si elle existe.
-							@unlink(chemin_thb_img($dossier.'/'.$fichier['bt_filename'])); // supprime la thumbnail si y’a
-						}
-						unset($GLOBALS['liste_fichiers'][$tbl_id]); // efface le fichier dans la liste des fichiers.
-						$GLOBALS['liste_fichiers'] = tri_selon_sous_cle($GLOBALS['liste_fichiers'], 'bt_id');
-						file_put_contents($GLOBALS['fichier_liste_fichiers'], '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_fichiers']))).' */'); // enregistre la liste
-						return 'success';
-
-					} else { // erreur effacement fichier physique
-						return 'error_suppr_file_suppr_error';
+				$liste_fichiers = rm_dots_dir(scandir($dossier)); // liste les fichiers réels dans le dossier
+				if (TRUE === unlink($dossier.'/'.$fichier['bt_filename'])) { // fichier physique effacé
+					if ($fichier['bt_type'] == 'image') { // supprimer aussi la miniature si elle existe.
+						@unlink(chemin_thb_img($dossier.'/'.$fichier['bt_filename'])); // supprime la thumbnail si y’a
 					}
+					unset($GLOBALS['liste_fichiers'][$tbl_id]); // efface le fichier dans la liste des fichiers.
+					$GLOBALS['liste_fichiers'] = tri_selon_sous_cle($GLOBALS['liste_fichiers'], 'bt_id');
+					file_put_contents($GLOBALS['fichier_liste_fichiers'], '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_fichiers']))).' */'); // enregistre la liste
+					return 'success';
+
+				} else { // erreur effacement fichier physique
+					return 'error_suppr_file_suppr_error';
 				}
 			}
 

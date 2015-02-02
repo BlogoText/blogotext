@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2014 Timo Van Neerden <timo@neerden.eu>
+# 2010-2015 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -38,8 +38,8 @@ creer_dossier($GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_backup'], 0);
  * reconstruit la BDD des fichiers (qui n’est pas dans SQL, mais un fichier serializé à côte)
 */
 function rebuilt_file_db() {
-	$idir = scandir($GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_images']); unset($idir[0], $idir[1]); // unset '.' and '..'
-	$fdir = scandir($GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_fichiers']); unset($fdir[0], $fdir[1]);
+	$idir = rm_dots_dir(scandir($GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_images']));
+	$fdir = rm_dots_dir(scandir($GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_fichiers']));
 	// supprime les miniatures de la liste...
 	$idir = array_filter($idir, function($file){return (!((preg_match('#-thb\.jpg$#', $file)) or ($file == 'index.html'))); });
 

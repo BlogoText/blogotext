@@ -565,7 +565,7 @@ function send_rss_json($rss_entries) {
 
 if (!function_exists('http_parse_headers')) {
 	function http_parse_headers($raw_headers) {
-		$headers = [];
+		$headers = array();
 
 		foreach ($raw_headers as $i => $h) {
 			$h = explode(':', $h, 2);
