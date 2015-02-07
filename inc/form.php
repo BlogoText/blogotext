@@ -580,9 +580,11 @@ function afficher_form_billet($article, $erreurs) {
 
 	echo '<textarea id="contenu" name="contenu" rows="20" cols="60" required="" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_contenu']).'" tabindex="55" class="text">'.$contenudefaut.'</textarea>'."\n" ;
 
-	echo form_categories_links('articles', $categoriesdefaut);
-	echo "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'" tabindex="65"/>'."\n";
-	echo "\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
+	if ($GLOBALS['activer_categories'] == '1') {
+		echo form_categories_links('articles', $categoriesdefaut);
+		echo "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'" tabindex="65"/>'."\n";
+		echo "\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
+	}
 
 	if ($GLOBALS['automatic_keywords'] == '0') {
 		echo '<div><input id="mots_cles" name="mots_cles" type="text" size="50" value="'.$motsclesdefaut.'" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_motscle']).'" tabindex="67" class="text" /></div>'."\n";

@@ -1,6 +1,6 @@
 <article class="news news-alone">
 	<header class="titre">
-		<h2><a href="{article_lien}" title="{article_chapo}">{article_titre}</a></h2>
+		<h2><a href="{article_lien}">{article_titre}</a></h2>
 		<h3 class="date"><img src="{style}/icon_date.png" alt="icon" /> {article_date}</h3>
 	</header>
 	<!--<p class="chapo">{article_chapo}</p>-->
@@ -15,11 +15,11 @@
 	<article class="comment" id="{commentaire_ancre}">
 	<h3>{commentaire_auteur_lien} - {commentaire_date} à {commentaire_heure}  </h3>
 		{commentaire_contenu}
-		<p class="com-reply"><a href="#form-commentaire" onclick="reply('[b]@[{commentaire_auteur}|#{commentaire_ancre}] :[/b] ');" title="">@répondre</a> <a href="#{commentaire_ancre}" title="">#lien</a></p>
+		<p class="com-reply"><a href="#form-commentaire" onclick="reply('[b]@[{commentaire_auteur}|#{commentaire_ancre}] :[/b] ');" title="">@répondre</a> <a href="#{commentaire_ancre}">#lien</a></p>
 	</article>
 	{/BOUCLE_commentaires}
 
-	<p><a href="{rss_comments}" title=""><img src="{style}/feed.png" alt="icon" /> Flux RSS des commentaires de cet article</a></p>
+	<p><a href="{rss_comments}"><img src="{style}/feed.png" alt="icon" /> Flux RSS des commentaires de cet article</a></p>
 	<div id="postcom">
 		{formulaire_commentaire}
 	</div>
