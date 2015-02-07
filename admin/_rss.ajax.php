@@ -71,6 +71,7 @@ if (isset($_POST['add-feed'])) {
 	}
 
 	$new_feed = trim($_POST['add-feed']);
+	$new_feed_folder = htmlspecialchars(trim($_POST['add-feed-folder']));
 	$feed_array = get_new_feeds(array($new_feed => array()), '');
 
 	if (!($feed_array[$new_feed]['infos']['type'] == 'ATOM' or $feed_array[$new_feed]['infos']['type'] == 'RSS')) {
@@ -84,7 +85,7 @@ if (isset($_POST['add-feed'])) {
 		'favicon' => 'style/rss-feed-icon.png',
 		'checksum' => '42',
 		'time' => '1',
-		'folder' => ''
+		'folder' => $new_feed_folder
 	);
 
 	// sort list with title

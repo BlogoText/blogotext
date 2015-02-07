@@ -430,6 +430,7 @@ $GLOBALS['lang'] = array(
 'rss_label_config'				=> 'Éditer la liste des flux',
 'rss_nothing_here_note'			=> 'Rien ici ? Importez un fichier OPML en cliquant ici : ',
 'rss_jsalert_new_link'			=> 'Url complète du flux RSS/Atom :',
+'rss_jsalert_new_link_folder'	=> 'Dossier du flux (ou laisser vide) :',
 'rss_raccourcis_clavier'		=> 'Ctrl+Haut = lire l’élément précédent, Ctrl+Bas = lire l’élément suivant.',
 'rss_nouveau_flux'				=> 'nouveaux élements.',
 

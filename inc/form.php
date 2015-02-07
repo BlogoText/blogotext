@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2014 Timo Van Neerden <timo@neerden.eu>
+# 2010-2015 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -166,7 +166,7 @@ function liste_themes($chemin) {
 // formulaires ARTICLES //////////
 
 function afficher_form_filtre($type, $filtre) {
-	echo '<form method="get" action="'.$_SERVER['PHP_SELF'].'" onchange="this.submit();">'."\n";
+	echo '<form method="get" action="'.basename($_SERVER['PHP_SELF']).'" onchange="this.submit();">'."\n";
 	echo '<div id="form-filtre">'."\n";
 		filtre($type, $filtre);
 	echo '</div>'."\n";
@@ -324,7 +324,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= '</form>'."\n\n";
 
 	} elseif ($step == 2) { // Form de l'URL, avec titre, description, en POST cette fois, et qu'il faut vérifier avant de stoquer dans la BDD.
-		$form .= '<form method="post" onsubmit="return moveTag();" class="bordered-formbloc" id="post-lien" action="'.$_SERVER['PHP_SELF'].'">'."\n";
+		$form .= '<form method="post" onsubmit="return moveTag();" class="bordered-formbloc" id="post-lien" action="'.basename($_SERVER['PHP_SELF']).'">'."\n";
 		$form .= '<fieldset>'."\n";
 
 		$url = $_GET['url'];
@@ -342,9 +342,11 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 			$form .= "\t".'<div class="wrap-fields wrap-fields-note">'."\n";
 		// URL non vide
 		} else {
+
 			// Test du type de fichier
-			$rep_hdr = get_headers($url, 0);
-			$cnt_type = (isset($rep_hdr['Content-Type'])) ? $rep_hdr['Content-Type'] : 'text/';
+			$rep_hdr = get_headers($url, 1);
+			$cnt_type = (isset($rep_hdr['Content-Type'])) ? (is_array($rep_hdr['Content-Type']) ? $rep_hdr['Content-Type'][count($rep_hdr['Content-Type'])-1] : $rep_hdr['Content-Type']) : 'text/';
+			//debug($rep_hdr);
 			$cnt_type = (is_array($cnt_type)) ? $cnt_type[0] : $cnt_type;
 
 			// lien est une image
@@ -364,22 +366,24 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 				}
 			}
 
-			// URL est un lien normal
+			// URL est un lien normal : on récupère la page entière (pas juste les headers)
 			elseif ($ext_file = get_external_file($url, 15) ) {
 				$charset = 'utf-8';
+
 				// cherche le charset dans les headers
-				if (preg_match('#charset=(.*);?#', $cnt_type, $hdr_charset) and !empty($hdr_charset[1])) {
+				if (preg_match('#charset=(.*);?#', $ext_file['headers']['Content-Type'], $hdr_charset) and !empty($hdr_charset[1])) {
 					$charset = $hdr_charset[1];
 				}
+
 				// sinon cherche le charset dans le code HTML.
 				else {
 					// cherche la balise "meta charset"
-					preg_match('#<meta .*charset=([^\s]*)\s*/?>#Usi', $ext_file, $meta);
+					preg_match('#<meta .*charset=([^\s]*)\s*/?>#Usi', $ext_file['body'], $meta);
 					$charset = (!empty($meta[1])) ? strtolower(str_replace(array("'", '"'), array('', ''), $meta[1]) ) : 'utf-8';
 				}
-				// récupère le titre, dans le tableau $titles, rempli par preg_match()
 
-				$ext_file = html_entity_decode( (($charset == 'iso-8859-1') ? utf8_encode($ext_file) : $ext_file), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+				// récupère le titre, dans le tableau $titles, rempli par preg_match()
+				$ext_file = html_entity_decode( (($charset == 'iso-8859-1') ? utf8_encode($ext_file['body']) : $ext_file['body']), ENT_QUOTES | ENT_HTML5, 'UTF-8');
 				preg_match('#<title>(.*)</title>#Usi', $ext_file, $titles);
 
 				if (!empty($titles[1])) {
@@ -435,7 +439,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= '</form>'."\n\n";
 
 	} elseif ($step == 'edit') { // Form pour l'édition d'un lien : les champs sont remplis avec le "wiki_content" et il y a les boutons suppr/activer en plus.
-		$form = '<form method="post" onsubmit="return moveTag();" class="bordered-formbloc" id="post-lien" action="'.$_SERVER['PHP_SELF'].'?id='.$editlink['bt_id'].'">'."\n";
+		$form = '<form method="post" onsubmit="return moveTag();" class="bordered-formbloc" id="post-lien" action="'.basename($_SERVER['PHP_SELF']).'?id='.$editlink['bt_id'].'">'."\n";
 		$form .= "\t".'<fieldset class="pref">'."\n";
 		$form .= "\t".'<div class="wrap-fields wrap-fields-links">'."\n";
 		$form .= "\t".'<input type="text" name="url" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_url']).'" required="" value="'.$editlink['bt_link'].'" size="70" class="text readonly-like" /></label>'."\n";
@@ -513,9 +517,9 @@ function afficher_form_billet($article, $erreurs) {
 		echo erreurs($erreurs);
 	}
 	if (isset($article['bt_id'])) {
-		echo '<form id="form-ecrire" method="post" onsubmit="return moveTag();" action="'.$_SERVER['PHP_SELF'].'?post_id='.$article['bt_id'].'" >'."\n";
+		echo '<form id="form-ecrire" method="post" onsubmit="return moveTag();" action="'.basename($_SERVER['PHP_SELF']).'?post_id='.$article['bt_id'].'" >'."\n";
 	} else {
-		echo '<form id="form-ecrire" method="post" onsubmit="return moveTag();" action="'.$_SERVER['PHP_SELF'].'" >'."\n";
+		echo '<form id="form-ecrire" method="post" onsubmit="return moveTag();" action="'.basename($_SERVER['PHP_SELF']).'" >'."\n";
 	}
 		echo '<input id="titre" name="titre" type="text" size="50" value="'.$titredefaut.'" required="" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_titre']).'" tabindex="30" class="text" spellcheck="true" />'."\n" ;
 	echo '<div id="chapo_note">'."\n";
@@ -784,15 +788,6 @@ function afficher_form_rssconf($errors='') {
 	$out .= hidden_input('verif_envoi', 1);
 	$out .= '</fieldset>'."\n";
 	$out .= '</form>'."\n";
-
-
-
-
-
-
-
-
-
 
 	return $out;
 }

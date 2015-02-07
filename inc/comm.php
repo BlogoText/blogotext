@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2014 Timo Van Neerden <timo@neerden.eu>
+# 2010-2015 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -96,7 +96,7 @@ function afficher_form_commentaire($article_id, $mode, $erreurs='', $comm_id='')
 		$GLOBALS['form_commentaire'] .= '</div>'."\n";
 	} else {
 		if (isset($_POST['_verif_envoi'])) {
-			header('Location: '.$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'].'#top'); // redirection anti repostage;
+			header('Location: '.basename($_SERVER['PHP_SELF']).'?'.$_SERVER['QUERY_STRING'].'#top'); // redirection anti repostage;
 		}
 		$auteur_c = (isset($_COOKIE['auteur_c'])) ? protect($_COOKIE['auteur_c']) : '' ;
 		$email_c = (isset($_COOKIE['email_c'])) ? protect($_COOKIE['email_c']) : '' ;
@@ -120,7 +120,7 @@ function afficher_form_commentaire($article_id, $mode, $erreurs='', $comm_id='')
 		$rand = substr(md5(rand(100,999)),0,5);
 		// begin with some additional stuff on comment "edit".
 		if (isset($actual_comment)) { // edit
-			$form = "\n".'<form id="form-commentaire-'.$actual_comment['bt_id'].'" class="form-commentaire" method="post" action="'.$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'].'#erreurs">'."\n";
+			$form = "\n".'<form id="form-commentaire-'.$actual_comment['bt_id'].'" class="form-commentaire" method="post" action="'.basename($_SERVER['PHP_SELF']).'?'.$_SERVER['QUERY_STRING'].'#erreurs">'."\n";
 			
 			$form .= "\t".'<div class="comm-edit-hidden-bloc">'."\n";
 			$form .= "\t".'<fieldset class="syst">'."\n";
@@ -131,7 +131,7 @@ function afficher_form_commentaire($article_id, $mode, $erreurs='', $comm_id='')
 			//$form .= "\t\t".hidden_input('token', $actual_comment['comm-token']);
 			$form .= "\t".'</fieldset><!--end syst-->'."\n";
 		} else {
-			$form = "\n".'<form id="form-commentaire" class="form-commentaire" method="post" action="'.$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'].'#erreurs" >'."\n";
+			$form = "\n".'<form id="form-commentaire" class="form-commentaire" method="post" action="'.basename($_SERVER['PHP_SELF']).'?'.$_SERVER['QUERY_STRING'].'#erreurs" >'."\n";
 		}
 		$form .= "\t".'<fieldset class="field">'."\n";
 		$form .= "\t\t".hidden_input('comment_article_id', $article_id);
@@ -179,7 +179,7 @@ function afficher_form_commentaire($article_id, $mode, $erreurs='', $comm_id='')
 	// COMMENT ON PUBLIC SIDE
 	} else {
 		// Formulaire commun
-		$form = "\n".'<form id="form-commentaire" class="form-commentaire" method="post" action="'.$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'].'#erreurs" >'."\n";
+		$form = "\n".'<form id="form-commentaire" class="form-commentaire" method="post" action="'.basename($_SERVER['PHP_SELF']).'?'.$_SERVER['QUERY_STRING'].'#erreurs" >'."\n";
 
 		$form .= "\t".'<fieldset class="field">'."\n";
 		$form .= "\t".'<p class="formatbut">'."\n";

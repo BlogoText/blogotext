@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2014 Timo Van Neerden <timo@neerden.eu>
+# 2010-2015 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -38,7 +38,7 @@ function decode_id($id) {
 // used sometimes, like in the email that is sent.
 function get_blogpath($id, $titre) {
 	$date = decode_id($id);
-	$path = $GLOBALS['racine'].'index.php?d='.$date['annee'].'/'.$date['mois'].'/'.$date['jour'].'/'.$date['heure'].'/'.$date['minutes'].'/'.$date['secondes'].'-'.titre_url($titre);
+	$path = $GLOBALS['racine'].'?d='.$date['annee'].'/'.$date['mois'].'/'.$date['jour'].'/'.$date['heure'].'/'.$date['minutes'].'/'.$date['secondes'].'-'.titre_url($titre);
 	return $path;
 }
 
@@ -269,11 +269,17 @@ function parse_search($q) {
 	return $txt_query;
 }
 
-
-
+/* for testing/dev purpose: shows a variable. */
 function debug($data) {
 	echo '<pre>';
 	print_r($data);
 	die;
+}
+
+/* remove the folders "." and ".." from the list of files returned by scandir(). */
+function rm_dots_dir($array) {
+	if (($key = array_search('..', $array)) !== FALSE) { unset($array[$key]); }
+	if (($key = array_search('.', $array)) !== FALSE) { unset($array[$key]); }
+	return ($array);
 }
 

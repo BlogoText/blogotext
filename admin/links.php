@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2014 Timo Van Neerden <timo@neerden.eu>
+# 2010-2015 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -29,7 +29,7 @@ function afficher_liens($link) {
 	$list .= "\t".'<p class="lien_editer">'."\n";
 	$list .= "\t\t"
 		.(($link['bt_statut'] == '1') ? '<a href="'.$GLOBALS['racine'].'?mode=links&amp;id='.$link['bt_id'].'" class="links-link ll-see" title="'.$GLOBALS['lang']['voir_sur_le_blog'].'"></a> ' : '')
-		.(empty($_GET['id']) ? '<a href="'.$_SERVER['PHP_SELF'].'?id='.$link['bt_id'].'" class="links-link ll-edit" title="'.$GLOBALS['lang']['editer'].'"></a> ' : '')
+		.(empty($_GET['id']) ? '<a href="'.basename($_SERVER['PHP_SELF']).'?id='.$link['bt_id'].'" class="links-link ll-edit" title="'.$GLOBALS['lang']['editer'].'"></a> ' : '')
 		.(!$link['bt_statut'] ? '<img src="style/lock.png" title="'.$GLOBALS['lang']['link_is_private'].'" alt="private-icon" />' : '');
 	$list .= "\t".'</p>'."\n";
 	$list .= "\t".'<h3 class="titre-lien"><a href="'.$link['bt_link'].'">'.$link['bt_title'].'</a></h3>'."\n";
@@ -129,7 +129,7 @@ afficher_top($GLOBALS['lang']['mesliens']);
 echo '<div id="top">'."\n";
 afficher_msg($GLOBALS['lang']['mesliens']);
 echo moteur_recherche($GLOBALS['lang']['search_in_links']);
-afficher_menu(pathinfo($_SERVER['PHP_SELF'], PATHINFO_BASENAME));
+afficher_menu(basename($_SERVER['PHP_SELF']));
 echo '</div>'."\n";
 
 

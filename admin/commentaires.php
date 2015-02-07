@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2014 Timo Van Neerden <timo@neerden.eu>
+# 2010-2015 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -133,7 +133,7 @@ function afficher_commentaire($comment, $with_link) {
 	echo '<p class="p-edit-button">'."\n";
 	echo '<span class="comm-link-span-title">'.$GLOBALS['lang']['le'].' '.date_formate($comment['bt_id']).', '.heure_formate($comment['bt_id']);
 	if ($with_link == 1 and !empty($comment['bt_title'])) {
-		echo ' '.$GLOBALS['lang']['sur'].' <a href="'.$_SERVER['PHP_SELF'].'?post_id='.$comment['bt_article_id'].'">'.$comment['bt_title'].'</a>';
+		echo ' '.$GLOBALS['lang']['sur'].' <a href="'.basename($_SERVER['PHP_SELF']).'?post_id='.$comment['bt_article_id'].'">'.$comment['bt_title'].'</a>';
 	}
 	echo '</span>'."\n";
 	echo "\t".'<button class="comm-link cl-suppr" type="button" onclick="suppr_comm(this);" data-comm-id="'.$comment['ID'].'" data-comm-art-id="'.$comment['bt_article_id'].'">'.$GLOBALS['lang']['supprimer'].'</button>'."\n";
@@ -151,7 +151,7 @@ afficher_top($msgg);
 echo '<div id="top">'."\n";
 afficher_msg($GLOBALS['lang']['titre_commentaires']);
 echo moteur_recherche($GLOBALS['lang']['search_in_comments']);
-afficher_menu(pathinfo($_SERVER['PHP_SELF'], PATHINFO_BASENAME));
+afficher_menu(basename($_SERVER['PHP_SELF']));
 echo '</div>'."\n";
 
 echo '<div id="axe">'."\n";
