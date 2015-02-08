@@ -481,7 +481,9 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 		$form .= '<p id="interg-codes">'."\n";
 		$form .= '<input onfocus="SelectAllText(\'file_url\')" id="file_url" class="text" type="text" value=\''.$dossier.'/'.$fichiers[0]['bt_filename'].'\' />'."\n";
 		if ($fichiers[0]['bt_type'] == 'image') { // si le fichier est une image, on ajout BBCode pour [IMG] et le code en <img/>
-			$form .= '<input onfocus="SelectAllText(\'image_html\')" id="image_html" class="text" type="text" value=\'<img src="'.$dossier.'/'.$fichiers[0]['bt_filename'].'" alt="" width="'.$fichiers[0]['bt_dim_w'].'" height="'.$fichiers[0]['bt_dim_h'].'" style="max-width: 100%; height: auto;" />\' />'."\n";
+			$form .= '<input onfocus="SelectAllText(\'image_html_url\')" id="image_html_url" class="text" type="text" value=\'<img src="'.$dossier.'/'.$fichiers[0]['bt_filename'].'" alt="" width="'.$fichiers[0]['bt_dim_w'].'" height="'.$fichiers[0]['bt_dim_h'].'" style="max-width: 100%; height: auto;" />\' />'."\n";
+			$form .= '<input onfocus="SelectAllText(\'image_html_absolute\')" id="image_html_absolute" class="text" type="text" value=\'<img src="/'.$GLOBALS['dossier_images'].'/'.$fichiers[0]['bt_filename'].'" alt="" width="'.$fichiers[0]['bt_dim_w'].'" height="'.$fichiers[0]['bt_dim_h'].'" style="max-width: 100%; height: auto;" />\' />'."\n";
+			$form .= '<input onfocus="SelectAllText(\'image_html_relative\')" id="image_html_relative" class="text" type="text" value=\'<img src="'.$GLOBALS['dossier_images'].'/'.$fichiers[0]['bt_filename'].'" alt="" width="'.$fichiers[0]['bt_dim_w'].'" height="'.$fichiers[0]['bt_dim_h'].'" style="max-width: 100%; height: auto;" />\' />'."\n";
 			$form .= '<input onfocus="SelectAllText(\'image_bbcode_img\')" id="image_bbcode_img" class="text" type="text" value=\'[img]'.$dossier.'/'.$fichiers[0]['bt_filename'].'[/img]\' />'."\n";
 			$form .= '<input onfocus="SelectAllText(\'image_bbcode_img_spl\')" id="image_bbcode_img_spl" class="text" type="text" value=\'[spoiler][img]'.$dossier.'/'.$fichiers[0]['bt_filename'].'[/img][/spoiler]\' />'."\n";
 		} else {
