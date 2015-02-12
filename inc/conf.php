@@ -133,11 +133,11 @@ function init_list_comments($comment) {
  */
 
 function init_post_article() { //no $mode : it's always admin.
-	$formated = formatage_wiki(protect_markup(clean_txt($_POST['contenu'])));
+	$formated_contenu = formatage_wiki(protect_markup(clean_txt($_POST['contenu'])));
 	if ($GLOBALS['automatic_keywords'] == '0') {
 		$keywords = htmlspecialchars(stripslashes(protect_markup(clean_txt($_POST['mots_cles']))));
 	} else {
-		$keywords = extraire_mots($_POST['titre'].' '.$formated);
+		$keywords = extraire_mots($_POST['titre'].' '.$formated_contenu);
 	}
 
 	$date = str4($_POST['annee']).str2($_POST['mois']).str2($_POST['jour']).str2($_POST['heure']).str2($_POST['minutes']).str2($_POST['secondes']);
@@ -147,9 +147,9 @@ function init_post_article() { //no $mode : it's always admin.
 		'bt_id'				=> $id,
 		'bt_date'			=> $date,
 		'bt_title'			=> htmlspecialchars(stripslashes(protect_markup(clean_txt($_POST['titre'])))),
-		'bt_abstract'		=> htmlspecialchars(stripslashes(protect_markup(clean_txt($_POST['chapo'])))),
+		'bt_abstract'		=> (empty($_POST['chapo']) ? '' : formatage_wiki(protect_markup(clean_txt($_POST['chapo'])))),
 		'bt_notes'			=> htmlspecialchars(stripslashes(protect_markup(clean_txt($_POST['notes'])))),
-		'bt_content'		=> $formated,
+		'bt_content'		=> $formated_contenu,
 		'bt_wiki_content'	=> stripslashes(protect_markup(clean_txt($_POST['contenu']))),
 		'bt_link'			=> '', // this one is not needed yet. Maybe in the futur. I dunno why it is still in the DB…
 		'bt_keywords'		=> $keywords,
