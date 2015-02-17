@@ -75,9 +75,9 @@ if ($_SERVER['PHP_SELF'] !== $_SERVER['SCRIPT_NAME']) {
 if (isset($_GET['random'])) {
 	try {
 		// getting nb articles, gen random num, then select one article is much faster than "sql(order by rand limit 1)"
-		$result = $GLOBALS['db_handle']->query("SELECT count(ID) FROM articles")->fetch();
+		$result = $GLOBALS['db_handle']->query("SELECT count(ID) FROM articles WHERE bt_statut=1")->fetch();
 		$rand = mt_rand(0, $result[0] - 1);
-		$tableau = liste_elements("SELECT * FROM articles LIMIT $rand, 1", array(), 'articles');
+		$tableau = liste_elements("SELECT * FROM articles WHERE bt_statut=1 LIMIT $rand, 1", array(), 'articles');
 	} catch (Exception $e) {
 		die('Erreur rand: '.$e->getMessage());
 	}
@@ -277,7 +277,7 @@ else {
 			$sql_a_p = "bt_id <= ".date('YmdHis')." AND bt_statut=1 ";
 			break;
 	}
-	
+
 	// paramètre de page "p"
 	if (isset($_GET['p']) and is_numeric($_GET['p']) and $_GET['p'] >= 1) {
 		$sql_p = 'LIMIT '.$GLOBALS['max_bill_acceuil'] * $_GET['p'].', '.$GLOBALS['max_bill_acceuil'];
