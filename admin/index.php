@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2013 Timo Van Neerden <timo@neerden.eu>
+# 2010-2015 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -27,6 +27,14 @@ operate_session();
 $GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
 $GLOBALS['liste_fichiers'] = open_serialzd_file($GLOBALS['fichier_liste_fichiers']);
 
+//debug ($GLOBALS['liste_fichiers']);
+// migration 2.1.0.0 => 2.1.0.1 FIXME : remove later
+if (!isset($GLOBALS['liste_fichiers'][0]['bt_path'])) {
+	foreach ($GLOBALS['liste_fichiers'] as $i => $file) {
+		$GLOBALS['liste_fichiers'][$i]['bt_path'] = '';
+	}
+	file_put_contents($GLOBALS['fichier_liste_fichiers'], '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_fichiers']))).' */');
+}
 
 afficher_top($GLOBALS['lang']['label_resume']);
 echo '<div id="top">'."\n";
