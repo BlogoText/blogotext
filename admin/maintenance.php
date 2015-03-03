@@ -39,19 +39,37 @@ creer_dossier($GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_backup'], 0);
 */
 function rebuilt_file_db() {
 	$idir = rm_dots_dir(scandir($GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_images']));
+	// scans also subdir of img/* (in one single array of paths)
+	foreach ($idir as $i => $e) {
+		$subelem = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_images'].'/'.$e;
+		if (is_dir($subelem)) {
+			unset($idir[$i]); // rm folder entry itself
+			$subidir = rm_dots_dir(scandir($subelem));
+			foreach ($subidir as $j => $im) {
+				$idir[] = $e.'/'.$im;
+			}
+		}
+	}
+	foreach ($idir as $i => $e) {
+		$idir[$i] = '/'.$e;
+	}
+
+	
 	$fdir = rm_dots_dir(scandir($GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_fichiers']));
+
 	// supprime les miniatures de la liste...
-	$idir = array_filter($idir, function($file){return (!((preg_match('#-thb\.jpg$#', $file)) or ($file == 'index.html'))); });
+	$idir = array_filter($idir, function($file){return (!((preg_match('#-thb\.jpg$#', $file)) or (strpos($file, 'index.html') == 4))); });
 
 	$files_disk = array_merge($idir, $fdir);
 	$files_db = $files_db_id = array();
 
 	// supprime les fichiers dans la DB qui ne sont plus sur le disque
 	foreach ($GLOBALS['liste_fichiers'] as $id => $file) {
-		if (!in_array($file['bt_filename'], $files_disk)) { unset($GLOBALS['liste_fichiers'][$id]); }
-		$files_db[] = $file['bt_filename'];
+		if (!in_array($file['bt_path'].'/'.$file['bt_filename'], $files_disk)) { unset($GLOBALS['liste_fichiers'][$id]); }
+		$files_db[] = $file['bt_path'].'/'.$file['bt_filename'];
 		$files_db_id[] = $file['bt_id'];
 	}
+
 	// ajoute les images/* du disque qui ne sont pas encore dans la DB.
 	foreach ($idir as $file) {
 		if (!in_array($file, $files_db)) {
@@ -72,6 +90,7 @@ function rebuilt_file_db() {
 				'bt_dossier' => 'default',
 				'bt_checksum' => sha1_file($filepath),
 				'bt_statut' => 0,
+				'bt_path' => (preg_match('#^/[0-9a-f]{2}/#', $file)) ? (substr($file, 0, 3)) : '',
 			);
 			list($new_img['bt_dim_w'], $new_img['bt_dim_h']) = getimagesize($filepath);
 			// crée une miniature de l’image
@@ -80,6 +99,7 @@ function rebuilt_file_db() {
 			$GLOBALS['liste_fichiers'][] = $new_img;
 		}
 	}
+
 	// fait pareil pour les files/*
 	foreach ($fdir as $file) {
 		if (!in_array($file, $files_db)) {
@@ -100,6 +120,7 @@ function rebuilt_file_db() {
 				'bt_dossier' => 'default',
 				'bt_checksum' => sha1_file($filepath),
 				'bt_statut' => 0,
+				'bt_path' => '',
 			);
 			// l’ajoute au tableau
 			$GLOBALS['liste_fichiers'][] = $new_file;

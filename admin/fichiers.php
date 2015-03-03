@@ -104,7 +104,7 @@ echo '<div id="page">'."\n";
 $real_fichiers = array();
 if (!empty($fichiers)) {
 	foreach ($fichiers as $i => $file) {
-		$dossier = ($file['bt_type'] == 'image') ? $GLOBALS['dossier_images'] : $GLOBALS['dossier_fichiers'];
+		$dossier = ($file['bt_type'] == 'image') ? $GLOBALS['dossier_images'].$file['bt_path'] : $GLOBALS['dossier_fichiers'];
 		if (is_file($GLOBALS['BT_ROOT_PATH'].'/'.$dossier.'/'.$file['bt_filename']) and ($file['bt_filename'] != 'index.html') ) {
 			$real_fichiers[] = $file;
 		}

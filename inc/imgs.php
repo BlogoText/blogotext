@@ -114,8 +114,8 @@ function afficher_liste_images($images) {
 		$out .=  'var imgs = {"list": ['."\n";
 
 		foreach ($images as $i => $im) {
-			$img_src = chemin_thb_img_test($dossier_relatif.'/'.$im['bt_filename']);
-			$out .=  '{"index": "'.$i.'", "filename":'."\n".'["'.$dossier.'/'.$im['bt_filename'].'", "'.$im['bt_filename'].'", "'.$img_src.'"], "id": "'.$im['bt_id'].'", "desc": "'.addslashes(preg_replace('#(\n|\r|\n\r)#', ' ', $im['bt_content'])).'", "dossier": "'.(isset($im['bt_dossier']) ? $im['bt_dossier'] : '').'", "width": "'.$im['bt_dim_w'].'", "height": "'.$im['bt_dim_h'].'"},'."\n";
+			$img_src = chemin_thb_img_test($dossier_relatif.$im['bt_path'].'/'.$im['bt_filename']);
+			$out .=  '{"index": "'.$i.'", "filename":'."\n".'["'.$dossier.$im['bt_path'].'/'.$im['bt_filename'].'", "'.$im['bt_filename'].'", "'.$img_src.'"], "id": "'.$im['bt_id'].'", "desc": "'.addslashes(preg_replace('#(\n|\r|\n\r)#', ' ', $im['bt_content'])).'", "dossier": "'.(isset($im['bt_dossier']) ? $im['bt_dossier'] : '').'", "width": "'.$im['bt_dim_w'].'", "height": "'.$im['bt_dim_h'].'"},'."\n";
 		}
 			$out .= ']'."\n";
 		$out .= '};'."\n";
@@ -207,9 +207,10 @@ function traiter_form_fichier($fichier) {
 // Retourne le $fichier de l’entrée (après avoir possiblement changé des trucs, par ex si le fichier existait déjà, l’id retourné change)
 function bdd_fichier($fichier, $quoi, $comment, $sup_var) {
 	if ($fichier['bt_type'] == 'image') {
-		$dossier = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_images'];
+		$dossier = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_images'].$fichier['bt_path'];
 	} else {
 		$dossier = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_fichiers'];
+		$rand_dir = '';
 	}
 	if (FALSE === creer_dossier($dossier, 0)) {
 		die($GLOBALS['lang']['err_file_write']);
@@ -223,9 +224,10 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var) {
 					return $fichier;
 				}
 			}
-			while (file_exists($dossier.'/'.$prefix.$fichier['bt_filename'])) { // éviter d’écraser un fichier existant
-				$prefix .= rand(0,9);
-			}
+
+			// éviter d’écraser un fichier existant
+			while (file_exists($dossier.'/'.$prefix.$fichier['bt_filename'])) { $prefix .= rand(0,9); }
+
 			$dest = $prefix.$fichier['bt_filename'];
 			$fichier['bt_filename'] = $dest; // redéfinit le nom du fichier.
 
@@ -252,6 +254,10 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var) {
 			if ($fichier['bt_type'] == 'image') { // miniature si c’est une image
 				create_thumbnail($dossier.'/'. $dest);
 				list($fichier['bt_dim_w'], $fichier['bt_dim_h']) = getimagesize($dossier.'/'. $dest);
+			}
+			// rm $path if not image
+			else {
+				$fichier['bt_path'] = '';
 			}
 			// ajout à la base.
 			$GLOBALS['liste_fichiers'][] = $fichier;
@@ -355,6 +361,7 @@ function init_post_fichier() { //no $mode : it's always admin.
 				$size = htmlspecialchars($_POST['filesize']);
 				$type = detection_type_fichier($ext);
 				$dossier = htmlspecialchars($_POST['dossier']);
+				$path = htmlspecialchars($_POST['path']);
 		// on new post, get info from the file itself
 		} else {
 			$file_id = date('YmdHis');
@@ -366,12 +373,14 @@ function init_post_fichier() { //no $mode : it's always admin.
 				$checksum = sha1_file($_FILES['fichier']['tmp_name']);
 				$size = $_FILES['fichier']['size'];
 				$type = detection_type_fichier($ext);
+				$path = '';
 			// ajout par une URL d’un fichier distant
 			} elseif ( !empty($_POST['fichier']) ) {
 				$filename = pathinfo(parse_url($_POST['fichier'], PHP_URL_PATH), PATHINFO_FILENAME);
 				$ext = strtolower(pathinfo(parse_url($_POST['fichier'], PHP_URL_PATH), PATHINFO_EXTENSION));
 				$checksum = sha1_file($_POST['fichier']); // works with URL files
 				$size = '';// same (even if we could use "filesize" with the URL, it would over-use data-transfer)
+				$path = '';
 				$type = detection_type_fichier($ext);
 			} else {
 				// ERROR
@@ -392,7 +401,8 @@ function init_post_fichier() { //no $mode : it's always admin.
 			'bt_wiki_content' => stripslashes(protect_markup(clean_txt($_POST['description']))),
 			'bt_checksum' => $checksum,
 			'bt_statut' => $statut,
-			'bt_dossier' => (empty($dossier) ? 'default' : $dossier ),
+			'bt_dossier' => (empty($dossier) ? 'default' : $dossier ), // tags
+			'bt_path' => (empty($path) ? '/'.(substr($checksum, 0, 2)) : $path ), // path on disk (rand subdir to avoid too many files in same dir)
 		);
 		return $fichier;
 }
@@ -442,7 +452,7 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 	elseif (!empty($fichiers) and isset($_GET['file_id']) and preg_match('/\d{14}/',($_GET['file_id']))) {
 
 		if ($fichiers[0]['bt_type'] == 'image') {
-			$dossier = $GLOBALS['racine'].$GLOBALS['dossier_images'];
+			$dossier = $GLOBALS['racine'].$GLOBALS['dossier_images'].$fichiers[0]['bt_path'];
 		} else {
 			$dossier = $GLOBALS['racine'].$GLOBALS['dossier_fichiers'];
 		}
@@ -481,7 +491,9 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 		$form .= '<p id="interg-codes">'."\n";
 		$form .= '<input onfocus="SelectAllText(\'file_url\')" id="file_url" class="text" type="text" value=\''.$dossier.'/'.$fichiers[0]['bt_filename'].'\' />'."\n";
 		if ($fichiers[0]['bt_type'] == 'image') { // si le fichier est une image, on ajout BBCode pour [IMG] et le code en <img/>
-			$form .= '<input onfocus="SelectAllText(\'image_html\')" id="image_html" class="text" type="text" value=\'<img src="'.$dossier.'/'.$fichiers[0]['bt_filename'].'" alt="" width="'.$fichiers[0]['bt_dim_w'].'" height="'.$fichiers[0]['bt_dim_h'].'" style="max-width: 100%; height: auto;" />\' />'."\n";
+			$form .= '<input onfocus="SelectAllText(\'image_html_url\')" id="image_html_url" class="text" type="text" value=\'<img src="'.$dossier.'/'.$fichiers[0]['bt_filename'].'" alt="" width="'.$fichiers[0]['bt_dim_w'].'" height="'.$fichiers[0]['bt_dim_h'].'" style="max-width: 100%; height: auto;" />\' />'."\n";
+			$form .= '<input onfocus="SelectAllText(\'image_html_absolute\')" id="image_html_absolute" class="text" type="text" value=\'<img src="/'.$GLOBALS['dossier_images'].$fichiers[0]['bt_path'].'/'.$fichiers[0]['bt_filename'].'" alt="" width="'.$fichiers[0]['bt_dim_w'].'" height="'.$fichiers[0]['bt_dim_h'].'" style="max-width: 100%; height: auto;" />\' />'."\n";
+			$form .= '<input onfocus="SelectAllText(\'image_html_relative\')" id="image_html_relative" class="text" type="text" value=\'<img src="'.$GLOBALS['dossier_images'].$fichiers[0]['bt_path'].'/'.$fichiers[0]['bt_filename'].'" alt="" width="'.$fichiers[0]['bt_dim_w'].'" height="'.$fichiers[0]['bt_dim_h'].'" style="max-width: 100%; height: auto;" />\' />'."\n";
 			$form .= '<input onfocus="SelectAllText(\'image_bbcode_img\')" id="image_bbcode_img" class="text" type="text" value=\'[img]'.$dossier.'/'.$fichiers[0]['bt_filename'].'[/img]\' />'."\n";
 			$form .= '<input onfocus="SelectAllText(\'image_bbcode_img_spl\')" id="image_bbcode_img_spl" class="text" type="text" value=\'[spoiler][img]'.$dossier.'/'.$fichiers[0]['bt_filename'].'[/img][/spoiler]\' />'."\n";
 		} else {
@@ -507,6 +519,7 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 		$form .= hidden_input('file_id', $fichiers[0]['bt_id']);
 		$form .= hidden_input('filename', $fichiers[0]['bt_filename']);
 		$form .= hidden_input('sha1_file', $fichiers[0]['bt_checksum']);
+		$form .= hidden_input('path', $fichiers[0]['bt_path']);
 		$form .= hidden_input('filesize', $fichiers[0]['bt_filesize']);
 		$form .= hidden_input('token', new_token());
 		$form .= '</fieldset>';
