@@ -675,9 +675,7 @@ function list_all_tags($table, $statut) {
 	// compte le nombre d’occurrences de chaque tags
 	$tab_tags = explode(',', $liste_tags);
 	sort($tab_tags);
-	if ($tab_tags[0] == '') {
-		array_shift($tab_tags);
-	}
+	unset($tab_tags['']);
 	return array_count_values($tab_tags);
 }
 
