@@ -668,26 +668,17 @@ function list_all_tags($table, $statut) {
 		die('Erreur 4354768 : '.$e->getMessage());
 	}
 
-	// en crée un tableau
+	// on crée un tableau
 	$liste_tags = str_replace(', ', ',', $liste_tags);
 	$liste_tags = str_replace(' ,', ',', $liste_tags);
 
-	$tab_all_tags = explode(',', $liste_tags);
-	// les déboublonne
-	$tab_tags = array_unique($tab_all_tags);
-	// si la premiere case est vide, on la vire.
+	// compte le nombre d’occurrences de chaque tags
+	$tab_tags = explode(',', $liste_tags);
 	sort($tab_tags);
 	if ($tab_tags[0] == '') {
 		array_shift($tab_tags);
 	}
-
-	// compte le nombre d’occurrences de chaque tags
-	$return = array();
-	$tab_nb_values = array_count_values($tab_all_tags);
-	foreach($tab_tags as $i => $tag) {
-		$return[] = array('tag' => $tag, 'nb' => $tab_nb_values[$tag]);
-	}
-	return $return;
+	return array_count_values($tab_tags);
 }
 
 
