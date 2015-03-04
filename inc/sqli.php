@@ -664,6 +664,7 @@ function list_all_tags($table, $statut) {
 			}
 		}
 		$res->closeCursor();
+		$liste_tags = rtrim($liste_tags, ',');
 	} catch (Exception $e) {
 		die('Erreur 4354768 : '.$e->getMessage());
 	}
@@ -675,7 +676,6 @@ function list_all_tags($table, $statut) {
 	// compte le nombre d’occurrences de chaque tags
 	$tab_tags = explode(',', $liste_tags);
 	sort($tab_tags);
-	unset($tab_tags['']);
 	return array_count_values($tab_tags);
 }
 
