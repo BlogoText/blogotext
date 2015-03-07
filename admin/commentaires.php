@@ -122,9 +122,9 @@ else {
 	$param_makeup['show_links'] = '1';
 }
 
-function afficher_commentaire($comment, $with_link) {
+function afficher_commentaire($comment, $with_link, $oddeven) {
 	afficher_form_commentaire($comment['bt_article_id'], 'admin', '', $comment);
-	echo '<div class="commentbloc'.(!$comment['bt_statut'] ? ' privatebloc' : '').'" id="'.article_anchor($comment['bt_id']).'">'."\n";
+	echo '<div class="commentbloc'.(!$comment['bt_statut'] ? ' privatebloc' : '').(($oddeven === 1) ? ' count-odd' : ' count-even').'" id="'.article_anchor($comment['bt_id']).'">'."\n";
 	echo '<img class="img_inv_flag" src="style/deny.png" title="'.$GLOBALS['lang']['comment_is_invisible'].'" alt="icon"/>'."\n";
 	echo '<span onclick="reply(\'[b]@['.str_replace('\'', '\\\'', $comment['bt_author']).'|#'.article_anchor($comment['bt_id']).'] :[/b] \'); ">@</span> ';
 	echo '<h3 class="titre-commentaire">'.$comment['auteur_lien'].'</h3>'."\n";
@@ -182,9 +182,11 @@ echo '</p>'."\n";
 // COMMENTAIRES
 if (count($commentaires) > 0) {
 	$token = new_token();
+	$com_counter = 0;
 	foreach ($commentaires as $content) {
+		$com_counter ++; // even/odd counter
 		$content['comm-token'] = $token;
-		afficher_commentaire($content, $param_makeup['show_links']);
+		afficher_commentaire($content, $param_makeup['show_links'], ($com_counter%2));
 	}
 } else {
 	echo info($GLOBALS['lang']['note_no_comment']);

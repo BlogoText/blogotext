@@ -421,7 +421,7 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 		$form .= '<fieldset class="pref" >'."\n";
 
 		$form .= '<div id="form-dragndrop">'."\n";
-			$form .= '<p class="gray-section" id="dragndrop-area" ondragenter="return false;" ondragover="return false;" ondrop="return handleDrop(event);" >'."\n";
+			$form .= '<p class="file-infos-input gray-section" id="dragndrop-area" ondragover="event.preventDefault();" ondrop="handleDrop(event);" >'."\n";
 			$form .= "\t".'<span id="dragndrop-mssg">'.$GLOBALS['lang']['img_drop_files_here']."\n";
 			$form .= "\t\t".'<input name="fichier" id="fichier" type="file" required="" class="text" />'."\n";
 			$form .= "\t".'</span>'."\n";
@@ -433,7 +433,7 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 		$form .= '</div>'."\n";
 	
 		$form .= '<div id="img-others-infos">'."\n";
-			$form .= '<div class="gray-section">'."\n";
+			$form .= '<div class="file-infos-input">'."\n";
 			$form .= "\t".'<label>'.$GLOBALS['lang']['label_dp_nom'].'<input type="text" id="nom_entree" name="nom_entree" placeholder="'.$GLOBALS['lang']['placeholder_nom_fichier'].'" value="" size="60" class="text" /></label>'."\n";
 			$form .= "\t".'<label>'.$GLOBALS['lang']['label_dp_description'].'<textarea class="text" id="description" name="description" cols="60" rows="5" placeholder="'.$GLOBALS['lang']['placeholder_description'].'" ></textarea></label>'."\n";
 			$form .= "\t".'<label>'.$GLOBALS['lang']['label_dp_dossier'].'<input type="text" id="dossier" name="dossier" placeholder="'.$GLOBALS['lang']['placeholder_folder'].'" value="" size="60" class="text" /></label>'."\n";

@@ -29,13 +29,17 @@
 	color: gray;
 }
 
-#form-image .gray-section {
+#form-image .file-infos-input {
 	max-width: 700px;
 	margin: 10px auto;
 	padding: 10px;
-	border-radius: 5px;
+	border-radius: 3px;
+
+}
+
+#form-image .gray-section {
 	background: #f5f5f5;
-	border: 1px solid #f5f5f5;
+	border: 1px dashed gray;
 
 }
 #form-image, #interg-codes {

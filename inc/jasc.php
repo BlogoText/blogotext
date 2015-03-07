@@ -49,14 +49,15 @@ function handleDrop(event) {
 	var filelist = event.dataTransfer.files;
 	if (!filelist || !filelist.length || list.length) return false;
 	result.innerHTML += \'\';
-	for (var i = 0; i < filelist.length && i < 500; i++) { // limit is for not having an infinite loop
+
+	for (var i = 0, nbFiles = filelist.length ; i < nbFiles && i < 500; i++) { // limit is for not having an infinite loop
 		list.push(filelist[i]);
 	}
 
 	nbDraged = list.length;
 
 	uploadNext();
-	return false;
+	event.preventDefault();
 }
 
 // upload file
@@ -203,7 +204,7 @@ function image_vignettes() {
 		var div = document.createElement("div");
 		div.classList.add(\'image_bloc\');
 		div.id = \'bloc_\'+img.id;
-		div.innerHTML = \'<span class="spantop black"><a title="'.$GLOBALS['lang']['partager'].'" class="lien lien-shar" href="links.php?url=\'+img.filename[0]+\'">&nbsp;</a><a title="'.$GLOBALS['lang']['voir'].'" class="lien lien-voir" href="\'+img.filename[0]+\'">&nbsp;</a><a title="'.$GLOBALS['lang']['editer'].'" class="lien lien-edit" href="fichiers.php?file_id=\'+img.id+\'&amp;edit">&nbsp;</a><a title="'.$GLOBALS['lang']['supprimer'].'" class="lien lien-supr" href="#" onclick="request_delete_form(\'+img.id+\'); return false;" >&nbsp;</a></span><span class="spanbottom black"><span onclick="slideshow(\\\'start\\\', \'+i+\');"></span></span><img src="\'+img.filename[2]+\'" id="\'+img.id+\'" alt="\'+img.filename[1]+\'" />\';
+		div.innerHTML = \'<span class="spantop black"><a title="'.$GLOBALS['lang']['partager'].'" class="lien lien-shar" href="links.php?url=\'+img.filename[0]+\'">&nbsp;</a><a title="'.$GLOBALS['lang']['voir'].'" class="lien lien-voir" href="\'+img.filename[0]+\'">&nbsp;</a><a title="'.$GLOBALS['lang']['editer'].'" class="lien lien-edit" href="fichiers.php?file_id=\'+img.id+\'&amp;edit">&nbsp;</a><a title="'.$GLOBALS['lang']['supprimer'].'" class="lien lien-supr" href="#" onclick="request_delete_form(\'+img.id+\'); event.preventDefault();" >&nbsp;</a></span><span class="spanbottom black"><span onclick="slideshow(\\\'start\\\', \'+i+\');"></span></span><img src="\'+img.filename[2]+\'" id="\'+img.id+\'" alt="\'+img.filename[1]+\'" />\';
 		wall.appendChild(div);
 
 	}
@@ -351,7 +352,7 @@ function sortSite(origine) {
 	}
 	rss_feedlist(newList);
 	if (newList.length != 0) window.location.hash = \'rss-list\';
-	return false;
+
 }
 
 function sortFolder(origine) {
@@ -374,10 +375,8 @@ function sortFolder(origine) {
 		}
 	}
 
-
 	rss_feedlist(newList);
 	window.location.hash = \'rss-list\';
-	return false;
 }
 
 ';

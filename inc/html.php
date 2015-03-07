@@ -453,7 +453,7 @@ function feed_list_html() {
 		$li_html = "";
 		$folder_count = 0;
 		foreach ($folder as $j => $feed) {
-			$js = 'onclick="document.getElementById(\'markasread\').onclick=function(){markAsRead(\'site\', \''.$feed['link'].'\');}; return sortSite(this);"';
+			$js = 'onclick="document.getElementById(\'markasread\').onclick=function(){markAsRead(\'site\', \''.$feed['link'].'\');}; sortSite(this);"';
 			if (array_key_exists($feed['link'], $feed_urls) and $feed_urls[$feed['link']]['nbrun'] != 0) {
 				$li_html .= "\t\t".'<li class="feed-not-null" data-feedurl="'.$feed['link'].'" title="'.$feed['link'].'">';
 				$li_html .= '<button type="button" '.(($feed['iserror'] > 2) ? 'class="feed-error" ': ' ' ).$js.'>'.$feed['title'].'</button>';
@@ -473,7 +473,7 @@ function feed_list_html() {
 			$html .= "\t\t".'<li class="feed-folder'.(($folder_count > 0) ? ' feed-not-null' : '').'" data-folder="'.$i.'">'."\n";
 			$html .= "\t\t\t".'<span class="feedtitle">'."\n";
 			$html .= "\t\t\t\t".'<button type="button" onclick="return hideFolder(this)" class="unfold">+</button>'."\n";
-			$html .= "\t\t\t\t".'<button type="button" onclick="document.getElementById(\'markasread\').onclick=function(){markAsRead(\'folder\', \''.$i.'\');}; return sortFolder(this);">'.$i.'</button><span>('.$folder_count.')</span>'."\n";
+			$html .= "\t\t\t\t".'<button type="button" onclick="document.getElementById(\'markasread\').onclick=function(){markAsRead(\'folder\', \''.$i.'\');}; sortFolder(this);">'.$i.'</button><span>('.$folder_count.')</span>'."\n";
 			$html .= "\t\t\t".'</span>'."\n";
 			$html .= "\t\t\t".'<ul>'."\n\t\t";
 		}
