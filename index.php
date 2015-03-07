@@ -109,7 +109,10 @@ if ( isset($_GET['d']) and preg_match('#^\d{4}/\d{2}/\d{2}/\d{2}/\d{2}/\d{2}#', 
 	$tab = explode('/', $_GET['d']);
 	$id = substr($tab['0'].$tab['1'].$tab['2'].$tab['3'].$tab['4'].$tab['5'], '0', '14');
 	// 'admin' connected is allowed to see draft articles, but not 'public'. Same for article posted with a date in the future.
-	if (empty($_SESSION['user_id'])) {
+	// You can use '&share_draft' in the URL to share the draft article to someone else for review.
+	// This is not a security hole as the person has to know the entire URL (ID + formated title) and when the article becomes
+	// public it will works as expected too.
+	if (empty($_SESSION['user_id']) and !isset($_GET['share_draft'])) {
 		$query = "SELECT * FROM articles WHERE bt_id=? AND bt_date <=? AND bt_statut=1 LIMIT 1";
 		$billets = liste_elements($query, array($id, date('YmdHis')), 'articles');
 	} else {
