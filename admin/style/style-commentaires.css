@@ -3,14 +3,17 @@
 
 .commentbloc {
 	padding : 5px 15px 5px 30px;
-	background: url("comment.png") no-repeat 5px 5px white;
 	border: 1px solid #ccc;
 	border-width: 1px 1px 0 1px;
 	position: relative; /* for shadow on hover to get over the other comment-blocs */
 }
 
-.commentbloc:nth-of-type(odd):not(.privatebloc) {
+.commentbloc.count-odd:not(.privatebloc) {
 	background: url("comment.png") no-repeat 5px 5px, linear-gradient(to left, white 60%, #edf3fe );
+}
+
+.commentbloc.count-even:not(.privatebloc) {
+	background: url("comment.png") no-repeat 5px 5px white;
 }
 
 .commentbloc:first-of-type {

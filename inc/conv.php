@@ -151,6 +151,7 @@ function formatage_wiki($texte) {
 		'#« #',
 		'# !#',
 		'# :#',
+		'# ?#',
 	);
 	$toreplace = array(
 		// transforme certains \r en \n
@@ -178,7 +179,7 @@ function formatage_wiki($texte) {
 		'',																				// ul/li
 		'<ol>'."\n".'<li>$1</li></ol>'."\n",									// ol/li
 		'',																				// ol/li
-		'<q>$1</q>',																// citation
+		'<blockquote>$1</blockquote>'."\n",											// citation
 		'<span style="color:$2;">$4</span>',								// color
 		'<span style="font-size:$2pt;">$4</span>',								// text-size
 
@@ -187,6 +188,7 @@ function formatage_wiki($texte) {
 		'«&nbsp;',
 		'&nbsp;!',
 		'&nbsp;:',
+		'&nbsp;?',
 	);
 
 	// un array des balises [code] avant qu’ils ne soient modifiées par le preg_replace($tofind, $toreplace, $texte);
