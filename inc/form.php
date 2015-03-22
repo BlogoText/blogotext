@@ -383,15 +383,20 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 				}
 
 				// récupère le titre, dans le tableau $titles, rempli par preg_match()
-				$ext_file = html_entity_decode( (($charset == 'iso-8859-1') ? utf8_encode($ext_file['body']) : $ext_file['body']), ENT_QUOTES | ENT_HTML5, 'UTF-8');
-				preg_match('#<title>(.*)</title>#Usi', $ext_file, $titles);
+				if (isset($_GET['title'])) {
+					$title = htmlspecialchars($_GET['title']);
+				}
+				else {
+					$ext_file = html_entity_decode( (($charset == 'iso-8859-1') ? utf8_encode($ext_file['body']) : $ext_file['body']), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+					preg_match('#<title>(.*)</title>#Usi', $ext_file, $titles);
 
-				if (!empty($titles[1])) {
-					$html_title = trim($titles[1]);
-					$title = htmlspecialchars($html_title);
-				// si pas de titre : on utilise l’URL.
-				} else {
-					$title = htmlspecialchars($url);
+					if (!empty($titles[1])) {
+						$html_title = trim($titles[1]);
+						$title = htmlspecialchars($html_title);
+					// si pas de titre : on utilise l’URL.
+					} else {
+						$title = htmlspecialchars($url);
+					}
 				}
 			}
 
