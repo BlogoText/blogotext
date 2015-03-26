@@ -33,6 +33,3 @@ This is Blogotext, the lightweight SQLite Blog-Engine.
 
 
 
- [![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](http://flattr.com/thing/734525/Blogotext)
-
-

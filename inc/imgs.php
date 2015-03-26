@@ -567,7 +567,7 @@ function afficher_liste_fichiers($tableau) {
 				$out .= '<a class="lien lien-edit" href="fichiers.php?file_id='.$file['bt_id'].'&amp;edit">&nbsp;</a>';
 				$out .= '<a class="lien lien-supr" href="#" onclick="request_delete_form(\''.$file['bt_id'].'\'); return false;" >&nbsp;</a>';
 				$out .= '</span>'."\n";
-				$out .= "\t".'<a class="lien" href="'.$dossier.'/'.$file['bt_filename'].'"><img src="style/filetypes/'.$file['bt_type'].'.png" id="'.$file['bt_id'].'" alt="'.$file['bt_filename'].'" /></a><br/><span class="description">'.$file['bt_filename']."</span>\n";
+				$out .= "\t".'<a class="lien" href="'.$dossier.'/'.$file['bt_filename'].'" download><img src="style/filetypes/'.$file['bt_type'].'.png" id="'.$file['bt_id'].'" alt="'.$file['bt_filename'].'" /></a><br/><span class="description">'.$file['bt_filename']."</span>\n";
 			$out .= '</div>'."\n\n";
 		}
 		$out .= '</div>';

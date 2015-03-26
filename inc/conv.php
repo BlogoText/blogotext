@@ -151,7 +151,7 @@ function formatage_wiki($texte) {
 		'#« #',
 		'# !#',
 		'# :#',
-		'# ?#',
+		'# \?#',
 	);
 	$toreplace = array(
 		// transforme certains \r en \n
