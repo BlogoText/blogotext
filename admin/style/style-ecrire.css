@@ -1,23 +1,27 @@
-/* ECRIRE 
+/* ECRIRE
 ---------------------------------------------------------------------------------- */
 
 /* apercu */
 #apercu {
-	padding: 5px;
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	margin: 0 0 20px 0;
+	width: 100%;
 	border: 1px dashed #ccc;
+	margin: 0 0 20px 0;
+	font-size: 12px;
 }
 
-#apercu p {
+.apercu pre, .apercu code {
+	white-space: pre-wrap;
+}
+
+.apercu p {
 	margin-top: 5px;
 	margin-bottom: 5px;
 }
 
-#apercu img {
+.apercu img {
 	padding: 2px;
 	border: 1px solid #ddd;
+	max-width: 100%;
 }
 
 /* formulaire à remplir */
