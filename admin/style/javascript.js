@@ -78,7 +78,7 @@ function unfold(button) {
 }
 
 
-/* 
+/*
 	When a file is uploaded, the input containing the html/bbcode code is clicable.
 	On clic, all text is selected.
 */
@@ -244,7 +244,7 @@ function request_delete_form(id) {
 	};
 
 	// prepare and send FormData
-	var formData = new FormData();  
+	var formData = new FormData();
 	formData.append('supprimer', '1');
 	formData.append('file_id', id);
 	xhr.send(formData);
@@ -334,3 +334,14 @@ function hide_forms(blocs) {
 	}
 }
 
+
+
+
+
+
+/*
+	in page ecrire : adjust preview iFrame height.
+*/
+function resizeIframe(obj) {
+	obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
+}

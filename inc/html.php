@@ -90,12 +90,10 @@ function afficher_msg($titre) {
 }
 
 function apercu($article) {
-	if (isset($article)) {
-		$apercu = '<h2>'.$article['bt_title'].'</h2>'."\n";
-		$apercu .= '<div><strong>'.$article['bt_abstract'].'</strong></div>'."\n";
-		$apercu .= '<div>'.rel2abs_admin($article['bt_content']).'</div>'."\n";
-		echo '<div id="apercu">'."\n".$apercu.'</div>'."\n\n";
-	}
+	$apercu = '<h2>'.$article['bt_title'].'</h2>'."\n";
+	$apercu .= '<div><strong>'.$article['bt_abstract'].'</strong></div>'."\n";
+	$apercu .= '<div>'.rel2abs_admin($article['bt_content']).'</div>'."\n";
+	echo '<div class="apercu">'."\n".$apercu.'</div>';
 }
 
 function moteur_recherche($placeholder) {
@@ -282,7 +280,7 @@ function encart_commentaires() {
 		$listeLastComments = '<ul class="encart_lastcom">'."\n";
 		foreach ($tableau as $i => $comment) {
 			$comment['contenu_abbr'] = strip_tags($comment['bt_content']);
-			// limits length of comment abbreviation and name 
+			// limits length of comment abbreviation and name
 			if (strlen($comment['contenu_abbr']) >= 60) {
 				$comment['contenu_abbr'] = mb_substr($comment['contenu_abbr'], 0, 59).'…';
 			}

@@ -77,7 +77,7 @@ echo '<div id="page">'."\n";
 
 // EDIT
 if ($post != '') {
-	apercu($post);
+	echo '<iframe id="apercu" src="apercu.php?post_id='.$_GET['post_id'].'" sandbox="allow-same-origin" seamless="" scrolling="no" onload="resizeIframe(this);"></iframe>';
 }
 afficher_form_billet($post, $erreurs_form);
 
