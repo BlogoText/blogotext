@@ -287,13 +287,13 @@ function formatage_links($texte) {
 	// ceci permet de formater l’ensemble du message, sauf les balises [code],
 	$nb_balises_code_avant = preg_match_all('#\[code\](.*?)\[/code\]#s', $texte, $balises_code, PREG_SET_ORDER);
 	$texte_formate = preg_replace($tofind, $toreplace, ' '.$texte.' ');
+	$texte_formate = nl2br(trim(($texte_formate)));
 	if ($nb_balises_code_avant) {
 		$nb_balises_code_apres = preg_match_all('#\[code\](.*?)\[/code\]#s', $texte_formate, $balises_code_apres, PREG_SET_ORDER);
 		foreach ($balises_code as $i => $code) {
 			$texte_formate = str_replace($balises_code_apres[$i][0], '<pre>'.$balises_code[$i][1].'</pre>', $texte_formate);
 		}
 	}
-	$texte_formate = nl2br(trim(($texte_formate)));
 	return $texte_formate;
 }
 
