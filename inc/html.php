@@ -305,17 +305,23 @@ function encart_categories($mode) {
 
 		$liste = list_all_tags($where, '1');
 
-
-		// remove diacritics, so that "ééé" does not passe after "zzz" and re-indexes
-		foreach ($liste as $i => $tag) {
-			$liste[$i]['diac'] = diacritique(trim($tag['tag']), FALSE, FALSE);
+		// attach non-diacritic versions of tag, so that "ééé" does not pass after "zzz" and re-indexes
+		foreach ($liste as $tag => $nb) {
+			$liste[$tag] = array(diacritique(trim($tag), FALSE, FALSE), $nb);
 		}
-		$liste = array_reverse(tri_selon_sous_cle($liste, 'diac'));
-
+		// sort tags according non-diacritics versions of tags
+		$liste = array_reverse(tri_selon_sous_cle($liste, 0));
 		$uliste = '<ul>'."\n";
-		foreach($liste as $tag) {
-			$tagurl = urlencode(trim($tag['tag']));
-			$uliste .= "\t".'<li><a href="'.basename($_SERVER['PHP_SELF']).'?tag='.$tagurl.$ampmode.'" rel="tag">'.ucfirst($tag['tag']).' ('.$tag['nb'].')</a></li>'."\n";
+
+		// remove diacritics: array is now (arr)liste { (str)tag=> (in)nb }
+		foreach ($liste as $tag => $nb) {
+			$liste[$tag] = $nb[1];
+		}
+
+		// create the <UL> with "tags (nb) "
+		foreach($liste as $tag => $nb) {
+			$tagurl = urlencode(trim($tag));
+			$uliste .= "\t".'<li><a href="'.basename($_SERVER['PHP_SELF']).'?tag='.$tagurl.$ampmode.'" rel="tag">'.ucfirst($tag).' ('.$nb.')</a></li>'."\n";
 		}
 		$uliste .= '</ul>'."\n";
 		return $uliste;
