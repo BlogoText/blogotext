@@ -164,7 +164,7 @@ function conversions_theme_article($texte, $billet) {
 	if ( ($billet['bt_allow_comments'] == 0 or $GLOBALS['global_com_rule'] == 1 ) and $billet['bt_nb_comments'] == 0 ) { $texte = str_replace($GLOBALS['balises']['nb_commentaires'], $GLOBALS['lang']['note_comment_closed'], $texte); }
 	// comments open OR ( comments closed AND comments exists ) => say « nb comments ».
 	if ( !($billet['bt_allow_comments'] == 0 or $GLOBALS['global_com_rule'] == 1 ) or $billet['bt_nb_comments'] != 0 ) { $texte = str_replace($GLOBALS['balises']['nb_commentaires'], nombre_commentaires($billet['bt_nb_comments']), $texte); }
-	$texte = str_replace($GLOBALS['balises']['article_lien'], $billet['lien'], $texte);
+	$texte = str_replace($GLOBALS['balises']['article_lien'], $billet['bt_link'], $texte);
 	$texte = str_replace($GLOBALS['balises']['article_tags'], liste_tags($billet, '1'), $texte);
 	$texte = str_replace($GLOBALS['balises']['article_tags_plain'], liste_tags($billet, '0'), $texte);
 	return $texte;
@@ -223,24 +223,28 @@ function afficher_index($tableau, $type) {
 		$HTML_elmts = '';
 		$data = array();
 		if (!empty($tableau)) {
-			if (count($tableau)==1 and !empty($tableau[0]['bt_title'])) $data = $tableau[0];
-			$HTML_article = conversions_theme($theme_page, $data, 'post');
-			if ($tableau[0]['bt_type'] == 'article') {
-				if (!($theme_article = file_get_contents($GLOBALS['theme_post_artc']))) die($GLOBALS['lang']['err_theme_introuvable']);
-				$conversion_theme_fonction = 'conversions_theme_article';
+			if (count($tableau)==1 and !empty($tableau[0]['bt_title'])) {
+				redirection($tableau[0]['bt_link']);
+				exit;
+			} else {
+				$HTML_article = conversions_theme($theme_page, $data, 'post');
+				if ($tableau[0]['bt_type'] == 'article') {
+					if (!($theme_article = file_get_contents($GLOBALS['theme_post_artc']))) die($GLOBALS['lang']['err_theme_introuvable']);
+					$conversion_theme_fonction = 'conversions_theme_article';
+				}
+				if ($tableau[0]['bt_type'] == 'comment') {
+					if (!($theme_article = file_get_contents($GLOBALS['theme_post_comm']))) die($GLOBALS['lang']['err_theme_introuvable']);
+					$conversion_theme_fonction = 'conversions_theme_commentaire';
+				}
+				if ($tableau[0]['bt_type'] == 'link' or $tableau[0]['bt_type'] == 'note') {
+					if (!($theme_article = file_get_contents($GLOBALS['theme_post_link']))) die($GLOBALS['lang']['err_theme_introuvable']);
+					$conversion_theme_fonction = 'conversions_theme_lien';
+				}
+				foreach ($tableau as $element) {
+					$HTML_elmts .=  $conversion_theme_fonction($theme_article, $element);
+				}
+				$HTML = str_replace(extract_boucles($theme_page, $GLOBALS['boucles']['posts'], 'incl'), $HTML_elmts, $HTML_article);
 			}
-			if ($tableau[0]['bt_type'] == 'comment') {
-				if (!($theme_article = file_get_contents($GLOBALS['theme_post_comm']))) die($GLOBALS['lang']['err_theme_introuvable']);
-				$conversion_theme_fonction = 'conversions_theme_commentaire';
-			}
-			if ($tableau[0]['bt_type'] == 'link' or $tableau[0]['bt_type'] == 'note') {
-				if (!($theme_article = file_get_contents($GLOBALS['theme_post_link']))) die($GLOBALS['lang']['err_theme_introuvable']);
-				$conversion_theme_fonction = 'conversions_theme_lien';
-			}
-			foreach ($tableau as $element) {
-				$HTML_elmts .=  $conversion_theme_fonction($theme_article, $element);
-			}
-			$HTML = str_replace(extract_boucles($theme_page, $GLOBALS['boucles']['posts'], 'incl'), $HTML_elmts, $HTML_article);
 		}
 		else {
 			$HTML_article = conversions_theme($theme_page, $data, 'list');
