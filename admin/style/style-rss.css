@@ -274,6 +274,15 @@
 	padding-top: 4px;
 }
 
+#post-list > li .datesite .lien-share {
+	width: 20px;
+	height: 16px;
+	display: inline-block;
+	margin-left: 5px;
+	text-decoration: none;
+	background: url("legend.png") no-repeat scroll -557px -10px transparent;
+}
+
 /* RSS Config Page -------------------- */
 #form-rss-config {
 }
