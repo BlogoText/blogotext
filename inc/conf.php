@@ -154,7 +154,7 @@ function init_post_article() { //no $mode : it's always admin.
 		'bt_wiki_content'	=> stripslashes(protect_markup(clean_txt($_POST['contenu']))),
 		'bt_link'			=> '', // this one is not needed yet. Maybe in the futur. I dunno why it is still in the DB…
 		'bt_keywords'		=> $keywords,
-		'bt_categories'		=> htmlspecialchars(traiter_tags($_POST['categories'])), // htmlSpecialChars() nedded to escape the (") since tags are put in a <input/>. (') are escaped in form_categories(), with addslashes – not here because of JS problems :/
+		'bt_categories'	=> (isset($_POST['categories']) ? htmlspecialchars(traiter_tags($_POST['categories'])) : ''), // htmlSpecialChars() nedded to escape the (") since tags are put in a <input/>. (') are escaped in form_categories(), with addslashes – not here because of JS problems :/
 		'bt_statut'			=> $_POST['statut'],
 		'bt_allow_comments'	=> $_POST['allowcomment'],
 	);
