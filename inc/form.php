@@ -294,10 +294,10 @@ function filtre($type, $filtre) { // cette fonction est très gourmande en resso
 	///PAR TAGS POUR LES LIENS & ARTICLES
 	if (!empty($tab_tags)) {
 		echo '<optgroup label="'.'Tags'.'">'."\n";
-		foreach ($tab_tags as $tag) {
-			echo '<option value="tag.'.$tag['tag'].'"';
-			echo ($filtre == 'tag.'.$tag['tag']) ? ' selected="selected"' : '';
-			echo '>'.$tag['tag'].' ('.$tag['nb'].')</option>'."\n";
+		foreach ($tab_tags as $tag => $nb) {
+			echo '<option value="tag.'.$tag.'"';
+			echo ($filtre == 'tag.'.$tag) ? ' selected="selected"' : '';
+			echo '>'.$tag.' ('.$nb.')</option>'."\n";
 		}
 		echo '</optgroup>'."\n";
 	}
@@ -714,7 +714,7 @@ function form_categories_links($where, $tags_post) {
 	$html = '';
 	if (!empty($tags)) {
 		$html = '<datalist id="htmlListTags">'."\n";
-		foreach ($tags as $i => $tag) $html .= "\t".'<option value="'.addslashes($tag['tag']).'">'."\n";
+		foreach ($tags as $tag => $i) $html .= "\t".'<option value="'.addslashes($tag).'">'."\n";
 		$html .= '</datalist>'."\n";
 	}
 	$html .= '<ul id="selected">'."\n";

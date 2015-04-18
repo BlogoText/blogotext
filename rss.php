@@ -93,18 +93,18 @@ else {
 
 	$fcache = $GLOBALS['dossier_cache'].'/'.'cache_rss_array.dat';
 	$liste = array();
-	if (!file_exists($fcache)) {
+	if ( !file_exists($fcache) or !is_array($liste = @unserialize(base64_decode(substr(file_get_contents($fcache), strlen('<?php /* '), -strlen(' */'))))) ) {
 		require_all();
 		$GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
 		rafraichir_cache();
-	}
-	// this function exists in SQLI.PHP. It is replaced here, because including sqli.php and the other files takes 10x more cpu load than this
-	if (file_exists($fcache)) {
-		$liste = unserialize(base64_decode(substr(file_get_contents($fcache), strlen('<?php /* '), -strlen(' */'))));
-		if (!is_array($liste)) {
-			$liste = array();
-			unlink($fcache);
+		if (file_exists($fcache)) {
+			$liste = unserialize(base64_decode(substr(file_get_contents($fcache), strlen('<?php /* '), -strlen(' */'))));
 		}
+	}
+
+	if (!is_array($liste)) {
+		$liste = array('a' => array(), 'c' => array(), 'l' => array());
+		unlink($fcache);
 	}
 
 	$liste_rss = array();

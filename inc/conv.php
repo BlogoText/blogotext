@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2014 Timo Van Neerden <timo@neerden.eu>
+# 2010-2015 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -170,10 +170,10 @@ function formatage_wiki($texte) {
 		'<a href="$2">$1</a>',													// a href
 		'<a href="$1$2">$2</a>',												// url
 		'<img src="$1" alt="$3" />',														// img
-		'<span style="font-weight: bold;">$1</span>',					// strong
-		'<span style="font-style: italic;">$1</span>',					// italic
-		'<span style="text-decoration: line-through;">$1</span>',	// barre
-		'<span style="text-decoration: underline;">$1</span>',		// souligne
+		'<strong>$1</strong>',													// strong
+		'<em>$1</em>',																// italic
+		'<del>$1</del>',															// barre
+		'<u>$1</un>',																// souligne
 		'<br />',																	// br
 		'<ul>'."\n".'<li>$1</li></ul>'."\n",									// ul/li
 		'',																				// ul/li
@@ -241,10 +241,10 @@ function formatage_commentaires($texte) {
 		'<code>$1</code>',													// code
 		'$1<a href="$2">$2</a>',												// url
 		'<a href="$2">$1</a>',												// a href
-		'<span style="font-weight: bold;">$1</span>',				// strong
-		'<span style="font-style: italic;">$1</span>',				// italic
-		'<span style="text-decoration: line-through;">$1</span>',// barre
-		'<span style="text-decoration: underline;">$1</span>',	// souligne
+		'<strong>$1</strong>',												// strong
+		'<em>$1</em>',															// italic
+		'<del>$1</del>',														// barre
+		'<u>$1</u>',															// souligne
 		'&thinsp;»',															// close quote
 		'«&thinsp;',															// open quote
 		'&thinsp;!',															// !
@@ -277,23 +277,23 @@ function formatage_links($texte) {
 	$toreplace = array(
 		'$1<a href="$2">$2</a>',												// url  '$1<a href="$2">$2</a>'
 		'<a href="$2">$1</a>',												// a href
-		'<span style="font-weight: bold;">$1</span>',				// strong
-		'<span style="font-style: italic;">$1</span>',				// italic
-		'<span style="text-decoration: line-through;">$1</span>',// barre
-		'<span style="text-decoration: underline;">$1</span>',	// souligne
+		'<strong>$1</strong>',												// strong
+		'<em>$1</em>',															// italic
+		'<del>$1</del>',														// barre
+		'<u>$1</u>',															// souligne
 //		'$1<br/>'."\n",														// br : retour à la ligne sans saut de ligne
 	);
 
 	// ceci permet de formater l’ensemble du message, sauf les balises [code],
 	$nb_balises_code_avant = preg_match_all('#\[code\](.*?)\[/code\]#s', $texte, $balises_code, PREG_SET_ORDER);
 	$texte_formate = preg_replace($tofind, $toreplace, ' '.$texte.' ');
+	$texte_formate = nl2br(trim(($texte_formate)));
 	if ($nb_balises_code_avant) {
 		$nb_balises_code_apres = preg_match_all('#\[code\](.*?)\[/code\]#s', $texte_formate, $balises_code_apres, PREG_SET_ORDER);
 		foreach ($balises_code as $i => $code) {
 			$texte_formate = str_replace($balises_code_apres[$i][0], '<pre>'.$balises_code[$i][1].'</pre>', $texte_formate);
 		}
 	}
-	$texte_formate = nl2br(trim(($texte_formate)));
 	return $texte_formate;
 }
 

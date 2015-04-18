@@ -664,29 +664,16 @@ function list_all_tags($table, $statut) {
 			}
 		}
 		$res->closeCursor();
+		$liste_tags = rtrim($liste_tags, ',');
 	} catch (Exception $e) {
 		die('Erreur 4354768 : '.$e->getMessage());
 	}
 
-	// en crée un tableau
-	$liste_tags = str_replace(', ', ',', $liste_tags);
-	$liste_tags = str_replace(' ,', ',', $liste_tags);
-
+	$liste_tags = str_replace(array(', ', ' ,'), ',', $liste_tags);
 	$tab_tags = explode(',', $liste_tags);
-	// les déboublonne
-	$tab_tags = array_unique($tab_tags);
-	// si la premiere case est vide, on la vire.
 	sort($tab_tags);
-	if ($tab_tags[0] == '') {
-		array_shift($tab_tags);
-	}
-
-	// compte le nombre d’occurrences de chaque tags
-	$return = array();
-	foreach($tab_tags as $i => $tag) {
-		$return[] = array('tag' => $tag, 'nb' => substr_count($liste_tags, $tag));
-	}
-	return $return;
+	unset($tab_tags['']);
+	return array_count_values($tab_tags);
 }
 
 
