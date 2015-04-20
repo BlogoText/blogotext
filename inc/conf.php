@@ -45,7 +45,7 @@ $GLOBALS['dossier_config'] = 'config';
 $GLOBALS['db_location'] = 'database.sqlite';    // data storage file (for sqlite)
 $GLOBALS['fichier_liste_fichiers'] = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_db'].'/'.'files.php'; // files/image info storage.
 $GLOBALS['fichier_liste_fluxrss'] = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_db'].'/'.'rss.php'; // RSS-feeds list info storage.
-$GLOBALS['gravatar_link'] = 'http://2.gravatar.com/avatar/';
+$GLOBALS['gravatar_link'] = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_themes'].'/'.$GLOBALS['theme_choisi'].'/gravatars/get.php?g=';
 
 
 // DATABASE 'sqlite' or 'mysql' are supported yet.
