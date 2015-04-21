@@ -223,7 +223,7 @@ function afficher_index($tableau, $type) {
 		$HTML_elmts = '';
 		$data = array();
 		if (!empty($tableau)) {
-			if (count($tableau)==1 and !empty($tableau[0]['bt_title'])) {
+			if (count($tableau)==1 and !empty($tableau[0]['bt_title']) and $tableau[0]['bt_type'] == 'article') {
 				redirection($tableau[0]['bt_link']);
 				exit;
 			} else {
