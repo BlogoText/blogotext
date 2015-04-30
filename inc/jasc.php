@@ -281,7 +281,7 @@ function rss_feedlist(RssPosts) {
 		title.title = item.title;
 		title.classList.add(\'post-title\');
 
-		// bloc with date + site name
+		// bloc with date + site name + share-link
 		var date = document.createElement("div");
 		date.classList.add(\'date\');
 		date.innerHTML = item.date;
@@ -289,11 +289,16 @@ function rss_feedlist(RssPosts) {
 		var site = document.createElement("div");
 		site.classList.add(\'site\');
 		site.innerHTML = item.sitename;
+
+		var share = document.createElement("div");
+		share.classList.add(\'share\');
+		share.innerHTML = \'<a class="lien-share" target="_blank" href="links.php?url=\'+item.link+\'">&nbsp;</a>\';
 	
 		var datesite = document.createElement("div");
 		datesite.classList.add(\'datesite\');
 		datesite.appendChild(site);
 		datesite.appendChild(date);
+		datesite.appendChild(share);
 
 		// bloc with main content of feed in a comment (it’s uncomment when open, to defer media loading).
 		var content = document.createElement("div");

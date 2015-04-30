@@ -45,7 +45,7 @@ $GLOBALS['dossier_config'] = 'config';
 $GLOBALS['db_location'] = 'database.sqlite';    // data storage file (for sqlite)
 $GLOBALS['fichier_liste_fichiers'] = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_db'].'/'.'files.php'; // files/image info storage.
 $GLOBALS['fichier_liste_fluxrss'] = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_db'].'/'.'rss.php'; // RSS-feeds list info storage.
-$GLOBALS['gravatar_link'] = 'http://2.gravatar.com/avatar/';
+$GLOBALS['gravatar_link'] = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_themes'].'/'.$GLOBALS['theme_choisi'].'/gravatars/get.php?g=';
 
 
 // DATABASE 'sqlite' or 'mysql' are supported yet.
@@ -154,7 +154,7 @@ function init_post_article() { //no $mode : it's always admin.
 		'bt_wiki_content'	=> stripslashes(protect_markup(clean_txt($_POST['contenu']))),
 		'bt_link'			=> '', // this one is not needed yet. Maybe in the futur. I dunno why it is still in the DB…
 		'bt_keywords'		=> $keywords,
-		'bt_categories'		=> htmlspecialchars(traiter_tags($_POST['categories'])), // htmlSpecialChars() nedded to escape the (") since tags are put in a <input/>. (') are escaped in form_categories(), with addslashes – not here because of JS problems :/
+		'bt_categories'	=> (isset($_POST['categories']) ? htmlspecialchars(traiter_tags($_POST['categories'])) : ''), // htmlSpecialChars() nedded to escape the (") since tags are put in a <input/>. (') are escaped in form_categories(), with addslashes – not here because of JS problems :/
 		'bt_statut'			=> $_POST['statut'],
 		'bt_allow_comments'	=> $_POST['allowcomment'],
 	);

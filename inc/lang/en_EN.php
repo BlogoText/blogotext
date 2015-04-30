@@ -297,6 +297,7 @@ $GLOBALS['lang'] = array(
 'error_image_add'					=> 'File could not have been added',
 'error_phpajax'					=> 'Some PHP/Ajax Error happened:',
 'error_comment_suppr'			=> 'The comment has not been deleted since an error happened.',
+'error_comment_valid'			=> 'The status has not been changed since an error happened.',
 // Redirections
 'retour_liste'						=> '« Articles list',
 // Titres des pages
