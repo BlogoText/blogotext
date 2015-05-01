@@ -101,6 +101,9 @@ function conversions_theme($texte, $solo_art, $cnt_mode) {
 			$texte = str_replace($GLOBALS['balises']['article_chapo'], $solo_art['bt_abstract'], $texte);
 			$texte = str_replace($GLOBALS['balises']['blog_motscles'], $solo_art['bt_keywords'], $texte);
 		}
+		if ($solo_art['bt_type'] == 'link' or $solo_art['bt_type'] == 'note') {
+			$texte = str_replace($GLOBALS['balises']['article_titre_page'], $solo_art['bt_title'].' - ', $texte);
+		}
 	}
 
 	// si remplacé, ceci ne sert à rien. Si pas remplacé, ça sert.
@@ -227,6 +230,7 @@ function afficher_index($tableau, $type) {
 				redirection($tableau[0]['bt_link']);
 				exit;
 			} else {
+				if (count($tableau)==1 and ($tableau[0]['bt_type'] == 'link' or $tableau[0]['bt_type'] == 'note') ) $data = $tableau[0]; 
 				$HTML_article = conversions_theme($theme_page, $data, 'post');
 				if ($tableau[0]['bt_type'] == 'article') {
 					if (!($theme_article = file_get_contents($GLOBALS['theme_post_artc']))) die($GLOBALS['lang']['err_theme_introuvable']);
