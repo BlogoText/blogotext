@@ -71,9 +71,17 @@ function tri_selon_sous_cle($table, $cle) {
 }
 
 
+function get_real_ip() {
+	return (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) ? htmlspecialchars($_SERVER['HTTP_X_FORWARDED_FOR']) : htmlspecialchars($_SERVER['REMOTE_ADDR']);
+}
+
 
 function check_session() {
-	$ip = (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) ? htmlspecialchars($_SERVER['HTTP_X_FORWARDED_FOR']) : htmlspecialchars($_SERVER['REMOTE_ADDR']);
+	if ($GLOBALS['use_ip_in_session'] == 1) {
+		$ip = get_real_ip();
+	} else {
+		$ip = date('m');
+	}
 	@session_start();
 	ini_set('session.cookie_httponly', TRUE);
 	// use a cookie to remain logged in

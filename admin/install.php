@@ -28,7 +28,7 @@ if (file_exists('../config/prefs.php')) { include('../config/prefs.php'); }
 
 if (isset($_GET['l'])) {
 	$lang = $_GET['l'];
-	if ($lang == 'fr' or $lang == 'en' or $lang == 'nl' or $lang == 'de') {
+	if ($lang == 'fr' or $lang == 'en') {
 		$GLOBALS['lang'] = $lang;
 	} else {
 		$GLOBALS['lang'] = 'fr';
@@ -66,7 +66,9 @@ if ($GLOBALS['step'] == '1') {
 	} else {
 		afficher_form_1();
 	}
-} elseif ($GLOBALS['step'] == '2') {
+}
+
+elseif ($GLOBALS['step'] == '2') {
 	// ID + MOT DE PASSE
 	if (isset($_POST['verif_envoi_2'])) {
 		if ($err_2 = valid_install_2()) {
@@ -78,8 +80,16 @@ if ($GLOBALS['step'] == '1') {
 			creer_dossier('../'.$GLOBALS['dossier_fichiers'], 0);
 			creer_dossier('../'.$GLOBALS['dossier_db'], 1);
 
+			fichier_adv_conf();
+			// include it because it contains salt, for passwd
+			$adv_options = parse_ini_file($config_dir.'/config-advanced.ini');
+			foreach ($adv_options as $option => $value) {
+				$GLOBALS[$option] = $value;
+			}
+
 			fichier_user();
 			include_once($config_dir.'/user.php');
+
 
 			traiter_install_2();
 			redirection('install.php?s=3&l='.$_POST['langue']);
