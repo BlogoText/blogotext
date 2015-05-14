@@ -31,7 +31,7 @@ function creer_dossier($dossier, $make_htaccess='') {
 
 
 function fichier_user() {
-	$fichier_user = '../config/user.php';
+	$fichier_user = '../'.$GLOBALS['dossier_config'].'/user.php';
 	$user='';
 	if (strlen(trim($_POST['mdp'])) == 0) {
 		$new_mdp = $GLOBALS['mdp']; 
@@ -49,9 +49,28 @@ function fichier_user() {
 	}
 }
 
+function fichier_adv_conf() {
+	$fichier_advconf = '../'.$GLOBALS['dossier_config'].'/config-advanced.ini';
+	$conf='';
+	$conf .= '; <?php die(); /*'."\n\n";
+	$conf .= '; This file contains some more advanced configuration features.'."\n\n";
+	$conf .= 'date_premier_message_blog = \'199701\''."\n";
+	$conf .= 'salt = \''.$salt = sha1(uniqid(mt_rand(), true)).'\''."\n";
+	$conf .= 'show_errors = -1;'."\n";
+	$conf .= 'gravatar_link = \'themes/default/gravatars/get.php?g=\''."\n";
+	$conf .= 'use_ip_in_session = 1;'."\n\n\n";
+	$conf .= '; */ ?>'."\n";
+
+	if (file_put_contents($fichier_advconf, $conf) === FALSE) {
+		return FALSE;
+	} else {
+		return TRUE;
+	}
+}
+
 
 function fichier_prefs() {
-	$fichier_prefs = '../config/prefs.php';
+	$fichier_prefs = '../'.$GLOBALS['dossier_config'].'/prefs.php';
 	if(!empty($_POST['_verif_envoi'])) {
 		$lang = (isset($_POST['langue']) and preg_match('#^[a-z]{2}$#', $_POST['langue'])) ? $_POST['langue'] : 'fr';
 		$auteur = clean_txt(htmlspecialchars($_POST['auteur']));

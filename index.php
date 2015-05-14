@@ -15,7 +15,7 @@
  some misc routines
 ******************************************************************************/
 // gzip compression
-if (extension_loaded('zlib')) {
+if (extension_loaded('zlib') and ob_get_length() > 0) {
 	ob_end_clean();
 	ob_start("ob_gzhandler");
 }

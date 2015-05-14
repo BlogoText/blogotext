@@ -28,9 +28,11 @@ $GLOBALS['minimal_php_version'] = '5.3';
 // GENERAL
 $GLOBALS['nom_application']= 'BlogoText';
 $GLOBALS['appsite']= 'http://lehollandaisvolant.net/blogotext/';
-$GLOBALS['date_premier_message_blog'] = '199701';
-$GLOBALS['salt']= '123456'; // if changed : delete /config/user.php file and proceed to a re-installation. No data loss.
-$GLOBALS['show_errors'] = -1; // -1 = all (for dev) ; 0 = none (recommended)
+$GLOBALS['date_premier_message_blog'] = '199701'; // (this value is a fallback. Actual value is in /config/config-advanced.ini)
+$GLOBALS['salt']= '123456'; // (this value is a fallback. Actual value is in /config/config-advanced.ini)
+$GLOBALS['show_errors'] = -1; // (this value is a fallback. Actual value is in /config/config-advanced.ini)
+$GLOBALS['use_ip_in_session'] = 1; // (this value is a fallback. Actual value is in /config/config-advanced.ini)
+$GLOBALS['gravatar_link'] = 'themes/default/gravatars/get.php?g='; // (this value is a fallback. Actual value is in /config/config-advanced.ini)
 
 // FOLDERS (change this only if you know what you are doing...)
 $GLOBALS['dossier_admin'] = 'admin';
@@ -45,8 +47,15 @@ $GLOBALS['dossier_config'] = 'config';
 $GLOBALS['db_location'] = 'database.sqlite';    // data storage file (for sqlite)
 $GLOBALS['fichier_liste_fichiers'] = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_db'].'/'.'files.php'; // files/image info storage.
 $GLOBALS['fichier_liste_fluxrss'] = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_db'].'/'.'rss.php'; // RSS-feeds list info storage.
-$GLOBALS['gravatar_link'] = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_themes'].'/'.$GLOBALS['theme_choisi'].'/gravatars/get.php?g=';
 
+// ADVANCED CONFIG OPTIONS. This function replaces some of the above values.
+$adv_config_file = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_config'].'/'.'config-advanced.ini';
+if (is_file($adv_config_file) and is_readable($adv_config_file)) {
+	$adv_options = parse_ini_file($adv_config_file);
+	foreach ($adv_options as $option => $value) {
+		$GLOBALS[$option] = $value;
+	}
+}
 
 // DATABASE 'sqlite' or 'mysql' are supported yet.
 $mysql_file = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_config'].'/'.'mysql.php';

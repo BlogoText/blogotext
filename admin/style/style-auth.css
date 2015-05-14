@@ -68,6 +68,10 @@
 	border: 1px dashed silver;
 }
 
+#pageauth label {
+	text-align: center;
+}
+
 #pageauth label[for="sgdb"] {
 	display: inline;
 }

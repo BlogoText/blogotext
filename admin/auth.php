@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2013 Timo Van Neerden <timo@neerden.eu>
+# 2010-2015 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -41,7 +41,11 @@ if (check_session() === TRUE) { // return to index if session is already open.
 
 // Auth checking :
 if (isset($_POST['_verif_envoi']) and valider_form() === TRUE) { // OK : getting in.
-	$ip = (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) ? htmlspecialchars($_SERVER['HTTP_X_FORWARDED_FOR']) : htmlspecialchars($_SERVER['REMOTE_ADDR']);
+	if ($GLOBALS['use_ip_in_session'] == 1) {
+		$ip = get_real_ip();
+	} else {
+		$ip = date('m'); // make session expire at least once a month, disregarding IP changes.
+	}
 	$_SESSION['user_id'] = $_POST['nom_utilisateur'].hash_password($_POST['mot_de_passe'], $GLOBALS['salt']).md5($_SERVER['HTTP_USER_AGENT'].$ip); // set special hash
 	usleep(100000); // 100ms sleep to avoid bruteforce
 

@@ -417,7 +417,7 @@ function importer_wordpress($xml) {
 			$new_comment['bt_article_id'] = $new_article['bt_id'];
 			$new_comment['bt_wiki_content'] = reverse_wiki($comment->comment_content);
 			$new_comment['bt_content'] = '<p>'.wiki($new_comment['bt_wiki_content']).'</p>';
-			$new_comment['bt_statut'] = ( ($comment->comment_approved) == '1' ) ?: '0';
+			$new_comment['bt_statut'] = ( ($comment->comment_approved) == '1' ) ? '1' : '0';
 			$data['commentaires'][] = $new_comment;
 		}
 		$data['articles'][] = $new_article;
