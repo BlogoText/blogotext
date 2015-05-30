@@ -249,4 +249,27 @@
 		padding-top: 6px;
 		padding-bottom: 6px;
 	}
+
+	/* Liste des images : sous la forme d’un mur d’images */
+	.image-wall, .files-wall {
+		padding: 20px 0;
+	}
+	.image-wall .image_bloc {
+		padding: 0;
+		line-height: 157px;
+	}
+	.image-wall .image_bloc img {
+		border: 0;
+	}
+	.image-wall .image_bloc .spantop .lien {
+		width: 40px;
+	}
+	.image-wall .image_bloc:hover .spanbottom {
+		line-height: 30px;
+		top: 124px;
+		height: 35px;
+	}
+	.files-wall .file_bloc {
+		padding: 0;
+	}
 }
