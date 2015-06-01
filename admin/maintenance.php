@@ -504,7 +504,7 @@ function parse_html($content) {
 					elseif ($attr == 'ADD_DATE') { $raw_add_date = intval($value); }
 					elseif ($attr == 'AUTHOR') { $link['bt_author'] = $value; }
 					elseif ($attr == 'PRIVATE') { $link['bt_statut'] = ($value == '1') ? '0' : '1'; } // value=1 =>> statut=0 (it’s reversed)
-					elseif ($attr == 'TAGS') { $link['bt_tags'] = html_entity_decode($value, ENT_QUOTES, 'utf-8'); }
+					elseif ($attr == 'TAGS') { $link['bt_tags'] = str_replace('  ', ' ', str_replace(',', ', ', html_entity_decode($value, ENT_QUOTES, 'utf-8'))); }
 				}
 				if ($link['bt_link'] != '') {
 					$raw_add_date = (empty($raw_add_date)) ? time() : $raw_add_date; // In case of shitty bookmark file with no ADD_DATE
