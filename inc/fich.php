@@ -54,7 +54,7 @@ function fichier_adv_conf() {
 	$conf='';
 	$conf .= '; <?php die(); /*'."\n\n";
 	$conf .= '; This file contains some more advanced configuration features.'."\n\n";
-	$conf .= 'date_premier_message_blog = \'199701\''."\n";
+	$conf .= 'date_premier_message_blog = \''.date('Ym').'\''."\n";
 	$conf .= 'salt = \''.$salt = sha1(uniqid(mt_rand(), true)).'\''."\n";
 	$conf .= 'show_errors = -1;'."\n";
 	$conf .= 'gravatar_link = \'themes/default/gravatars/get.php?g=\''."\n";
