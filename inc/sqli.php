@@ -117,7 +117,7 @@ function create_tables() {
 					$wanted_tables = array('commentaires', 'articles', 'links', 'rss');
 					foreach ($wanted_tables as $i => $name) {
 						if (!in_array($name, $tables)) {
-							$results = $db_handle->exec($GLOBALS['dbase_structure'][$name]);
+							$results = $db_handle->query($GLOBALS['dbase_structure'][$name]);
 						}
 					}
 				} catch (Exception $e) {
@@ -137,7 +137,7 @@ function create_tables() {
 					// check each wanted table
 					$wanted_tables = array('commentaires', 'articles', 'links', 'rss');
 					foreach ($wanted_tables as $i => $name) {
-							$results = $db_handle->exec($GLOBALS['dbase_structure'][$name]."DEFAULT CHARSET=utf8");
+							$results = $db_handle->query($GLOBALS['dbase_structure'][$name]."DEFAULT CHARSET=utf8");
 					}
 				} catch (Exception $e) {
 					die('Erreur 2: '.$e->getMessage());
