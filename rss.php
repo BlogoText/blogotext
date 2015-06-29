@@ -78,7 +78,8 @@ if (isset($_GET['id']) and preg_match('#^[0-9]{14}$#', $_GET['id'])) {
 		$xml .= '</item>'."\n";
 	}
 }
-/* sinon, fil rss sur les articles (par défaut) */
+
+/* sinon, fil rss sur les articles (par défaut) ou sur les liens ou les Commentaires */
 /* Ici, on utilise la petite BDD placée en cache. */
 else {
 
@@ -123,6 +124,16 @@ else {
 		}
 		// 4 = links
 		if (strpos($_GET['mode'], 'links') !== FALSE) {
+			// if is tag in url, filter links.
+			if (isset($_GET['tag'])) {
+				foreach ($liste['l'] as $i => $link) {
+					if ( (strpos($link['bt_tags'], htmlspecialchars($_GET['tag'].',')) === FALSE) and
+					 	 (strpos($link['bt_tags'], htmlspecialchars(', '.$_GET['tag'])) === FALSE) and
+						 ($link['bt_tags'] != htmlspecialchars($_GET['tag']))) {
+						unset($liste['l'][$i]);
+					}
+				}
+			}
 			$liste_rss = array_merge($liste_rss, $liste['l']);
 			$found = 1; $modes_url .= 'links-';
 		}
@@ -144,7 +155,7 @@ else {
 	$liste_rss = array_slice($liste_rss, 0, 20);
 	$invert = (isset($_GET['invertlinks'])) ? TRUE : FALSE;
 	$xml .= '<title>'.$GLOBALS['nom_du_site'].'</title>'."\n";
-	$xml .= '<link>'.$GLOBALS['racine'].((trim($modes_url, '-') == '') ? '' : '?mode='.(trim($modes_url, '-'))).'</link>'."\n"; 
+	$xml .= '<link>'.$GLOBALS['racine'].((trim($modes_url, '-') == '') ? '' : '?mode='.(trim($modes_url, '-'))).'</link>'."\n";
 	$xml .= '<description><![CDATA['.$GLOBALS['description'].']]></description>'."\n";
 	$xml .= '<language>fr</language>'."\n";
 	$xml .= '<copyright>'.$GLOBALS['auteur'].'</copyright>'."\n";
