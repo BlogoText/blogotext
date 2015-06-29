@@ -122,6 +122,16 @@ else {
 		}
 		// 4 = links
 		if (strpos($_GET['mode'], 'links') !== FALSE) {
+			// if is tag in url, filter links.
+			if (isset($_GET['tag'])) {
+				foreach ($liste['l'] as $i => $link) {
+					if ( (strpos($link['bt_tags'], htmlspecialchars($_GET['tag'].',')) === FALSE) and
+						(strpos($link['bt_tags'], htmlspecialchars(', '.$_GET['tag'])) === FALSE) and
+						($link['bt_tags'] != htmlspecialchars($_GET['tag']))) {
+						unset($liste['l'][$i]);
+					}
+				}
+			}
 			$liste_rss = array_merge($liste_rss, $liste['l']);
 			$found = 1; $modes_url .= 'links-';
 		}
@@ -141,7 +151,7 @@ else {
 	$liste_rss = array_slice($liste_rss, 0, 20);
 	$invert = (isset($_GET['invertlinks'])) ? TRUE : FALSE;
 	$xml = '<title>'.$GLOBALS['nom_du_site'].'</title>'."\n";
-	$xml .= '<link href="'.$GLOBALS['racine'].'?mode='.(trim($modes_url, '-')).'"/>'."\n"; 
+	$xml .= '<link href="'.$GLOBALS['racine'].'?mode='.(trim($modes_url, '-')).'"/>'."\n";
 	$xml .= '<id>'.$GLOBALS['racine'].'?mode='.$modes_url.'</id>'."\n";
 	$main_updated = 0;
 	$xml_post = '';
