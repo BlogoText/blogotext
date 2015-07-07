@@ -95,6 +95,7 @@ if ( isset($GLOBALS['theme_choisi']) ) {
 $GLOBALS['files_ext'] = array(
 	'archive'		=> array('zip', '7z', 'rar', 'tar', 'gz', 'bz', 'bz2', 'xz', 'lzma'), // more ?
 	'executable'	=> array('exe', 'e', 'bin'),
+	'android-apk'	=> array('apk'),
 	'html-xml'		=> array('html', 'htm', 'xml', 'mht'), // more ?
 	'image'			=> array('png', 'gif', 'bmp', 'jpg', 'jpeg', 'ico', 'svg', 'tif', 'tiff'),
 	'music'			=> array('mp3', 'wave', 'wav', 'ogg', 'wma', 'flac', 'aac', 'mid', 'midi'), // more ?

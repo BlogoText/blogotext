@@ -343,6 +343,12 @@ function heure_formate($id) {
 	return $valeur;
 }
 
+function date_formate_iso($id) {
+	$date = decode_id($id);
+	$ts = mktime($date['heure'], $date['minutes'], $date['secondes'], $date['mois'], $date['jour'], $date['annee']); // ts : timestamp
+	$date_iso = date('c', $ts);
+	return $date_iso;
+}
 // à partir d’une valeur en octets (par ex 20M) retourne la quantité en octect.
 // le format « 20M » est par exemple retourné avec ini_get("max_upload_size").
 function return_bytes($val) {

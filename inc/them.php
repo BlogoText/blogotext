@@ -53,6 +53,7 @@ $GLOBALS['balises'] = array(
 	'article_contenu' => '{article_contenu}',
 	'article_heure' => '{article_heure}',
 	'article_date' => '{article_date}',
+	'article_date_iso' => '{article_date_iso}',
 	'article_lien' => '{article_lien}',
 	'article_tags' => '{article_tags}',
 	'article_tags_plain' => '{article_tags_plain}',
@@ -64,6 +65,7 @@ $GLOBALS['balises'] = array(
 	'commentaire_contenu' => '{commentaire_contenu}',
 	'commentaire_heure' => '{commentaire_heure}',
 	'commentaire_date' => '{commentaire_date}',
+	'commentaire_date_iso' => '{commentaire_date_iso}',
 	'commentaire_email' => '{commentaire_email}',
 	'commentaire_webpage' => '{commentaire_webpage}',
 	'commentaire_anchor' => '{commentaire_ancre}', // the id="" content
@@ -75,6 +77,7 @@ $GLOBALS['balises'] = array(
 	'lien_titre' => '{lien_titre}',
 	'lien_url' => '{lien_url}',
 	'lien_date' => '{lien_date}',
+	'lien_date_iso' => '{lien_date_iso}',
 	'lien_heure' => '{lien_heure}',
 	'lien_description' => '{lien_description}',
 	'lien_permalink' => '{lien_permalink}',
@@ -135,6 +138,7 @@ function conversions_theme($texte, $solo_art, $cnt_mode) {
 function conversions_theme_commentaire($texte, $commentaire) {
 	$texte = str_replace($GLOBALS['balises']['commentaire_contenu'], $commentaire['bt_content'], $texte);
 	$texte = str_replace($GLOBALS['balises']['commentaire_date'], date_formate($commentaire['bt_id']), $texte);
+	$texte = str_replace($GLOBALS['balises']['commentaire_date_iso'], date_formate_iso($commentaire['bt_id']), $texte);
 	$texte = str_replace($GLOBALS['balises']['commentaire_heure'], heure_formate($commentaire['bt_id']), $texte);
 	$texte = str_replace($GLOBALS['balises']['commentaire_email'], $commentaire['bt_email'], $texte);
 	$texte = str_replace($GLOBALS['balises']['commentaire_gravatar'], $GLOBALS['gravatar_link'].md5($commentaire['bt_email']), $texte);
@@ -162,6 +166,7 @@ function conversions_theme_article($texte, $billet) {
 	$texte = str_replace($GLOBALS['balises']['article_chapo'], $billet['bt_abstract'], $texte);
 	$texte = str_replace($GLOBALS['balises']['article_contenu'], $billet['bt_content'], $texte);
 	$texte = str_replace($GLOBALS['balises']['article_date'], date_formate($billet['bt_date']), $texte);
+	$texte = str_replace($GLOBALS['balises']['article_date_iso'], date_formate_iso($billet['bt_date']), $texte);
 	$texte = str_replace($GLOBALS['balises']['article_heure'], heure_formate($billet['bt_date']), $texte);
 	// comments closed (globally or only for this article) and no comments => say « comments closed »
 	if ( ($billet['bt_allow_comments'] == 0 or $GLOBALS['global_com_rule'] == 1 ) and $billet['bt_nb_comments'] == 0 ) { $texte = str_replace($GLOBALS['balises']['nb_commentaires'], $GLOBALS['lang']['note_comment_closed'], $texte); }
@@ -180,6 +185,7 @@ function conversions_theme_lien($texte, $lien) {
 	$texte = str_replace($GLOBALS['balises']['lien_titre'], $lien['bt_title'], $texte);
 	$texte = str_replace($GLOBALS['balises']['lien_url'], $lien['bt_link'], $texte);
 	$texte = str_replace($GLOBALS['balises']['lien_date'], date_formate($lien['bt_id']), $texte);
+	$texte = str_replace($GLOBALS['balises']['lien_date_iso'], date_formate_iso($lien['bt_id']), $texte);
 	$texte = str_replace($GLOBALS['balises']['lien_heure'], heure_formate($lien['bt_id']), $texte);
 	$texte = str_replace($GLOBALS['balises']['lien_permalink'], $lien['bt_id'], $texte);
 	$texte = str_replace($GLOBALS['balises']['lien_description'], $lien['bt_content'], $texte);
