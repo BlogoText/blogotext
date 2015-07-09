@@ -19,7 +19,7 @@ error_reporting(-1);
 $begin = microtime(TRUE);
 
 $GLOBALS['dossier_cache'] = 'cache';
-
+do
 require_once 'config/user.php';
 require_once 'config/prefs.php';
 date_default_timezone_set($GLOBALS['fuseau_horaire']);

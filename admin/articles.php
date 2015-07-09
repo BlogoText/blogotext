@@ -22,8 +22,10 @@ $GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
 
 $tableau = array();
 if (!empty($_GET['q'])) {
-	$query = "SELECT * FROM articles WHERE ( bt_content || bt_title || bt_link) LIKE ? ORDER BY bt_date DESC";
-	$tableau = liste_elements($query, array('%'.urldecode($_GET['q']).'%'), 'articles');
+	$arr = parse_search($_GET['q']);
+	$sql_where = implode(array_fill(0, count($arr), '( bt_content || bt_title ) LIKE ? '), 'AND '); // AND operator between words
+	$query = "SELECT * FROM articles WHERE ".$sql_where."ORDER BY bt_date DESC";
+	$tableau = liste_elements($query, $arr, 'articles');
 }
 
 elseif ( !empty($_GET['filtre']) ) {
