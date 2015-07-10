@@ -186,7 +186,7 @@ else {
 
 
 	// paramètre de date "d"
-	if (isset($_GET['d']) and preg_match('#^\d{4}/\d{2}(/\d{2})?#', $_GET['d'])) {
+	if (isset($_GET['d']) and preg_match('#^\d{4}(/\d{2})?(/\d{2})?#', $_GET['d'])) {
 		$date = '';
 		$dates = array();
 		$tab = explode('/', $_GET['d']);

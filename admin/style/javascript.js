@@ -8,7 +8,7 @@ function reply(code) {
 	var field = document.getElementById('form-commentaire').getElementsByTagName('textarea')[0];
 	field.focus();
 	if (field.value !== '') {
-		field.value += 'n';
+		field.value += '\n';
 	}
 	field.value += code;
 	field.scrollTop = 10000;
