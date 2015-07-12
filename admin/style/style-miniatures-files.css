@@ -100,22 +100,36 @@
 	text-align: center;
 	padding: 20px 2%;
 	border-radius: 20px;
+	vertical-align: baseline;
 }
 
 .image-wall .image_bloc {
+	vertical-align: baseline;
 	display:inline-block;
 	margin: 1px;
-	line-height: 160px;
-	height: 160px;
-	width: 160px;
+	height: 170px;
+	width: 170px;
 	border: 1px solid #666;
 	border-radius: 3px;
-	border-color: #888 #333 #333 #888;
-	padding: 5px;
+	border-color: #aaa #777 #777 #aaa;
 	position: relative;
 }
 
+.image-wall .image_bloc img {
+	max-height: 100%;  
+	max-width: 100%; 
+	width: auto;
+	height: auto;
+	position: absolute;  
+	top: 0; 
+	bottom: 0;  
+	left: 0;  
+	right: 0;  
+	margin: auto;
+}
+
 .image-wall .image_bloc span.black {
+	z-index: +1;
 	overflow: hidden;
 	opacity: 0;
 	text-shadow: 0 0 3px white, 0 0 3px white;
@@ -151,7 +165,7 @@
 	background: url(legend.png) -550px -97px no-repeat;
 }
 .image-wall .image_bloc .spantop .lien-supr {
-	background: url(legend.png) -550px -33px no-repeat rgba(255, 0, 0, .2);
+	background: url(legend.png) -550px -33px no-repeat;
 }
 .image-wall .image_bloc .spantop .lien-voir {
 	background: url(legend.png) -550px -65px no-repeat;
@@ -166,11 +180,7 @@
 
 .image-wall .image_bloc:hover span.spantop, .image-wall .image_bloc:hover span.spanbottom {
 	opacity: 1;
-	-webkit-transition: ALL .15s ease-out;
-	   -moz-transition: ALL .15s ease-out;
-	    -ms-transition: ALL .15s ease-out;
-	     -o-transition: ALL .15s ease-out;
-	        transition: ALL .15s ease-out;
+	transition: ALL .15s ease-out;
 }
 
 .image-wall .image_bloc:hover .spantop {
@@ -191,13 +201,6 @@
 	display: inline-block;
 	background: url('slide.png');
 	cursor: pointer;
-}
-
-.image-wall .image_bloc img {
-	border: 1px solid gray;
-	vertical-align: middle;
-	max-width: 160px;
-	max-height: 160px;
 }
 
 #img-more {
@@ -236,11 +239,7 @@
 	border-radius: 3px;
 	padding: 5px;
 	position: relative;
-	-webkit-transition: border-color .4s;
-	   -moz-transition: border-color .4s;
-	    -ms-transition: border-color .4s;
-	     -o-transition: border-color .4s;
-	        transition: border-color .4s;
+	transition: border-color .4s;
 }
 
 .files-wall .file_bloc:hover {
@@ -293,11 +292,7 @@
 .files-wall .file_bloc:hover img {
 	padding-top: 5px;
 	margin-bottom: -5px;
-	-webkit-transition: ALL .15s ease-out;
-	   -moz-transition: ALL .15s ease-out;
-	    -ms-transition: ALL .15s ease-out;
-	     -o-transition: ALL .15s ease-out;
-	        transition: ALL .15s ease-out;
+	transition: ALL .15s ease-out;
 }
 
 

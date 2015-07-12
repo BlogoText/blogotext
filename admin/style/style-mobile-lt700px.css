@@ -173,32 +173,32 @@
 
 	/* articles list */
 
-		ul#billets li {
-			display: block;
-		}
+	ul#billets li {
+		display: block;
+	}
 
-		ul#billets li > span {
-			vertical-align: middle;
-			display: inline-block;
-		}
+	ul#billets li > span {
+		vertical-align: middle;
+		display: inline-block;
+	}
 
-		ul#billets li > span:first-of-type span {
-			display: inline-block;
-			height: 20px;
-			width: 20px;
-		}
+	ul#billets li > span:first-of-type span {
+		display: inline-block;
+		height: 20px;
+		width: 20px;
+	}
 
-		ul#billets li > span:nth-of-type(1) { /*title*/			
-			display: flex;
-			align-items: center;
-			font-weight: bold;
-		}
+	ul#billets li > span:nth-of-type(1) { /*title*/			
+		display: flex;
+		align-items: center;
+		font-weight: bold;
+	}
 
 
-		ul#billets li > span:nth-of-type(3) { /*comms*/
-			margin-left: 5px;
-			margin-right: 10px;
-		}
+	ul#billets li > span:nth-of-type(3) { /*comms*/
+		margin-left: 5px;
+		margin-right: 10px;
+	}
 
 	/* graphiques */
 	#articles .month-nb {
@@ -256,17 +256,18 @@
 	}
 	.image-wall .image_bloc {
 		padding: 0;
+		width: 150px;
 		line-height: 157px;
 	}
 	.image-wall .image_bloc img {
 		border: 0;
 	}
 	.image-wall .image_bloc .spantop .lien {
-		width: 40px;
+		width: 35px;
 	}
 	.image-wall .image_bloc:hover .spanbottom {
 		line-height: 30px;
-		top: 124px;
+		top: 130px;
 		height: 35px;
 	}
 	.files-wall .file_bloc {
