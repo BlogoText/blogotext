@@ -342,11 +342,9 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 			$form .= "\t".'<div class="wrap-fields wrap-fields-note">'."\n";
 		// URL non vide
 		} else {
-
 			// Test du type de fichier
 			$rep_hdr = get_headers($url, 1);
 			$cnt_type = (isset($rep_hdr['Content-Type'])) ? (is_array($rep_hdr['Content-Type']) ? $rep_hdr['Content-Type'][count($rep_hdr['Content-Type'])-1] : $rep_hdr['Content-Type']) : 'text/';
-			//debug($rep_hdr);
 			$cnt_type = (is_array($cnt_type)) ? $cnt_type[0] : $cnt_type;
 
 			// lien est une image
@@ -360,7 +358,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 			}
 
 			// lien est un fichier non textuel
-			elseif (strpos($cnt_type, 'text/') !== 0) {
+			elseif (strpos($cnt_type, 'text/') !== 0 and strpos($cnt_type, 'xml') === FALSE) {
 				if ($GLOBALS['dl_link_to_files'] == 2) {
 					$type = 'file';
 				}
