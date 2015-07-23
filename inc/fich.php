@@ -308,6 +308,14 @@ function get_external_file($url, $timeout=10) {
 	$context = stream_context_create(array('http'=> $headers));
 	$data = @file_get_contents($url, false, $context, -1, 4000000); // We download at most 4 Mb from source.
 	if (isset($data) and isset($http_response_header[0]) and ( strpos($http_response_header[0], '200 OK') | (strpos($http_response_header[0], '302 Found') ) | (strpos($http_response_header[0], '301 Moved') | (strpos($http_response_header[0], '302 Moved')) ) !== FALSE ) ) {
+
+		// detect gzip data
+		foreach($http_response_header as $i => $h) {
+			// if gzip : decode it
+			if(stristr($h, 'content-encoding') and stristr($h, 'gzip')) {
+				$data = gzinflate( substr($data,10,-8) );
+			}
+		}
 		return array('body' => $data, 'headers' => http_parse_headers($http_response_header));
 	} else {
 		return array();
@@ -316,7 +324,7 @@ function get_external_file($url, $timeout=10) {
 
 
 
-
+// TODO: unify get_external_file() with c_get_external_file() in one single Curl function, accepting 1 or many url and returning array().
 function c_get_external_file($feeds) {
 	// uses chunks of 40 feeds because Curl has problems with too big (~150) "multi" requests.
 	// $feeds = array_splice($feeds, 60, 20);
@@ -342,6 +350,7 @@ function c_get_external_file($feeds) {
 					CURLOPT_USERAGENT => $_SERVER['HTTP_USER_AGENT'],
 					CURLOPT_SSL_VERIFYPEER => FALSE,
 					CURLOPT_SSL_VERIFYHOST => FALSE,
+					CURLOPT_ENCODING => "gzip",
 				));
 			curl_multi_add_handle($master, $curl_arr[$i]);
 		}

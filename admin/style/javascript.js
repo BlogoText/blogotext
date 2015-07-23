@@ -5,10 +5,10 @@
 */
 
 function reply(code) {
-	var field = document.getElementById('form-commentaire').getElementsByTagName('textarea')[0];
+	var field = document.querySelector('#form-commentaire textarea');
 	field.focus();
 	if (field.value !== '') {
-		field.value += 'n';
+		field.value += '\n';
 	}
 	field.value += code;
 	field.scrollTop = 10000;
@@ -302,7 +302,7 @@ if (window.location.hash == '#form_export' || window.location.hash == '#form_imp
 }
 
 function switch_form(activeForm, activeButton) {
-	var buttons = document.getElementById('list-switch-buttons').getElementsByTagName('button');
+	var buttons = document.querySelector('#list-switch-buttons button');
 	for (var i=0, l=buttons.length; i<l; i++) buttons[i].className = '';
 	activeButton.className = 'current';
 	var form_export = document.getElementById('form_export');

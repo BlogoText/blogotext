@@ -186,7 +186,7 @@ else {
 
 
 	// paramètre de date "d"
-	if (isset($_GET['d']) and preg_match('#^\d{4}/\d{2}(/\d{2})?#', $_GET['d'])) {
+	if (isset($_GET['d']) and preg_match('#^\d{4}(/\d{2})?(/\d{2})?#', $_GET['d'])) {
 		$date = '';
 		$dates = array();
 		$tab = explode('/', $_GET['d']);
@@ -211,21 +211,17 @@ else {
 
 	// paramètre de recherche "q"
 	if (isset($_GET['q'])) {
+		$arr = parse_search($_GET['q']);
+		$array = array_merge($array, $arr);
 		switch ($where) {
 			case 'articles' :
-				$sql_q = "( bt_content LIKE ? OR bt_title LIKE ? ) ";
-				$array[] = '%'.$_GET['q'].'%';
-				$array[] = '%'.$_GET['q'].'%';
+				$sql_q = implode(array_fill(0, count($arr), '( bt_content || bt_title ) LIKE ? '), 'AND ');
 				break;
 			case 'links' :
-				$sql_q = "( bt_content LIKE ? OR bt_title LIKE ? OR bt_link LIKE ? ) ";
-				$array[] = '%'.$_GET['q'].'%';
-				$array[] = '%'.$_GET['q'].'%';
-				$array[] = '%'.$_GET['q'].'%';
+				$sql_q = implode(array_fill(0, count($arr), '( bt_content || bt_title || bt_link ) LIKE ? '), 'AND ');
 				break;
 			case 'commentaires' :
-				$sql_q = "bt_content LIKE ? ";
-				$array[] = '%'.$_GET['q'].'%';
+				$sql_q = implode(array_fill(0, count($arr), 'bt_content LIKE ? '), 'AND ');
 				break;
 			default:
 				$sql_q = "";
@@ -300,7 +296,6 @@ else {
 	}
 
 	$query .= $glue.$sql_a_p.$sql_order.$sql_p;
-	//die ($query);
 
 	$tableau = liste_elements($query, $array, $where);
 	$GLOBALS['param_pagination'] = array('nb' => count($tableau), 'nb_par_page' => $GLOBALS['max_bill_acceuil']);

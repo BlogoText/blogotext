@@ -110,8 +110,12 @@ else {
 		}
 	}
 	elseif (!empty($_GET['q'])) {
-			$query = "SELECT c.*, a.bt_title FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id WHERE c.bt_content LIKE ? ORDER BY c.bt_id DESC";
-			$commentaires = liste_elements($query, array('%'.htmlspecialchars($_GET['q']).'%'), 'commentaires');
+
+
+			$arr = parse_search($_GET['q']);
+			$sql_where = implode(array_fill(0, count($arr), 'c.bt_content LIKE ? '), 'AND ');
+			$query = "SELECT c.*, a.bt_title FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id WHERE ".$sql_where."ORDER BY c.bt_id DESC";
+			$commentaires = liste_elements($query, $arr, 'commentaires');
 	}
 	else { // no filter, so list'em all
 			$query = "SELECT c.*, a.bt_title FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id ORDER BY c.bt_id DESC LIMIT ".$GLOBALS['max_comm_admin'];

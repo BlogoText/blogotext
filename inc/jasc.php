@@ -317,7 +317,7 @@ function rss_feedlist(RssPosts) {
 		postlist.appendChild(li);
 	}
 
-	document.getElementById(\'count-posts\').getElementsByTagName(\'button\')[0].innerHTML = unread+\' '.$GLOBALS['lang']['rss_label_unread'].'\';
+	document.querySelector(\'#count-posts button\').innerHTML = unread+\' '.$GLOBALS['lang']['rss_label_unread'].'\';
 	return false;
 
 }
@@ -348,8 +348,8 @@ function sortSite(origine) {
 	}
 
 	// highlight selected site
-	document.getElementsByClassName(\'active-site\')[0].classList.remove(\'active-site\');
-	for (var i = 0, liList = document.getElementById(\'feed-list\').getElementsByTagName(\'li\'), len = liList.length ; i < len ; i++) {
+	document.querySelector(\'.active-site\').classList.remove(\'active-site\');
+	for (var i = 0, liList = document.querySelectorAll(\'#feed-list li\'), len = liList.length ; i < len ; i++) {
 		if (liList[i].dataset.feedurl == choosensite) {
 			liList[i].classList.add(\'active-site\');
 			break;
@@ -372,8 +372,8 @@ function sortFolder(origine) {
 		}
 	}
 	// highlight selected folder
-	if (document.getElementsByClassName(\'active-site\')[0]) document.getElementsByClassName(\'active-site\')[0].classList.remove(\'active-site\');
-	for (var i = 0, liList = document.getElementById(\'feed-list\').getElementsByTagName(\'li\'), len = liList.length ; i < len ; i++) {
+	if (document.querySelector(\'.active-site\')) document.querySelector(\'.active-site\').classList.remove(\'active-site\');
+	for (var i = 0, liList = document.querySelectorAll(\'#feed-list li\'), len = liList.length ; i < len ; i++) {
 		if (liList[i].dataset.folder == choosenfolder) {
 			liList[i].classList.add(\'active-site\');
 			break;
@@ -469,14 +469,14 @@ function openItem(thisPost) {
 	// on clic on open post : open link in new tab.
 	if (thisPost.classList.contains(\'open-post\')) { return true; }
 	// on clic on item, close the previous opened item
-	var open_post = document.getElementById(\'post-list\').getElementsByClassName(\'open-post\')[0];
+	var open_post = document.querySelector(\'#post-list .open-post\');
 	if (open_post) open_post.classList.remove(\'open-post\');
 
 	// open this post
 	thisPost.classList.add(\'open-post\');
 
 	// remove comments tag in content
-	var content = thisPost.getElementsByClassName(\'rss-item-content\')[0];
+	var content = thisPost.querySelector(\'.rss-item-content\');
 	if (content.childNodes[0].nodeType == 8) {
 		content.innerHTML = content.childNodes[0].data;
 	}
@@ -494,12 +494,12 @@ function openItem(thisPost) {
 }
 
 function openAllItems(button) {
-	var postlist = document.getElementById(\'post-list\').getElementsByClassName(\'li-post-bloc\');
+	var postlist = document.querySelectorAll(\'#post-list .li-post-bloc\');
 	if (openAllSwich == \'open\') {
 		for (var i=0, size=postlist.length ; i<size ; i++) {
 			postlist[i].classList.add(\'open-post\');
 			// remove comments tag in content
-			var content = postlist[i].getElementsByClassName(\'rss-item-content\')[0];
+			var content = postlist[i].querySelector(\'.rss-item-content\');
 			if (content.childNodes[0] && content.childNodes[0].nodeType == 8) {
 				content.innerHTML = content.childNodes[0].data;
 			}
@@ -530,11 +530,10 @@ function js_rss_show_unread_only($a) {
 $sc = '
 /* action for button « show only unread elements */
 function showUnRead() {
-	for (var i = 0, liList = document.getElementById(\'post-list\').getElementsByTagName(\'li\'), len = liList.length ; i < len ; i++) {
+	for (var i = 0, liList = document.querySelectorAll(\'#post-list li\'), len = liList.length ; i < len ; i++) {
 		var item = liList[i];
 		if (item.classList.contains(\'read\')) {
 			item.parentNode.removeChild(item); 
-			i--;
 		}
 	}
 	return false;
@@ -654,11 +653,11 @@ function js_rss_mark_as_read($a) {
 
 $sc = '
 // mark as read code.
-// $what is either "all", "site" for marking one feed as read, "folder", or "post" for marking just one ID as read, $url contains id, folder or feed url
+// "$what" is either "all", "site" for marking one feed as read, "folder", or "post" for marking just one ID as read, "$url" contains id, folder or feed url
 function markAsRead(what, url) {
 	var notifDiv = document.createElement(\'div\');
 	var notifNode = document.getElementById(\'message-return\');
-	var gCount = document.getElementById(\'count-posts\').getElementsByTagName(\'button\')[0];
+	var gCount = document.querySelector(\'#count-posts button\');
 
 	var xhr = new XMLHttpRequest();
 	xhr.open(\'POST\', \'_rss.ajax.php\', true);
@@ -675,12 +674,12 @@ function markAsRead(what, url) {
 			if (resp.indexOf("Success") == 0) {
 				token = resp.substr(7, 40);
 
-				var liList = document.getElementById(\'post-list\').getElementsByClassName(\'li-post-bloc\');
+				var liList = document.querySelectorAll(\'# post-list .li-post-bloc\');
 				for (var i = 0, len = liList.length ; i < len ; i++) { liList[i].classList.add(\'read\'); }
 				// mark feed list items as containing 0 unread
-				for (var i = 0, liList = document.getElementById(\'feed-list\').getElementsByTagName(\'li\'), len = liList.length ; i < len ; i++) {
+				for (var i = 0, liList = document.querySelectorAll(\'# feed-list li\'), len = liList.length ; i < len ; i++) {
 					liList[i].classList.remove(\'feed-not-null\');
-					liList[i].getElementsByTagName(\'span\')[0].innerHTML = \'0\';
+					liList[i].querySelector(\'span\').innerHTML = \'0\';
 				}
 
 				gCount.innerHTML = gCount.innerHTML.replace(/^(\d+)( .+)$/, function(all,p1,p2){return \'0\'+p2;});
@@ -698,19 +697,19 @@ function markAsRead(what, url) {
 			if (resp.indexOf("Success") == 0) {
 				token = resp.substr(7, 40);
 				// mark all items listed as "read"
-				var liList = document.getElementById(\'post-list\').getElementsByClassName(\'li-post-bloc\');
+				var liList = document.querySelectorAll(\'#post-list .li-post-bloc\');
 				for (var i = 0, len = liList.length ; i < len ; i++) { liList[i].classList.add(\'read\'); }
 				// mark row in feeds-list as containing 0 unread
-				document.getElementsByClassName(\'active-site\')[0].classList.remove(\'feed-not-null\');
-				var oldSiteCount = document.getElementsByClassName(\'active-site\')[0].getElementsByTagName(\'span\')[0].innerHTML;
-				document.getElementsByClassName(\'active-site\')[0].getElementsByTagName(\'span\')[0].innerHTML = \'(0)\';
+				document.querySelector(\'.active-site\').classList.remove(\'feed-not-null\');
+				var oldSiteCount = document.querySelector(\'.active-site span\').innerHTML;
+				document.querySelector(\'.active-site span\').innerHTML = \'(0)\';
 				gCount.innerHTML = gCount.innerHTML.replace(/^(\d+)( .+)$/, function(all,p1,p2){return \'0\'+p2;});
 
 				// mark items as read in (var)Rss list.
 				for (var i = 0, len = Rss.length ; i < len ; i++) { if (Rss[i].feed == url) { Rss[i].statut = 0; } }
 
 
-				var liFolder = document.getElementsByClassName(\'active-site\')[0];
+				var liFolder = document.querySelector(\'.active-site\');
 				var liCount = oldSiteCount.replace(/[()]/g, \'\');
 
 				// remove X feeds in folder-count
@@ -731,11 +730,11 @@ function markAsRead(what, url) {
 			if (resp.indexOf("Success") == 0) {
 				token = resp.substr(7, 40);
 				// mark all items listed as "read"
-				var liList = document.getElementById(\'post-list\').getElementsByClassName(\'li-post-bloc\');
+				var liList = document.querySelectorAll(\'#post-list .li-post-bloc\');
 				for (var i = 0, len = liList.length ; i < len ; i++) { liList[i].classList.add(\'read\'); }
 				// mark row in feeds-list as containing 0 unread
-				document.getElementsByClassName(\'active-site\')[0].classList.remove(\'feed-not-null\');
-				document.getElementsByClassName(\'active-site\')[0].getElementsByTagName(\'span\')[1].innerHTML = \'(0)\';
+				document.querySelector(\'.active-site\').classList.remove(\'feed-not-null\');
+				document.querySelector(\'.active-site span span\').innerHTML = \'(0)\';
 				gCount.innerHTML = gCount.innerHTML.replace(/^(\d+)( .+)$/, function(all,p1,p2){return \'0\'+p2;});
 
 				// mark items as read in (var)Rss list.
@@ -761,15 +760,15 @@ function markAsRead(what, url) {
 				document.getElementById(\'i_\'+url).classList.add(\'read\');
 				document.getElementById(\'i_\'+url).classList.add(\'read\');
 				var feedlink = document.getElementById(\'i_\'+url).dataset.feedUrl;
-				for (var i = 0, liList = document.getElementById(\'feed-list\').getElementsByTagName(\'li\'), len = liList.length ; i < len ; i++) {
+				for (var i = 0, liList = document.querySelectorAll(\'#feed-list li\'), len = liList.length ; i < len ; i++) {
 					// remove 1 unread in url list
 					if (liList[i].dataset.feedurl == feedlink) {
-						var sCount = liList[i].getElementsByTagName(\'span\')[0];
+						var sCount = liList[i].querySelector(\'span\');
 						sCount.innerHTML = sCount.innerHTML.replace(/^\((\d+)\)$/, function(all,p1){ if (p1-1 == 0){sCount.parentNode.classList.remove(\'feed-not-null\');} return \'(\'+(p1-1)+\')\';});
 						// remove 1 unread in folder list
 						if (liList[i].parentNode.parentNode.dataset.folder) {
 
-							var fCount = liList[i].parentNode.parentNode.getElementsByTagName(\'span\')[1];
+							var fCount = liList[i].parentNode.parentNode.querySelector(\'span\');
 							fCount.innerHTML = fCount.innerHTML.replace(/^\((\d+)\)$/, function(all,p1){ if (p1-1 == 0){fCount.parentNode.classList.remove(\'feed-not-null\');} return \'(\'+(p1-1)+\')\';});
 						}
 						break;
@@ -918,16 +917,16 @@ document.onkeydown = testKey;
 
 function testKey(e) {
 	// no elements showed
-	if (!document.getElementsByClassName(\'li-post-bloc\')[0]) return true;
+	if (!document.querySelector(\'.li-post-bloc\')) return true;
 
 	// no element selected : selects the first.
-	if (!document.getElementsByClassName(\'open-post\')[0]) {
-		var openPost = document.getElementsByClassName(\'li-post-bloc\')[0];
+	if (!document.querySelector(\'.open-post\')) {
+		var openPost = document.querySelector(\'.li-post-bloc\');
 		var first = true;
 	}
 	// an element is selected, get it
 	else {
-		var openPost = document.getElementsByClassName(\'open-post\')[0];
+		var openPost = document.querySelector(\'.open-post\');
 		var first = false;
 	}
 
@@ -936,7 +935,7 @@ function testKey(e) {
 	evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 	if (e.keyCode == \'38\' && e.ctrlKey && openPost.previousElementSibling != null) {
 		// up
-		var elmt = openPost.previousElementSibling.getElementsByTagName(\'a\')[0];
+		var elmt = openPost.previousElementSibling.querySelector(\'a\');
 		elmt.dispatchEvent(evt);
 		e.preventDefault();
 		window.location.hash = elmt.parentNode.parentNode.id;
@@ -944,8 +943,8 @@ function testKey(e) {
 	}
 	else if (e.keyCode == \'40\' && e.ctrlKey && openPost.nextElementSibling != null) {
 		// down
-		if (first) var elmt = openPost.getElementsByTagName(\'a\')[0];
-		else var elmt = openPost.nextElementSibling.getElementsByTagName(\'a\')[0];
+		if (first) var elmt = openPost.querySelector(\'a\');
+		else var elmt = openPost.nextElementSibling.querySelector(\'a\');
 		elmt.dispatchEvent(evt);
 		e.preventDefault();
 		window.location.hash = elmt.parentNode.parentNode.id;

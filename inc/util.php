@@ -266,15 +266,16 @@ function unsubscribe($file_id, $email_sha, $all) {
 /* search query parsing (operators, exact matching, etc) */
 function parse_search($q) {
 	if (preg_match('#^\s?"[^"]*"\s?$#', $q)) { // exact match
-		$txt_query = array('%'.str_replace('"', '', $q).'%'); 
+		$array_q = array('%'.str_replace('"', '', $q).'%');
 	}
 	else { // multiple words matchs
-		$txt_query = explode(' ', trim($q));
-		foreach ($txt_query as $i => $entry) {
-			$txt_query[$i] = '%'.$entry.'%';
+		$array_q = explode(' ', trim($q));
+		foreach ($array_q as $i => $entry) {
+			$array_q[$i] = '%'.$entry.'%';
 		}
 	}
-	return $txt_query;
+	// uniq + reindex
+	return array_values(array_unique($array_q));
 }
 
 /* for testing/dev purpose: shows a variable. */

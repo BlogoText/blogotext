@@ -304,11 +304,6 @@ function date_formate($id, $format_force='') {
 		$time_article = mktime(0, 0, 0, $date['mois'], $date['jour'], $date['annee']);
 		$auj = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
 		$hier = mktime(0, 0, 0, date('m'), date('d')-'1', date('Y'));
-	if ( $time_article == $auj ) {
-		$retour = $GLOBALS['lang']['aujourdhui'];
-	} elseif ( $time_article == $hier ) {
-		$retour = $GLOBALS['lang']['hier'];
-	} else {
 		$jour_l = jour_en_lettres($date['jour'], $date['mois'], $date['annee']);
 		$mois_l = mois_en_lettres($date['mois']);
 			$format = array (
@@ -325,8 +320,13 @@ function date_formate($id, $format_force='') {
 			$retour = $format[$format_force];
 		} else {
 			$retour = $format[$GLOBALS['format_date']];
+
+			if ( $time_article == $auj ) {
+				$retour = $GLOBALS['lang']['aujourdhui'].', '.$retour;
+			} elseif ( $time_article == $hier ) {
+				$retour = $GLOBALS['lang']['hier'].', '.$retour;
+			}
 		}
-	}
 	return ucfirst($retour);
 }
 
@@ -343,6 +343,12 @@ function heure_formate($id) {
 	return $valeur;
 }
 
+function date_formate_iso($id) {
+	$date = decode_id($id);
+	$ts = mktime($date['heure'], $date['minutes'], $date['secondes'], $date['mois'], $date['jour'], $date['annee']); // ts : timestamp
+	$date_iso = date('c', $ts);
+	return $date_iso;
+}
 // à partir d’une valeur en octets (par ex 20M) retourne la quantité en octect.
 // le format « 20M » est par exemple retourné avec ini_get("max_upload_size").
 function return_bytes($val) {
