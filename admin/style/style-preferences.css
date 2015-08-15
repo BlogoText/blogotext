@@ -1,0 +1,103 @@
+/* PRÉFÉRENCES
+------------------------------------------------------------ */
+
+#preferences,
+#preferences-captcha,
+#maintenance-form {
+}
+
+/* field sets */
+#preferences .pref {
+	padding-bottom: 20px;
+	margin-bottom: 40px;
+}
+
+#preferences .form-legend {
+	padding: 15px 30px 30px 10px;
+	font-weight: bold;
+	box-sizing: border-box;
+}
+
+#preferences p {
+	max-width: 80%;
+	margin: 15px 0;
+}
+
+#preferences label {
+	display: inline-block;
+	width: 50%;
+	text-align: right;
+	padding-right: 5px;
+}
+
+#preferences input,
+#preferences p > a,
+#preferences label {
+	vertical-align: middle;
+}
+
+#preferences #keywords,
+#preferences #description {
+	vertical-align: top;
+}
+
+#preferences .text {
+	flex: 1;
+	border: 0px solid #dadada;
+	border-bottom-width: 1px;
+	padding: 7px 5px 5px 1px;
+	box-shadow: none;
+	border-radius: 0;
+}
+
+#preferences .text:focus {
+	border-bottom-color: #2196F3;
+	box-shadow: 0px -1px 0px #2196F3 inset;
+}
+
+#preferences .text:invalid {
+	border-bottom-color: #f44336;
+	box-shadow: 0px -1px 0px #f44336 inset;
+}
+
+#preferences textarea.text {
+	padding-top: 1px;
+	width: auto;
+}
+
+/* MAINTENANCE */
+#maintenance-form form + form {
+	margin-top: 30px;
+}
+
+#maintenance-form fieldset {
+	padding-bottom: 20px;
+	margin-bottom: 20px;
+	margin: 0 auto;
+	max-width: 80%;
+}
+
+#maintenance-form legend {
+	font-weight: bold;
+}
+
+#maintenance-form p {
+}
+
+#maintenance-form p > label {
+	display: inline-block;
+	width: 40%;
+	text-align: right;
+	padding-right: 5px;
+}
+
+#maintenance-form #nb-artic,
+#maintenance-form #nb-links {
+	display: none;
+}
+
+#maintenance-form .submit-bttns {
+	margin: 0px auto 15px;
+	padding: 0px 20px;
+	max-width: 700px;
+}
