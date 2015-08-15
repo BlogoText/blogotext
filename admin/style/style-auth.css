@@ -2,51 +2,59 @@
 -------------------------------------------------------------------------------- */
 
 #pageauth {
-	width: 450px;
 	font-size: 1em;
 	display: block;
 	clear: both;
 	margin: 10px auto 10px;
 	text-align: center;
-	background: url("logo.png") no-repeat center 20px;
-	padding-top: 120px;
 }
 
 #auth {
-	width: 299px;
+	width: 320px;
 	margin: auto;
+	box-sizing: border-box;
 }
 
-#auth p label {
-	display: none;
+#auth p {
+	display: flex;
+	justify-content: center;
+	align-items: flex-end;
+	height: 40px;
+	padding: 5px 0;
+}
+
+#auth p label:not([for="stay_logged"]) {
+	padding: 0 0 0 24px;
+	width: 24px;
+	height: 28px;
+	box-sizing: border-box;
+	overflow: hidden;
+	display: inline-block;
+	vertical-align: middle;
+	background: white url(sprites.png) no-repeat 0 0 / 640px 400px;
 }
 
 #auth input.text {
 	width: 200px;
+	border: 0;
 	margin: 0;
-	line-height: 2em;
+	border-bottom: 1px solid silver;
+	padding: 5px;
 }
 
-#auth p:nth-of-type(1),
-#auth p:nth-of-type(2) {
-	margin: 0;
-	padding: 0;
-}
-
-#auth p:nth-of-type(1) input.text {
-	border-bottom-left-radius: 0;
-	border-bottom-right-radius: 0;
-	border-bottom: none;
-}
-#auth p:nth-of-type(2) input.text {
-	border-top-left-radius: 0;
-	border-top-right-radius: 0;
+#auth input.text:focus {
+	border-bottom-color: #2196F3;
+	box-shadow: 0px -1px 0px #2196F3 inset;
 }
 
 #auth label[for="stay_logged"],
 #auth label[for="stay_logged"]+input {
-	display: inline;
+	align-self: center;	
 }
+
+#auth p label[for="user"]     { background-position: -265px -131px; }
+#auth p label[for="password"] { background-position: -302px -131px; }
+
 
 #auth input.blue-square {
 	width: 200px;

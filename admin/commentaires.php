@@ -126,23 +126,32 @@ else {
 	$param_makeup['show_links'] = '1';
 }
 
-function afficher_commentaire($comment, $with_link, $oddeven) {
+function afficher_commentaire($comment, $with_link) {
 	afficher_form_commentaire($comment['bt_article_id'], 'admin', '', $comment);
-	echo '<div class="commentbloc'.(!$comment['bt_statut'] ? ' privatebloc' : '').(($oddeven === 1) ? ' count-odd' : ' count-even').'" id="'.article_anchor($comment['bt_id']).'">'."\n";
-	echo '<img class="img_inv_flag" src="style/deny.png" title="'.$GLOBALS['lang']['comment_is_invisible'].'" alt="icon"/>'."\n";
-	echo '<span onclick="reply(\'[b]@['.str_replace('\'', '\\\'', $comment['bt_author']).'|#'.article_anchor($comment['bt_id']).'] :[/b] \'); ">@</span> ';
-	echo '<h3 class="titre-commentaire">'.$comment['auteur_lien'].'</h3>'."\n";
-	echo '<p class="email"><a href="mailto:'.$comment['bt_email'].'">'.$comment['bt_email'].'</a></p>'."\n";
+	echo '<div class="commentbloc'.(!$comment['bt_statut'] ? ' privatebloc' : '').'" id="'.article_anchor($comment['bt_id']).'">'."\n";
+
+	echo '<div class="comm-header">'."\n";
+	echo "\t".'<div class="comm-title">'."\n";
+	echo "\t\t".'<span class="reply" onclick="reply(\'[b]@['.str_replace('\'', '\\\'', $comment['bt_author']).'|#'.article_anchor($comment['bt_id']).'] :[/b] \'); ">@</span> ';
+	echo "\t\t".'<span class="author">'.$comment['auteur_lien'].'</span>'."\n";
+	echo "\t\t".'<span class="email"><a href="mailto:'.$comment['bt_email'].'">'.$comment['bt_email'].'</a></span>'."\n";
+	echo "\t".'</div>'."\n";
+	echo "\t".'<div class="comm-options">'."\n";
+	echo "\t\t".'<ul>'."\n";
+	echo "\t\t\t".'<li class="cl-edit" onclick="unfold(this);">'.$GLOBALS['lang']['editer'].'</li>'."\n";
+	echo "\t\t\t".'<li class="cl-activ" onclick="activate_comm(this);" data-comm-id="'.$comment['ID'].'" data-comm-art-id="'.$comment['bt_article_id'].'">'.$GLOBALS['lang'][(!$comment['bt_statut'] ? '' : 'des').'activer'].'</li>'."\n";
+	echo "\t\t\t".'<li class="cl-suppr" onclick="suppr_comm(this);" data-comm-id="'.$comment['ID'].'" data-comm-art-id="'.$comment['bt_article_id'].'">'.$GLOBALS['lang']['supprimer'].'</li>'."\n";
+	echo "\t\t".'</ul>'."\n";
+	echo "\t".'</div>'."\n";
+	echo '</div>'."\n";
+
+	
 	echo $comment['bt_content'];
-	echo '<p class="p-edit-button">'."\n";
-	echo '<span class="comm-link-span-title">'.$GLOBALS['lang']['le'].' '.date_formate($comment['bt_id']).', '.heure_formate($comment['bt_id']);
+	echo '<p class="p-date-title">'."\n";
+	echo $GLOBALS['lang']['le'].' '.date_formate($comment['bt_id']).', '.heure_formate($comment['bt_id']);
 	if ($with_link == 1 and !empty($comment['bt_title'])) {
 		echo ' '.$GLOBALS['lang']['sur'].' <a href="'.basename($_SERVER['PHP_SELF']).'?post_id='.$comment['bt_article_id'].'">'.$comment['bt_title'].'</a>';
 	}
-	echo '</span>'."\n";
-	echo "\t".'<button class="comm-link cl-suppr" type="button" onclick="suppr_comm(this);" data-comm-id="'.$comment['ID'].'" data-comm-art-id="'.$comment['bt_article_id'].'">'.$GLOBALS['lang']['supprimer'].'</button>'."\n";
-	echo "\t".'<button class="comm-link cl-edit" type="button" onclick="unfold(this);">'.$GLOBALS['lang']['editer'].'</button> ';
-	echo "\t".'<button class="comm-link cl-activ" type="button" onclick="activate_comm(this);" data-comm-id="'.$comment['ID'].'" data-comm-art-id="'.$comment['bt_article_id'].'">'.$GLOBALS['lang'][(!$comment['bt_statut'] ? '' : 'des').'activer'].'</button> ';
 	echo '</p>'."\n";
 	echo $GLOBALS['form_commentaire'];
 	echo '</div>'."\n\n";
@@ -150,12 +159,12 @@ function afficher_commentaire($comment, $with_link, $oddeven) {
 
 // DEBUT PAGE
 $msgg = $GLOBALS['lang']['titre_commentaires']. ((!empty($article_title)) ?' | '.$article_title : '');
-afficher_top($msgg);
+afficher_html_head($msgg);
 
 echo '<div id="top">'."\n";
-afficher_msg($GLOBALS['lang']['titre_commentaires']);
+afficher_msg();
 echo moteur_recherche($GLOBALS['lang']['search_in_comments']);
-afficher_menu(basename($_SERVER['PHP_SELF']));
+afficher_topnav(basename($_SERVER['PHP_SELF']), $GLOBALS['lang']['titre_commentaires']);
 echo '</div>'."\n";
 
 echo '<div id="axe">'."\n";
@@ -168,42 +177,54 @@ echo '<div id="subnav">'."\n";
 	} else {
 		afficher_form_filtre('commentaires', '');
 	}
+	echo '<div class="nombre-elem">'."\n";
+	if ($param_makeup['menu_theme'] == 'for_article') {
+		$dec_id = decode_id($article_id);
+		$article_link = $GLOBALS['racine'].'?d='.$dec_id['annee'].'/'.$dec_id['mois'].'/'.$dec_id['jour'].'/'.$dec_id['heure'].'/'.$dec_id['minutes'].'/'.$dec_id['secondes'].'-'.titre_url($article_title);
+		echo '<ul>'."\n";
+		echo "\t".'<li><a href="ecrire.php?post_id='.$article_id.'">'.$GLOBALS['lang']['ecrire'].$article_title.'</a></li>'."\n";
+		echo "\t".'<li><a href="'.$article_link.'">'.$GLOBALS['lang']['lien_article'].'</a></li>'."\n";
+		echo '</ul>'."\n";
+		echo '– &nbsp; '.ucfirst(nombre_commentaires(count($commentaires)));
+	} elseif ($param_makeup['menu_theme'] == 'for_comms') {
+		echo ucfirst(nombre_commentaires(count($commentaires))).' '.$GLOBALS['lang']['sur'].' '.$nb_total_comms;
+	}
+	echo '</div>'."\n";
+
 echo '</div>'."\n";
 
-echo erreurs($erreurs_form);
+//echo erreurs($erreurs_form);
 
 echo '<div id="page">'."\n";
 
-echo '<p class="nombre-elem">'."\n";
-if ($param_makeup['menu_theme'] == 'for_article') {
-	echo '<a href="ecrire.php?post_id='.$article_id.'">'.$GLOBALS['lang']['ecrire'].$article_title.'</a> &nbsp; – &nbsp; '.ucfirst(nombre_commentaires(count($commentaires)));
-} elseif ($param_makeup['menu_theme'] == 'for_comms') {
-	echo ucfirst(nombre_commentaires(count($commentaires))).' '.$GLOBALS['lang']['sur'].' '.$nb_total_comms;
-}
-echo '</p>'."\n";
-
 
 // COMMENTAIRES
+echo '<div id="liste-commentaires">'."\n";
 if (count($commentaires) > 0) {
 	$token = new_token();
-	$com_counter = 0;
 	foreach ($commentaires as $content) {
-		$com_counter ++; // even/odd counter
 		$content['comm-token'] = $token;
-		afficher_commentaire($content, $param_makeup['show_links'], ($com_counter%2));
+		afficher_commentaire($content, $param_makeup['show_links']);
 	}
 } else {
 	echo info($GLOBALS['lang']['note_no_comment']);
 }
+echo '</div>'."\n";
+
 
 if ($param_makeup['menu_theme'] == 'for_article') {
+	echo '<div id="post-nv-commentaire">'."\n";
 	afficher_form_commentaire($article_id, 'admin', $erreurs_form);
 	echo '<h2 class="poster-comment">'.$GLOBALS['lang']['comment_ajout'].'</h2>'."\n";
 	echo $GLOBALS['form_commentaire'];
+	echo '</div>'."\n";
 }
+
+echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
 echo '<script type="text/javascript">';
 echo js_comm_delete(0);
 echo js_comm_activate(0);
+echo js_red_button_event(0);
 echo 'var csrf_token = \''.new_token().'\'';
 echo '</script>';
 

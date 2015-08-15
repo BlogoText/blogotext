@@ -173,7 +173,7 @@ function formatage_wiki($texte) {
 		'<strong>$1</strong>',													// strong
 		'<em>$1</em>',																// italic
 		'<del>$1</del>',															// barre
-		'<u>$1</un>',																// souligne
+		'<u>$1</u>',																// souligne
 		'<br />',																	// br
 		'<ul>'."\n".'<li>$1</li></ul>'."\n",									// ul/li
 		'',																				// ul/li
@@ -307,13 +307,15 @@ function date_formate($id, $format_force='') {
 		$jour_l = jour_en_lettres($date['jour'], $date['mois'], $date['annee']);
 		$mois_l = mois_en_lettres($date['mois']);
 			$format = array (
-				'0' => $date['jour'].'/'.$date['mois'].'/'.$date['annee'],                 // 14/01/1983
-				'1' => $date['mois'].'/'.$date['jour'].'/'.$date['annee'],                 // 01/14/1983
-				'2' => $date['jour'].' '.$mois_l.' '.$date['annee'],                       // 14 janvier 1983
-				'3' => $jour_l.' '.$date['jour'].' '.$mois_l.' '.$date['annee'],           // vendredi 14 janvier 1983
-				'4' => $mois_l.' '.$date['jour'].', '.$date['annee'],                      // janvier 14, 1983
-				'5' => $jour_l.', '.$mois_l.' '.$date['jour'].', '.$date['annee'],         // vendredi, janvier 14, 1983
-				'6' => $date['annee'].'-'.$date['mois'].'-'.$date['jour'],                 // 1983-01-14
+				'0' => $date['jour'].'/'.$date['mois'].'/'.$date['annee'],           // 14/01/1983
+				'1' => $date['mois'].'/'.$date['jour'].'/'.$date['annee'],           // 01/14/1983
+				'2' => $date['jour'].' '.$mois_l.' '.$date['annee'],                 // 14 janvier 1983
+				'3' => $jour_l.' '.$date['jour'].' '.$mois_l.' '.$date['annee'],     // vendredi 14 janvier 1983
+				'4' => $jour_l.' '.$date['jour'].' '.$mois_l,                        // vendredi 14 janvier
+				'5' => $mois_l.' '.$date['jour'].', '.$date['annee'],                // janvier 14, 1983
+				'6' => $jour_l.', '.$mois_l.' '.$date['jour'].', '.$date['annee'],   // vendredi, janvier 14, 1983
+				'7' => $date['annee'].'-'.$date['mois'].'-'.$date['jour'],           // 1983-01-14
+				'8' => substr($jour_l,0,3).'. '.$date['jour'].' '.$mois_l,           // ven. 14 janvier
 			);
 
 		if ($format_force != '') {

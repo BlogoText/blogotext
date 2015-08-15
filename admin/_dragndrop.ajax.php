@@ -41,22 +41,44 @@ if (isset($_FILES['fichier'])) {
 		$fichier['bt_id'] = date('YmdHis', $time);
 	}
 	$erreurs = valider_form_fichier($fichier);
+
+	// on success
 	if (empty($erreurs)) {
 		$new_fichier = bdd_fichier($fichier, 'ajout-nouveau', 'upload', $_FILES['fichier']);
 		$fichier = (is_null($new_fichier)) ? $fichier : $new_fichier;
-		echo '
-		<div class="success">
-			<p>
-				Your file: <a class="lien lien-edit" href="fichiers.php?file_id='.$fichier['bt_id'].'&amp;edit">'.$fichier['bt_filename'].'</a> ('.$fichier['bt_type'].', '.taille_formate($fichier['bt_filesize']).') has been successfully received.
-				<button class="nodisplay" id="token" value="'.new_token().'"></button>
-			</p>
-		</div>';
-
+		echo '{';
+			echo '"url": "fichiers.php?file_id='.$fichier['bt_id'].'&amp;edit",';
+			echo '"status": "success",';
+			echo '"token": "'.new_token().'"';
+		echo '}';
+		exit;
 	}
-
+	// on error
 	else {
-		echo '<div class="failure">'.erreurs($erreurs).'</div>'."\n";
+		echo '{';
+			echo '"url": "0",';
+			echo '"status": "failure",';
+			echo '"token": "0"';
+		echo '}';
+		exit;
 	}
-exit;
-} else { echo '<div class="failure">No file</div>'."\n"; }
+}
+// si fichier n’est pas envoyé (limite JS sur la taille, par exemple)
+// mais que le Token est bon, on continue les autres fichiers : ce
+// serait dommage de bloquer tous les fichiers pour un fichier mauvais
+elseif ( isset($_POST['token']) and check_token($_POST['token']) ) {
+	echo '{';
+		echo '"url": "0",';
+		echo '"status": "failure",';
+		echo '"token": "'.new_token().'"';
+	echo '}';
 
+}
+// problem with file AND token : abord, Captain, my Captain! !
+else {
+	echo '{';
+		echo '"url": "0",';
+		echo '"status": "failure",';
+		echo '"token": "0"';
+	echo '}';
+}	

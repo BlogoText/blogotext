@@ -1,222 +1,274 @@
 /* MES LIENS 
 --------------------------------------------------------------------------- */
 
-#post-new-lien { /* form nouveau lien (#1) */
-	margin: 10px 0 30px;
+/* LINKS : Post new link
+------------------------------------------------------*/
+#post-new-lien {
 }
 
-#post-new-lien .text {
-	width: 100%;
-	background: url(legend.png) -619px 4px no-repeat;
+#post-new-lien .contain-input {
+	margin-top: 5px;
+	display: flex;
+	height: 24px;
+}
+
+#post-new-lien label[for="url"] {
+	width: 24px;
 	padding-left: 24px;
+	box-sizing: border-box;
+	overflow: hidden;
+	background: url(sprites.png) no-repeat white -192px -94px / 640px 400px;
 }
 
-#post-lien .wrap-fields {
-	max-width: 650px;
-	margin: auto;
-	background: url(legend.png) -615px -440px no-repeat;
+#post-new-lien #url {
+	flex: 1;
+	border: 1px solid #dadada;
+	border-width: 0 0 1px 0;
+	width: 100%;
+	min-width: 0;
 }
 
-#post-lien .wrap-fields > input:nth-of-type(1) {
-	width: calc( 100% - 24px );
+#post-new-lien #url:focus {
+	border-bottom-color: #2196F3;
+	box-shadow: 0px -1px 0px #2196F3 inset;
+}
+
+#post-new-lien .submit {
+	margin-top: 20px;
 	margin-left: 24px;
 }
 
-#post-lien .wrap-fields-note {
-	background-position: -579px -440px;
-}
-
-#post-lien .wrap-fields-image {
-	background-position: -494px -440px;
-}
-
-#post-lien .wrap-fields-file {
-	background-position: -530px -440px;
+/* Form new link (title, descr, tags…)
+------------------------------------------------------------*/
+#post-lien {
+	margin: auto;
+	width: 650px;
+	max-width: 100%;
+	padding: 20px;
+	box-shadow: 0 12px 24px 0 rgba(0, 0, 0, 0.3);
+	background: white;
+	display: flex;
+	flex-direction: column;
+	resize: both;
+	overflow: hidden;
+	min-height: 200px;
+	min-width: 200px;
 }
 
 #post-lien input.readonly-like { /* form nouveau lien (#2), le lien de l’URL */
-	color: #999;
-	background: #e8e8e8;
+	color: #bbb;
+	font-style: italic;
+	padding-left: .2em;
 }
 
-/* stylize title input on note page */
-#post-lien input[name='type'][value='note']+input[name='title'] {
-	background: url(legend.png) -619px -38px no-repeat;
-	padding-left: 24px;
+#post-lien .text {
+	border: 1px solid #dadada;
+	border-width: 0 0 1px 0;
+	padding: 14px 7px 2px 1px;
+	margin: 5px 0 0 0;
+	max-width: 100%;
 }
 
+
+#description-box {
+	flex: 1;
+	display: flex;
+}
+
+#description-box #img-container {
+	height: 100%;
+	max-width: 30%;
+	background: #ddd;
+}
 #description-box .preview-img {
-	height: 130px;
-	width: 130px;
-	margin: 3px 0 2px;
-	float:right;
-	border: 1px solid #9999A3;
-	border-radius: 4px;
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
+	max-width: 100%;
+	height: auto;
 }
 
-#post-lien input.text,
-#post-lien #description-box,
-#post-lien textarea {
-	width: 100%;
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
+#description-box #img-container+.description {
+	padding-left: 10px;
 }
 
-#post-lien #description-box {
-	display: inline-block;
+#description-box .description {
+	padding-top: 15px;
+	flex: 1;
 }
 
 #post-lien textarea {
-	height: 130px;
+	min-height: 130px;
+	resize: none;
 }
 
-#post-lien #description-box.space-left textarea {
-	width: calc(100% - 130px - 5px) ;
+
+#post-lien .text:focus {
+	border-bottom-color: #2196F3;
+	box-shadow: 0px -1px 0px #2196F3 inset;
 }
 
-.link-tags {
-	margin: 0 0 3px;
-	line-height: 20px;
-	opacity: .3;
+
+/* LINKS : tags */
+/* see also #tag_bloc+ in style-ecrire.css */
+
+#post-lien #type_tags {
+	padding-left: 5px;
+	margin-top: 0;
+	padding-top: 5px;
 }
 
-.link-tags span {
-	border: 1px solid silver;
-	padding: 0 2px;
-	border-radius: 3px;	
+#post-lien #selected li:first-of-type {
+	border-left-width: 1px;
 }
 
-.link-tags span a,
-.linkbloc:hover .link-tags a {
-	text-decoration: none;
-	color: gray;
+#post-lien .forcheckbox {
+	padding: 15px 5px;
 }
 
-.titre-lien a {
-	text-decoration: none;
-}
 
+/* LINKS : list of link-blocs
+--------------------------------------------------------------*/
+/* LINKS : a link bloc
+-------------------------------------------*/
 .linkbloc {
-	padding : 10px 20px 6px 30px;
-	margin-bottom: 0px;
-	background: url("links.png") no-repeat 7px 15px, linear-gradient(to right, white, #f3f3f3 60%);
-	border: 1px solid silver;
-	border-width: 1px 1px 0 1px;
-}
-
-.linkbloc:nth-of-type(even) {
-	background: url("links.png") no-repeat 7px 15px white;
-}
-
-.linkbloc:first-of-type {
-	border-radius : 5px 5px 0 0;
-}
-
-.linkbloc:last-of-type {
-	border-bottom-right-radius : 5px;
-	border-bottom-left-radius : 5px;
-	border-width: 1px;
-	margin-bottom: 10px;
+	color: #444;
+	margin-top: 10px
 }
 
 .linkbloc:hover {
-	box-shadow: 0px 0px 4px #aaa, 1px 1px 5px #aaa;
-	z-index: +1;
-	position: relative;
+	color: #333;
 }
 
-.linkbloc:hover .link-tags span {
-	box-shadow: 0 0 4px #aaa;
+.linkbloc:hover .link-options {
+	visibility: visible;
 }
 
-.linkbloc a {
-	color: gray;
-}
 
-.linkbloc:hover a {
-	color: #45a6ff;
+/* LINKS : link header 
+--------------------------------*/
+.linkbloc .link-header {
+	display: flex;
+	align-items: center;
 }
 
 .linkbloc .titre-lien {
-	display: inline;
-	margin-right: 15px;
+	text-decoration: none;
+	font-weight: bold;
+	font-size: 1.2em;
+	color: #333;
+	flex: 1;
+}
+.linkbloc .titre-lien:hover {
+	color: #888;
 }
 
-.linkbloc .date {
-	color: gray;
-	clear: both;
-	font-style: italic;
-	margin: auto 15px 5px 0;
-	font-size: 80%;
+.linkbloc .date,
+.linkbloc .hard-link {
+	font-size: .9em;
+	color: #aaa;
 }
 
-.linkbloc .lien_editer {
-	float: right;
+
+
+/* link options button */
+.link-options {
+	position: relative;
+	visibility: hidden;
 }
 
-.lien_editer {
+.link-options::before {
+	content: "";
+	cursor: pointer;
+	background: url(sprites.png) no-repeat -599px -7px / 640px 400px;
+	width: 24px;
+	height: 24px;
+	display: block;
+	margin-left: 10px;
+}
+
+.link-options > ul {
+	right: 9999px;
+	position: absolute;
+	top: -10px;
+	background: white;
+	margin: 0;
+	padding: 4px 0;
+	list-style: none;
+	border-radius: 3px;
+	width: 210px;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3);
 	opacity: 0;
+	transition: top .2s .3s ease-in, opacity .2s .3s ease-in, right ease-out 0s .5s;
 }
 
-.linkbloc:hover .lien_editer, .linkbloc:hover .link_no_clic, .linkbloc:hover .link-tags {
+.link-options:hover ul {
+	right: 0;
 	opacity: 1;
+	top: 0;
+	transition: top .2s ease-in .05s, opacity .2s ease-in .05s, right 0s ease-out .05s;
 }
 
-.linkbloc .lien_editer img {
-	vertical-align: middle;
-	margin-left: 5px;
+.link-options > ul > li {
+	cursor: pointer;
 }
 
-.linkbloc .links-link {
-	vertical-align: middle;
-	margin-left: 5px;
+.link-options a {
+	height: 35px;
+	line-height: 35px;
+	padding-left: 40px;
 	display: inline-block;
-	width: 20px;
-	height: 20px;
+	width: 100%;
+	box-sizing: border-box;
+	color: inherit;
+	text-decoration: none;
 }
 
-.ll-see {
-	background: url(legend.png) -557px -135px no-repeat;
+.link-options a:hover {
+	color: inherit;
+	text-decoration: none;
 }
 
-.ll-edit {
-	background: url(legend.png) -557px -103px no-repeat;
+.link-options > ul > li:hover {
+	background: #f5f5f5;
 }
 
 
-/* TAGS */
+/* LINKS : link content 
+--------------------------------*/
+.linkbloc .link-content {
+	padding: 10px 0
+}
+
+/* LINKS : link footer 
+--------------------------------*/
+.linkbloc .link-footer {
+	display: flex;
+}
+
+.linkbloc .link-tags {
+	flex: 1;
+	margin: 0;
+	padding: 0;
+}
+
+.linkbloc .link-tags li {
+	display: inline;
+}
+
+.linkbloc .link-tags a {
+	margin-right: 4px;
+	padding: 3px 4px;
+	color: inherit;
+	text-decoration: none;
+	background: #efefef;
+	border-radius: 3px;
+	box-shadow: 0 0px 1px rgba(0, 0, 0, .3) inset;
+}
+
+
 #post-lien #liste-tags {
 	min-width: 400px;
 	width: 50%;
 	margin: 0 0 2px 25%;
 	padding-left: 21px;
 	line-height: 19px;
-}
-
-#selected {
-	padding: 0px;
-	margin: 0 0 5px;
-	list-style-type: none;
-}
-
-#selected li {
-	display:inline;
-	border: 1px solid silver;
-	border-radius: 3px;
-	padding: 2px 2px;
-	color: #333;
-	background: #eee;
-	height: 20px;
-	line-height: 25px;
-}
-
-#selected a {
-	display: inline-block;
-	color: inherit;
-	margin: 0px 5px 0px 8px;
-	text-decoration: none;
-	font-weight: bold;
 }
 

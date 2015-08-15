@@ -1,9 +1,15 @@
-<article class="lien" id="{lien_permalink}">
-	<header class="titre">
-		<h2><a href="index.php?mode=links&amp;id={lien_permalink}">#{lien_id}</a> - <a href="{lien_url}" rel="nofollow">{lien_titre}</a></h2>
-		<h3 class="date">{lien_date} à {lien_heure} par {lien_auteur}</h3>
+<article class="lien post" id="{lien_permalink}">
+	<header class="lien-title post-title">
+		<h1><a href="index.php?mode=links&amp;id={lien_permalink}" title="">#{lien_id}</a> - <a href="{lien_url}" rel="nofollow" title="">{lien_titre}</a></h1>
+		<div class="date"><time datetime="{article_date_iso}">{lien_date} à {lien_heure}</time> par {lien_auteur}</div>
 	</header>
-	<p>{lien_description}</p>
-	<p class="permalien">{lien_url}</p>
-	<p class="tags">Tags : {lien_tags}</p>
+
+	<div class="lien-content post-content">
+		<p>{lien_description}</p>
+	</div>
+
+	<footer class="lien-footer post-footer">
+		<div class="lien-tags post-tags">{lien_tags}</div>
+		<div class="lien-permalien">{lien_url}</div>
+	</footer>
 </article>

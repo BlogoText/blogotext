@@ -120,7 +120,7 @@ elseif ($GLOBALS['step'] == '2') {
 
 // affiche le form de choix de langue
 function afficher_form_1($erreurs='') {
-	afficher_top('Install');
+	afficher_html_head('Install');
 	echo '<div id="axe">'."\n";
 	echo '<div id="pageauth">'."\n";
 	echo '<h1>'.$GLOBALS['nom_application'].'</h1>'."\n";
@@ -158,7 +158,7 @@ function afficher_form_1($erreurs='') {
 
 // form pour login + mdp + url
 function afficher_form_2($erreurs='') {
-	afficher_top('Install');
+	afficher_html_head('Install');
 	echo '<div id="axe">'."\n";
 	echo '<div id="pageauth">'."\n";
 	echo '<h1>'.$GLOBALS['nom_application'].'</h1>'."\n";
@@ -189,7 +189,7 @@ function afficher_form_2($erreurs='') {
 // form choix SGBD
 function afficher_form_3($erreurs='') {
 
-	afficher_top('Install');
+	afficher_html_head('Install');
 	echo '<div id="axe">'."\n";
 	echo '<div id="pageauth">'."\n";
 	echo '<h1>'.$GLOBALS['nom_application'].'</h1>'."\n";

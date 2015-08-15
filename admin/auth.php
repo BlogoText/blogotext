@@ -75,13 +75,13 @@ if (isset($_POST['_verif_envoi']) and valider_form() === TRUE) { // OK : getting
 
 } else { // On sort…
 		// …et affiche la page d'auth
-		afficher_top('Identification');
+		afficher_html_head('Identification');
 		echo '<div id="axe">'."\n";
 		echo '<div id="pageauth">'."\n";
 		echo '<h1>'.$GLOBALS['nom_application'].'</h1>'."\n";
 		echo '<form method="post" action="auth.php">'."\n";
 		echo '<div id="auth">'."\n";
-		echo '<p><label for="user">'.ucfirst($GLOBALS['lang']['label_dp_identifiant']).'</label><input class="text" type="text" id="user" name="nom_utilisateur" placeholder="John Doe" value="" /></p>'."\n";
+		echo '<p><label for="user">'.ucfirst($GLOBALS['lang']['label_dp_identifiant']).'</label><input class="text" type="text"  autocomplete="off" id="user" name="nom_utilisateur" placeholder="John Doe" value="" /></p>'."\n";
 		echo '<p><label for="password">'.ucfirst($GLOBALS['lang']['label_dp_motdepasse']).'</label><input class="text" id="password" type="password" placeholder="••••••••••••" name="mot_de_passe" value="" /></p>'."\n";
 		if (isset($GLOBALS['connexion_captcha']) and ($GLOBALS['connexion_captcha'] == "1")) {
 			echo '<p><label for="word">'.ucfirst($GLOBALS['lang']['label_dp_word_captcha']).'</label><input class="text" type="text" id="word" name="word" value="" /></p>'."\n";
@@ -113,5 +113,6 @@ function valider_form() {
 	return TRUE;
 }
 
+echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
 footer();
 ?>

@@ -341,6 +341,7 @@ function c_get_external_file($feeds) {
 
 		// init each url
 		foreach ($chunk as $i => $feed) {
+
 			$curl_arr[$i] = curl_init(trim($i));
 			curl_setopt_array($curl_arr[$i], array(
 					CURLOPT_RETURNTRANSFER => TRUE,
@@ -459,8 +460,9 @@ function get_new_feeds($feedlink, $md5='') {
 					$GLOBALS['liste_flux'][$url]['checksum'] = $new_md5;
 					$GLOBALS['liste_flux'][$url]['iserror'] = 0;
 				} else {
-					//echo '<b>'.$url.'</b> - «'.htmlspecialchars(substr($content, 0, 120)).'»<br/>'; // debug
-					$GLOBALS['liste_flux'][$url]['iserror'] += 1;
+					if (isset($GLOBALS['liste_flux'][$url])) { // error on feed update (else would be on adding new feed)
+						$GLOBALS['liste_flux'][$url]['iserror'] += 1;
+					}
 				}
 			}
 		}
@@ -574,17 +576,6 @@ function send_rss_json($rss_entries) {
 		'}'.(($count==$i) ? '' :',')."\n";
 	}
 	$out .= ']'."\n".'}';
-
-	// RSS Feed list
-	$out .= "\n".'var rss_feeds = {"list": ['."\n";
-/*	foreach ($GLOBALS['liste_flux'] as $i => $feed) {
-		$out .= '{'.
-			'"link": "'.$feed['link'].'",'.
-			'"title": "'.$feed['title'].'",'.
-		'},'."\n";
-	}*/
-	$out .= ']'."\n".'}'."\n";
-
 	$out .=  '</script>'."\n";
 
 	return $out;

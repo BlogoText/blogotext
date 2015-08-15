@@ -1,99 +1,86 @@
 /* TABLE LISTE BILLETS
 --------------------------------------------------------------------------- */
 
-ul#billets {
-	width: 100%;
+#billets {
+	width: 90%;
 	padding: 0;
-	margin: 0;
+	margin: auto;
+	list-style: none;
 }
 
-ul#billets a {
+#billets a:not(:hover) {
 	text-decoration: none;
 }
 
-ul#billets li {
-	padding-left: 5px;
-	padding-right: 10px;
-	border-radius: 7px;
-	list-style: none;
-	min-height: 35px;
-	line-height: 35px;
+#billets > li {
+	padding: 0 15px 0 5px;
+	min-height: 50px;
+	line-height: 50px;
 	display: flex;
+	margin-top: 10px;
 	align-items: center;
 }
 
-ul#billets li > span {
-	vertical-align: middle;
-}
 
-ul#billets li > span:first-of-type span {
+#billets > li > span:nth-of-type(1)::before,
+#billets > li > span:nth-of-type(2)::before,
+#billets > li > span:nth-of-type(3)::before {
+	content: '';
 	display: inline-block;
+	width: 24px;
+	height: 24px;
+	position: relative;
 	vertical-align: middle;
-	height: 20px;
-	width: 20px;
+	background: url('sprites.png') no-repeat 0 0 / 640px 400px;
 }
 
-ul#billets li > span:nth-of-type(1) { /*title*/
+#billets > li > span:nth-of-type(1)::before {
+	margin-right: 10px;
+}
+
+#billets > li > span:nth-of-type(1).on::before {
+	background-position: -562px -9px;
+}
+
+#billets > li > span:nth-of-type(1).off::before {
+	background-position: -525px -9px;
+}
+
+
+#billets > li > span:nth-of-type(1) { /*title*/
 	flex: 1;
+	padding: 0 10px 0 5px;
 }
 
-ul#billets li > span:nth-of-type(1),
-ul#billets li > span:nth-of-type(1) a {
+#billets > li > span:nth-of-type(1),
+#billets > li > span:nth-of-type(1) a {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
 
-
-ul#billets li > span:nth-of-type(2) { /*date*/
-	padding: 0 10px;
+#billets > li > span:nth-of-type(2) { /*date*/
 	text-align: center;
 }
-
-
-ul#billets li > span:nth-of-type(3) { /*comms*/
-	padding: 0 0 0 22px;
-	margin-right: 20px;
-	margin-left: 20px;
-	height: 30px;
-	background: url('legend.png') no-repeat scroll -560px -225px transparent;
+#billets > li > span:nth-of-type(2)::before {
+	background-position: -488px -9px;
 }
 
-ul#billets li > span:nth-of-type(4) { /*view online*/
-	padding-left: 15px;
+#billets > li > span:nth-of-type(3) { /*comms*/
+	padding: 0 0 0 12px;
+	margin-right: 15px;
+	margin-left: 10px;
+}
+#billets > li > span:nth-of-type(3) a {
+	padding: 0 7px;
+}
+#billets > li > span:nth-of-type(3)::before {
+	background-position: -451px -9px;
 }
 
-ul#billets li:nth-of-type(odd) {
-	background: #edf3fe;
-	background: linear-gradient(to right, #edf3fe, #fdfdff, #edf3fe);
-}
 
-ul#billets li:nth-of-type(odd):hover {
-	background: #edf3fe;
-}
-
-.black { /* link */
-	color: #000;
-}
-
-ul#billets .on, ul#billets .off {
-	color: #000;
-	margin: 0;
-	background: url(legend.png) no-repeat;
-}
-
-ul#billets .on {
-	background-position: 0 -119px;
-}
-
-ul#billets .off {
-	background-position: 0 -419px;
-}
-
-ul#billets a:hover {
-	text-decoration: underline;
-}
-
-ul#billets li > span:nth-of-type(1) a, ul#billets li > span:nth-of-type(2) a {
+#billets > li > span:nth-of-type(1) a,
+#billets > li > span:nth-of-type(2) a {
 	color: inherit;
 }
+

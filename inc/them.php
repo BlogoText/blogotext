@@ -299,10 +299,10 @@ function afficher_liste($tableau) {
 	if (!($theme_page = file_get_contents($GLOBALS['theme_liste']))) die($GLOBALS['lang']['err_theme_introuvable']);
 	$HTML_article = conversions_theme($theme_page, array(), 'list');
 	if (!empty($tableau)) {
-		$HTML_elmts .= '<ul>'."\n";
+		$HTML_elmts .= '<ul id="liste-all-articles">'."\n";
 		foreach ($tableau as $e) {
 			$short_date = substr($e['bt_date'], 0, 4).'/'.substr($e['bt_date'], 4, 2).'/'.substr($e['bt_date'], 6, 2);
-			$HTML_elmts .= "\t".'<li>'.$short_date.' - <a href="'.$e['bt_link'].'">'.$e['bt_title'].'</a></li>'."\n";
+			$HTML_elmts .= "\t".'<li><time datetime="'.date_formate_iso($e['bt_id']).'">'.$short_date.'</time><a href="'.$e['bt_link'].'">'.$e['bt_title'].'</a></li>'."\n";
 		}
 		$HTML_elmts .= '</ul>'."\n";
 		$HTML = str_replace(extract_boucles($theme_page, $GLOBALS['boucles']['posts'], 'incl'), $HTML_elmts, $HTML_article);

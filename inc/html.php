@@ -12,23 +12,82 @@
 # *** LICENSE ***
 
 
+function afficher_html_head($titre) {
+	if (isset($GLOBALS['lang']['id'])) {
+		$lang_id = $GLOBALS['lang']['id'];
+	} else {
+		$lang_id = 'fr';
+	}
+	$txt = '<!DOCTYPE html>'."\n";
+	$txt .= '<html>'."\n";
+	$txt .= '<head>'."\n";
+	$txt .= "\t".'<meta charset="UTF-8" />'."\n";
+	$txt .= "\t".'<link type="text/css" rel="stylesheet" href="style/style.css.php" />'."\n";
+	$txt .= "\t".'<meta name="viewport" content="initial-scale=1.0, user-scalable=yes" />'."\n";
+	$txt .= "\t".'<title>'.$titre.' | '.$GLOBALS['nom_application'].'</title>'."\n";
+	$txt .= '</head>'."\n";
+	$txt .= '<body id="body">'."\n\n";
+	echo $txt;
+}
+
+function footer($index='', $begin_time='') {
+	if ($index != '') {
+		$file = '../config/ip.php';
+		if (file_exists($file) and is_readable($file)) {
+			include($file);
+			$new_ip = htmlspecialchars($_SERVER['REMOTE_ADDR']);
+			$last_time = strtolower(date_formate($GLOBALS['old_time'])).', '.heure_formate($GLOBALS['old_time']);
+			if ($new_ip == $GLOBALS['old_ip']) {
+				$msg = '<br/>'.$GLOBALS['lang']['derniere_connexion_le'].' '.$GLOBALS['old_ip'].' ('.$GLOBALS['lang']['cet_ordi'].'), '.$last_time;
+			} else {
+				$msg = '<br/>'.$GLOBALS['lang']['derniere_connexion_le'].' '.$GLOBALS['old_ip'].' '.$last_time;
+			}
+		} else {
+			$msg = '';
+		}
+	} else {
+		$msg = '';
+	}
+	if ($begin_time != ''){
+		$end = microtime(TRUE);
+		$dt = round(($end - $begin_time),6);
+		$msg2 = ' - '.$GLOBALS['lang']['rendered'].' '.$dt.' s '.$GLOBALS['lang']['using'].' '.$GLOBALS['sgdb'];
+	} else {
+		$msg2 = '';
+	}
+
+	echo '</div>'."\n";
+	echo '</div>'."\n";
+	echo '<p id="footer"><a href="'.$GLOBALS['appsite'].'">'.$GLOBALS['nom_application'].' '.$GLOBALS['version'].'</a>'.$msg2.$msg.'</p>'."\n";
+	echo '</body>'."\n";
+	echo '</html>'."\n";
+}
+
 /// menu haut panneau admin /////////
-function afficher_menu($active) {
+function afficher_topnav($active, $titre) {
+	if (strlen($titre) == 0) $titre = $GLOBALS['nom_application'];
+
 	echo '<div id="nav">'."\n";
-	echo "\t".'<a href="index.php" id="lien-index"', ($active == 'index.php') ? ' class="current"' : '', '>'.$GLOBALS['lang']['label_resume'].'</a>'."\n";
-	echo "\t".'<a href="articles.php" id="lien-liste"', ($active == 'articles.php') ? ' class="current"' : '', '>'.$GLOBALS['lang']['mesarticles'].'</a>'."\n";
-	echo "\t".'<a href="ecrire.php" id="lien-nouveau"', ($active == 'ecrire.php') ? ' class="current"' : '', '>'.$GLOBALS['lang']['nouveau'].'</a>'."\n";
-	echo "\t".'<a href="commentaires.php" id="lien-lscom"', ($active == 'commentaires.php') ? ' class="current"' : '', '>'.$GLOBALS['lang']['titre_commentaires'].'</a>'."\n";
-	echo "\t".'<a href="fichiers.php" id="lien-fichiers"', ($active == 'fichiers.php') ? ' class="current"' : '', '>'.ucfirst($GLOBALS['lang']['label_fichiers']).'</a>'."\n";
+	echo "\t".'<ul>'."\n";
+	echo "\t\t".'<li><a href="index.php" id="lien-index"', ($active == 'index.php') ? ' class="current"' : '', '>'.$GLOBALS['lang']['label_resume'].'</a></li>'."\n";
+	echo "\t\t".'<li><a href="articles.php" id="lien-liste"', ($active == 'articles.php') ? ' class="current"' : '', '>'.$GLOBALS['lang']['mesarticles'].'</a></li>'."\n";
+	echo "\t\t".'<li><a href="ecrire.php" id="lien-nouveau"', ($active == 'ecrire.php') ? ' class="current"' : '', '>'.$GLOBALS['lang']['nouveau'].'</a></li>'."\n";
+	echo "\t\t".'<li><a href="commentaires.php" id="lien-lscom"', ($active == 'commentaires.php') ? ' class="current"' : '', '>'.$GLOBALS['lang']['titre_commentaires'].'</a></li>'."\n";
+	echo "\t\t".'<li><a href="fichiers.php" id="lien-fichiers"', ($active == 'fichiers.php') ? ' class="current"' : '', '>'.ucfirst($GLOBALS['lang']['label_fichiers']).'</a></li>'."\n";
 	if ($GLOBALS['onglet_liens'])
-	echo "\t".'<a href="links.php" id="lien-links"', ($active == 'links.php') ? ' class="current"' : '', '>'.ucfirst($GLOBALS['lang']['label_links']).'</a>'."\n";
+	echo "\t\t".'<li><a href="links.php" id="lien-links"', ($active == 'links.php') ? ' class="current"' : '', '>'.ucfirst($GLOBALS['lang']['label_links']).'</a></li>'."\n";
 	if ($GLOBALS['onglet_rss'])
-	echo "\t".'<a href="feed.php" id="lien-rss"', ($active == 'feed.php') ? ' class="current"' : '', '>'.ucfirst($GLOBALS['lang']['label_feeds']).'</a>'."\n";
-	echo "\t".'<div id="nav-top">'."\n";
-	echo "\t\t".'<a href="preferences.php" id="lien-preferences">'.$GLOBALS['lang']['preferences'].'</a>'."\n";
-	echo "\t\t".'<a href="'.$GLOBALS['racine'].'" id="lien-site">'.$GLOBALS['lang']['lien_blog'].'</a>'."\n";
-	echo "\t\t".'<a href="logout.php" id="lien-deconnexion">'.$GLOBALS['lang']['deconnexion'].'</a>'."\n";
-	echo "\t".'</div>'."\n";
+	echo "\t\t".'<li><a href="feed.php" id="lien-rss"', ($active == 'feed.php') ? ' class="current"' : '', '>'.ucfirst($GLOBALS['lang']['label_feeds']).'</a></li>'."\n";
+	echo "\t".'</ul>'."\n";
+	echo '</div>'."\n";
+	echo '<h1>'.$titre.'</h1>'."\n";
+
+	echo '<div id="nav-acc">'."\n";
+	echo "\t".'<ul>'."\n";
+	echo "\t\t".'<li><a href="preferences.php" id="lien-preferences">'.$GLOBALS['lang']['preferences'].'</a></li>'."\n";
+	echo "\t\t".'<li><a href="'.$GLOBALS['racine'].'" id="lien-site">'.$GLOBALS['lang']['lien_blog'].'</a></li>'."\n";
+	echo "\t\t".'<li><a href="logout.php" id="lien-deconnexion">'.$GLOBALS['lang']['deconnexion'].'</a></li>'."\n";
+	echo "\t".'</ul>'."\n";
 	echo '</div>'."\n";
 }
 
@@ -72,13 +131,12 @@ function question($message) {
 	  echo '<p id="question">'.$message.'</p>';
 }
 
-function afficher_msg($titre) {
-	if (strlen($titre) != 0) { echo '<h1>'.$titre.'</h1>'."\n";
-	} else { echo '<h1>'.$GLOBALS['nom_application'].'</h1>'."\n"; }
+function afficher_msg() {
 	// message vert
 	if (isset($_GET['msg'])) {
 		if (array_key_exists(htmlspecialchars($_GET['msg']), $GLOBALS['lang'])) {
-			confirmation($GLOBALS['lang'][$_GET['msg']]);
+			$suffix = (isset($_GET['nbnew'])) ? htmlspecialchars($_GET['nbnew']).' '.$GLOBALS['lang']['rss_nouveau_flux'] : ''; // nb new RSS
+			confirmation($GLOBALS['lang'][$_GET['msg']].$suffix);
 		}
 	}
 	// message rouge
@@ -103,65 +161,15 @@ function moteur_recherche($placeholder) {
 	if (isset($_GET['q'])) {
 		$requete = htmlspecialchars(stripslashes($_GET['q']));
 	}
+	if (empty($placeholder)) $placeholder = $GLOBALS['lang']['rechercher'];
 	$return = '<form action="'.basename($_SERVER['PHP_SELF']).'" method="get" id="search">'."\n";
-	$return .= '<input id="q" name="q" type="search" size="20" value="'.$requete.'" class="text" placeholder="'.$placeholder.'" />'."\n";
+	$return .= '<input id="q" name="q" type="search" size="20" value="'.$requete.'" placeholder="'.$placeholder.'" accesskey="f" />'."\n";
 	if (isset($_GET['mode'])) {
-		$return .= '<input id="mode" name="mode" type="hidden" value="'.htmlspecialchars(stripslashes($_GET['mode'])).'" />'."\n";
+		$return .= '<input id="mode" name="mode" type="hidden" value="'.htmlspecialchars(stripslashes($_GET['mode'])).'"/>'."\n";
 	}
 	$return .= '<input class="silver-square" id="input-rechercher" type="submit" value="'.$GLOBALS['lang']['rechercher'].'" />'."\n";
 	$return .= '</form>'."\n\n";
 	return $return;
-}
-
-function afficher_top($titre) {
-	if (isset($GLOBALS['lang']['id'])) {
-		$lang_id = $GLOBALS['lang']['id'];
-	} else {
-		$lang_id = 'fr';
-	}
-	$txt = '<!DOCTYPE html>'."\n";
-	$txt .= '<head>'."\n";
-	$txt .= '<meta charset="UTF-8" />'."\n";
-	$txt .= '<link type="text/css" rel="stylesheet" href="style/style.css.php" />'."\n";
-	$txt .= '<meta name="viewport" content="initial-scale=1.0, user-scalable=yes" />'."\n";
-	$txt .= '<title> '.$GLOBALS['nom_application'].' | '.$titre.'</title>'."\n";
-	$txt .= '</head>'."\n";
-	$txt .= '<body id="body">'."\n\n";
-	echo $txt;
-}
-
-function footer($index='', $begin_time='') {
-	if ($index != '') {
-		$file = '../config/ip.php';
-		if (file_exists($file) and is_readable($file)) {
-			include($file);
-			$new_ip = htmlspecialchars($_SERVER['REMOTE_ADDR']);
-			$last_time = strtolower(date_formate($GLOBALS['old_time'])).', '.heure_formate($GLOBALS['old_time']);
-			if ($new_ip == $GLOBALS['old_ip']) {
-				$msg = '<br/>'.$GLOBALS['lang']['derniere_connexion_le'].' '.$GLOBALS['old_ip'].' ('.$GLOBALS['lang']['cet_ordi'].'), '.$last_time;
-			} else {
-				$msg = '<br/>'.$GLOBALS['lang']['derniere_connexion_le'].' '.$GLOBALS['old_ip'].' '.$last_time;
-			}
-		} else {
-			$msg = '';
-		}
-	} else {
-		$msg = '';
-	}
-	if ($begin_time != ''){
-		$end = microtime(TRUE);
-		$dt = round(($end - $begin_time),6);
-		$msg2 = ' - '.$GLOBALS['lang']['rendered'].' '.$dt.' s '.$GLOBALS['lang']['using'].' '.$GLOBALS['sgdb'];
-	} else {
-		$msg2 = '';
-	}
-
-	echo '</div>'."\n";
-	echo '</div>'."\n";
-	echo '<p id="footer"><a href="'.$GLOBALS['appsite'].'">'.$GLOBALS['nom_application'].' '.$GLOBALS['version'].'</a>'.$msg2.$msg.'</p>'."\n";
-	echo '<script src="style/javascript.js"></script>'."\n";
-	echo '</body>'."\n";
-	echo '</html>'."\n";
 }
 
 // returns HTML <table> calender
@@ -365,7 +373,7 @@ function liste_tags($billet, $html_link) {
 	$tags = ($billet['bt_type'] == 'article') ? $billet['bt_categories'] : $billet['bt_tags'];
 	$mode = ($billet['bt_type'] == 'article') ? '' : '&amp;mode=links';
 	if (!empty($tags)) {
-		$tag_list = explode(',', $tags);
+		$tag_list = explode(', ', $tags);
 		// remove diacritics, so that "ééé" does not passe after "zzz" and re-indexes
 		foreach ($tag_list as $i => $tag) {
 			$tag_list[$i] = array('t' => trim($tag), 'tt' => diacritique(trim($tag), FALSE, FALSE));
@@ -382,16 +390,13 @@ function liste_tags($billet, $html_link) {
 			foreach($tag_list as $tag) {
 				$tag = trim($tag);
 				$tagurl = urlencode($tag);
-				$liste .= '<a href="'.basename($_SERVER['PHP_SELF']).'?tag='.$tagurl.$mode.'" rel="tag">'.$tag.'</a>, ';
+				$liste .= '<a href="'.basename($_SERVER['PHP_SELF']).'?tag='.$tagurl.$mode.'" rel="tag">'.$tag.'</a>';
 			}
-			$liste = trim($liste, ', ');
 		} else {
 			foreach($tag_list as $tag) {
 				$tag = trim($tag);
 				$tag = diacritique($tag, 0, 0);
-				$liste .= $tag.', ';
 			}
-			$liste = trim($liste, ', ');
 		}
 	} else {
 		$liste = '';
@@ -400,43 +405,10 @@ function liste_tags($billet, $html_link) {
 }
 
 
-// AFFICHE LA LISTE DES ARTICLES, DANS LA PAGE ADMIN
-function afficher_liste_articles($tableau) {
-	if (!empty($tableau)) {
-		mb_internal_encoding('UTF-8');
-		$i = 0;
-		$out = '<ul id="billets">'."\n";
-		foreach ($tableau as $article) {
-			// ICONE SELON STATUT
-			$out .= "\t".'<li>'."\n";
-			// TITRE
-			$out .= "\t\t".'<span><span class="'.( ($article['bt_statut'] == '1') ? 'on' : 'off').'"></span>'.'<a href="ecrire.php?post_id='.$article['bt_id'].'" title="'.htmlspecialchars(trim(mb_substr(strip_tags($article['bt_abstract']), 0, 249)), ENT_QUOTES).'">'.$article['bt_title'].'</a>'.'</span>'."\n";
-			// DATE
-			$out .= "\t\t".'<span><a href="'.basename($_SERVER['PHP_SELF']).'?filtre='.substr($article['bt_date'],0,8).'">'.date_formate($article['bt_date']).'</a> @ '.heure_formate($article['bt_date']).'</span>'."\n";
-			// NOMBRE COMMENTS
-			$texte = $article['bt_nb_comments'];
-			$out .= "\t\t".'<span><a href="commentaires.php?post_id='.$article['bt_id'].'">'.$texte.'</a></span>'."\n";
-			// STATUT
-			if ( $article['bt_statut'] == '1') {
-				$out .= "\t\t".'<span><a href="'.$article['bt_link'].'">'.$GLOBALS['lang']['lien_article'].'</a></span>'."\n";
-			} else {
-				$out .= "\t\t".'<span><a href="'.$article['bt_link'].'">'.$GLOBALS['lang']['preview'].'</a></span>'."\n";
-			}
-			$out .= "\t".'</li>'."\n";
-			$i++;
-		}
-
-		$out .= '</ul>'."\n\n";
-		echo $out;
-	} else {
-		echo info($GLOBALS['lang']['note_no_article']);
-	}
-}
-
-
 /* From DB : returns a HTML list with the feeds (the left panel) */
 function feed_list_html() {
-	$html = "\t\t".'<li class="active-site"><button type="button" onclick="document.getElementById(\'markasread\').onclick=function(){markAsRead(\'all\',\'\');}; return rss_feedlist(Rss);">'.$GLOBALS['lang']['rss_label_all_feeds'].'</button></li>'."\n";
+	// First item : button with all feeds
+	$html = "\t\t".'<li class="active-site"><button type="button" onclick="document.getElementById(\'markasread\').onclick=function(){markAsRead(\'all\',\'\');}; return rss_feedlist(Rss);">'.$GLOBALS['lang']['rss_label_all_feeds'].'</button><span id="global-count-posts" data-nbrun=""></span></li>'."\n";
 	$feeds_nb = rss_count_feed();
 
 	$feed_urls = array();
@@ -458,13 +430,13 @@ function feed_list_html() {
 		foreach ($folder as $j => $feed) {
 			$js = 'onclick="document.getElementById(\'markasread\').onclick=function(){markAsRead(\'site\', \''.$feed['link'].'\');}; sortSite(this);"';
 			if (array_key_exists($feed['link'], $feed_urls) and $feed_urls[$feed['link']]['nbrun'] != 0) {
-				$li_html .= "\t\t".'<li class="feed-not-null" data-feedurl="'.$feed['link'].'" title="'.$feed['link'].'">';
+				$li_html .= "\t\t".'<li class="feed-not-null" data-nbrun="'.$feed_urls[$feed['link']]['nbrun'].'" data-feedurl="'.$feed['link'].'" title="'.$feed['link'].'">';
 				$li_html .= '<button type="button" '.(($feed['iserror'] > 2) ? 'class="feed-error" ': ' ' ).$js.'>'.$feed['title'].'</button>';
 				$li_html .= '<span>('.$feed_urls[$feed['link']]['nbrun'].')</span>';
 				$li_html .= '</li>'."\n";
 				$folder_count += $feed_urls[$feed['link']]['nbrun'];
 			} else {
-				$li_html .= "\t\t".'<li data-feedurl="'.$feed['link'].'" title="'.$feed['link'].'">';
+				$li_html .= "\t\t".'<li data-nbrun="0" data-feedurl="'.$feed['link'].'" title="'.$feed['link'].'">';
 				$li_html .= '<button type="button" '.(($feed['iserror'] > 2) ? 'class="feed-error" ': ' ' ).$js.'>'.$feed['title'].'</button>';
 				$li_html .= '<span>(0)</span>';
 				$li_html .= '</li>'."\n";
@@ -473,7 +445,7 @@ function feed_list_html() {
 		}
 
 		if ($i != '') {
-			$html .= "\t\t".'<li class="feed-folder'.(($folder_count > 0) ? ' feed-not-null' : '').'" data-folder="'.$i.'">'."\n";
+			$html .= "\t\t".'<li class="feed-folder'.(($folder_count > 0) ? ' feed-not-null' : '').'" data-nbrun="'.$folder_count.'" data-folder="'.$i.'">'."\n";
 			$html .= "\t\t\t".'<span class="feedtitle">'."\n";
 			$html .= "\t\t\t\t".'<button type="button" onclick="return hideFolder(this)" class="unfold">+</button>'."\n";
 			$html .= "\t\t\t\t".'<button type="button" onclick="document.getElementById(\'markasread\').onclick=function(){markAsRead(\'folder\', \''.$i.'\');}; sortFolder(this);">'.$i.'</button><span>('.$folder_count.')</span>'."\n";
