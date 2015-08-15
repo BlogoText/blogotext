@@ -7,7 +7,7 @@ This is Blogotext, the lightweight SQLite Blog-Engine.
 
 ---
 
-![alt tag](http://lehollandaisvolant.net/blogotext/blogotext-screen.png)
+![alt tag](http://lehollandaisvolant.net/blogotext/blogotext-screen.png?3)
 
 ---
 
