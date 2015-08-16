@@ -447,7 +447,7 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 			$form .= "\t\t".'<div class="upload-info">('.$GLOBALS['lang']['label_jusqua'].$max_file_size.$GLOBALS['lang']['label_parfichier'].')</div>'."\n";
 			$form .= "\t".'</div>'."\n";
 			$form .= "\t".'<div id="file-input-wrapper"><input name="fichier" id="fichier" type="file" required="" /></div>'."\n";
-			$form .= "\t".'<button class="specify-link white-square" id="click-change-form" onclick="return switchUploadForm();" data-lang-url="'.$GLOBALS['lang']['img_specifier_url'].'" data-lang-file="'.$GLOBALS['lang']['img_upload_un_fichier'].'">'.$GLOBALS['lang']['img_specifier_url'].'</button>'."\n";
+			$form .= "\t".'<button type="button" class="specify-link white-square" id="click-change-form" onclick="return switchUploadForm();" data-lang-url="'.$GLOBALS['lang']['img_specifier_url'].'" data-lang-file="'.$GLOBALS['lang']['img_upload_un_fichier'].'">'.$GLOBALS['lang']['img_specifier_url'].'</button>'."\n";
 			$form .= '</div>'."\n";
 			$form .= '<div id="count"></div>'."\n";
 			$form .= '<div id="result"></div>'."\n";

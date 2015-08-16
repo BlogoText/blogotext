@@ -12,7 +12,6 @@
 
 "use strict";
 
-
 /*
 	on comment : reply link « @ » quotes le name.
 */
@@ -641,7 +640,6 @@ function handleDrop(event) {
 function submitdnd(event) {
 	// files have been dragged (means also that this is not a regulat file submission)
 	if (nbDraged != 0) {
-
 		// proceed to upload
 		uploadNext();
 		event.preventDefault();
