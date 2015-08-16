@@ -455,7 +455,7 @@ function request_delete_form(id) {
 					globalFlagRem = true;
 				}
 				if (id == curr_img[i].id) {
-					curr_img.splice(i , 1); // TODO : needs to be reindexed (bug: open slideshow, delete a file N, close slideshow, open slideshow on file >N : the N+1 file is opened)
+					curr_img.splice(i , 1); // TODO?? : needs to be reindexed (bug: open slideshow, delete a file N, close slideshow, open slideshow on file >N : the N+1 file is opened)
 					currentFlagRem = true;
 					curr_max--;
 				}

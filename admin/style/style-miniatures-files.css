@@ -314,10 +314,7 @@
 	max-height: 100%;
 	padding: 0;
 	margin: 0;
-	background: gray;
-	background-image: linear-gradient(45deg, silver 25%, transparent 25%, transparent 75%, silver 75%, silver), linear-gradient(45deg, silver 25%, transparent 25%, transparent 75%, silver 75%, silver);
-	background-size: 12px 12px;
-	background-position: 0 0, 30px 30px
+	background: url(data:image/gif;base64,R0lGODdhEAAQAIACAGZmZpmZmSwAAAAAEAAQAAACH4RvoauIzNyBSyYaLMDZcv15HAaSIlWiJ5Sya/RWVgEAOw==);
 }
 
 
@@ -508,6 +505,8 @@
 	position: relative;
 	top: 50%; left: 50%;
 	transform: translate(-50%,-50%);
+	background: url(data:image/gif;base64,R0lGODdhEAAQAIACAGZmZpmZmSwAAAAAEAAQAAACH4RvoauIzNyBSyYaLMDZcv15HAaSIlWiJ5Sya/RWVgEAOw==);
+	border: 0;
 }
 
 
