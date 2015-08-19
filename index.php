@@ -76,6 +76,9 @@ if (isset($_GET['random'])) {
 	try {
 		// getting nb articles, gen random num, then select one article is much faster than "sql(order by rand limit 1)"
 		$result = $GLOBALS['db_handle']->query("SELECT count(ID) FROM articles WHERE bt_statut=1")->fetch();
+		if ($result[0] == 0) {
+			header('Location: '.$_SERVER['SCRIPT_NAME']);
+		}
 		$rand = mt_rand(0, $result[0] - 1);
 		$tableau = liste_elements("SELECT * FROM articles WHERE bt_statut=1 LIMIT $rand, 1", array(), 'articles');
 	} catch (Exception $e) {
