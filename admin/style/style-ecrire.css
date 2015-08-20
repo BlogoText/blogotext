@@ -274,26 +274,23 @@ p.formatbut {
 	flex: 0;
 	margin: 0px 0 0;
 	display: flex;
-	font-size: 0;
 }
 
 #selected { /* <ul> */
 	margin: 0;
 	padding: 0;
 	list-style-type: none;
-	font-size: 0;
 	box-shadow: 0 -1px 0 #dadada inset, 1px 0 0 #dadada;
 }
 
 
 #selected > li {
 	display:inline-block;
-	padding: 0 7px;
+	padding: 0 10px 0 7px;
 	color: #333;
 	background: #eee;
 	border: 0;
-	margin: 0;
-	font-size: 1rem;
+	margin: 0 -3px 0 0;
 	box-shadow: 1px 0px 0 #dadada inset, 0px -1px 0px #dadada inset;
 	height: 36px;
 	line-height: 36px;
@@ -311,7 +308,6 @@ p.formatbut {
 
 #type_tags {
 	flex: 1 1 100px;
-	font-size: 1rem;
 	justify-content: flex-start;
 	height: 36px;
 }
