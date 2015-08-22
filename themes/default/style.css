@@ -283,6 +283,11 @@ body > header p {
 	margin-bottom: 30px;
 }
 
+.article img {
+	border: none;
+	max-width: 100%;
+}
+
 .post-title {
 	margin-bottom: 40px;
 }

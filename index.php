@@ -306,6 +306,6 @@ else {
 }
 
  $end = microtime(TRUE);
- //echo ' Rendered in '.round(($end - $begin),6).' seconds ';
+ echo ' <!-- Rendered in '.round(($end - $begin),6).' seconds -->';
 
 ?>
