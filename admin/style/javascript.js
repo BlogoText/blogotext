@@ -1097,6 +1097,7 @@ function markAsRead(what, url) {
 
 		// if post already as read but has been closed afterwards, do not recount if we reopen it
 		if (document.getElementById('i_'+url).classList.contains('read')) {
+			loading_animation('off');
 			xhr.abort();
 			return false;
 		}
