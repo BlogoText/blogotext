@@ -264,6 +264,10 @@
 	display: none;
 }
 
+#post-list > li .rss-item-content * {
+	max-width: 100%;
+}
+
 #post-list > li hr.clearboth {
 	clear: both;
 	margin: 0;
