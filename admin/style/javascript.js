@@ -790,12 +790,17 @@ function openAllItems(button) {
 // Rebuilts the whole list of posts..
 function rss_feedlist(RssPosts) {
 	if (Rss.length == 0) return false;
-	var unread = 0;
 	// empties the actual list
-	var postlist = document.getElementById('post-list');
-	while (postlist.firstChild) {postlist.removeChild(postlist.firstChild);}
+	if (document.getElementById('post-list')) {
+		var oldpostlist = document.getElementById('post-list');
+		oldpostlist.parentNode.removeChild(oldpostlist);
+	}
+
+	var postlist = document.createElement('ul');
+	postlist.id = 'post-list';
+
 	// populates the new list
-	for (var i = 0, len = RssPosts.length ; i < len ; i++) {
+	for (var i = 0, unread = 0, len = RssPosts.length ; i < len ; i++) {
 		var item = RssPosts[i];
 		if (item.statut == 1) { unread++; }
 
@@ -809,9 +814,15 @@ function rss_feedlist(RssPosts) {
 
 		// new line with the title
 		var title = document.createElement("p");
-		title.innerHTML = '<a href="'+item.link+'" target="_blank">'+item.title+'</a>';
+		//title.innerHTML = '<a href="'+item.link+'" target="_blank">'+item.title+'</a>';
 		title.title = item.title;
 		title.classList.add('post-title');
+		var titleLink = document.createElement("a");
+		titleLink.href = item.link;
+		titleLink.target = "_blank";
+		titleLink.appendChild(document.createTextNode(item.title));
+		title.appendChild(titleLink);
+		
 
 		// bloc with date + site name + share-link
 		var date = document.createElement("div");
@@ -824,7 +835,16 @@ function rss_feedlist(RssPosts) {
 
 		var share = document.createElement("div");
 		share.classList.add('share');
-		share.innerHTML = '<a class="lien-share" target="_blank" href="links.php?url='+item.link+'">&nbsp;</a>';
+		//share.innerHTML = '<a class="lien-share" target="_blank" href="links.php?url='+item.link+'">&nbsp;</a>';
+
+		var shareLink = document.createElement("a");
+		shareLink.href = 'links.php?url='+item.link;
+		shareLink.target = "_blank";
+		shareLink.classList.add("lien-share");
+		share.appendChild(shareLink);
+
+
+
 	
 		var datesite = document.createElement("div");
 		datesite.classList.add('datesite');
@@ -848,8 +868,9 @@ function rss_feedlist(RssPosts) {
 
 		postlist.appendChild(li);
 	}
+	//if (RssPosts != rss_entries.list) { alert(postlist); return false };
+
 	// displays the number of unread items
-	if (RssPosts != rss_entries.list) return false;
 	if (document.querySelector('#global-count-posts').firstChild) {
 		document.querySelector('#global-count-posts').firstChild.nodeValue = '('+unread+')';
 		document.querySelector('#global-count-posts').dataset.nbrun = unread;
@@ -858,6 +879,9 @@ function rss_feedlist(RssPosts) {
 		document.querySelector('#global-count-posts').appendChild(document.createTextNode('('+unread+')'))
 		document.querySelector('#global-count-posts').dataset.nbrun = unread;
 	}
+
+	document.getElementById('posts-wrapper').appendChild(postlist);
+
 	return false;
 }
 

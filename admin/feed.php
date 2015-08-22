@@ -81,11 +81,9 @@ else {
 	$out_html .= "\t\t".'<ul id="feed-list">'."\n";
 	$out_html .= feed_list_html();
 	$out_html .= "\t\t".'</ul>'."\n";
-	$out_html .= "\t\t".'<ul id="post-list">'."\n";
 	if (empty($GLOBALS['liste_flux'])) {
 		$out_html .= $GLOBALS['lang']['rss_nothing_here_note'].'<a href="maintenance.php#form_import">import OPML</a>.';
 	}
-	$out_html .= "\t\t".'</ul>'."\n";
 	$out_html .= "\t".'</div>'."\n";
 	$out_html .= "\t".'<div class="keyshortcut">'.$GLOBALS['lang']['rss_raccourcis_clavier'].'</div>'."\n";
 	$out_html .= '</div>'."\n";
