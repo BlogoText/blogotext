@@ -336,13 +336,11 @@ function slideshow(action, image) {
 	window.addEventListener('keydown', checkKey);
 
 	var ElemImg = document.getElementById('slider-img');
-	var oldCounter = counter;
 
 	switch (action) {
 		case 'start':
 			document.getElementById('slider').style.display = 'block';
 			counter = parseInt(image);
-			oldCounter = null;
 			break;
 
 		case 'first':
@@ -350,7 +348,7 @@ function slideshow(action, image) {
 			break;
 
 		case 'prev':
-			counter = Math.max(--counter, 0);
+			counter = Math.max(counter-1, 0);
 			break;
 
 		case 'next':
@@ -361,8 +359,6 @@ function slideshow(action, image) {
 			counter = curr_max;
 			break;
 	}
-
-	if (oldCounter == counter) { return false; }
 
 	var newImg = new Image();
 	newImg.onload = function() {
@@ -395,6 +391,7 @@ function slideshow(action, image) {
 
 		idet.appendChild(idetnam);
 		ElemImg.src = newImg.src;
+		ElemImg.classList.remove('loading');
 	};
 
 	newImg.onerror = function() {
@@ -441,6 +438,8 @@ function assingButtons(file) {
 function request_delete_form(id) {
 	// prepare XMLHttpRequest
 	document.getElementById('slider-img').src = 'style/loading.gif';
+	document.getElementById('slider-img').classList.add('loading');
+
 	var xhr = new XMLHttpRequest();
 	xhr.open('POST', '_rmfichier.ajax.php');
 	xhr.onload = function() {
@@ -455,7 +454,7 @@ function request_delete_form(id) {
 					globalFlagRem = true;
 				}
 				if (id == curr_img[i].id) {
-					curr_img.splice(i , 1); // TODO?? : needs to be reindexed (bug: open slideshow, delete a file N, close slideshow, open slideshow on file >N : the N+1 file is opened)
+					curr_img.splice(i , 1);
 					currentFlagRem = true;
 					curr_max--;
 				}

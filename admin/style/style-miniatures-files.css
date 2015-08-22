@@ -509,6 +509,9 @@
 	border: 0;
 }
 
+#slider-display img.loading {
+	background: transparent;
+}
 
 
 #slider-box-buttons {
