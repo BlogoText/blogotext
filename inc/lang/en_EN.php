@@ -362,11 +362,11 @@ $GLOBALS['lang'] = array(
 'maintenance_optim'				=> 'Cleanup database',
 // Notes
 'note_no_article'					=> 'No articles',
-'note_no_comment'					=> 'No comments',
+'note_no_commentaire'			=> 'No comments',
 'note_comment_closed'			=> 'Comments are closed',
 'note_no_link'						=> 'No links',
 'note_no_image'					=> 'No images',
-'note_no_file'						=> 'No files',
+'note_no_fichier'					=> 'No files',
 // placeholders
 'search_in_articles'				=> 'Search in articles',
 'search_in_comments'				=> 'Search in comments',

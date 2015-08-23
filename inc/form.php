@@ -142,12 +142,13 @@ function form_langue($defaut) {
 }
 
 function form_langue_install($label) {
-	echo '<label for="langue">'.$label;
-	echo '<select id="langue" name="langue">'."\n";
+	$ret = '<label for="langue">'.$label;
+	$ret .= '<select id="langue" name="langue">'."\n";
 	foreach ($GLOBALS['langs'] as $option => $label) {
-		echo "\t".'<option value="'.htmlentities($option).'">'.$label.'</option>'."\n";
+		$ret .= "\t".'<option value="'.htmlentities($option).'">'.$label.'</option>'."\n";
 	}
-	echo '</select></label>'."\n";
+	$ret .= '</select></label>'."\n";
+	echo $ret;
 }
 
 function liste_themes($chemin) {
@@ -168,31 +169,33 @@ function liste_themes($chemin) {
 // formulaires ARTICLES //////////
 
 function afficher_form_filtre($type, $filtre) {
-	echo '<form method="get" action="'.basename($_SERVER['PHP_SELF']).'" onchange="this.submit();">'."\n";
-	echo '<div id="form-filtre">'."\n";
-		filtre($type, $filtre);
-	echo '</div>'."\n";
-	echo '</form>'."\n";
+	$ret = '<form method="get" action="'.basename($_SERVER['PHP_SELF']).'" onchange="this.submit();">'."\n";
+	$ret .= '<div id="form-filtre">'."\n";
+	$ret .= filtre($type, $filtre);
+	$ret .= '</div>'."\n";
+	$ret .= '</form>'."\n";
+	echo $ret;
 }
 
 function filtre($type, $filtre) { // cette fonction est très gourmande en ressources.
 	$liste_des_types = array();
-	echo "\n".'<select name="filtre">'."\n" ;
+	$ret = '';
+	$ret .= "\n".'<select name="filtre">'."\n" ;
 	// Articles
 	if ($type == 'articles') {
-		echo '<option value="">'.$GLOBALS['lang']['label_article_derniers'].'</option>'."\n";
+		$ret .= '<option value="">'.$GLOBALS['lang']['label_article_derniers'].'</option>'."\n";
 		$query = "SELECT DISTINCT substr(bt_date, 1, 6) AS date FROM articles ORDER BY date DESC";
 		$tab_tags = list_all_tags('articles', FALSE);
 		$BDD = 'sqlite';
 	// Commentaires
 	} elseif ($type == 'commentaires') {
-		echo '<option value="">'.$GLOBALS['lang']['label_comment_derniers'].'</option>'."\n";
+		$ret .= '<option value="">'.$GLOBALS['lang']['label_comment_derniers'].'</option>'."\n";
 		$tab_auteur = nb_entries_as('commentaires', 'bt_author');
 		$query = "SELECT DISTINCT substr(bt_id, 1, 6) AS date FROM commentaires ORDER BY bt_id DESC";
 		$BDD = 'sqlite';
 	// Liens
 	} elseif ($type == 'links') {
-		echo '<option value="">'.$GLOBALS['lang']['label_link_derniers'].'</option>'."\n";
+		$ret .= '<option value="">'.$GLOBALS['lang']['label_link_derniers'].'</option>'."\n";
 		// $tab_auteur = nb_entries_as('links', 'bt_author'); // uncomment when readers will be able to post links
 		$tab_tags = list_all_tags('links', FALSE);
 		$query = "SELECT DISTINCT substr(bt_id, 1, 6) AS date FROM links ORDER BY bt_id DESC";
@@ -215,7 +218,7 @@ function filtre($type, $filtre) { // cette fonction est très gourmande en resso
 		}
 		arsort($liste_des_types);
 
-		echo '<option value="">'.$GLOBALS['lang']['label_fichier_derniers'].'</option>'."\n";
+		$ret .= '<option value="">'.$GLOBALS['lang']['label_fichier_derniers'].'</option>'."\n";
 		$filtre_type = '';
 		$BDD = 'fichier_txt_files';
 	}
@@ -241,69 +244,53 @@ function filtre($type, $filtre) { // cette fonction est très gourmande en resso
 	}
 
 	/// BROUILLONS
-	echo '<option value="draft"';
-	echo ($filtre == 'draft') ? ' selected="selected"' : '';
-	echo '>'.$GLOBALS['lang']['label_invisibles'].'</option>'."\n";
+	$ret .= '<option value="draft"'.(($filtre == 'draft') ? ' selected="selected"' : '').'>'.$GLOBALS['lang']['label_invisibles'].'</option>'."\n";
 
 	/// PUBLIES
-	echo '<option value="pub"';
-	echo ($filtre == 'pub') ? ' selected="selected"' : '';
-	echo '>'.$GLOBALS['lang']['label_publies'].'</option>'."\n";
+	$ret .= '<option value="pub"'.(($filtre == 'pub') ? ' selected="selected"' : '').'>'.$GLOBALS['lang']['label_publies'].'</option>'."\n";
 
 	/// PAR DATE
 	if (!empty($tableau_mois)) {
-		echo '<optgroup label="'.$GLOBALS['lang']['label_date'].'">'."\n";
+		$ret .= '<optgroup label="'.$GLOBALS['lang']['label_date'].'">'."\n";
 		foreach ($tableau_mois as $mois => $label) {
-			echo '<option value="' . htmlentities($mois) . '"';
-			echo (substr($filtre, 0, 6) == $mois) ? ' selected="selected"' : '';
-			echo '>'.$label.'</option>'."\n";
+			$ret .= "\t".'<option value="' . htmlentities($mois) . '"'.((substr($filtre, 0, 6) == $mois) ? ' selected="selected"' : '').'>'.$label.'</option>'."\n";
 		}
-		echo '</optgroup>'."\n";
+		$ret .= '</optgroup>'."\n";
 	}
 
 	/// PAR AUTEUR S'IL S'AGIT DES COMMENTAIRES OU DE LIENS
 	if (!empty($tab_auteur)) {
-		echo '<optgroup label="'.$GLOBALS['lang']['pref_auteur'].'">'."\n";
+		$ret .= '<optgroup label="'.$GLOBALS['lang']['pref_auteur'].'">'."\n";
 		foreach ($tab_auteur as $nom) {
 			if (!empty($nom['nb']) ) {
-				echo '<option value="auteur.'.$nom['bt_author'].'"';
-				echo ($filtre == 'auteur.'.$nom['bt_author']) ? ' selected="selected"' : '';
-
-				if (strlen($nom['bt_author']) > 40) {
-					mb_internal_encoding('UTF-8');
-					$pseudo = mb_substr($nom['bt_author'], 0, 39).'…';
-				} else { $pseudo = $nom['bt_author']; }
-
-				echo '>'.$pseudo.' ('.$nom['nb'].')'.'</option>'."\n";
+				$ret .= "\t".'<option value="auteur.'.$nom['bt_author'].'"'.(($filtre == 'auteur.'.$nom['bt_author']) ? ' selected="selected"' : '').'>'.$nom['bt_author'].' ('.$nom['nb'].')'.'</option>'."\n";
 			}
 		}
-		echo '</optgroup>'."\n";
+		$ret .= '</optgroup>'."\n";
 	}
 
 	/// PAR TYPE S'IL S'AGIT DES FICHIERS
 	if (!empty($liste_des_types)) {
-		echo '<optgroup label="'.'Type'.'">'."\n";
+		$ret .= '<optgroup label="'.'Type'.'">'."\n";
 		foreach ($liste_des_types as $type => $nb) {
 			if (!empty($type) ) {
-				echo '<option value="type.'.$type.'"';
-				echo ($filtre == 'type.'.$type) ? ' selected="selected"' : '';
-				echo '>'.$type.' ('.$nb.')'.'</option>'."\n";
+				$ret .= "\t".'<option value="type.'.$type.'"'.(($filtre == 'type.'.$type) ? ' selected="selected"' : '').'>'.$type.' ('.$nb.')'.'</option>'."\n";
 			}
 		}
-		echo '</optgroup>'."\n";
+		$ret .= '</optgroup>'."\n";
 	}
 
 	///PAR TAGS POUR LES LIENS & ARTICLES
 	if (!empty($tab_tags)) {
-		echo '<optgroup label="'.'Tags'.'">'."\n";
+		$ret .= '<optgroup label="'.'Tags'.'">'."\n";
 		foreach ($tab_tags as $tag => $nb) {
-			echo '<option value="tag.'.$tag.'"';
-			echo ($filtre == 'tag.'.$tag) ? ' selected="selected"' : '';
-			echo '>'.$tag.' ('.$nb.')</option>'."\n";
+			$ret .= "\t".'<option value="tag.'.$tag.'"'.(($filtre == 'tag.'.$tag) ? ' selected="selected"' : '').'>'.$tag.' ('.$nb.')</option>'."\n";
 		}
-		echo '</optgroup>'."\n";
+		$ret .= '</optgroup>'."\n";
 	}
-	echo '</select> '."\n\n";
+	$ret .= '</select> '."\n\n";
+
+	return $ret;
 }
 
 
@@ -646,13 +633,12 @@ function form_jour($jour_affiche) {
 		"22" => '22', "23" => '23', "24" => '24', "25" => '25', "26" => '26', "27" => '27', "28" => '28',
 		"29" => '29', "30" => '30', "31" => '31'
 	);
-	echo '<select name="jour">'."\n";
+	$ret = '<select name="jour">'."\n";
 	foreach ($jours as $option => $label) {
-		echo '<option value="'.htmlentities($option).'"';
-		echo ($jour_affiche == $option) ? ' selected="selected"' : '';
-		echo '>'.htmlentities($label).'</option>'."\n";
+		$ret .= "\t".'<option value="'.htmlentities($option).'"'.(($jour_affiche == $option) ? ' selected="selected"' : '').'>'.htmlentities($label).'</option>'."\n";
 	}
-	echo '</select>'."\n";
+	$ret .= '</select>'."\n";
+	echo $ret;
 }
 
 function form_mois($mois_affiche) {
@@ -664,13 +650,12 @@ function form_mois($mois_affiche) {
 		"09" => $GLOBALS['lang']['septembre'],	"10" => $GLOBALS['lang']['octobre'],
 		"11" => $GLOBALS['lang']['novembre'],	"12" => $GLOBALS['lang']['decembre']
 	);
-	echo '<select name="mois">'."\n" ;
+	$ret = '<select name="mois">'."\n" ;
 	foreach ($mois as $option => $label) {
-		echo '<option value="'.htmlentities($option).'"';
-		echo ($mois_affiche == $option) ? ' selected="selected"' : '';
-		echo '>'.$label.'</option>'."\n";
+		$ret .= "\t".'<option value="'.htmlentities($option).'"'.(($mois_affiche == $option) ? ' selected="selected"' : '').'>'.$label.'</option>'."\n";
 	}
-	echo '</select>'."\n";
+	$ret .= '</select>'."\n";
+	echo $ret;
 }
 
 function form_annee($annee_affiche) {
@@ -678,19 +663,19 @@ function form_annee($annee_affiche) {
 	for ($annee = date('Y') -3, $annee_max = date('Y') +3; $annee <= $annee_max; $annee++) {
 		$annees[$annee] = $annee;
 	}
-	echo '<select name="annee">'."\n" ;
+	$ret = '<select name="annee">'."\n" ;
 	foreach ($annees as $option => $label) {
-		echo '<option value="'.htmlentities($option).'"';
-		echo ($annee_affiche == $option) ? ' selected="selected"' : '';
-		echo '>'.htmlentities($label).'</option>'."\n";
+		$ret .= "\t".'<option value="'.htmlentities($option).'"'. (($annee_affiche == $option) ? ' selected="selected"' : ''). '>'.htmlentities($label).'</option>'."\n";
 	}
-	echo '</select>'."\n";
+	$ret .= '</select>'."\n";
+	echo $ret;
 }
 
 function form_heure($heureaffiche, $minutesaffiche, $secondesaffiche) {
-	echo '<input name="heure" type="text" size="2" maxlength="2" value="'.$heureaffiche.'" required="" class="text" /> : ';
-	echo '<input name="minutes" type="text" size="2" maxlength="2" value="'.$minutesaffiche.'" required="" class="text" /> : ' ;
-	echo '<input name="secondes" type="text" size="2" maxlength="2" value="'.$secondesaffiche.'" required="" class="text" />' ;
+	$ret = '<input name="heure" type="text" size="2" maxlength="2" value="'.$heureaffiche.'" required="" class="text" /> : ';
+	$ret .= '<input name="minutes" type="text" size="2" maxlength="2" value="'.$minutesaffiche.'" required="" class="text" /> : ' ;
+	$ret .= '<input name="secondes" type="text" size="2" maxlength="2" value="'.$secondesaffiche.'" required="" class="text" />' ;
+	echo $ret;
 }
 
 function form_statut($etat) {

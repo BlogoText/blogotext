@@ -154,7 +154,7 @@ echo '<div id="subnav">'."\n";
 	}
 	if ($step != 'edit' and $step != 2) {
 		echo "\t".'<div class="nombre-elem">';
-		echo "\t\t".ucfirst(nombre_liens($nb_links_displayed)).' '.$GLOBALS['lang']['sur'].' '.liste_elements_count("SELECT count(*) AS nbr FROM links", array(), 'links')."\n";
+		echo "\t\t".ucfirst(nombre_objets($nb_links_displayed, 'link')).' '.$GLOBALS['lang']['sur'].' '.liste_elements_count("SELECT count(*) AS nbr FROM links", array(), 'links')."\n";
 		echo "\t".'</div>'."\n";
 	}
 

@@ -70,7 +70,7 @@ if (isset($_GET['id']) and preg_match('#^[0-9]{14}$#', $_GET['id'])) {
 		}
 	} else {
 		$xml .= '<item>'."\n";
-			$xml .= '<title>'.$GLOBALS['lang']['note_no_comment'].'</title>'."\n";
+			$xml .= '<title>'.$GLOBALS['lang']['note_no_commentaire'].'</title>'."\n";
 			$xml .= '<guid isPermaLink="false">'.$GLOBALS['racine'].'index.php</guid>'."\n";
 			$xml .= '<link>'.$GLOBALS['racine'].'index.php</link>'."\n";
 			$xml .= '<pubDate>'.date('r').'</pubDate>'."\n";

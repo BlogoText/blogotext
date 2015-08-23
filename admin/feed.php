@@ -39,7 +39,6 @@ if (isset($_POST['verif_envoi'])) {
 	}
 }
 
-
 afficher_html_head($GLOBALS['lang']['mesabonnements']);
 echo '<div id="top">'."\n";
 afficher_msg();
@@ -56,14 +55,11 @@ if (isset($_GET['config'])) {
 }
 
 else {
-
 	// get list of posts from DB
 	$all_flux = liste_elements('SELECT * FROM rss WHERE bt_statut=1 ORDER BY bt_date DESC', array(), 'rss');
 	// send to browser
 	$out_html = send_rss_json($all_flux);
-
 	$out_html .= '<div id="rss-list">'."\n";
-
 	$out_html .= "\t".'<div id="posts-menu">'."\n";
 	$out_html .= "\t\t".'<span id="count-posts"><span id="counter"></span></span>'."\n";
 	$out_html .= "\t\t".'<span id="message-return"></span>'."\n";
@@ -103,8 +99,6 @@ else {
 	echo js_rss_add_feed(0);
 	echo js_rss_clean_db(0);
 	echo "\n".'</script>'."\n";
-
 }
-
 
 footer('', $begin);

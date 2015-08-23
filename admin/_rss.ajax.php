@@ -141,7 +141,5 @@ if (isset($_POST['mark-as-read'])) {
 	}
 }
 
-
-
 exit;
 

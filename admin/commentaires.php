@@ -185,9 +185,9 @@ echo '<div id="subnav">'."\n";
 		echo "\t".'<li><a href="ecrire.php?post_id='.$article_id.'">'.$GLOBALS['lang']['ecrire'].$article_title.'</a></li>'."\n";
 		echo "\t".'<li><a href="'.$article_link.'">'.$GLOBALS['lang']['lien_article'].'</a></li>'."\n";
 		echo '</ul>'."\n";
-		echo '– &nbsp; '.ucfirst(nombre_commentaires(count($commentaires)));
+		echo '– &nbsp; '.ucfirst(nombre_objets(count($commentaires), 'commentaire'));
 	} elseif ($param_makeup['menu_theme'] == 'for_comms') {
-		echo ucfirst(nombre_commentaires(count($commentaires))).' '.$GLOBALS['lang']['sur'].' '.$nb_total_comms;
+		echo ucfirst(nombre_objets(count($commentaires), 'commentaire')).' '.$GLOBALS['lang']['sur'].' '.$nb_total_comms;
 	}
 	echo '</div>'."\n";
 
@@ -207,7 +207,7 @@ if (count($commentaires) > 0) {
 		afficher_commentaire($content, $param_makeup['show_links']);
 	}
 } else {
-	echo info($GLOBALS['lang']['note_no_comment']);
+	echo info($GLOBALS['lang']['note_no_commentaire']);
 }
 echo '</div>'."\n";
 

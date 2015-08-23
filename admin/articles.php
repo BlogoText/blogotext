@@ -107,7 +107,7 @@ echo '<div id="subnav">'."\n";
 			afficher_form_filtre('articles', '');
 		}
 		echo '<div class="nombre-elem">'."\n";
-		echo ucfirst(nombre_articles(count($tableau))).' '.$GLOBALS['lang']['sur'].' '.liste_elements_count("SELECT count(*) AS nbr FROM articles", array());
+		echo ucfirst(nombre_objets(count($tableau), 'article')).' '.$GLOBALS['lang']['sur'].' '.liste_elements_count("SELECT count(*) AS nbr FROM articles", array());
 		echo '</div>'."\n";
 	echo '</div>'."\n";
 

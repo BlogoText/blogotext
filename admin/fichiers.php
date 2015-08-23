@@ -166,4 +166,4 @@ echo "\n".'</script>'."\n";
 
 
 footer('', $begin);
-?>
+

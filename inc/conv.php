@@ -439,59 +439,16 @@ function mois_en_lettres($numero, $abbrv='') {
 	}
 }
 
-function nombre_articles($nb) {
+function nombre_objets($nb, $type) {
 	if ($nb == '0') {
-		$retour = $GLOBALS['lang']['note_no_article'];
+		$retour = $GLOBALS['lang']['note_no_'.$type];
 	} elseif ($nb == '1') {
-		$retour = $nb.' '.$GLOBALS['lang']['label_article'];
+		$retour = $nb.' '.$GLOBALS['lang']['label_'.$type];
 	} elseif ($nb > '1') {
-		$retour = $nb.' '.$GLOBALS['lang']['label_articles'];
+		$retour = $nb.' '.$GLOBALS['lang']['label_'.$type.'s'];
 	}
 	return $retour;
-}
 
-function nombre_commentaires($nb) {
-	if ($nb == '0') {
-		$retour = $GLOBALS['lang']['note_no_comment'];
-	} elseif ($nb == '1') {
-		$retour = $nb.' '.$GLOBALS['lang']['label_commentaire'];
-	} else {
-		$retour = $nb.' '.$GLOBALS['lang']['label_commentaires'];
-	}
-	return $retour;
-}
-
-function nombre_liens($nb) {
-	if ($nb == '0') {
-		$retour = $GLOBALS['lang']['note_no_link'];
-	} elseif ($nb == '1') {
-		$retour = $nb.' '.$GLOBALS['lang']['label_link'];
-	} elseif ($nb > '1') {
-		$retour = $nb.' '.$GLOBALS['lang']['label_links'];
-	}
-	return $retour;
-}
-
-function nombre_images($nb) {
-	if ($nb == '0') {
-		$retour = $GLOBALS['lang']['note_no_image'];
-	} elseif ($nb == '1') {
-		$retour = $nb.' '.$GLOBALS['lang']['label_image'];
-	} elseif ($nb > '1') {
-		$retour = $nb.' '.$GLOBALS['lang']['label_images'];
-	}
-	return $retour;
-}
-
-function nombre_fichiers($nb) {
-	if ($nb == '0') {
-		$retour = $GLOBALS['lang']['note_no_file'];
-	} elseif ($nb == '1') {
-		$retour = $nb.' '.$GLOBALS['lang']['label_fichier'];
-	} elseif ($nb > '1') {
-		$retour = $nb.' '.$GLOBALS['lang']['label_fichiers'];
-	}
-	return $retour;
 }
 
 function str2($nb) {

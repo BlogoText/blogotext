@@ -792,8 +792,6 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 echo '</div>'."\n";
 
 
-
-
 echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
 echo '<script type="text/javascript">';
 echo 'var ia = document.getElementById(\'incl-artic\');';
@@ -803,10 +801,5 @@ echo 'var il = document.getElementById(\'incl-links\');';
 echo "il.addEventListener('change', function() { document.getElementById('nb-links').style.display = ( il.value == 1 ? 'inline-block' : 'none'); });";
 
 echo '</script>';
-
-
-
-
-
 
 footer('', $begin);
