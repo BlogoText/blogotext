@@ -219,23 +219,6 @@ function cleanList() {
 }
 
 
-
-/* use key strokes to go to next item in list */
-
-function js_rss_use_keyboard_shortcuts($a) {
-$sc = '
-
-
-';
-	if ($a == 1) {
-		$sc = "\n".'<script type="text/javascript">'."\n".$sc."\n".'</script>'."\n";
-	} else {
-		$sc = "\n".$sc."\n";
-	}
-	return $sc;
-}
-
-
 /*
  *
  *
@@ -332,6 +315,7 @@ function activate_comm(button) {
 		if (resp.indexOf("Success") == 0) {
 			csrf_token = resp.substr(7, 40);
 			button.textContent = ((button.textContent === "'.$GLOBALS['lang']['activer'].'") ? "'.$GLOBALS['lang']['desactiver'].'" : "'.$GLOBALS['lang']['activer'].'" );
+			div_bloc.classList.toggle(\'privatebloc\');
 
 		} else {
 			notifDiv.textContent = \''.$GLOBALS['lang']['error_comment_valid'].'\'+\' \'+resp;
