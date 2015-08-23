@@ -430,8 +430,6 @@ q, blockquote {
 
 #subnav .nombre-elem li {
 	margin: 0;
-	padding: 10px;
-	height: 40px;
 	box-sizing: border-box;
 	background: white;
 	transition: box-shadow ease 0s, opacity ease .1s;
@@ -440,9 +438,9 @@ q, blockquote {
 #subnav .nombre-elem li+li {
 	position: absolute;
 	width: 100%;
-	top: 0px;
-	z-index: -1;
-	opacity: 0;
+	padding: 0;
+	height: 0;
+	overflow: hidden;
 }
 
 #subnav .nombre-elem ul:hover li {
@@ -459,9 +457,7 @@ q, blockquote {
 }
 
 #subnav .nombre-elem ul:hover li+li {
-	top: 40px;
-	z-index: auto;
-	opacity: 1;
+	height: auto;
 }
 
 #subnav .nombre-elem ul li:first-of-type {
@@ -474,6 +470,8 @@ q, blockquote {
 
 #subnav .nombre-elem a {
 	text-decoration: none;
+	display: inline-block;
+	padding: 10px;
 }
 
 
