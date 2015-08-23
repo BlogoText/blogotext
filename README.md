@@ -2,8 +2,9 @@
 
 ---
 
-This is Blogotext, the lightweight SQLite Blog-Engine.
-2011 - 2015 Timo van Neerden http://lehollandaisvolant.net/blogotext/
+This is [Blogotext](http://lehollandaisvolant.net/blogotext/), the lightweight SQLite Blog-Engine.
+
+2011 - 2015 Timo van Neerden
 
 ---
 
@@ -29,7 +30,7 @@ This is Blogotext, the lightweight SQLite Blog-Engine.
   * Follow the few steps
 
 - Bugs
-  * Please, report any bugs to http://lehollandaisvolant.net/contact It will help me.
+  * Please, report any bugs to me using [my email](http://lehollandaisvolant.net/contact). It will help me.
 
 
 
