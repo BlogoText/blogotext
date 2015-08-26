@@ -692,7 +692,7 @@ function form_allow_comment($etat) {
 		'0' => $GLOBALS['lang']['fermes']
 	);
 	// Compatibilite version sans
-	if ($etat == '') {
+	if ('' == $etat) {
 		$etat= '1';
 	}
 	echo form_select('allowcomment', $choix, $etat, $GLOBALS['lang']['label_dp_commentaires']);

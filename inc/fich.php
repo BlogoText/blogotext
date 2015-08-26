@@ -451,7 +451,7 @@ function get_new_feeds($feedlink, $md5='') {
 		if (!empty($content)) {
 			$new_md5 = md5($content);
 			// if Feed has changed : parse it (otherwise, do nothing : no need)
-			if ($md5 != $new_md5 or $md5 == '') {
+			if ($md5 != $new_md5 or '' == $md5) {
 				$data_array = feed2array($content, $url);
 				if ($data_array !== FALSE) {
 					$return[$url] = $data_array;

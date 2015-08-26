@@ -448,7 +448,6 @@ function nombre_objets($nb, $type) {
 		$retour = $nb.' '.$GLOBALS['lang']['label_'.$type.'s'];
 	}
 	return $retour;
-
 }
 
 function str2($nb) {
