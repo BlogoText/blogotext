@@ -3,6 +3,9 @@
 	#axe {
 		padding: 20px 15px;
 	}
+	select {
+		max-width: 100%;
+	}
 
 	/* liste commentaires */
 	.commentbloc.foreground {
