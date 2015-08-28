@@ -36,7 +36,7 @@ function uploadNext() {
 			uploadNext();
 		} else {
 			var respdiv = document.getElementById(nextFile.locId);
-			respdiv.querySelector(\'.uploadstatus\').appendChild(document.createTextNode(\'Uploading\'));
+			respdiv.querySelector(\'.uploadstatus\').textContent = \'Uploading\';
 			uploadFile(nextFile);
 		}
 	} else {
