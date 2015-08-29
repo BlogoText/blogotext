@@ -562,7 +562,7 @@ function afficher_liste_fichiers($tableau) {
 		$tableau = tri_selon_sous_cle($tableau, 'bt_type');
 
 
-		// liste les différents dossiers " logiques " des images.
+		// liste les différents dossiers " logiques " des fichiers.
 		$lstype = array();
 		foreach ($tableau as $file) {
 			$lstype[$file['bt_type']] = (isset($lstype[$file['bt_type']])) ? $lstype[$file['bt_type']]+1 : 1 ;
