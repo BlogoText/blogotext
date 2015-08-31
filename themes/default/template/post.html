@@ -1,26 +1,37 @@
-<article class="news news-alone">
-	<header class="titre">
-		<h2><a href="{article_lien}">{article_titre}</a></h2>
-		<h3 class="date"><img src="{style}/icon_date.png" alt="icon" /> {article_date}</h3>
+<article class="article post">
+	<header class="art-title post-title">
+		<h1><a href="{article_lien}">{article_titre}</a></h1>
+		<div class="date"><time datetime="{article_date_iso}">{article_date}</time> ⋅ <a href="{article_lien}#commentaires">{nombre_commentaires}</a></div>
+		<div class="author" rel="author">Par <em>{blog_auteur}</em></div>
 	</header>
-	<!--<p class="chapo">{article_chapo}</p>-->
-	<div class="contenu">
+	<div class="art-content post-content">
 		{article_contenu}
 	</div>
-	<p class="tags"><img src="{style}/icon_tag.png" alt="icon" /> Tags de l'article : {article_tags}</p>
+	<footer class="art-footer post-footer">
+		<div class="art-tags post-tags">{article_tags}</div>
+	</footer> 
+</article>
 
-	<p id="nombre_comment"><span id="commentaires">{nombre_commentaires}</span></p>
-
+<div id="commentaires">
+	<div class="nbcom">{nombre_commentaires}</div>
 	{BOUCLE_commentaires}
 	<article class="comment" id="{commentaire_ancre}">
-	<h3>{commentaire_auteur_lien} - {commentaire_date} à {commentaire_heure}  </h3>
-		{commentaire_contenu}
-		<p class="com-reply"><a href="#form-commentaire" onclick="reply('[b]@[{commentaire_auteur}|#{commentaire_ancre}] :[/b] ');" title="">@répondre</a> <a href="#{commentaire_ancre}">#lien</a></p>
+		<header class="com-head">
+			<img class="com-gravatar" src="{commentaire_gravatar_link}&amp;s=48&amp;d=monsterid" class="gravatar-icon" alt="gravatar" />
+			<span class="com-author">{commentaire_auteur_lien}</span>
+			<time class="com-date-time" datetime="{commentaire_date_iso}">{commentaire_date} à {commentaire_heure}</time>
+		</header>
+		<div class="com-content">
+			{commentaire_contenu}
+		</div>
+		<footer class="com-footer">
+			<span class="com-reply"><a href="#form-commentaire" onclick="reply('[b]@[{commentaire_auteur}|#{commentaire_ancre}] :[/b] ');">@répondre</a> <a href="#{commentaire_ancre}">#lien</a></span>
+		</footer>
 	</article>
 	{/BOUCLE_commentaires}
+</div>
 
-	<p><a href="{rss_comments}"><img src="{style}/feed.png" alt="icon" /> Flux RSS des commentaires de cet article</a></p>
-	<div id="postcom">
-		{formulaire_commentaire}
-	</div>
-</article>
+<div id="postcom">
+	{formulaire_commentaire}
+</div>
+

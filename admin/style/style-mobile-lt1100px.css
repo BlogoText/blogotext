@@ -1,0 +1,28 @@
+
+@media (max-width: 1100px) {
+	/* liste billets */
+	#billets { width: 100%; }
+	/* slider images */
+	#slider-main-content.infos-on + #slider-infos {
+		width: 330px;
+	}
+	#slider-main-content.infos-on #slider-nav-bar {
+   	right: 330px;
+	}
+	#slider-main-content.infos-on {
+		margin-right: 330px;
+	}
+	/* préférences */
+	#preferences label {
+		display: inline-block;
+		width: 40%;
+	}
+	#preferences p {
+		max-width: 100%;
+	}
+
+	/* index.php graphs */
+	#graphs .month:nth-child(-n+12) {
+		display: none;
+	}
+}

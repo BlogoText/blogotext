@@ -26,23 +26,32 @@ function afficher_liens($link) {
 	$list = '';
 
 	$list .= '<div class="linkbloc'.(!$link['bt_statut'] ? ' privatebloc' : '').'">'."\n";
-	$list .= "\t".'<p class="lien_editer">'."\n";
-	$list .= "\t\t"
-		.(($link['bt_statut'] == '1') ? '<a href="'.$GLOBALS['racine'].'?mode=links&amp;id='.$link['bt_id'].'" class="links-link ll-see" title="'.$GLOBALS['lang']['voir_sur_le_blog'].'"></a> ' : '')
-		.(empty($_GET['id']) ? '<a href="'.basename($_SERVER['PHP_SELF']).'?id='.$link['bt_id'].'" class="links-link ll-edit" title="'.$GLOBALS['lang']['editer'].'"></a> ' : '')
-		.(!$link['bt_statut'] ? '<img src="style/lock.png" title="'.$GLOBALS['lang']['link_is_private'].'" alt="private-icon" />' : '');
-	$list .= "\t".'</p>'."\n";
-	$list .= "\t".'<h3 class="titre-lien"><a href="'.$link['bt_link'].'">'.$link['bt_title'].'</a></h3>'."\n";
 
-	$list .= "\t".'<p>'.$link['bt_content'].'</p>'."\n";
-	$list .= "\t".'<p class="date">'.date_formate($link['bt_id']).', '.heure_formate($link['bt_id']).' - '.$link['bt_link'].'</p>'."\n";
+	$list .= '<div class="link-header">'."\n";
+	$list .= "\t".'<a class="titre-lien" href="'.$link['bt_link'].'">'.$link['bt_title'].'</a>'."\n";
+	$list .= "\t".'<div class="date">'.date_formate($link['bt_id']).', '.heure_formate($link['bt_id']).'</div>'."\n";
+	$list .= "\t".'<div class="link-options">';
+	$list .= "\t\t".'<ul>'."\n";
+	$list .= "\t\t\t".'<li class="ll-edit"><a href="'.basename($_SERVER['PHP_SELF']).'?id='.$link['bt_id'].'">'.$GLOBALS['lang']['editer'].'</a></li>'."\n";
+	$list .= ($link['bt_statut'] == '1') ? "\t\t\t".'<li class="ll-seepost"><a href="'.$GLOBALS['racine'].'?mode=links&amp;id='.$link['bt_id'].'">'.$GLOBALS['lang']['voir_sur_le_blog'].'</a></li>'."\n" : "";
+	//$list .=  "\t\t\t".'<li class="ll-suppr">'.$GLOBALS['lang']['supprimer'].'</li>'."\n";
+	$list .= "\t\t".'</ul>'."\n";
+	$list .= "\t".'</div>'."\n";
+	$list .=  '</div>'."\n";
 
+
+
+	$list .= "\t".'<p class="link-content">'.$link['bt_content'].'</p>'."\n";
+
+	$list .= "\t".'<div class="link-footer">'."\n";
+	$list .= "\t\t".'<ul class="link-tags">'."\n";
 	if (!empty($link['bt_tags'])) {
 		$tags = explode(',', $link['bt_tags']);
-		$list .= '<p class="link-tags">';
-			foreach ($tags as $tag) $list .= '<span class="tag">'.'<a href="?filtre=tag.'.urlencode(trim($tag)).'">'.trim($tag).'</a>'.'</span> ';
-		$list .= '</p>'."\n";
+			foreach ($tags as $tag) $list .= "\t\t\t".'<li class="tag">'.'<a href="?filtre=tag.'.urlencode(trim($tag)).'">'.trim($tag).'</a>'.'</li>'."\n";
 	}
+	$list .= "\t\t".'</ul>'."\n";
+	$list .= "\t\t".'<span class="hard-link">'.$link['bt_link'].'</span>'."\n";
+	$list .= "\t".'</div>'."\n";
 
 	$list .= '</div>'."\n";
 	echo $list;
@@ -125,11 +134,11 @@ if (!isset($_GET['url']) and !isset($_GET['ajout'])) {
 // count total nb of links
 $nb_links_displayed = count($tableau);
 
-afficher_top($GLOBALS['lang']['mesliens']);
+afficher_html_head($GLOBALS['lang']['mesliens']);
 echo '<div id="top">'."\n";
-afficher_msg($GLOBALS['lang']['mesliens']);
+afficher_msg();
 echo moteur_recherche($GLOBALS['lang']['search_in_links']);
-afficher_menu(basename($_SERVER['PHP_SELF']));
+afficher_topnav(basename($_SERVER['PHP_SELF']), $GLOBALS['lang']['mesliens']);
 echo '</div>'."\n";
 
 
@@ -143,13 +152,19 @@ echo '<div id="subnav">'."\n";
 	} else {
 		afficher_form_filtre('links', '');
 	}
+	if ($step != 'edit' and $step != 2) {
+		echo "\t".'<div class="nombre-elem">';
+		echo "\t\t".ucfirst(nombre_objets($nb_links_displayed, 'link')).' '.$GLOBALS['lang']['sur'].' '.liste_elements_count("SELECT count(*) AS nbr FROM links", array(), 'links')."\n";
+		echo "\t".'</div>'."\n";
+	}
+
 echo '</div>'."\n";
 
 
 echo '<div id="page">'."\n";
 
 if ($step == 'edit' and !empty($tableau[0]) ) { // edit un lien : affiche le lien au dessus du champ d’édit
-	afficher_liens($tableau[0]);
+	//afficher_liens($tableau[0]);
 	echo afficher_form_link($step, $erreurs_form, $tableau[0]);
 }
 elseif ($step == 2) { // lien donné dans l’URL
@@ -157,13 +172,17 @@ elseif ($step == 2) { // lien donné dans l’URL
 }
 else { // aucun lien à ajouter ou éditer : champ nouveau lien + listage des liens en dessus.
 	echo afficher_form_link(1, $erreurs_form);
-	echo "\t".'<p class="nombre-elem">';
-		echo "\t\t".ucfirst(nombre_liens($nb_links_displayed)).' '.$GLOBALS['lang']['sur'].' '.liste_elements_count("SELECT count(*) AS nbr FROM links", array(), 'links')."\n";
-	echo "\t".'</p>'."\n";
+	echo '<div id="list-link">'."\n";
 	foreach ($tableau as $link) {
 		afficher_liens($link);
 	}
+	echo '</div>'."\n";
 }
+
+echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
+echo '<script type="text/javascript">';
+echo js_red_button_event(0);
+echo '</script>';
 
 footer('', $begin);
 

@@ -58,7 +58,7 @@ function fichier_adv_conf() {
 	$conf .= 'salt = \''.$salt = sha1(uniqid(mt_rand(), true)).'\''."\n";
 	$conf .= 'show_errors = -1;'."\n";
 	$conf .= 'gravatar_link = \'themes/default/gravatars/get.php?g=\''."\n";
-	$conf .= 'use_ip_in_session = 1;'."\n\n\n";
+	$conf .= 'use_ip_in_session = 0;'."\n\n\n";
 	$conf .= '; */ ?>'."\n";
 
 	if (file_put_contents($fichier_advconf, $conf) === FALSE) {
@@ -341,6 +341,7 @@ function c_get_external_file($feeds) {
 
 		// init each url
 		foreach ($chunk as $i => $feed) {
+
 			$curl_arr[$i] = curl_init(trim($i));
 			curl_setopt_array($curl_arr[$i], array(
 					CURLOPT_RETURNTRANSFER => TRUE,
@@ -450,7 +451,7 @@ function get_new_feeds($feedlink, $md5='') {
 		if (!empty($content)) {
 			$new_md5 = md5($content);
 			// if Feed has changed : parse it (otherwise, do nothing : no need)
-			if ($md5 != $new_md5 or $md5 == '') {
+			if ($md5 != $new_md5 or '' == $md5) {
 				$data_array = feed2array($content, $url);
 				if ($data_array !== FALSE) {
 					$return[$url] = $data_array;
@@ -459,8 +460,9 @@ function get_new_feeds($feedlink, $md5='') {
 					$GLOBALS['liste_flux'][$url]['checksum'] = $new_md5;
 					$GLOBALS['liste_flux'][$url]['iserror'] = 0;
 				} else {
-					//echo '<b>'.$url.'</b> - «'.htmlspecialchars(substr($content, 0, 120)).'»<br/>'; // debug
-					$GLOBALS['liste_flux'][$url]['iserror'] += 1;
+					if (isset($GLOBALS['liste_flux'][$url])) { // error on feed update (else would be on adding new feed)
+						$GLOBALS['liste_flux'][$url]['iserror'] += 1;
+					}
 				}
 			}
 		}
@@ -574,17 +576,6 @@ function send_rss_json($rss_entries) {
 		'}'.(($count==$i) ? '' :',')."\n";
 	}
 	$out .= ']'."\n".'}';
-
-	// RSS Feed list
-	$out .= "\n".'var rss_feeds = {"list": ['."\n";
-/*	foreach ($GLOBALS['liste_flux'] as $i => $feed) {
-		$out .= '{'.
-			'"link": "'.$feed['link'].'",'.
-			'"title": "'.$feed['title'].'",'.
-		'},'."\n";
-	}*/
-	$out .= ']'."\n".'}'."\n";
-
 	$out .=  '</script>'."\n";
 
 	return $out;

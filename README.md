@@ -2,19 +2,20 @@
 
 ---
 
-This is Blogotext, the lightweight SQLite Blog-Engine.
-2011 - 2014 Timo van Neerden http://lehollandaisvolant.net/blogotext/
+This is [Blogotext](http://lehollandaisvolant.net/blogotext/), the lightweight SQLite Blog-Engine.
+
+2011 - 2015 Timo van Neerden
 
 ---
 
-![alt tag](http://lehollandaisvolant.net/blogotext/blogotext-screen.png)
+![alt tag](http://lehollandaisvolant.net/blogotext/blogotext-screen.png?3)
 
 ---
 
 - Requirements
   * PHP 5.3
   * SQLite with PDO support (or MySQL with PDO Support)
-  * A CSS3 / HTML5 compatible Browser (Firefox, Opera…)
+  * A CSS3 / HTML5 compatible Browser (Firefox, Chrome…)
   * min 1 Mo disk space (more data = more space needed)
 
 - Recommended
@@ -29,7 +30,7 @@ This is Blogotext, the lightweight SQLite Blog-Engine.
   * Follow the few steps
 
 - Bugs
-  * Please, report *any* bugs to http://lehollandaisvolant.net/contact It will help me.
+  * Please, report any bugs to me using [my email](http://lehollandaisvolant.net/contact). It will help me.
 
 
 

@@ -2,14 +2,25 @@
 ---------------------------------------------------------------------------------- */
 
 /* apercu */
-#apercu {
-	padding: 5px;
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	margin: 0 0 20px 0;
-	border: 1px dashed #ccc;
+#apercu,
+#form-ecrire {
+	padding: 0 0 1px;
 }
 
+#apercu {
+	margin-bottom: 15px;
+}
+
+#apercu > h2 {
+	background: #f0f0f0;
+	border-radius: 3px 3px 0 0;
+	padding: 10px 20px;
+	border-bottom: 1px solid #ddd
+}
+
+#apercu > div {
+	margin: 20px;
+}
 #apercu p {
 	margin-top: 5px;
 	margin-bottom: 5px;
@@ -20,70 +31,74 @@
 	border: 1px solid #ddd;
 }
 
-/* formulaire à remplir */
+#form-ecrire {
+	padding: 5px 5px 15px;
+}
+
 #form-ecrire textarea {
 	resize: vertical;
 }
 
-#titre, #type_tags, #contenu, #mots_cles, #chapo, #notes {
+#titre,
+#chapo,
+#notes,
+#contenu,
+#type_tags,
+#mots_cles {
 	width: 100%;
 	clear: both;
-	margin: 0 0 15px;
+	margin: 0;
+	border: 0;
+	border-bottom: 1px solid silver;
+	padding: 10px 5px;
 }
 
-#form-ecrire #titre {
+#titre:focus,
+#chapo:focus,
+#notes:focus,
+#contenu:focus,
+#type_tags:focus,
+#mots_cles:focus {
+	border-bottom-color: #2196F3;
+	box-shadow: 0px -1px 0px #2196F3 inset;
+}
+
+#titre {
 	font-weight: bold;
-	font-size: 16px;
-}
-
-#form-ecrire #type_tags {
-	margin-top: 5px;
-}
-
-#contenu {
-	border-radius: 0 0 5px 5px;
+	font-size: 1.15em;
+	padding: 10px 5px;
 }
 
 #chapo_note {
-	display: table;
-	border-spacing: 0;
-	border-collapse: collapse;
-	width: 100%;
+	display: flex;
+	overflow: hidden;
 }
 
-/* browsers scale the width of these box with the ratio of the value of html "cols" attribut they have (since they are table-cells). */
-#blocchapo, #blocnotes {
-	display: table-cell;
+#chapo {
+	flex: 2 2 auto;
+	width: auto;
 }
-
-#chapo, #notes {
-	height: 100px;
-	background: #f1f1f5;
-}
-
 #notes {
-	width: 98%;
-	margin-left: 2%;
+	flex: 1 1 auto;
+	width: auto;
 }
 
-/* tags */
-#form-ecrire #wrap {
-	padding: 0;
-	margin: 0;
+#chapo {
+	border-right: 1px solid silver;
+}
+
+#type_tags,
+#mots_cles {
+	padding: 0 10px;
 }
 
 /* Boutons de formatage  */
 p.formatbut {
-	border: 1px solid #9999a3;
-	border-bottom: 0;
-	border-radius: 5px 5px 0 0;
-	width: 100%;
 	line-height: 28px;
-	margin: 0; padding: 0 5px;
+	margin: 0; padding: 0px 5px 2px;
 	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	background: #cde6ff;
-	background: linear-gradient(to bottom, white, #e6e6e6);
+	background: #f5f5f5;
+	position: relative;
 }
 
 .formatbut .but {
@@ -116,7 +131,6 @@ p.formatbut {
 }
 
 .formatbut span.spacer {
-	width: 2px;
 	margin: 0 4px;
 	border-left: 1px solid #e5e5e5;
 	border-right: 1px solid #fafafa
@@ -148,16 +162,13 @@ p.formatbut {
 .but-dropdown .list {
 	display:none;
 	padding: 3px;
-	border: 1px solid #9999a3;
-	border-radius: 4px;
 	background-color: white;
-	width: 110px;
-	height: 130px;
+	width: 140px;
 	position: absolute;
 	top: 24px;
 	left: -1px;
 	line-height: 20px;
-	box-shadow: 0px 2px 7px silver;
+	box-shadow: 0px 4px 8px rgba(0, 0, 0, .3);
 }
 
 .but-dropdown:hover .list {
@@ -252,15 +263,74 @@ p.formatbut {
 	background-color: #ddd;
 }
 
+/* tags 
+-------------------------------------------- */
+#form-ecrire #wrap {
+	padding: 0;
+	margin: 0;
+}
+
+#tag_bloc {
+	flex: 0;
+	margin: 0px 0 0;
+	display: flex;
+}
+
+#selected { /* <ul> */
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	box-shadow: 0 -1px 0 #dadada inset, 1px 0 0 #dadada;
+}
+
+
+#selected > li {
+	display:inline-block;
+	padding: 0 10px 0 7px;
+	color: #333;
+	background: #eee;
+	border: 0;
+	margin: 0 -3px 0 0;
+	box-shadow: 1px 0px 0 #dadada inset, 0px -1px 0px #dadada inset;
+	height: 36px;
+	line-height: 36px;
+	box-sizing: border-box;
+	
+}
+
+#selected > li > a {
+	display: inline-block;
+	color: inherit;
+	margin: 0px 5px 0px 8px;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+#type_tags {
+	flex: 1 1 100px;
+	justify-content: flex-start;
+	height: 36px;
+}
+
 
 /* boutons d’options et date */
 #date-and-opts {
-	width: 100%;
-	display: table;
+	margin-top: 30px;
+	margin-bottom: 40px;
+	display: flex;
 }
 
 #date-and-opts > div {
-	display: table-cell;
+	flex: 1 1 auto;
+}
+
+#formheure .text {
+	background: #FAFAFA;
+	padding: 11px 5px;
+	box-shadow: 0 0 2px rgba(0, 0, 0, .2);
+	border: 0;
+	text-align: center;
+	margin-left: 3px;
 }
 
 #opts {
@@ -272,9 +342,9 @@ p.formatbut {
 #formstatut,
 #formallowcomment {
 	display: inline-block;
-	padding-left: 20px;
 	vertical-align: middle;
-	margin: 0 15px;
+	margin: 2px 25px;
+	min-height: 40px;
 }
 
 #formstatut label,
@@ -282,19 +352,33 @@ p.formatbut {
 	display: inline;
 }
 
-#formdate {
-	background: url(legend.png) no-repeat -560px -162px;
+
+#formdate::before,
+#formheure::before,
+#formstatut::before,
+#formallowcomment::before {
+	background: url('sprites.png') no-repeat 0 0 / 640px 400px;
+	content: "";
+	width: 24px;
+	height: 24px;
+	display: inline-block;
+	vertical-align: middle;
 }
 
-#formheure {
-	background: url(legend.png) no-repeat 0px -142px;
+#formdate::before {
+	background-position: -488px -9px;
 }
 
-#formstatut {
-	background: url(legend.png) no-repeat -560px -194px;
+#formheure::before {
+	background-position: -118px -96px;
 }
 
-#formallowcomment {
-	background: url(legend.png) no-repeat -560px -226px;
+#formstatut::before {
+	background-position: -155px -96px;
 }
+
+#formallowcomment::before {
+	background-position: -451px -9px;
+}
+
 

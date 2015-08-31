@@ -1,9 +1,14 @@
-<article class="news">
-	<header class="titre">
-		<h2><a href="{article_lien}">{article_titre}</a></h2>
-		<h3 class="date"><img src="{style}/icon_date.png" alt="icon" /> {article_date} - <a href="{article_lien}#commentaires">{nombre_commentaires}</a></h3>
+<article class="article post">
+	<header class="art-title post-title">
+		<h1><a href="{article_lien}">{article_titre}</a></h1>
+		<div class="date"><time datetime="{article_date_iso}">{article_date}</time> ⋅ <a href="{article_lien}#commentaires">{nombre_commentaires}</a></div>
+		<div class="author" rel="author">Par <em>{blog_auteur}</em></div>
 	</header>
-	<!--<p class="chapo">{article_chapo}</p>-->
-	{article_contenu}
-	<p class="tags"><img src="{style}/icon_tag.png" alt="icon" /> Tags de l'article : {article_tags}</p>
+	<div class="art-content post-content">
+		{article_contenu}
+	</div>
+	<footer class="art-footer post-footer">
+		<div class="art-tags post-tags">{article_tags}</div>
+		<div class="art-com"><a href="{article_lien}#commentaires">{nombre_commentaires}</a></div>
+	</footer> 
 </article>

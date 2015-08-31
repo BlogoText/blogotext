@@ -1,28 +1,30 @@
 /* GRAPHS */
 #mainpage {
+	padding: 15px 0;
 	text-align: center;
 }
 
 #graphs {
 	vertical-align: middle;
 	text-align: center;
-	display: inline-block;
 }
+#graphs > p {
+	height: 25px;
+	margin: 0;
+	font-weight: bold;
+}
+
 .graphique a {
 	color: black;
 	text-decoration: none;
 }
 .graphique {
-	font-size: 12px;
 	padding: 0px 0px 22px;
 	text-align: center;
 	position: relative;
 	line-height: 20px;
 }
-.graphique h3 {
-	height: 25px;
-	margin: 0;
-}
+
 .graphique .month {
 	vertical-align: bottom;
 	display: inline-block;
@@ -32,40 +34,39 @@
 	border-bottom: transparent 2px solid;
 	min-height: 1px;
 }
+
 .graphique .month:hover .month-bar {
-	box-shadow: 1px 0px 2px black;
 	border-bottom: black 2px solid;
 }
 
 /* articles */
-#articles {
+.graphique {
 	margin-bottom: 35px;
 }
 
-#articles .month {
+.graphique .month {
 	width: 30px;
 	position: relative;
 }
 
 #articles .month-bar {
-	background: red;
-	background: linear-gradient(to right, #f00, #F55);
-	border-radius: 1px 1px 0 0;
+	background: #f44336;
 }
 
-#articles .month-name {
+.graphique .month-name {
 	bottom: 0;
 	display: block;
 	white-space: pre;
 	font-size: 80%;
 	line-height: 100%;
+	text-transform: capitalize;
 }
 
-#articles .month:hover .month-name {
+.graphique .month:hover .month-name {
 	font-weight: bold;
 }
 
-#articles .month-nb {
+.graphique .month-nb {
 	top: 3px;
 	left: 0px;
 	position: absolute;
@@ -75,45 +76,15 @@
 }
 
 /* commentaires */
-#commentaires .month {
-	width: 14px;
-}
-
 #commentaires .month-bar {
-	background: #87ceeb;
-	background: linear-gradient(to right, #0be, #9df);
-	border-radius: 1px 1px 0 0;
+	background: #3f51b5;
 }
 
 /* liens */
-#links .month {
-	width: 14px;
+ .month-bar {
+	background: #ffc107;
 }
 
-#links .month-bar {
-	background: orange;
-	background: linear-gradient(to right, #f90, #FFCB88);
 
-	border-radius: 1px 1px 0 0;
-}
-#links, #commentaires {
-	display: inline-block;
-	height: 75px;
-}
-/* Commentaires et liens : popups ! */
-#links .month a, #commentaires .month a {
-	visibility: hidden;
-	position: absolute;
-	bottom: 0; right: 0;
-	display: block;
-	width: 220px;
-	background: white;
-	font-family: sans-serif;
-}
-#links .month:hover a, #commentaires .month:hover a {
-	visibility: visible;
-}
-#links .links-total, #commentaires .comm-total {
-	display: block;
-}
+
 

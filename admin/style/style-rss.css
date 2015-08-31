@@ -2,41 +2,135 @@
 ------------------------------------------------------------ */
 /* the main blog (with rounded corners) */
 #rss-list {
-	padding: 1px 7% 5px;
-	margin: auto -4%;
-	background: white;
-	background: linear-gradient(to right, white, white) 0 1px no-repeat, linear-gradient(to right, white, silver, silver, silver, white ) 0 0px no-repeat;
+	padding: 1px 0;
+}
+
+
+/* The frame with elements to read + menu */
+#posts-content {
+	min-height: 100%;
+}
+
+/* the top menu of the list */
+#posts-menu {
+	min-height: 30px;
+	display: flex;
+	align-items: center;
+	padding: 0 5px;
+	background: #f6f6f6;
+	border-bottom: 1px #e5e5e5 solid;
+
+}
+
+#posts-menu #count-posts {
+	display: flex;
+	align-items: center;
+}
+
+#posts-menu #counter {
+	margin: 0 8px;
+	display: none;
+	height: 34px;
+	width: 34px;
+	background: url(loading.gif) no-repeat left center;
+}
+
+#posts-menu ul {
+	margin: 2px 0;
+	padding: 0;
+	display: inline-block;
+	vertical-align: top;
+	text-align: right;
+	flex: 1;
+}
+#posts-menu ul > li {
+	display: inline-block;
+}
+
+#posts-menu button {
+	background: transparent no-repeat url(sprites.png) 0 0 / 640px 400px;
+	border: 1px solid transparent;
+	border-radius: 50%;
+	display: inline-block;
+	height: 40px;
+	width: 40px;
+	position: relative;
+	transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+}
+
+#posts-menu ul > li > button:active {
+	background-color: rgba(0, 0, 0, .05);
+	transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+}
+
+#posts-menu ul > li:nth-of-type(1) > button        { background-position: -0px -125px; }
+#posts-menu ul > li:nth-of-type(2) > button        { background-position: -37px -125px; }
+#posts-menu ul > li:nth-of-type(3) > button        { background-position: -74px -125px; }
+#posts-menu ul > li:nth-of-type(3) > button.unfold { background-position: -111px -125px; }
+#posts-menu ul > li:nth-of-type(4) > button        { background-position: -148px -125px; }
+#posts-menu ul > li:nth-of-type(5) > button        { background-position: -185px -125px; }
+#posts-menu ul > li:nth-of-type(6) > button        { background-position: -222px -125px; }
+#posts-menu ul > li:nth-of-type(7) > button        { background-position: -0px -161px; }
+#posts-menu #count-posts > button { background-image: none; }
+
+/* bloc with feed lists (sites) + feed posts (the actually posts) */
+#posts-wrapper {
+	display: flex;
 }
 
 /* the left sidebar, with the list of feeds */
 #feed-list {
-	background: linear-gradient(to right, #f5f5f5 7px, white);
+	background: #F6F6F6;
 	box-sizing: border-box;
-/*	-moz-box-sizing: border-box;*/
-	width: 230px;
-	float: left;
+	flex: 0 0 230px;
 	margin: 0px;
-	box-shadow: 1px 0 0 silver;
-	padding: 5px;
+	padding: 5px 0;
 	list-style-type: none;
-	min-height: 55px;
-	border: 1px solid silver;
-	border-right: 0
-
+	overflow: hidden;
+	border-right: 1px #e5e5e5 solid;
 }
 
-#feed-list li:not(.feed-folder) {
-	background: 6px 3px url(rss-feed-icon.png) no-repeat;
+#feed-list li {
 	min-height: 1.6em;
-	padding-left: 20px;
-	display: -webkit-flex; /* OK chrome 21 */
+	padding: 1px 5px 1px 0px;
 	display: flex;
+	position: relative;
+}
+
+#feed-list > li > span,
+#feed-list > li > ul > li > span {
+	padding-top: 3px;
+}
+
+#feed-list > li:first-of-type,
+#feed-list > li.feed-folder {
+	padding-left: 20px;
+}
+
+#feed-list > li:first-of-type::before {
+	display: inline-block;
+	content: "";
+	position: absolute;
+	left: 0px;
+	height: 20px;
+	width: 20px;
+	background: transparent url(sprites.png) no-repeat -121px -170px / 640px 400px;
 }
 
 #feed-list > li.feed-folder {
-	background: url(rss.png) no-repeat transparent 0px -182px;
 	padding-top: 3px;
-	padding-left: 20px;
+	position: relative;
+	display: block;
+}
+
+#feed-list > li.feed-folder::before {
+	display: inline-block;
+	content: "";
+	position: absolute;
+	left: 0px;
+	height: 20px;
+	width: 20px;
+	background: transparent url(sprites.png) no-repeat -84px -170px / 640px 400px;
 }
 
 #feed-list > li.feed-folder > span {
@@ -46,25 +140,24 @@
 #feed-list > li.feed-folder > span button {
 	background: none;
 	border: 0;
+	margin: 0;
+	padding: 0;
 }
 
 #feed-list > li.feed-folder > ul {
 	font-weight: normal;
 	padding-left: 0;
 	margin-left: 0px;
-	display: none;
-}
-#feed-list > li.feed-folder.open {
-	background: url(rss.png) no-repeat transparent 0px -200px;
+	height: 0;
+	overflow: hidden;
 }
 
 #feed-list > li.feed-folder.open > ul {
-	display: block;
+	height: auto;
 }
 
-#feed-list > li:first-of-type {
-	background: none;
-	padding-left: 0;
+#feed-list > li:first-of-type::before {
+	background-position: -158px -170px;
 }
 
 #feed-list li button:last-of-type {
@@ -89,114 +182,48 @@
 #feed-list li button:hover {
 	text-decoration: underline;
 }
-#feed-list li.active-site:not(:first-of-type) {
-	background: 6px 3px url(rss-feed-icon.png) no-repeat, linear-gradient(to bottom, #ddd, #eee);
+#feed-list li.active-site {
+	background-color: #eee;
 }
 #feed-list > li.feed-folder.active-site {
-	background: 0px -182px url(rss.png) no-repeat, linear-gradient(to bottom, #ddd, #eee);
-}
-
-#feed-list > li.feed-folder.active-site.open {
-	background: 0px -200px url(rss.png) no-repeat, linear-gradient(to bottom, #ddd, #eee);
+	background-color: #eee;
 }
 
 #feed-list li.feed-not-null {
 	font-weight: bold;
 }
 
-/* The frame with elements to read + menu */
-#posts-content {
-	min-height: 100%;
-}
-
-/* the top menu of the list */
-#posts-menu {
-	min-height: 30px;
-	border-left: 1px solid #e0e0e0;
-	
-
-}
-#posts-menu #count-posts {
-	margin: 8px;
-	display: inline-block;
-	height: 25px;
-}
-
-/*#posts-menu #count-posts > button {
-	border: 1px solid silver;
-	border-radius: 4px;
-	height: 25px;
-	background: white;
-}*/
-
-#posts-menu ul {
-	margin: 7px 0;
-	padding: 0;
-	display: inline-block;
-	vertical-align: top;
-}
-#posts-menu ul > li {
-	display: inline-block;
-
-}
-
-#posts-menu button {
-	background: #F0F0F0 no-repeat 0 0 url(rss.png);
-	border: 1px solid silver;
-	border-radius: 4px;
-	display: inline-block;
-	height: 25px;
-	min-width: 25px;
-	position: relative;
-	box-shadow: 0px 4px 6px #FFF inset, 0px 0px 5px #EEE;
-}
-
-#posts-menu ul > li > button:active {
-	border: 1px solid gray;
-	top: 1px;
-}
-
-#posts-menu ul > li:nth-of-type(1) > button        { background-position: 0 -122px; }
-#posts-menu ul > li:nth-of-type(2) > button        { background-position: 0 -62px; }
-#posts-menu ul > li:nth-of-type(3) > button.unfold { background-position: 0 -20px; }
-#posts-menu ul > li:nth-of-type(3) > button        { background-position: 0 0; }
-#posts-menu ul > li:nth-of-type(4) > button        { background-position: 0 -42px; }
-#posts-menu ul > li:nth-of-type(6) > button        { background-position: 0 -162px; }
-#posts-menu ul > li:nth-of-type(7) > button        { background-position: 0 -102px; }
-#posts-menu ul > li:nth-of-type(5) > button        { background-position: 0 -220px; }
-#posts-menu #count-posts > button { background-image: none; }
 
 /* <UL> list with elements to read */
 #post-list {
 	box-sizing: border-box;
-	-moz-box-sizing: border-box;
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
-	box-shadow: 0px 1px 0 silver;
-	overflow-x: hidden;
-
+	flex: 1;
+	min-width: 0;
 }
 
 #post-list > li {
-	padding: 3px 5px 3px 30px;
-	background: 9px 12px url(rss-feed-icon.png) no-repeat, linear-gradient(to right, white, white) 0 1px no-repeat, linear-gradient(to right, silver 75%, white ) 0 0px no-repeat;
-	border-left: 1px solid silver; 
+	padding: 10px 10px 1px;
+	border-bottom: #F6F6F6 solid 1px;
+	background: white;
 }
 
 #post-list > li:hover {
 	position: relative;
-	box-shadow: 0 0 10px silver;
+	box-shadow: 0 0 8px rgba(0, 0, 0, .4);
 	cursor: pointer;
 }
 
 #post-list > li.read:not(.open-post) {
 	color: gray;
-	background: linear-gradient(to right, white, white) 0 1px no-repeat, linear-gradient(to right, silver 75%, white ) 0 0px no-repeat;
 	padding-left: 45px;
 }
 
-#post-list > li img {
+#post-list > li img,
+#post-list > li table,
+#post-list > li iframe {
 	max-width: 100%;
 	height: auto;
 }
@@ -206,7 +233,7 @@
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	margin: 0 2% 0 0;
+	margin: 0;
 	font-weight: bold;
 }
 #post-list > li .post-title a {
@@ -220,12 +247,13 @@
 }
 
 #post-list > li div.datesite {
-	display: -webkit-flex; /* OK chrome 21 */
 	display: flex;
+	font-size: .9em;
+	font-weight: 300;
+	text-align: right;
 }
 
 #post-list > li div.datesite .site {
-	-webkit-flex: 1;
 	flex: 1;
 	white-space: nowrap;
 	overflow: hidden;
@@ -234,6 +262,10 @@
 
 #post-list > li .rss-item-content {
 	display: none;
+}
+
+#post-list > li .rss-item-content * {
+	max-width: 100%;
 }
 
 #post-list > li hr.clearboth {
@@ -254,20 +286,14 @@
 
 /* opened post */
 #post-list > li.open-post {
-	background: 9px 17px url(rss-feed-icon.png) no-repeat, linear-gradient(to bottom, #bbb 0px, #eee 50px);
+	box-shadow: 0 0 8px rgba(0, 0, 0, .3);
 	color: inherit;
 	cursor: auto;
+	position: relative;
 }
 
 #post-list > li.open-post .rss-item-content {
 	display: block;
-}
-
-#post-list > li.open-post hr.clearboth {
-	clear: both;
-	margin-top: 5px;
-	border: none;
-	border-top: solid silver 1px;
 }
 
 #post-list > li.open-post .datesite {
@@ -280,16 +306,31 @@
 	display: inline-block;
 	margin-left: 5px;
 	text-decoration: none;
-	background: url("legend.png") no-repeat scroll -557px -10px transparent;
+	background: transparent url("sprites.png") no-repeat scroll -47px -172px / 640px 400px;
 }
 
 /* RSS Config Page -------------------- */
-#form-rss-config {
+#form-rss-config,
+#form-rss-add {
+	margin-bottom: 30px;
+}
+
+#form-rss-config ul {
+	text-align: center;
+	padding: 0;
+	margin: 0;
+	list-style: none;
 }
 
 #form-rss-config li {
-	list-style-type: none;
-	margin-bottom: 15px;
+	display: inline-block;
+	width: 400px;
+	margin-bottom: 25px;
+	text-align: left;
+}
+
+#form-rss-config div {
+	padding-left: 20px;
 }
 
 #form-rss-config li p {
@@ -301,25 +342,47 @@
 }
 
 #form-rss-config li > p {
-	padding-left: 20px;
 	line-height: 1.6em;
-	background: left center url(rss-feed-icon.png) no-repeat;
+	font-weight: bold;
 }
+
+#form-rss-config li .white-square {
+	display: none;
+}
+
 
 #form-rss-config li label,
 #form-rss-add label {
-	width: 150px;
+	padding: 0 0 0 24px;
+	width: 24px;
+	height: 24px;
+	box-sizing: border-box;
+	overflow: hidden;
 	display: inline-block;
+	vertical-align: middle;
+	background: white url(sprites.png) no-repeat 0 0 / 640px 400px;
 }
+
+#form-rss-config label[for^="i_"] { background-position: -410px -132px; }
+#form-rss-config label[for^="j_"] { background-position: -79px -95px; }
+#form-rss-config label[for^="l_"] { background-position: -374px -130px; }
+#form-rss-add label               { background-position: -374px -130px; }
 
 #form-rss-config li input.text,
 #form-rss-add input.text {
-	width: 350px;
-	margin: 2px 0;
-	width: calc(100% - 200px);
-	min-width: 150px;
-	max-width: 500px;
+	text-align: left;
+	width: 325px;
+	height: 20px;
+	margin: 0px 5px;
 	display: inline-block;
+	border: 0;
+	border-bottom: 1px solid #DADADA;
+	padding: 0;
+}
+
+#form-rss-config li .text:focus {
+    border-bottom-color: #2196F3;
+    box-shadow: 0px -1px 0px #2196F3 inset;
 }
 
 #form-rss-config li button.red-square {
@@ -327,10 +390,17 @@
 	vertical-align: middle;
 }
 
-#form-rss-config li.to-remove {
+#form-rss-config li.to-remove > p {
 	text-decoration: line-through;
 }
 
-#form-rss-config li.to-remove div {
-	display: none;
+#form-rss-config li.to-remove .white-square {
+	display: inline;
+}
+
+#form-rss-config li.to-remove label,
+#form-rss-config li.to-remove input,
+#form-rss-config li.to-remove .red-square {
+	opacity: .2;
+	
 }

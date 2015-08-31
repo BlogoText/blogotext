@@ -2,87 +2,70 @@
 <html>
 <head>
 	<meta charset="UTF-8" />
-	<title>{article_titre_page}{blog_nom}</title>
+	<title>{article_titre_page} {blog_nom}</title>
 	<meta name="generator" content="BlogoText" />
-	<meta name="robots" content="all" />
 	<meta name="author" content="{blog_auteur}" />
 	<meta name="viewport" content="width=device-width, user-scalable=yes" />
 	<meta name="keywords" content="{keywords}" />
 	<meta name="description" content="{blog_description}" />
 	<link rel="stylesheet" href="{style}/style.css" />
-	<link type="application/rss+xml" rel="alternate" title="RSS - Articles" href="{rss}" />
-	<link rel="alternate" type="application/rss+xml" title="RSS - Les liens" href="rss.php?mode=links" />
+	<link type="application/rss+xml" rel="alternate" title="RSS - Articles" href="rss.php" />
 	<link rel="alternate" type="application/atom+xml" title="ATOM - Le blog" href="atom.php" />
-	<link rel="alternate" type="application/atom+xml" title="ATOM - Les liens" href="atom.php?mode=links" />
 </head>
 <body>
 
+<div id="top-nav">
+	<div id="top-nav-links">
+		<h1><a href="{racine_du_site}" title="{blog_nom} - {blog_description}">{blog_nom}</a></h1>
+		<ul>
+			<li><a href="?liste">Tous les articles</a></li>
+			<li><a href="?random">Article au hasard</a></li>
+			<li><a href="?mode=links">Liens partagés</a></li>
+			<li><a href="?about">À propos</a></li>
+		</ul>
+	</div>
+	{recherche}
+</div>
+
+
 <header>
-	<h1><a href="{racine_du_site}" title="{blog_nom} - {blog_description}">{blog_nom}</a></h1>
-	<h2>{blog_description}</h2>
+	<p>{blog_description}</p>
 </header>
-<main>
-	<section id="sidebar">
-		<nav id="navigate">
-			<h3><img src="{style}/search.png" alt="icon" /> Rechercher</h3>
-			{recherche}
-			{calendrier}
-			<hr/>
-		</nav>
-		<nav id="last_comments">
-			<h3><img src="{style}/icon_comment.png" alt="icon" /> Derniers commentaires</h3>
-			{commentaires_encart}
-			<hr/>
-		</nav>
-		<nav id="tags">
-			<h3><img src="{style}/icon_tag.png" alt="icon" /> Tags</h3>
-			{categories_encart}
-			<hr/>
-		</nav>
-		<nav id="liens">
-			<h3>Autres</h3>
-			<ul>
-				<li><a href="index.php">Blog</a></li>
-				<li><a href="index.php?mode=links">Liens</a></li>
-				<li><a href="index.php?mode=comments">Derniers commentaires</a></li>
-			</ul>
-			<hr/>
-		</nav>
-		<nav id="random">
-			<h3>Un article au hasard</h3>
-				<ul>
-					<li><a href="?random">Un article au hasard ?</a></li>
-				</ul>
-			<hr/>
-		</nav>
-		<nav id="rss">
-			<h4>Fils RSS</h4>
-			<ul>
-				<li><a href="rss.php"><img src="{style}/feed.png" alt="icon" /> RSS</a> : Blog</li>
-				<li><a href="rss.php?mode=links"><img src="{style}/feed.png" alt="icon" /> RSS</a> : Liens</li>
-			</ul>
-			<hr/>
-		</nav>
-	</section>
 
-	<section id="contenu">
+
+
+
+<main id="main">
+	<div id="contenu">
 		{BOUCLE_posts}
-
-			// ici il s'affichera ce qu'on veut : un article, un commentaire, un lien sauvé…
-			// les thèmes pour ces choses sont dans le dossier "template"
-			// chaque "objet" (lien, article, …) dispose de son propre formatage. 
 
 			// **** le texte que vous mettez ici (dans la "boucle") ne sera pas éxécuté ni affiché. ****
 
-		{/BOUCLE_posts}
-	</section>
+			// ici il s'affichera les articles, les commentaires, les liens…
+			// les thèmes pour ces choses sont dans le dossier "template"
+			// chaque "objet" (lien, article, …) dispose de son propre formatage. 
 
-	<br style="clear:both;" />
+		{/BOUCLE_posts}
+	</div>
+
 	{pagination}
 </main>
 
-<footer><b>{blog_auteur}</b>, tous droits réservés – Publié avec <a href="http://lehollandaisvolant.net/blogotext/" title="BlogoText">BlogoText</a> – Thème par <a href="http://lehollandaisvolant.net/" title="Timo van Neerden">Timo van Neerden</a></footer>
+<footer>
+	<div id="footnav">
+		<nav id="navigate">
+			{calendrier}
+		</nav>
+		<nav id="lastcom">
+			<h3>Derniers commentaires</h3>
+			{commentaires_encart}
+		</nav>
+	</div>
 
+	<div><a href="/">{blog_auteur}</a> - <span lang="en">Theme by <a href="http://lehollandaisvolant.net/">Timo van Neerden</a></span></div>
+	<div>(<a href="https://www.flickr.com/photos/73767885@N00/13938437179/">crédit image d’entête</a>)</div>
+
+</footer>
 <script>
 /* Tag script found at : http://www.siteduzero.com/tutoriel-3-34703-insertion-de-balises-dans-une-zone-de-texte.html */
 function insertTag(startTag, endTag, tag, tagType) {
@@ -120,16 +103,6 @@ function reply(code) {
 	field.scrollTop = 10000;
 	field.focus();
 }
-
-function resize(id, dht) {
-	var elem = document.getElementById(id);
-	var ht = elem.offsetHeight;
-	size = Number(ht)+Number(dht);
-	elem.style.height = size+"px";
-	return false;
-}
-
 </script>
-
 </body>
 </html>

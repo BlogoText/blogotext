@@ -148,7 +148,7 @@ function valider_form_fichier($fichier) {
 		}
 
 	} else { // on edit
-		if ($fichier['bt_filename'] == '') {
+		if ('' == $fichier['bt_filename']) {
 			$erreurs[] = 'nom de fichier invalide';
 		}
 	}

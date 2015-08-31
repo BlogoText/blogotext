@@ -27,7 +27,6 @@ operate_session();
 $GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
 $GLOBALS['liste_fichiers'] = open_serialzd_file($GLOBALS['fichier_liste_fichiers']);
 
-//debug ($GLOBALS['liste_fichiers']);
 // migration 2.1.0.0 => 2.1.0.1 FIXME : remove later
 if (!isset($GLOBALS['liste_fichiers'][0]['bt_path'])) {
 	foreach ($GLOBALS['liste_fichiers'] as $i => $file) {
@@ -36,11 +35,11 @@ if (!isset($GLOBALS['liste_fichiers'][0]['bt_path'])) {
 	file_put_contents($GLOBALS['fichier_liste_fichiers'], '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_fichiers']))).' */');
 }
 
-afficher_top($GLOBALS['lang']['label_resume']);
+afficher_html_head($GLOBALS['lang']['label_resume']);
 echo '<div id="top">'."\n";
-afficher_msg(ucfirst($GLOBALS['lang']['label_resume']));
+afficher_msg();
 echo moteur_recherche($GLOBALS['lang']['search_everywhere']);
-afficher_menu(pathinfo($_SERVER['PHP_SELF'], PATHINFO_BASENAME));
+afficher_topnav(pathinfo($_SERVER['PHP_SELF'], PATHINFO_BASENAME), ucfirst($GLOBALS['lang']['label_resume']));
 echo '</div>'."\n";
 
 $total_artic = liste_elements_count("SELECT count(ID) AS nbr FROM articles", array());
@@ -77,7 +76,7 @@ function scaled_size($tableau, $maximum) {
 */
 function get_tableau_date($data_type) {
 	$table_months = array();
-	for ($i = 18 ; $i >= 0 ; $i--) {
+	for ($i = 35 ; $i >= 0 ; $i--) {
 		$table_months[date('Ym', mktime(0, 0, 0, date("m")-$i, 1, date("Y")))] = 0;
 	}
 
@@ -119,25 +118,27 @@ if (!empty($_GET['q'])) {
 
 	echo '<h2>'.$GLOBALS['lang']['recherche'].' "<span style="font-style: italic">'.htmlspecialchars($_GET['q']).'</span>" :</h2>'."\n";
 	echo '<ul id="resultat-recherche">';
-	echo "\t".'<li><a href="commentaires.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_commentaires($nb_commentaires).'</a></li>';
-	echo "\t".'<li><a href="articles.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_articles($nb_articles).'</a></li>';
-	echo "\t".'<li><a href="links.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_liens($nb_liens).'</a></li>';
-	echo "\t".'<li><a href="fichiers.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_fichiers($nb_files).'</a></li>';
+	echo "\t".'<li><a href="commentaires.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_objets($nb_commentaires, 'commentaire').'</a></li>';
+	echo "\t".'<li><a href="articles.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_objets($nb_articles, 'article').'</a></li>';
+	echo "\t".'<li><a href="links.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_objets($nb_liens, 'link').'</a></li>';
+	echo "\t".'<li><a href="fichiers.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_objets($nb_files, 'fichier').'</a></li>';
 	echo '</ul>';
 }
 
 /* sinon, affiche les graphes. */
 
 else {
-	// print sur chaque div pour les articles.
+	mb_internal_encoding('UTF-8');
 	echo '<div id="graphs">'."\n";
 	$nothingyet = 0;
 
 	if (!$total_artic == 0) {
-		echo '<div class="graphique" id="articles"><h3>'.ucfirst($GLOBALS['lang']['label_articles']).' :</h3>'."\n";
-		$table = scaled_size(get_tableau_date('articles'), 130);
+		// print sur chaque div pour les articles.
+		echo '<p>'.ucfirst($GLOBALS['lang']['label_articles']).' :</p>'."\n";
+		echo '<div class="graphique" id="articles">'."\n";
+		$table = scaled_size(get_tableau_date('articles'), 150);
 		foreach ($table as $month => $data) {
-			echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(20-$data['nb_scale'], 0).'px"></div><span class="month-nb">'.$data['nb'].'</span><a href="articles.php?filtre='.$month.'"><span class="month-name">'.substr($month,4,2)." \n ".substr($month,2,2).'</span></a></div>';
+			echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(20-$data['nb_scale'], 0).'px"></div><span class="month-nb">'.$data['nb'].'</span><a href="articles.php?filtre='.$month.'"><span class="month-name">'.mb_substr(mois_en_lettres(substr($month,4,2)),0,3)."\n".substr($month,2,2).'</span></a></div>';
 		}
 		echo '</div>'."\n";
 	} else {
@@ -146,12 +147,12 @@ else {
 
 	if (!$total_comms == 0) {
 		// print sur chaque div pour les com.
-		echo '<div class="graphique" id="commentaires"><h3>'.ucfirst($GLOBALS['lang']['label_commentaires']).' :</h3>'."\n";
-		$table = scaled_size(get_tableau_date('commentaires'), 50);
+		echo '<p>'.ucfirst($GLOBALS['lang']['label_commentaires']).' :</p>'."\n";
+		echo '<div class="graphique" id="commentaires">'."\n";
+		$table = scaled_size(get_tableau_date('commentaires'), 150);
 		foreach ($table as $month => $data) {
-			echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(20-$data['nb_scale'], 0).'px"></div><a href="commentaires.php?filtre='.$month.'"><span class="month-name">'.mois_en_lettres(substr($month,4,2), 1).' '.substr($month,0,4).' : </span><span class="month-nb">'.nombre_commentaires($data['nb']).'</span></a></div>';
+			echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(20-$data['nb_scale'], 0).'px"></div><span class="month-nb">'.$data['nb'].'</span><a href="commentaires.php?filtre='.$month.'"><span class="month-name">'.mb_substr(mois_en_lettres(substr($month,4,2)),0,3)."\n".substr($month,2,2).'</span></a></div>';
 		}
-		echo '<a href="commentaires.php" class="comm-total">Total : '.nombre_commentaires($total_comms).'</a>'."\n";
 		echo '</div>'."\n";
 	} else {
 		$nothingyet++;
@@ -159,13 +160,12 @@ else {
 
 	if (!$total_links == 0) {
 		// print sur chaque div pour les liens.
-		echo '<div class="graphique" id="links"><h3>'.ucfirst($GLOBALS['lang']['label_links']).' :</h3>'."\n";
-		$table = scaled_size(get_tableau_date('links'), 50);
+		echo '<p>'.ucfirst($GLOBALS['lang']['label_links']).' :</p>'."\n";
+		echo '<div class="graphique" id="links">'."\n";
+		$table = scaled_size(get_tableau_date('links'), 150);
 		foreach ($table as $month => $data) {
-			echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(20-$data['nb_scale'], 0).'px"></div><a href="links.php?filtre='.$month.'"><span class="month-name">'.mois_en_lettres(substr($month,4,2), 1).' '.substr($month,0,4).' : </span><span class="month-nb">'.nombre_liens($data['nb']).'</span></a></div>';
+			echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(20-$data['nb_scale'], 0).'px"></div><span class="month-nb">'.$data['nb'].'</span><a href="links.php?filtre='.$month.'"><span class="month-name">'.mb_substr(mois_en_lettres(substr($month,4,2)),0,3).".\n".substr($month,2,2).'</span></a></div>';
 		}
-
-		echo '<a href="links.php" class="links-total">Total : '.nombre_liens($total_links).'</a>'."\n";
 		echo '</div>'."\n";
 	} else {
 		$nothingyet++;

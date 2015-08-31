@@ -120,7 +120,7 @@ elseif ($GLOBALS['step'] == '2') {
 
 // affiche le form de choix de langue
 function afficher_form_1($erreurs='') {
-	afficher_top('Install');
+	afficher_html_head('Install');
 	echo '<div id="axe">'."\n";
 	echo '<div id="pageauth">'."\n";
 	echo '<h1>'.$GLOBALS['nom_application'].'</h1>'."\n";
@@ -149,39 +149,45 @@ function afficher_form_1($erreurs='') {
 		die;
 	}
 
-	echo '<form method="post" action="install.php" >' ;
+	echo '<form method="post" action="install.php">'."\n";
+	echo '<div id="install">'."\n";
+	echo '<p>';
 	form_langue_install('Choisissez votre langue / Choose your language: ');
 	echo hidden_input('verif_envoi_1', '1');
-	echo '<input class="inpauth blue-square" type="submit" name="enregistrer" value="Ok" />';
-	echo '</form>' ;
+	echo '</p>';
+	echo '<input class="inpauth blue-square" type="submit" name="enregistrer" value="Ok" />'."\n";
+	echo '<div>'."\n";
+	echo '</form>'."\n";
 }
 
 // form pour login + mdp + url
 function afficher_form_2($erreurs='') {
-	afficher_top('Install');
+	afficher_html_head('Install');
 	echo '<div id="axe">'."\n";
 	echo '<div id="pageauth">'."\n";
 	echo '<h1>'.$GLOBALS['nom_application'].'</h1>'."\n";
 	echo '<h1 id="step">'.$GLOBALS['lang']['install'].'</h1>'."\n";
 	echo erreurs($erreurs);
 	echo '<form method="post" action="install.php?s='.$GLOBALS['step'].'&amp;l='.$GLOBALS['lang']['id'].'" onsubmit="return verifForm2(this)">'."\n".'<div id="erreurs_js" class="erreurs"></div>'."\n";
+	echo '<div id="install">'."\n";
 	echo '<p>';
-	echo '<label for="identifiant">'.$GLOBALS['lang']['install_id'].'</label><input type="text" name="identifiant" id="identifiant" size="30" value="" class="text" />'."\n";
+	echo '<label for="identifiant">'.$GLOBALS['lang']['install_id'].' </label><input type="text" name="identifiant" id="identifiant" size="30" value="" class="text" />'."\n";
 	echo '</p>'."\n";
 	echo '<p>';
-	echo '<label for="mdp">'.$GLOBALS['lang']['install_mdp'].'</label><input type="password" name="mdp" id="mdp" size="30" value="" class="text" autocomplete="off" />'."\n";
+	echo '<label for="mdp">'.$GLOBALS['lang']['install_mdp'].' </label><input type="password" name="mdp" id="mdp" size="30" value="" class="text" autocomplete="off" />'."\n";
 	echo '</p>'."\n";
 	echo '<p>';
-	echo '<label for="mdp_rep">'.$GLOBALS['lang']['install_remdp'].'</label><input type="password" name="mdp_rep" id="mdp_rep" size="30" value="" class="text" autocomplete="off" />'."\n";
+	echo '<label for="mdp_rep">'.$GLOBALS['lang']['install_remdp'].' </label><input type="password" name="mdp_rep" id="mdp_rep" size="30" value="" class="text" autocomplete="off" />'."\n";
 	$lien = str_replace('admin/install.php', '', 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF']);
 	echo '</p>'."\n";
 	echo '<p>';
-	echo '<label for="racine">'.$GLOBALS['lang']['pref_racine'].'</label><input type="text" name="racine" id="racine" size="30" value="'.$lien.'" class="text" />'."\n";
+	echo '<label for="racine">'.$GLOBALS['lang']['pref_racine'].' </label><input type="text" name="racine" id="racine" size="30" value="'.$lien.'" class="text" />'."\n";
 	echo '</p>'."\n";
 	echo hidden_input('comm_defaut_status', '1');
 	echo hidden_input('langue', $GLOBALS['lang']['id']);
 	echo hidden_input('verif_envoi_2', '1');
 	echo '<input class="inpauth blue-square" type="submit" name="enregistrer" value="Ok" />'."\n";
+	echo '</div>'."\n";
 	echo '</form>'."\n";
 }
 
@@ -189,15 +195,14 @@ function afficher_form_2($erreurs='') {
 // form choix SGBD
 function afficher_form_3($erreurs='') {
 
-	afficher_top('Install');
+	afficher_html_head('Install');
 	echo '<div id="axe">'."\n";
 	echo '<div id="pageauth">'."\n";
 	echo '<h1>'.$GLOBALS['nom_application'].'</h1>'."\n";
 	echo '<h1 id="step">'.$GLOBALS['lang']['install'].'</h1>'."\n";
 	echo erreurs($erreurs);
 	echo '<form method="post" action="'.basename($_SERVER['PHP_SELF']).'?'.$_SERVER['QUERY_STRING'].'">'."\n";
-
-	
+	echo '<div id="install">'."\n";
 	echo '<p><label>'.$GLOBALS['lang']['install_choose_sgdb'].'</label>';
 	echo '<select id="sgdb" name="sgdb" onchange="show_mysql_form()">'."\n";
 	if (extension_loaded('pdo_sqlite')) {
@@ -225,6 +230,7 @@ function afficher_form_3($erreurs='') {
 	echo hidden_input('verif_envoi_3', '1');
 	echo '<input class="inpauth blue-square" type="submit" name="enregistrer" value="Ok" />'."\n";
 
+	echo '</div>'."\n";
 	echo '</form>'."\n";
 
 }

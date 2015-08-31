@@ -348,12 +348,12 @@ function traiter_form_link($link) {
 	$query_string = str_replace(((isset($_GET['msg'])) ? '&msg='.$_GET['msg'] : ''), '', $_SERVER['QUERY_STRING']);
 	if ( isset($_POST['enregistrer'])) {
 		$result = bdd_lien($link, 'enregistrer-nouveau');
-		$redir = basename($_SERVER['PHP_SELF']).'?id='.$link['bt_id'].'&msg=confirm_link_edit';
+		$redir = basename($_SERVER['PHP_SELF']).'?msg=confirm_link_ajout';
 	}
 
 	elseif (isset($_POST['editer'])) {
 		$result = bdd_lien($link, 'modifier-existant');
-		$redir = basename($_SERVER['PHP_SELF']).'?id='.$link['bt_id'].'&msg=confirm_link_edit';
+		$redir = basename($_SERVER['PHP_SELF']).'?msg=confirm_link_edit';
 	}
 
 	elseif ( isset($_POST['supprimer'])) {

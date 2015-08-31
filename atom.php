@@ -69,7 +69,7 @@ if (isset($_GET['id']) and preg_match('#^[0-9]{14}$#', $_GET['id'])) {
 		}
 	} else {
 		echo '<entry>'."\n";
-			echo '<title>'.$GLOBALS['lang']['note_no_comment'].'</title>'."\n";
+			echo '<title>'.$GLOBALS['lang']['note_no_commentaire'].'</title>'."\n";
 			echo '<id>'.$GLOBALS['racine'].'</id>'."\n";
 			echo '<link href="'.$GLOBALS['racine'].'index.php" />'."\n";
 			echo '<updated>'.date('r').'</updated>'."\n";
