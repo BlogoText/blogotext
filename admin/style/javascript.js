@@ -1014,7 +1014,7 @@ function markAsRead(what, url) {
 			if (resp.indexOf("Success") == 0) {
 				token = resp.substr(7, 40);
 
-				var liList = document.querySelectorAll('# post-list .li-post-bloc');
+				var liList = document.querySelectorAll('#post-list .li-post-bloc');
 				for (var i = 0, len = liList.length ; i < len ; i++) { liList[i].classList.add('read'); }
 				// mark feed list items as containing 0 unread
 				for (var i = 0, liList = document.querySelectorAll('#feed-list li'), len = liList.length ; i < len ; i++) {
