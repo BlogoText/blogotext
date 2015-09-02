@@ -60,9 +60,9 @@ function scaled_size($tableau, $maximum) {
 	$return = array();
 	foreach ($tableau as $key => $value) {
 		if ($ratio != 0) {
-			$return[$key] = array('nb'=> $value , 'nb_scale' => floor($value/$ratio));
+			$return[] = array('nb'=> $value , 'nb_scale' => floor($value/$ratio), 'date' => $key);
 		} else {
-			$return[$key] = array('nb'=> $value , 'nb_scale' => 0);
+			$return[] = array('nb'=> $value , 'nb_scale' => 0, 'date' => $key);
 		}
 	}
 	return $return;
@@ -137,8 +137,11 @@ else {
 		echo '<p>'.ucfirst($GLOBALS['lang']['label_articles']).' :</p>'."\n";
 		echo '<div class="graphique" id="articles">'."\n";
 		$table = scaled_size(get_tableau_date('articles'), 150);
-		foreach ($table as $month => $data) {
-			echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(20-$data['nb_scale'], 0).'px"></div><span class="month-nb">'.$data['nb'].'</span><a href="articles.php?filtre='.$month.'"><span class="month-name">'.mb_substr(mois_en_lettres(substr($month,4,2)),0,3)."\n".substr($month,2,2).'</span></a></div>';
+		while ($table[0]['nb'] === 0) {
+			$first = array_shift($table);
+		}
+		foreach ($table as $i => $data) {
+			echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(20-$data['nb_scale'], 0).'px"></div><span class="month-nb">'.$data['nb'].'</span><a href="articles.php?filtre='.$data['date'].'"><span class="month-name">'.mb_substr(mois_en_lettres(substr($data['date'],4,2)),0,3)."\n".substr($data['date'],2,2).'</span></a></div>';
 		}
 		echo '</div>'."\n";
 	} else {
@@ -150,8 +153,11 @@ else {
 		echo '<p>'.ucfirst($GLOBALS['lang']['label_commentaires']).' :</p>'."\n";
 		echo '<div class="graphique" id="commentaires">'."\n";
 		$table = scaled_size(get_tableau_date('commentaires'), 150);
-		foreach ($table as $month => $data) {
-			echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(20-$data['nb_scale'], 0).'px"></div><span class="month-nb">'.$data['nb'].'</span><a href="commentaires.php?filtre='.$month.'"><span class="month-name">'.mb_substr(mois_en_lettres(substr($month,4,2)),0,3)."\n".substr($month,2,2).'</span></a></div>';
+		while ($table[0]['nb'] === 0) {
+			$first = array_shift($table);
+		}
+		foreach ($table as $i => $data) {
+			echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(20-$data['nb_scale'], 0).'px"></div><span class="month-nb">'.$data['nb'].'</span><a href="commentaires.php?filtre='.$data['date'].'"><span class="month-name">'.mb_substr(mois_en_lettres(substr($data['date'],4,2)),0,3)."\n".substr($data['date'],2,2).'</span></a></div>';
 		}
 		echo '</div>'."\n";
 	} else {
@@ -163,8 +169,11 @@ else {
 		echo '<p>'.ucfirst($GLOBALS['lang']['label_links']).' :</p>'."\n";
 		echo '<div class="graphique" id="links">'."\n";
 		$table = scaled_size(get_tableau_date('links'), 150);
-		foreach ($table as $month => $data) {
-			echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(20-$data['nb_scale'], 0).'px"></div><span class="month-nb">'.$data['nb'].'</span><a href="links.php?filtre='.$month.'"><span class="month-name">'.mb_substr(mois_en_lettres(substr($month,4,2)),0,3).".\n".substr($month,2,2).'</span></a></div>';
+		while ($table[0]['nb'] === 0) {
+			$first = array_shift($table);
+		}
+		foreach ($table as $i => $data) {
+			echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(20-$data['nb_scale'], 0).'px"></div><span class="month-nb">'.$data['nb'].'</span><a href="links.php?filtre='.$data['date'].'"><span class="month-name">'.mb_substr(mois_en_lettres(substr($data['date'],4,2)),0,3).".\n".substr($data['date'],2,2).'</span></a></div>';
 		}
 		echo '</div>'."\n";
 	} else {
