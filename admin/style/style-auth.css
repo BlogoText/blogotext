@@ -9,7 +9,8 @@
 	text-align: center;
 }
 
-#auth {
+#auth,
+#install {
 	width: 320px;
 	margin: auto;
 	box-sizing: border-box;
@@ -17,10 +18,10 @@
 
 #auth p,
 #install p {
-	display: flex;
+//	display: flex;
 	justify-content: center;
-	align-items: flex-end;
-	height: 40px;
+//	align-items: flex-end;
+	min-height: 40px;
 	padding: 5px 0;
 }
 
@@ -96,7 +97,7 @@
 
 
 #install p label {
-	text-align: right;
+	text-align: left;
 	width: 220px;
 }
 

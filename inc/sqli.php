@@ -138,6 +138,7 @@ function create_tables() {
 					$wanted_tables = array('commentaires', 'articles', 'links', 'rss');
 					foreach ($wanted_tables as $i => $name) {
 							$results = $db_handle->query($GLOBALS['dbase_structure'][$name]."DEFAULT CHARSET=utf8");
+							$results->closeCursor();
 					}
 				} catch (Exception $e) {
 					die('Erreur 2: '.$e->getMessage());

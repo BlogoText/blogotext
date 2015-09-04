@@ -155,7 +155,7 @@ function afficher_form_1($erreurs='') {
 	form_langue_install('Choisissez votre langue / Choose your language: ');
 	echo hidden_input('verif_envoi_1', '1');
 	echo '</p>';
-	echo '<input class="inpauth blue-square" type="submit" name="enregistrer" value="Ok" />'."\n";
+	echo '<p><input class="inpauth blue-square" type="submit" name="enregistrer" value="Ok" /></p>'."\n";
 	echo '<div>'."\n";
 	echo '</form>'."\n";
 }
