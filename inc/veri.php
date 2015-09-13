@@ -175,7 +175,7 @@ function valider_form_rss() {
 	}
 
 	elseif (isset($_POST['mark-as-read'])) {
-		if ( !(in_array($_POST['mark-as-read'], array('all', 'site', 'post', 'folder'))) ) {
+		if ( !(in_array($_POST['mark-as-read'], array('all', 'site', 'post', 'folder', 'postlist'))) ) {
 			$erreurs[] = $GLOBALS['lang']['err_feed_wrong_param'];
 		}
 	}

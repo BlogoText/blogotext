@@ -758,8 +758,32 @@ function openItem(thisPost) {
 		window.scrollBy(0,-10);
 	}
 
-	markAsRead('post', thisPost.id.substr(2));
+	if (!thisPost.classList.contains('read')) {
+		// instead of marking an item as read every time an item is opened, 
+		// creates a queue of 10 and makes a request for all ten in once.
+
+		markAsRead('post', thisPost.id.substr(2));
+		addToReadQueue(thisPost.id.substr(2));
+	}
+
+
 	return false;
+}
+
+/* adding an element to the queue of items that have been read (before syncing them) */
+function addToReadQueue(elem) {
+	readQueue.count++;
+	readQueue.urlList.push(elem);
+
+	console.log(JSON.stringify(readQueue.urlList));
+
+	// if 10 items in queue, send XHR request and reset list to zero.
+	if (readQueue.count == 10) {
+		sendMarkReadRequest('postlist', JSON.stringify(readQueue.urlList), true);
+		readQueue.urlList = [];
+		readQueue.count = 0;
+	}
+
 }
 
 /* Open all the items to make the visible, but does not mark them as read */
@@ -842,9 +866,6 @@ function rss_feedlist(RssPosts) {
 		shareLink.classList.add("lien-share");
 		share.appendChild(shareLink);
 
-
-
-	
 		var datesite = document.createElement("div");
 		datesite.classList.add('datesite');
 		datesite.appendChild(site);
@@ -997,11 +1018,7 @@ function markAsRead(what, url) {
 	var notifNode = document.getElementById('message-return');
 	var gCount = document.querySelector('#global-count-posts');
 
-	var xhr = new XMLHttpRequest();
-	xhr.open('POST', '_rss.ajax.php', true);
-
 	// if all data is charged to be marked as read, ask confirmation.
-	loading_animation('on');
 	if (what == 'all') {
 		var retVal = confirm("Tous les éléments seront marqués comme lu ?");
 		if (!retVal) {
@@ -1009,181 +1026,182 @@ function markAsRead(what, url) {
 			return false;
 		}
 
-		xhr.onload = function() {
-			var resp = this.responseText;
-			if (resp.indexOf("Success") == 0) {
-				token = resp.substr(7, 40);
+		var liList = document.querySelectorAll('#post-list .li-post-bloc');
+		for (var i = 0, len = liList.length ; i < len ; i++) { liList[i].classList.add('read'); }
+		// mark feed list items as containing 0 unread
+		for (var i = 0, liList = document.querySelectorAll('#feed-list li'), len = liList.length ; i < len ; i++) {
+			liList[i].classList.remove('feed-not-null');
+			liList[i].dataset.nbrun = 0;
+			liList[i].querySelector('span').firstChild.nodeValue = '('+liList[i].dataset.nbrun+')';
+		}
 
-				var liList = document.querySelectorAll('#post-list .li-post-bloc');
-				for (var i = 0, len = liList.length ; i < len ; i++) { liList[i].classList.add('read'); }
-				// mark feed list items as containing 0 unread
-				for (var i = 0, liList = document.querySelectorAll('#feed-list li'), len = liList.length ; i < len ; i++) {
-					liList[i].classList.remove('feed-not-null');
-					liList[i].dataset.nbrun = 0;
-					liList[i].querySelector('span').firstChild.nodeValue = '('+liList[i].dataset.nbrun+')';
-				}
+		// mark global counter
+		gCount.dataset.nbrun = 0;
+		gCount.firstChild.nodeValue = '(0)';
 
-				// mark global counter
-				gCount.dataset.nbrun = 0;
-				gCount.firstChild.nodeValue = '(0)';
+		// markitems as read in (var)Rss list.
+		for (var i = 0, len = Rss.length ; i < len ; i++) { Rss[i].statut = 0; }
 
-				// markitems as read in (var)Rss list.
-				for (var i = 0, len = Rss.length ; i < len ; i++) { Rss[i].statut = 0; }
-			} else { notifNode.innerHTML = resp; }
-			loading_animation('off');
-		};
+		loading_animation('off');
 	}
+
 
 	else if (what == 'site') {
 		// mark all post from one url as read
 
-		xhr.onload = function() {
-			var resp = this.responseText;
-			if (resp.indexOf("Success") == 0) {
-				token = resp.substr(7, 40);
-				// mark all html items listed as "read"
-				var liList = document.querySelectorAll('#post-list .li-post-bloc');
-				for (var i = 0, len = liList.length ; i < len ; i++) { liList[i].classList.add('read'); }
-				var activeSite = document.querySelector('.active-site');
-				// mark feeds in feed-list as containing (0) unread
-				activeSite.classList.remove('feed-not-null');
-				var liCount = activeSite.dataset.nbrun;
-				activeSite.dataset.nbrun = 0;
-				activeSite.querySelector('span').firstChild.nodeValue = '(0)';
+		// mark all html items listed as "read"
+		var liList = document.querySelectorAll('#post-list .li-post-bloc');
+		for (var i = 0, len = liList.length ; i < len ; i++) { liList[i].classList.add('read'); }
+		var activeSite = document.querySelector('.active-site');
+		// mark feeds in feed-list as containing (0) unread
+		activeSite.classList.remove('feed-not-null');
+		var liCount = activeSite.dataset.nbrun;
+		activeSite.dataset.nbrun = 0;
+		activeSite.querySelector('span').firstChild.nodeValue = '(0)';
 
-				// mark global counter
-				gCount.dataset.nbrun -= liCount;
-				gCount.firstChild.nodeValue = '('+gCount.dataset.nbrun+')'; 
+		// mark global counter
+		gCount.dataset.nbrun -= liCount;
+		gCount.firstChild.nodeValue = '('+gCount.dataset.nbrun+')'; 
 
+		// mark items as read in (var)Rss.list.
+		for (var i = 0, len = Rss.length ; i < len ; i++) { if (Rss[i].feed == url) { Rss[i].statut = 0; } }
 
-				// mark items as read in (var)Rss.list.
-				for (var i = 0, len = Rss.length ; i < len ; i++) { if (Rss[i].feed == url) { Rss[i].statut = 0; } }
+		// remove X feeds in folder-count (if site is in a folder)
+		if (activeSite.parentNode.parentNode.dataset.folder) {
+			var fCount = activeSite.parentNode.parentNode.getElementsByTagName('span')[1];
 
-				// remove X feeds in folder-count (if site is in a folder)
-				if (activeSite.parentNode.parentNode.dataset.folder) {
-					var fCount = activeSite.parentNode.parentNode.getElementsByTagName('span')[1];
+			activeSite.parentNode.parentNode.dataset.nbrun -= liCount;
+			fCount.firstChild.nodeValue = '('+activeSite.parentNode.parentNode.dataset.nbrun+')';
 
-					activeSite.parentNode.parentNode.dataset.nbrun -= liCount;
-					fCount.firstChild.nodeValue = '('+activeSite.parentNode.parentNode.dataset.nbrun+')';
+			if (activeSite.parentNode.parentNode.dataset.nbrun == 0) {
+				activeSite.parentNode.parentNode.classList.remove('feed-not-null');
+			}
+		}
 
-					if (activeSite.parentNode.parentNode.dataset.nbrun == 0) {
-						activeSite.parentNode.parentNode.classList.remove('feed-not-null');
-					}
-				}
-
-			} else { notifNode.innerHTML = resp; }
-			loading_animation('off');
-		};
+		loading_animation('off');
 	}
 
 	else if (what == 'folder') {
 		// mark all post from one folder as read
-		xhr.onload = function() {
-			var resp = this.responseText;
-			if (resp.indexOf("Success") == 0) {
-				token = resp.substr(7, 40);
-				var activeSite = document.querySelector('.active-site');
 
-				// mark all elements listed as class="read"
-				var liList = document.querySelectorAll('#post-list .li-post-bloc');
-				for (var i = 0, len = liList.length ; i < len ; i++) { liList[i].classList.add('read'); }
+		var activeSite = document.querySelector('.active-site');
 
-				// mark folder row in feeds-list as containing 0 unread
-				activeSite.classList.remove('feed-not-null');
-				var liCount = activeSite.dataset.nbrun;
-				activeSite.dataset.nbrun = 0;
-				activeSite.querySelector('span span').firstChild.nodeValue = '(0)';
+		// mark all elements listed as class="read"
+		var liList = document.querySelectorAll('#post-list .li-post-bloc');
+		for (var i = 0, len = liList.length ; i < len ; i++) { liList[i].classList.add('read'); }
 
-				// mark global counter
-				gCount.dataset.nbrun -= liCount;
-				gCount.firstChild.nodeValue = '('+gCount.dataset.nbrun+')'; 
+		// mark folder row in feeds-list as containing 0 unread
+		activeSite.classList.remove('feed-not-null');
+		var liCount = activeSite.dataset.nbrun;
+		activeSite.dataset.nbrun = 0;
+		activeSite.querySelector('span span').firstChild.nodeValue = '(0)';
 
-				// mark sites in folder as read aswell
-				var siteList = activeSite.querySelectorAll('.feed-not-null');
-				for (var i = 0, len = siteList.length ; i < len ; i++) {
-					// span counter
-					siteList[i].querySelector('span').firstChild.nodeValue = '(0)'
-					// dataset counter
-					siteList[i].dataset.nbrun = 0;
-					// class un read 
-					siteList[i].classList.remove('feed-not-null');
-				}
+		// mark global counter
+		gCount.dataset.nbrun -= liCount;
+		gCount.firstChild.nodeValue = '('+gCount.dataset.nbrun+')'; 
 
-				// mark items as read in (var)Rss list.
-				for (var i = 0, len = Rss.length ; i < len ; i++) { if (Rss[i].folder == url) { Rss[i].statut = 0; } }
-			} else { notifNode.innerHTML = resp; }
-			loading_animation('off');
-		};
+		// mark sites in folder as read aswell
+		var siteList = activeSite.querySelectorAll('.feed-not-null');
+		for (var i = 0, len = siteList.length ; i < len ; i++) {
+			// span counter
+			siteList[i].querySelector('span').firstChild.nodeValue = '(0)'
+			// dataset counter
+			siteList[i].dataset.nbrun = 0;
+			// class un read 
+			siteList[i].classList.remove('feed-not-null');
+		}
+
+		// mark items as read in (var)Rss list.
+		for (var i = 0, len = Rss.length ; i < len ; i++) { if (Rss[i].folder == url) { Rss[i].statut = 0; } }
+
+		loading_animation('off');
 	}
 
 	else if (what == 'post') {
+		// mark post with specific URL/ID as read
 
-		// if post already as read but has been closed afterwards, do not recount if we reopen it
-		if (document.getElementById('i_'+url).classList.contains('read')) {
-			loading_animation('off');
-			xhr.abort();
-			return false;
+		// add read class on post that is open or read
+		document.getElementById('i_'+url).classList.add('read');
+
+		// remove "1" from feed counter
+		var feedlink = document.getElementById('i_'+url).dataset.feedUrl;
+		for (var i = 0, liList = document.querySelectorAll('#feed-list li'), len = liList.length ; i < len ; i++) {
+			// remove 1 unread in url counter
+			if (liList[i].dataset.feedurl == feedlink) {
+				var liCount = liList[i].dataset.nbrun;
+				liList[i].dataset.nbrun -= 1;
+				liList[i].querySelector('span').firstChild.nodeValue = '('+liList[i].dataset.nbrun+')';
+				if (liList[i].dataset.nbrun == 0) {
+					liList[i].classList.remove('feed-not-null');
+				}
+
+				// remove "1" from folder counter (if folder applies)
+				if (liList[i].parentNode.parentNode.dataset.folder) {
+					var fCount = liList[i].parentNode.parentNode.getElementsByTagName('span')[1];
+
+					liList[i].parentNode.parentNode.dataset.nbrun -= 1;
+					fCount.firstChild.nodeValue = '('+liList[i].parentNode.parentNode.dataset.nbrun+')';
+
+					if (liList[i].parentNode.parentNode.dataset.nbrun == 0) {
+						liList[i].parentNode.parentNode.classList.remove('feed-not-null');
+					}
+				}
+
+				break;
+			}
 		}
 
-		// mark post with specific URL/ID as read
-		xhr.onload = function() {
-			var resp = this.responseText;
-			if (resp.indexOf("Success") == 0) {
-				token = resp.substr(7, 40);
-				// add read class on post that is open or read
-				document.getElementById('i_'+url).classList.add('read');
+		// mark global counter
+		gCount.dataset.nbrun -= 1;
+		gCount.firstChild.nodeValue = '('+gCount.dataset.nbrun+')'; 
 
-				// remove "1" from feed counter
-				var feedlink = document.getElementById('i_'+url).dataset.feedUrl;
-				for (var i = 0, liList = document.querySelectorAll('#feed-list li'), len = liList.length ; i < len ; i++) {
-					// remove 1 unread in url counter
-					if (liList[i].dataset.feedurl == feedlink) {
-						var liCount = liList[i].dataset.nbrun;
-						liList[i].dataset.nbrun -= 1;
-						liList[i].querySelector('span').firstChild.nodeValue = '('+liList[i].dataset.nbrun+')';
-						if (liList[i].dataset.nbrun == 0) {
-							liList[i].classList.remove('feed-not-null');
-						}
-
-						// remove "1" from folder counter (if folder applies)
-						if (liList[i].parentNode.parentNode.dataset.folder) {
-							var fCount = liList[i].parentNode.parentNode.getElementsByTagName('span')[1];
-
-							liList[i].parentNode.parentNode.dataset.nbrun -= 1;
-							fCount.firstChild.nodeValue = '('+liList[i].parentNode.parentNode.dataset.nbrun+')';
-
-							if (liList[i].parentNode.parentNode.dataset.nbrun == 0) {
-								liList[i].parentNode.parentNode.classList.remove('feed-not-null');
-							}
-						}
-
-						break;
-					}
-				}
-
-				// mark global counter
-				gCount.dataset.nbrun -= 1;
-				gCount.firstChild.nodeValue = '('+gCount.dataset.nbrun+')'; 
-
-				// markitems as read in (var)Rss list.
-				for (var i = 0, len = Rss.length ; i < len ; i++) {
-					if (Rss[i].id == url) {
-						Rss[i].statut = 0;
-						break;
-					}
-				}
-			} else { notifNode.innerHTML = resp; }
-			loading_animation('off');
-		};
+		// markitems as read in (var)Rss list.
+		for (var i = 0, len = Rss.length ; i < len ; i++) {
+			if (Rss[i].id == url) {
+				Rss[i].statut = 0;
+				break;
+			}
+		}
+		loading_animation('off');
 	}
 
+	return false;
+}
+
+/* sends the AJAX request */
+function sendMarkReadRequest(what, url, async) {
+	loading_animation('on');
+	var notifDiv = document.createElement('div');
+	var notifNode = document.getElementById('message-return');
+
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', '_rss.ajax.php', async);
+
+	// onload
+	xhr.onload = function() {
+		var resp = this.responseText;
+		if (resp.indexOf("Success") == 0) {
+			token = resp.substr(7, 40);
+			if (what !== 'postlist') {
+				markAsRead(what, url);
+			}
+			loading_animation('off');
+			return true;
+		} else {
+			loading_animation('off');
+			notifNode.innerHTML = resp;
+			return false;
+		}
+	};
+
+	// onerror
 	xhr.onerror = function(e) {
 		loading_animation('off');
 		// adding notif
-		notifDiv.textContent = 'AJAX Error' +e.target.status;
+		notifDiv.textContent = 'AJAX Error ' +e.target.status;
 		notifDiv.classList.add('no_confirmation');
 		document.getElementById('top').appendChild(notifDiv);
-
+		notifNode.innerHTML = resp;
 	};
 
 	// prepare and send FormData
@@ -1193,8 +1211,10 @@ function markAsRead(what, url) {
 	formData.append('url', url);
 	xhr.send(formData);
 
-	return false;
 }
+
+
+
 
 /* in RSS config : mark a feed as "to remove" */
 function markAsRemove(link) {

@@ -408,7 +408,7 @@ function liste_tags($billet, $html_link) {
 /* From DB : returns a HTML list with the feeds (the left panel) */
 function feed_list_html() {
 	// First item : button with all feeds
-	$html = "\t\t".'<li class="active-site"><button type="button" onclick="document.getElementById(\'markasread\').onclick=function(){markAsRead(\'all\',\'\');}; return rss_feedlist(Rss);">'.$GLOBALS['lang']['rss_label_all_feeds'].'</button><span id="global-count-posts" data-nbrun=""></span></li>'."\n";
+	$html = "\t\t".'<li class="active-site"><button type="button" onclick="document.getElementById(\'markasread\').onclick=function(){sendMarkReadRequest(\'all\',\'\', true);}; return rss_feedlist(Rss);">'.$GLOBALS['lang']['rss_label_all_feeds'].'</button><span id="global-count-posts" data-nbrun=""></span></li>'."\n";
 	$feeds_nb = rss_count_feed();
 
 	$feed_urls = array();
@@ -428,7 +428,7 @@ function feed_list_html() {
 		$li_html = "";
 		$folder_count = 0;
 		foreach ($folder as $j => $feed) {
-			$js = 'onclick="document.getElementById(\'markasread\').onclick=function(){markAsRead(\'site\', \''.$feed['link'].'\');}; sortSite(this);"';
+			$js = 'onclick="document.getElementById(\'markasread\').onclick=function(){sendMarkReadRequest(\'site\', \''.$feed['link'].'\', true);}; sortSite(this);"';
 			if (array_key_exists($feed['link'], $feed_urls) and $feed_urls[$feed['link']]['nbrun'] != 0) {
 				$li_html .= "\t\t".'<li class="feed-not-null" data-nbrun="'.$feed_urls[$feed['link']]['nbrun'].'" data-feedurl="'.$feed['link'].'" title="'.$feed['link'].'">';
 				$li_html .= '<button type="button" '.(($feed['iserror'] > 2) ? 'class="feed-error" ': ' ' ).$js.'>'.$feed['title'].'</button>';
@@ -448,7 +448,7 @@ function feed_list_html() {
 			$html .= "\t\t".'<li class="feed-folder'.(($folder_count > 0) ? ' feed-not-null' : '').'" data-nbrun="'.$folder_count.'" data-folder="'.$i.'">'."\n";
 			$html .= "\t\t\t".'<span class="feedtitle">'."\n";
 			$html .= "\t\t\t\t".'<button type="button" onclick="return hideFolder(this)" class="unfold">+</button>'."\n";
-			$html .= "\t\t\t\t".'<button type="button" onclick="document.getElementById(\'markasread\').onclick=function(){markAsRead(\'folder\', \''.$i.'\');}; sortFolder(this);">'.$i.'</button><span>('.$folder_count.')</span>'."\n";
+			$html .= "\t\t\t\t".'<button type="button" onclick="document.getElementById(\'markasread\').onclick=function(){sendMarkReadRequest(\'folder\', \''.$i.'\', true);}; sortFolder(this);">'.$i.'</button><span>('.$folder_count.')</span>'."\n";
 			$html .= "\t\t\t".'</span>'."\n";
 			$html .= "\t\t\t".'<ul>'."\n\t\t";
 		}

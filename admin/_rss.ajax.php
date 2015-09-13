@@ -131,6 +131,13 @@ if (isset($_POST['mark-as-read'])) {
 		$array = array($folder);
 	}
 
+	elseif ($what == 'postlist' and !empty($_POST['url'])) {
+		$list = json_decode($_POST['url']);
+		$questionmarks = str_repeat("?,", count($list)-1)."?";
+		$query = 'UPDATE rss SET bt_statut=0 WHERE bt_id IN ('.$questionmarks.')';
+		$array = $list;
+	}
+
 	try {
 		$req = $GLOBALS['db_handle']->prepare($query);
 		$req->execute($array);
