@@ -235,9 +235,9 @@ function suppr_comm(button) {
 	var notifDiv = document.createElement(\'div\');
 	var reponse = window.confirm(\''.$GLOBALS['lang']['question_suppr_comment'].'\');
 	var div_bloc = document.getElementById(button.parentNode.parentNode.parentNode.parentNode.id);
-	div_bloc.classList.add(\'ajaxloading\');
 
 	if (reponse == true) {
+		div_bloc.classList.add(\'ajaxloading\');
 		var xhr = new XMLHttpRequest();
 		xhr.open(\'POST\', \'commentaires.php\', true);
 
