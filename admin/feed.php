@@ -65,7 +65,7 @@ else {
 	$out_html .= "\t\t".'<span id="message-return"></span>'."\n";
 	$out_html .= "\t\t".'<ul>'."\n";
 	$out_html .= "\t\t\t".'<li><button type="button" onclick="refresh_all_feeds(this);" title="'.$GLOBALS['lang']['rss_label_refresh'].'"></button></li>'."\n";
-	$out_html .= "\t\t\t".'<li><button type="button" onclick="markAsRead(\'all\', \'\');" id="markasread" title="'.$GLOBALS['lang']['rss_label_markasread'].'"></button></li>'."\n";
+	$out_html .= "\t\t\t".'<li><button type="button" onclick="sendMarkReadRequest(\'all\', \'\', true);" id="markasread" title="'.$GLOBALS['lang']['rss_label_markasread'].'"></button></li>'."\n";
 	$out_html .= "\t\t\t".'<li><button type="button" onclick="openAllItems(this);" title="'.$GLOBALS['lang']['rss_label_unfoldall'].'"></button></li>'."\n";
 	$out_html .= "\t\t\t".'<li><button type="button" onclick="addNewFeed();" title="'.$GLOBALS['lang']['rss_label_addfeed'].'"></button></li>'."\n";
 	$out_html .= "\t\t\t".'<li><button type="button" onclick="window.location= \'?config\';" title="'.$GLOBALS['lang']['rss_label_config'].'"></button></li>'."\n";
@@ -90,11 +90,24 @@ else {
 	echo "\n".'<script type="text/javascript">'."\n";
 	echo 'var token = \''.new_token().'\';'."\n";
 	echo 'var openAllSwich = \'open\';'."\n";
+	echo 'var readQueue = {"count": "0", "urlList": []};'."\n";
 	echo 'var Rss = rss_entries.list;'."\n";
 	echo 'window.addEventListener(\'load\', function(){
 				rss_feedlist(Rss);
 				window.addEventListener(\'keydown\', keyboardNextPrevious);
 			});'."\n";
+
+	echo 'window.addEventListener("beforeunload", function (e) {
+			if (readQueue.count != 0) {
+				sendMarkReadRequest(\'postlist\', JSON.stringify(readQueue.urlList), false);
+				readQueue.urlList = [];
+				readQueue.count = 0;
+//				(e || window.event).returnValue = \'Sync?\' || \'\';
+//				return \'Sync?\';
+			}
+			else { return true; }
+		});'."\n";
+
 	echo ''."\n";
 	echo js_rss_add_feed(0);
 	echo js_rss_clean_db(0);
