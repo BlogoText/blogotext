@@ -38,29 +38,27 @@
 | Freecap is used in Blogotext with special grant of its author.          |
 |                                                                         |
 +-------------------------------------------------------------------------+
-|                              HTML5 Drag and Drop Multiple File Uploader |
+|                                            GOOGLE MATERIAL DESIGN ICONS |
 +-------------------------------------------------------------------------+
-| http://script-tutorials.com/html5-drag-and-drop-multiple-file-uploader  |
+| https://github.com/google/material-design-icons                         |
 |                                                                         |
 | "HTML5 Drag and Drop Multiple File Uploader" is a file uploade script.  |
 |                                                                         |
-| (c) 2012 Script-Tutorials.com                                           |
+| (c) 2014 Google Inc                                                     |
 |                                                                         |
-| The script is adapted and used in Blogotext with special grant of       |
+| The ressource is included according to the CC-BY-4.0 license            |
 | script-tutorials.com.                                                   |
-|                                                                         |
 +-------------------------------------------------------------------------+
-|                                                             FUGUE ICONS |
+|                                                     GOOGLE ROBOTO FONTS |
 +-------------------------------------------------------------------------+
-| http://p.yusukekamiyamane.com/                                          |
+| https://www.google.com/fonts/specimen/Roboto                            |
 |                                                                         |
-| Fugue is a free icon-set (over 3000 16x16 PNG icons)                    |
+| Roboto is free font set for material design                             |
 |                                                                         |
-| (c) 2012 Yusuke Kamiyamane.                                             |
+| (c) 2014 Google Inc                                                     |
 |                                                                         |
-| These icons are licensed under a Creative Commons                       |
-| Attribution 3.0 License.                                                |
-| http://creativecommons.org/licenses/by/3.0/                             |
+| These fonts are licensed under a Apache License and included in         |
+| Blogotext accordingly.                                                  |
 |                                                                         |
 +-------------------------------------------------------------------------+
 |                                                            FAENZA ICONS |
@@ -73,9 +71,22 @@
 |                                                                         |
 | These icons are licensed under a Creative Commons                       |
 | Attribution 3.0 License.                                                |
-| http://creativecommons.org/licenses/by/3.0/                             | |                                                                         |
-+-------------------------------------------------------------------------+
+| http://creativecommons.org/licenses/by/3.0/                             | 
 |                                                                         |
++-------------------------------------------------------------------------+
+|                                                               PARSEDOWN |
++-------------------------------------------------------------------------+
+| http://parsedown.org/                                                   |
+|                                                                         |
+| ParseDown is a PHP markdown parser.                                     |
+|                                                                         |
+| (c) 2013 Emanuil Rusev                                                  |
+|                                                                         |
+| ParseDown is distributed under the MIT License and included in          |
+| Blogotext accordingly.                                                  |
+|                                                                         |
++-------------------------------------------------------------------------+
+|                                                                       ~ |
 +-------------------------------------------------------------------------+
 |                                                                         |
 | As we enjoy great advantages from the inventions of others, we should   |
