@@ -1,21 +1,21 @@
 @charset "utf-8";
 
 @font-face {
-  font-family: "Roboto";
+  font-family: "Roboto-web";
   font-style: normal;
   font-weight: 300;
   src: url("roboto-300.woff2") format("woff2"), url("roboto-300.woff") format("woff");
 }
 
 @font-face {
-  font-family: "Roboto";
+  font-family: "Roboto-web";
   font-style: normal;
   font-weight: 400;
   src: url("roboto-400.woff2") format("woff2"), url("roboto-400.woff") format("woff");
 }
 
 @font-face {
-  font-family: "Roboto";
+  font-family: "Roboto-web";
   font-style: normal;
   font-weight: 700;
   src: url("roboto-700.woff2") format("woff2"), url("roboto-700.woff") format("woff");
@@ -35,7 +35,7 @@ html, body {
 	margin: 0; padding: 0;
 	background: #f9f9f9;
 	color: #333;
-	font-family: Roboto, Verdana, Helvetica, Arial, sans-serif;
+	font-family: Roboto, "Roboto-web", Verdana, Helvetica, Arial, sans-serif;
 	word-wrap: break-word;
 }
 

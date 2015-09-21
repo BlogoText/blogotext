@@ -115,6 +115,12 @@ function rel2abs_admin($article) { // pour le panel admin : l’aperçu de l’a
 
 
 function formatage_wiki($texte) {
+	if ($GLOBALS['use_markdown']) {
+		include_once('parsedown/parsedown.php');
+		$Parsedown = new Parsedown();
+		return stripslashes($Parsedown->text($texte));
+	}
+
 	$texte = preg_replace("/(\r\n|\r\n\r|\n|\n\r|\r)/", "\r", /*"\r\r".*/$texte/*."\r\r"*/);
 	$tofind = array(
 		// transforme certains \r en \n
@@ -213,6 +219,12 @@ function formatage_wiki($texte) {
 }
 
 function formatage_commentaires($texte) {
+	if ($GLOBALS['use_markdown']) {
+		include_once('parsedown/parsedown.php');
+		$Parsedown = new Parsedown();
+		return stripslashes($Parsedown->setMarkupEscaped(true)->text($texte));
+	}
+
 	$texte = " ".$texte;
 	$texte = preg_replace('#\[([^|]+)\|(\s*javascript.*)\]#i', '$1', $texte);
 	$tofindc = array(
@@ -265,6 +277,12 @@ function formatage_commentaires($texte) {
 }
 
 function formatage_links($texte) {
+	if ($GLOBALS['use_markdown']) {
+		include_once('parsedown/parsedown.php');
+		$Parsedown = new Parsedown();
+		return stripslashes($Parsedown->setMarkupEscaped(true)->text($texte));
+	}
+
 	$tofind = array(
 		'#([^"\[\]|])((http|ftp)s?://([^"\'\[\]<>\s]+))#i',		// Regex URL 
 		'#\[([^[]+)\|([^[]+)\]#',											// a href
