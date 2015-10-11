@@ -888,7 +888,9 @@ function rss_feedlist(RssPosts) {
 
 		postlist.appendChild(li);
 	}
-	//if (RssPosts != rss_entries.list) { alert(postlist); return false };
+
+	// closes the "openAll/close" button
+	
 
 	// displays the number of unread items
 	if (document.querySelector('#global-count-posts').firstChild) {
@@ -927,6 +929,8 @@ function sortSite(origine) {
 		}
 	}
 	rss_feedlist(newList);
+	openAllSwich = 'open';
+	document.getElementById('openallitemsbutton').classList.remove('unfold');
 	if (newList.length != 0) window.location.hash = 'rss-list';
 }
 
@@ -952,6 +956,9 @@ function sortFolder(origine) {
 	}
 
 	rss_feedlist(newList);
+	openAllSwich = 'open';
+	document.getElementById('openallitemsbutton').classList.remove('unfold');
+
 	window.location.hash = 'rss-list';
 }
 
