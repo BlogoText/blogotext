@@ -63,9 +63,9 @@ function afficher_liste_articles($tableau) {
 		$i = 0;
 		$out = '<ul id="billets">'."\n";
 		foreach ($tableau as $article) {
-			// ICONE SELON STATUT
-			$out .= "\t".'<li>'."\n";
-			// TITRE
+			// COULEUR DE FOND SELON DATE
+			$out .= "\t".'<li'.( ($article['bt_date'] > date('YmdHis')) ? ' class="planned"' : '').'>'."\n";
+			// TITRE + ICONE SELON STATUT
 			$out .= "\t\t".'<span class="'.( ($article['bt_statut'] == '1') ? 'on' : 'off').'">'.'<a href="ecrire.php?post_id='.$article['bt_id'].'" title="'.htmlspecialchars(trim(mb_substr(strip_tags($article['bt_abstract']), 0, 249)), ENT_QUOTES).'">'.$article['bt_title'].'</a>'.'</span>'."\n";
 			// DATE
 			$out .= "\t\t".'<span><a href="'.basename($_SERVER['PHP_SELF']).'?filtre='.substr($article['bt_date'],0,8).'">'.date_formate($article['bt_date']).'</a> @ '.heure_formate($article['bt_date']).'</span>'."\n";
