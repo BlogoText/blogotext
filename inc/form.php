@@ -360,7 +360,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 				$charset = 'utf-8';
 
 				// cherche le charset dans les headers
-				if (preg_match('#charset=(.*);?#', $ext_file['headers']['Content-Type'], $hdr_charset) and !empty($hdr_charset[1])) {
+				if (isset($ext_file['headers']['Content-Type']) and preg_match('#charset=(.*);?#', $ext_file['headers']['Content-Type'], $hdr_charset) and !empty($hdr_charset[1])) {
 					$charset = $hdr_charset[1];
 				}
 

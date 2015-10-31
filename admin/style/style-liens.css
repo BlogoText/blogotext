@@ -3,8 +3,17 @@
 
 /* LINKS : Post new link
 ------------------------------------------------------*/
+
 #post-new-lien {
+	transition: box-shadow 0.5s ease 0s;
 }
+
+#post-new-lien:hover {
+	color: #333;
+	position: relative;
+	box-shadow: 0px 6px 20px 0px rgba(0, 0, 0, 0.19), 0px 8px 17px 0px rgba(0, 0, 0, 0.2);
+}
+
 
 #post-new-lien .contain-input {
 	margin-top: 5px;
@@ -130,11 +139,14 @@
 -------------------------------------------*/
 .linkbloc {
 	color: #444;
-	margin-top: 10px
+	margin-top: 10px;
+	transition: box-shadow 0.5s ease 0s;
 }
 
 .linkbloc:hover {
 	color: #333;
+	position: relative;
+	box-shadow: 0px 6px 20px 0px rgba(0, 0, 0, 0.19), 0px 8px 17px 0px rgba(0, 0, 0, 0.2);
 }
 
 .linkbloc:hover .link-options {
