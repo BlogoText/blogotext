@@ -139,7 +139,7 @@ function afficher_commentaire($comment, $with_link) {
 	echo "\t".'<div class="comm-options">'."\n";
 	echo "\t\t".'<ul>'."\n";
 	echo "\t\t\t".'<li class="cl-edit" onclick="unfold(this);">'.$GLOBALS['lang']['editer'].'</li>'."\n";
-	echo "\t\t\t".'<li class="cl-activ" onclick="activate_comm(this);" data-comm-id="'.$comment['ID'].'" data-comm-art-id="'.$comment['bt_article_id'].'">'.$GLOBALS['lang'][(!$comment['bt_statut'] ? '' : 'des').'activer'].'</li>'."\n";
+	echo "\t\t\t".'<li class="cl-activ" onclick="activate_comm(this);" data-comm-id="'.$comment['ID'].'" data-comm-btid="'.$comment['bt_id'].'" data-comm-art-id="'.$comment['bt_article_id'].'">'.$GLOBALS['lang'][(!$comment['bt_statut'] ? '' : 'des').'activer'].'</li>'."\n";
 	echo "\t\t\t".'<li class="cl-suppr" onclick="suppr_comm(this);" data-comm-id="'.$comment['ID'].'" data-comm-art-id="'.$comment['bt_article_id'].'">'.$GLOBALS['lang']['supprimer'].'</li>'."\n";
 	echo "\t\t".'</ul>'."\n";
 	echo "\t".'</div>'."\n";

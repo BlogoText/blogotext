@@ -451,7 +451,9 @@ function traiter_form_commentaire($commentaire, $admin) {
 	if (isset($_POST['enregistrer']) and empty($_POST['is_it_edit'])) {
 		$result = bdd_commentaire($commentaire, 'enregistrer-nouveau');
 		if ($result === TRUE) {
-			send_emails($commentaire['bt_id']); // send emails new comment posted to people that are subscriben
+			if ($GLOBALS['comm_defaut_status'] == 1) { // send subscribe emails only if comments are not hidden
+				send_emails($commentaire['bt_id']);
+			}
 			$redir = basename($_SERVER['PHP_SELF']).'?'.$query_string.'&msg=confirm_comment_ajout';
 		}
 		else { die($result); }
@@ -482,8 +484,10 @@ function traiter_form_commentaire($commentaire, $admin) {
 		$result = bdd_commentaire($comm, 'activer-existant');
 		// Ajax response
 		if ($result === TRUE) {
+			if ($GLOBALS['comm_defaut_status'] == 0) { // send subscribe emails if comments just got activated
+				send_emails(htmlspecialchars($_POST['com_bt_id']));
+			}
 			rafraichir_cache();
-			//echo var_dump($comm);
 			echo 'Success'.new_token();
 		}
 		else { echo 'Error'.new_token(); }

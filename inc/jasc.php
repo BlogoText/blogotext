@@ -336,8 +336,8 @@ function activate_comm(button) {
 	formData.append(\'token\', csrf_token);
 	formData.append(\'_verif_envoi\', 1);
 
-
 	formData.append(\'com_activer\', button.dataset.commId);
+	formData.append(\'com_bt_id\', button.dataset.commBtid);
 	formData.append(\'com_article_id\', button.dataset.commArtId);
 
 	xhr.send(formData);
