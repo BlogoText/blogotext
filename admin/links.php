@@ -34,14 +34,12 @@ function afficher_liens($link) {
 	$list .= "\t\t".'<ul>'."\n";
 	$list .= "\t\t\t".'<li class="ll-edit"><a href="'.basename($_SERVER['PHP_SELF']).'?id='.$link['bt_id'].'">'.$GLOBALS['lang']['editer'].'</a></li>'."\n";
 	$list .= ($link['bt_statut'] == '1') ? "\t\t\t".'<li class="ll-seepost"><a href="'.$GLOBALS['racine'].'?mode=links&amp;id='.$link['bt_id'].'">'.$GLOBALS['lang']['voir_sur_le_blog'].'</a></li>'."\n" : "";
-	//$list .=  "\t\t\t".'<li class="ll-suppr">'.$GLOBALS['lang']['supprimer'].'</li>'."\n";
+	//$list .=  "\t\t\t".'<li class="ll-suppr"><a>'.$GLOBALS['lang']['supprimer'].'</a></li>'."\n";
 	$list .= "\t\t".'</ul>'."\n";
 	$list .= "\t".'</div>'."\n";
 	$list .=  '</div>'."\n";
 
-
-
-	$list .= "\t".'<p class="link-content">'.$link['bt_content'].'</p>'."\n";
+	$list .= (!empty($link['bt_content'])) ? "\t".'<div class="link-content">'.$link['bt_content'].'</div>'."\n" : '';
 
 	$list .= "\t".'<div class="link-footer">'."\n";
 	$list .= "\t\t".'<ul class="link-tags">'."\n";

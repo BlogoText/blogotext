@@ -137,11 +137,16 @@
 --------------------------------------------------------------*/
 /* LINKS : a link bloc
 -------------------------------------------*/
+#list-link .linkbloc {
+	padding: 0;
+}
+
 .linkbloc {
 	color: #444;
-	margin-top: 10px;
+	margin-top: 15px;
 	transition: box-shadow 0.5s ease 0s;
 }
+
 
 .linkbloc:hover {
 	color: #333;
@@ -153,12 +158,19 @@
 	visibility: visible;
 }
 
+.linkbloc .link-header,
+.linkbloc .link-content,
+.linkbloc .link-footer {
+	padding: 15px;
+}
 
 /* LINKS : link header 
 --------------------------------*/
 .linkbloc .link-header {
 	display: flex;
 	align-items: center;
+	border-bottom: 1px solid #eee;
+	position: relative;
 }
 
 .linkbloc .titre-lien {
@@ -182,24 +194,28 @@
 
 /* link options button */
 .link-options {
-	position: relative;
-	visibility: hidden;
+	//position: relative;
+	//visibility: hidden;
+	padding-right: 50px;
+
 }
 
 .link-options::before {
 	content: "";
 	cursor: pointer;
-	background: url(sprites.png) no-repeat -599px -7px / 640px 400px;
-	width: 24px;
-	height: 24px;
+	background: url(sprites.png) no-repeat -585px 5px / 640px 400px;
+	width: 50px;
+	height: 50px;
 	display: block;
-	margin-left: 10px;
+	position: absolute;
+	top: 0;
+	right: 0;
 }
 
 .link-options > ul {
 	right: 9999px;
 	position: absolute;
-	top: -10px;
+	top: 0px;
 	background: white;
 	margin: 0;
 	padding: 4px 0;
@@ -212,9 +228,9 @@
 }
 
 .link-options:hover ul {
-	right: 0;
+	right: 15px;
 	opacity: 1;
-	top: 0;
+	top: 15px;
 	transition: top .2s ease-in .05s, opacity .2s ease-in .05s, right 0s ease-out .05s;
 }
 
@@ -246,13 +262,14 @@
 /* LINKS : link content 
 --------------------------------*/
 .linkbloc .link-content {
-	padding: 10px 0
 }
 
 /* LINKS : link footer 
 --------------------------------*/
 .linkbloc .link-footer {
 	display: flex;
+	background-color: #F9F9F9;
+	border-top: #eee;
 }
 
 .linkbloc .link-tags {
@@ -273,6 +290,10 @@
 	background: #efefef;
 	border-radius: 3px;
 	box-shadow: 0 0px 1px rgba(0, 0, 0, .3) inset;
+}
+
+.linkbloc .link-tags a:hover {
+	background: #ddd;
 }
 
 

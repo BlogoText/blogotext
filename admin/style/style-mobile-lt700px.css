@@ -45,20 +45,15 @@
 		position: relative;
 	}
 	.linkbloc .titre-lien {
-		padding-right: 10px;
+		padding-right: 50px;
 	}
-	.link-options {
-		visibility: visible;
-		position: absolute;
-		right: 0;
-		top: 0;
 
-	}
 	.link-options ul {
-		top: 20px;
+		top: 0px;
 	}
 	.link-options:hover ul {
-		top: 23px;
+		top: 5px;
+		right: 5px;
 	}
 
 	.linkbloc .link-footer {
