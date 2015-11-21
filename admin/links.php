@@ -137,7 +137,7 @@ $nb_links_displayed = count($tableau);
 afficher_html_head($GLOBALS['lang']['mesliens']);
 echo '<div id="top">'."\n";
 afficher_msg();
-echo moteur_recherche($GLOBALS['lang']['search_in_links']);
+echo moteur_recherche();
 afficher_topnav(basename($_SERVER['PHP_SELF']), $GLOBALS['lang']['mesliens']);
 echo '</div>'."\n";
 

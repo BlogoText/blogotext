@@ -123,18 +123,6 @@ q, blockquote {
 	margin: 0;
 }
 
-.info:before {
-	content: '';
-	display: inline-block;
-	position: absolute;
-	background: url(sprites.png) -412px -93px no-repeat;
-	width: 24px;
-	height: 24px;
-	left: 10px;
-	top: 10px;
-}
-
-
 /* Message de confirmation ou d’erreur */
 .confirmation, .no_confirmation {
 	max-width: 30%;

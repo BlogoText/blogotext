@@ -38,7 +38,7 @@ if (!isset($GLOBALS['liste_fichiers'][0]['bt_path'])) {
 afficher_html_head($GLOBALS['lang']['label_resume']);
 echo '<div id="top">'."\n";
 afficher_msg();
-echo moteur_recherche($GLOBALS['lang']['search_everywhere']);
+echo moteur_recherche();
 afficher_topnav(pathinfo($_SERVER['PHP_SELF'], PATHINFO_BASENAME), ucfirst($GLOBALS['lang']['label_resume']));
 echo '</div>'."\n";
 

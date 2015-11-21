@@ -110,17 +110,14 @@ else {
 		}
 	}
 	elseif (!empty($_GET['q'])) {
-
-
-			$arr = parse_search($_GET['q']);
-			$sql_where = implode(array_fill(0, count($arr), 'c.bt_content LIKE ? '), 'AND ');
-			$query = "SELECT c.*, a.bt_title FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id WHERE ".$sql_where."ORDER BY c.bt_id DESC";
-			$commentaires = liste_elements($query, $arr, 'commentaires');
+		$arr = parse_search($_GET['q']);
+		$sql_where = implode(array_fill(0, count($arr), 'c.bt_content LIKE ? '), 'AND ');
+		$query = "SELECT c.*, a.bt_title FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id WHERE ".$sql_where."ORDER BY c.bt_id DESC";
+		$commentaires = liste_elements($query, $arr, 'commentaires');
 	}
 	else { // no filter, so list'em all
-			$query = "SELECT c.*, a.bt_title FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id ORDER BY c.bt_id DESC LIMIT ".$GLOBALS['max_comm_admin'];
-//			die($query);
-			$commentaires = liste_elements($query, array(), 'commentaires');
+		$query = "SELECT c.*, a.bt_title FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id ORDER BY c.bt_id DESC LIMIT ".$GLOBALS['max_comm_admin'];
+		$commentaires = liste_elements($query, array(), 'commentaires');
 	}
 	$nb_total_comms = liste_elements_count("SELECT count(*) AS nbr FROM commentaires", array());
 	$param_makeup['show_links'] = '1';
@@ -163,7 +160,7 @@ afficher_html_head($msgg);
 
 echo '<div id="top">'."\n";
 afficher_msg();
-echo moteur_recherche($GLOBALS['lang']['search_in_comments']);
+echo moteur_recherche();
 afficher_topnav(basename($_SERVER['PHP_SELF']), $GLOBALS['lang']['titre_commentaires']);
 echo '</div>'."\n";
 
@@ -193,23 +190,21 @@ echo '<div id="subnav">'."\n";
 
 echo '</div>'."\n";
 
-//echo erreurs($erreurs_form);
-
 echo '<div id="page">'."\n";
 
 
 // COMMENTAIRES
-echo '<div id="liste-commentaires">'."\n";
 if (count($commentaires) > 0) {
+	echo '<div id="liste-commentaires">'."\n";
 	$token = new_token();
 	foreach ($commentaires as $content) {
 		$content['comm-token'] = $token;
 		afficher_commentaire($content, $param_makeup['show_links']);
 	}
+	echo '</div>'."\n";
 } else {
 	echo info($GLOBALS['lang']['note_no_commentaire']);
 }
-echo '</div>'."\n";
 
 
 if ($param_makeup['menu_theme'] == 'for_article') {

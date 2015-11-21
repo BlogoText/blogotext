@@ -368,12 +368,7 @@ $GLOBALS['lang'] = array(
 'note_no_image'					=> 'Aucune image',
 'note_no_fichier'					=> 'Aucun fichier',
 // placeholders
-'search_in_articles'				=> 'Rechercher des articles',
-'search_in_comments'				=> 'Rechercher des commentaires',
-'search_in_links'					=> 'Rechercher des liens',
-'search_in_images'				=> 'Rechercher des images',
-'search_in_files'					=> 'Rechercher des fichiers',
-'search_everywhere'				=> 'Rechercher toutes les données',
+'placeholder_search'				=> 'Rechercher',
 'placeholder_nom_fichier'		=> 'nom',
 'placeholder_description'		=> 'description',
 'placeholder_titre'				=> 'titre',

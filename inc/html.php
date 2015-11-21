@@ -156,14 +156,13 @@ function apercu($article) {
 	}
 }
 
-function moteur_recherche($placeholder) {
+function moteur_recherche() {
 	$requete='';
 	if (isset($_GET['q'])) {
 		$requete = htmlspecialchars(stripslashes($_GET['q']));
 	}
-	if (empty($placeholder)) $placeholder = $GLOBALS['lang']['rechercher'];
 	$return = '<form action="'.basename($_SERVER['PHP_SELF']).'" method="get" id="search">'."\n";
-	$return .= '<input id="q" name="q" type="search" size="20" value="'.$requete.'" placeholder="'.$placeholder.'" accesskey="f" />'."\n";
+	$return .= '<input id="q" name="q" type="search" size="20" value="'.$requete.'" placeholder="'.$GLOBALS['lang']['placeholder_search'].'" accesskey="f" />'."\n";
 	if (isset($_GET['mode'])) {
 		$return .= '<input id="mode" name="mode" type="hidden" value="'.htmlspecialchars(stripslashes($_GET['mode'])).'"/>'."\n";
 	}

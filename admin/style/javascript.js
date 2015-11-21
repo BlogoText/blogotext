@@ -931,7 +931,7 @@ function sortSite(origine) {
 	rss_feedlist(newList);
 	openAllSwich = 'open';
 	document.getElementById('openallitemsbutton').classList.remove('unfold');
-	if (newList.length != 0) window.location.hash = 'rss-list';
+	if (newList.length != 0) window.location.hash = '';
 }
 
 /* Sort rss entries from a folder */

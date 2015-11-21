@@ -93,7 +93,7 @@ function afficher_liste_articles($tableau) {
 afficher_html_head($GLOBALS['lang']['mesarticles']);
 echo '<div id="top">'."\n";
 afficher_msg();
-echo moteur_recherche($GLOBALS['lang']['search_in_articles']);
+echo moteur_recherche();
 afficher_topnav(basename($_SERVER['PHP_SELF']), $GLOBALS['lang']['mesarticles']);
 echo '</div>'."\n";
 

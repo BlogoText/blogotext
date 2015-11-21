@@ -39,10 +39,36 @@ if (isset($_POST['verif_envoi'])) {
 	}
 }
 
+$tableau = array();
+if (!empty($_GET['q'])) {
+	$sql_where_status = '';
+	$q_query = $_GET['q'];
+	// search "in:read"
+	if (substr($_GET['q'], -8) === ' in:read') {
+		$sql_where_status = 'AND bt_statut=0 ';
+		$q_query = substr($_GET['q'], 0, strlen($_GET['q'])-8);
+	}
+	// search "in:unread"
+	if (substr($_GET['q'], -10) === ' in:unread') {
+		$sql_where_status = 'AND bt_statut=1 ';
+		$q_query = substr($_GET['q'], 0, strlen($_GET['q'])-10);
+	}
+	$arr = parse_search($q_query);
+
+
+	$sql_where = implode(array_fill(0, count($arr), '( bt_content || bt_title ) LIKE ? '), 'AND '); // AND operator between words
+	$query = "SELECT * FROM rss WHERE ".$sql_where.$sql_where_status."ORDER BY bt_date DESC";
+	//debug($query);
+	$tableau = liste_elements($query, $arr, 'rss');
+} else {
+	$tableau = liste_elements('SELECT * FROM rss WHERE bt_statut=1 ORDER BY bt_date DESC', array(), 'rss');
+}
+
+
 afficher_html_head($GLOBALS['lang']['mesabonnements']);
 echo '<div id="top">'."\n";
 afficher_msg();
-//echo moteur_recherche($GLOBALS['lang']['search_in_links']);
+echo moteur_recherche();
 afficher_topnav(basename($_SERVER['PHP_SELF']), $GLOBALS['lang']['mesabonnements']);
 echo '</div>'."\n";
 
@@ -56,9 +82,8 @@ if (isset($_GET['config'])) {
 
 else {
 	// get list of posts from DB
-	$all_flux = liste_elements('SELECT * FROM rss WHERE bt_statut=1 ORDER BY bt_date DESC', array(), 'rss');
 	// send to browser
-	$out_html = send_rss_json($all_flux);
+	$out_html = send_rss_json($tableau);
 	$out_html .= '<div id="rss-list">'."\n";
 	$out_html .= "\t".'<div id="posts-menu">'."\n";
 	$out_html .= "\t\t".'<span id="count-posts"><span id="counter"></span></span>'."\n";
