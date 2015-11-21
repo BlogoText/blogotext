@@ -17,7 +17,7 @@
 	display: flex;
 	align-items: center;
 	padding: 0 5px;
-	background: #f6f6f6;
+	background: #f9f9f9;
 	border-bottom: 1px #e5e5e5 solid;
 
 }
@@ -80,7 +80,7 @@
 
 /* the left sidebar, with the list of feeds */
 #feed-list {
-	background: #F6F6F6;
+	background: #F9F9F9;
 	box-sizing: border-box;
 	flex: 0 0 230px;
 	margin: 0px;
@@ -206,7 +206,7 @@
 
 #post-list > li {
 	padding: 10px 10px 1px;
-	border-bottom: #F6F6F6 solid 1px;
+	border-bottom: #F9F9F9 solid 1px;
 	background: white;
 }
 

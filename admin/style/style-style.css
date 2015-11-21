@@ -33,7 +33,7 @@ body {
 
 html, body {
 	margin: 0; padding: 0;
-	background: #f9f9f9;
+	background: #eee;
 	color: #333;
 	font-family: Roboto, Verdana, Helvetica, Arial, sans-serif;
 	word-wrap: break-word;
@@ -189,10 +189,11 @@ q, blockquote {
 ------------------------------------------------------------------------ */
 #top {
 	display: flex;
-	min-height: 50px;
+	min-height: 55px;
 	box-sizing: border-box;
-	background: white;
+	background: #fefefe;
 	box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+	padding: 0 0 0 20px;
 }
 
 #top > #nav,
@@ -200,8 +201,8 @@ q, blockquote {
 #top > #search,
 #top > #nav-acc {
 	box-sizing: border-box;
-	min-height: 50px;
-	line-height: 50px;
+	min-height: 55px;
+	line-height: 55px;
 	vertical-align: middle;
 	overflow: hidden;
 }
@@ -210,8 +211,9 @@ q, blockquote {
 ------------------------------------------------------*/
 #top > #nav {
 	order: 1;
-	flex: 1;
-	text-align: center;
+	//flex: 1;
+	margin-left: 1%;
+	//text-align: center;
 }
 /* TOP > Left nav bar > menu
 ----------------------------------------*/
@@ -220,12 +222,12 @@ q, blockquote {
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
-	min-height: 50px;
+	min-height: 55px;
 }
 
 #top > #nav > ul li {
 	display: inline-block;
-	margin: 0 10px;
+	margin: 0 20px 0 0;
 }
 
 #top > #nav a {
@@ -257,8 +259,10 @@ q, blockquote {
 ------------------------------------------------------*/
 #top > #search {
 	order: 2;
-	flex: 0 0 50px;
+	flex: 1;
 	padding: 0;
+	text-align: right;
+	margin: 0 4px;
 }
 
 #top > #search input[type='submit'] {
@@ -266,60 +270,26 @@ q, blockquote {
 }
 
 #top > #search input[type='search'] { /* normal */
-	padding: 5px 20px;
+	padding: 0 10px 0 40px;
 	border: 1px solid transparent;
-	border-radius: 50%;
+	border-radius: 2px;
 	box-sizing: border-box;
-	margin: 4px;
 	height: 40px;
-	width: 40px;
-	right: 0; left: 0;
-	background: url(sprites.png) no-repeat 7px -40px / 640px 400px;
+	max-width: 700px;
+	width: 100%;
+	background: #fafafa url(sprites.png) no-repeat 7px -40px / 640px 400px;
 }
 
 #top > #search input:hover { /* hover */
-	box-shadow: 0px 1px 2px rgba(0, 0, 0, .3);
-	cursor: pointer;
-	background-color: white;
+	cursor: text;
 }
 
 #top > #search input[value=""]:focus,
-#top > #search input:not([value=""]) { /* focus OR not empty (a search is done) */
-	margin: 0 auto;
-	position: absolute;
-	z-index: 10;
-	border-radius: 3px;
-	max-width: 550px;
-	padding: 0 10px 0 40px;
-	box-shadow: 0 12px 24px rgba(0, 0, 0, .3);
-	background: white url(sprites.png) no-repeat 10px -40px / 640px 400px;
-	cursor: text;
-	animation: popup-search .4s;
-	animation-fill-mode: forwards;
+#top > #search input:not([value=""]) { /* not empty : focus */
+	border: 1px solid #2196F3;
+	position: relative;
+	z-index: 20;
 }
-
-#top > #search input:not([value=""]) {  /* not empty ; this avoids animation on page load */
-	width: 95%;
-	box-shadow: 1px 12px 24px rgba(0, 0, 0, .3);
-	animation: none;
-	top: 35px; left: 0; right: 0;
-}
-
-#top > #search input:not([value=""]):focus { /* not empty : focus */
-	box-shadow: 1px 12px 24px rgba(0, 0, 0, .3);
-}
-
-@keyframes popup-search{  
-	0% {
-		width: 50px;
-		top: 0px;
-	}
-	100% {
-		width: 95%;
-		top: 35px;
-	}
-}
-
 
 /* TOP > Right nav bar
 ------------------------------------------------------*/
@@ -327,13 +297,14 @@ q, blockquote {
 	order: 3;
 	flex: 0 0 50px;
 	margin: 0;
+	background-color: inherit;
 }
 
 #top > #nav-acc::before {
 	content: "";
 	position: absolute;
 	border-radius: 50%;
-	background: white;
+	background-color: inherit;
 	width: 40px;
 	height: 40px;
 	top: 5px;
@@ -355,7 +326,7 @@ q, blockquote {
 	opacity: 0;
 	overflow: hidden;
 	box-sizing: border-box;
-	background: white;
+	background-color: inherit;
 	width: 230px;
 	right: 9999px;
 	top: -60px;
@@ -407,7 +378,7 @@ q, blockquote {
 #subnav {
 	margin: 0 1% 30px;
 	padding: 10px;
-	background: white;
+	background: #fefefe;
 	box-shadow: 0px 1px 2px rgba(0, 0, 0, .25);
 	border-radius: 3px;
 }
@@ -431,7 +402,7 @@ q, blockquote {
 #subnav .nombre-elem li {
 	margin: 0;
 	box-sizing: border-box;
-	background: white;
+	background: #fefefe;
 	transition: box-shadow ease 0s, opacity ease .1s;
 }
 
@@ -646,8 +617,8 @@ fieldset {
 #form-rss-add
  {
 	padding: 15px;
-	background: white;
+	background: #fefefe;
 	box-shadow: 0px 1px 2px rgba(0, 0, 0, .25);
-	border-radius: 3px;
+	border-radius: 2px;
 }
 
