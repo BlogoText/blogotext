@@ -182,11 +182,11 @@ function afficher_form_commentaire($article_id, $mode, $erreurs='', $comm_id='')
 	// COMMENT ON PUBLIC SIDE
 	} else {
 		// ALLOW COMMENTS : OFF
-		if (get_entry($GLOBALS['db_handle'], 'articles', 'bt_allow_comments', $article_id, 'return') == '0' or $GLOBALS['global_com_rule'] == '1') {
+		if (get_entry($GLOBALS['db_handle'], 'articles', 'bt_allow_comments', $article_id, 'return') == 0 or $GLOBALS['global_com_rule'] == '1') {
 			$GLOBALS['form_commentaire'] .= '<p>'.$GLOBALS['lang']['comment_not_allowed'].'</p>'."\n";
 		}
 
-		// ALLOW COMMENTS : OFF
+		// ALLOW COMMENTS : ON
 		else {
 			// Formulaire commun
 			$form = "\n".'<form id="form-commentaire" class="form-commentaire" method="post" action="'.'?'.$_SERVER['QUERY_STRING'].'#erreurs" >'."\n";
