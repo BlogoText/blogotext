@@ -602,7 +602,7 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 	echo '</form>'."\n";
 
 	// Form optimi
-	echo '<form action="maintenance.php" metЬ or ь hod="get" class="bordered-formbloc" id="form_optimi">'."\n";
+	echo '<form action="maintenance.php" method="get" class="bordered-formbloc" id="form_optimi">'."\n";
 		echo '<fieldset class="pref valid-center">';
 		echo legend($GLOBALS['lang']['maintenance_optim'], 'legend-sweep');
 
