@@ -13,7 +13,7 @@ header("Content-type: text/css; charset: UTF-8");
 /* FOR MAINTENANCE : CSS FILES ARE SPLITED IN MULTIPLE FILES
 -------------------------------------------------------------*/
 
-echo '/* Page de styles plus généraux */'."\n";
+echo '/* Page de styles plus générales */'."\n";
 readfile('style-style.css');
 
 echo '/* Page d’authentification */'."\n";
@@ -28,7 +28,7 @@ readfile('style-articles.css');
 echo '/* Écrire page : for the new article form page */'."\n";
 readfile('style-ecrire.css');
 
-echo '/* Page des commentaires : formualires + blocs */'."\n";
+echo '/* Page des commentaires : formulaires + blocs */'."\n";
 readfile('style-commentaires.css');
 
 echo '/* Images and files : miniatures blocs + formulaires */'."\n";
