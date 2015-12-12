@@ -959,7 +959,7 @@ function sortFolder(origine) {
 	openAllSwich = 'open';
 	document.getElementById('openallitemsbutton').classList.remove('unfold');
 
-	window.location.hash = 'rss-list';
+	window.location.hash = '';
 }
 
 /* Starts the refreshing process (AJAX) */

@@ -129,10 +129,13 @@ function afficher_commentaire($comment, $with_link) {
 
 	echo '<div class="comm-header">'."\n";
 	echo "\t".'<div class="comm-title">'."\n";
-	echo "\t\t".'<span class="reply" onclick="reply(\'[b]@['.str_replace('\'', '\\\'', $comment['bt_author']).'|#'.article_anchor($comment['bt_id']).'] :[/b] \'); ">@</span> ';
-	echo "\t\t".'<span class="author">'.$comment['auteur_lien'].'</span>'."\n";
-	echo "\t\t".'<span class="email"><a href="mailto:'.$comment['bt_email'].'">'.$comment['bt_email'].'</a></span>'."\n";
+	echo "\t\t".'<span class="author">'.$comment['bt_author'].'</span>'."\n";
+	echo "\t\t".'<span class="reply" onclick="reply(\'[b]@['.str_replace('\'', '\\\'', $comment['bt_author']).'|#'.article_anchor($comment['bt_id']).'] :[/b] \'); ">Reply</span> ';
+	echo (!empty($comment['bt_webpage'])) ? "\t\t".'<span class="webpage"><a href="'.$comment['bt_webpage'].'" title="'.$comment['bt_webpage'].'">'.$comment['bt_webpage'].'</a></span>'."\n" : '';
+	echo (!empty($comment['bt_email'])) ? "\t\t".'<span class="email"><a href="mailto:'.$comment['bt_email'].'" title="'.$comment['bt_email'].'">'.$comment['bt_email'].'</a></span>'."\n" : '';
+
 	echo "\t".'</div>'."\n";
+	echo "\t".'<span class="p-date-title">'.$GLOBALS['lang']['le'].' '.date_formate($comment['bt_id']).', '.heure_formate($comment['bt_id']).( ($with_link == 1 and !empty($comment['bt_title'])) ? ' '.$GLOBALS['lang']['sur'].' <a href="'.basename($_SERVER['PHP_SELF']).'?post_id='.$comment['bt_article_id'].'">'.$comment['bt_title'].'</a>' : '').'</span>'."\n" ;
 	echo "\t".'<div class="comm-options">'."\n";
 	echo "\t\t".'<ul>'."\n";
 	echo "\t\t\t".'<li class="cl-edit" onclick="unfold(this);">'.$GLOBALS['lang']['editer'].'</li>'."\n";
@@ -142,14 +145,9 @@ function afficher_commentaire($comment, $with_link) {
 	echo "\t".'</div>'."\n";
 	echo '</div>'."\n";
 
-	
+	echo '<div class="comm-content">'."\n";
 	echo $comment['bt_content'];
-	echo '<p class="p-date-title">'."\n";
-	echo $GLOBALS['lang']['le'].' '.date_formate($comment['bt_id']).', '.heure_formate($comment['bt_id']);
-	if ($with_link == 1 and !empty($comment['bt_title'])) {
-		echo ' '.$GLOBALS['lang']['sur'].' <a href="'.basename($_SERVER['PHP_SELF']).'?post_id='.$comment['bt_article_id'].'">'.$comment['bt_title'].'</a>';
-	}
-	echo '</p>'."\n";
+	echo '</div>'."\n";
 	echo $GLOBALS['form_commentaire'];
 	echo '</div>'."\n\n";
 }

@@ -3,17 +3,29 @@
 
 /* LINKS : Post new link
 ------------------------------------------------------*/
-
 #post-new-lien {
-	transition: box-shadow 0.5s ease 0s;
+	position: relative;
+	z-index: 1;
+}
+
+#post-new-lien::after {
+	content: "";
+	position: absolute;
+	top: 0; left: 0;
+	width: 100%; height: 100%;
+	box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 0 17px 0 rgba(0, 0, 0, 0.2);
+	opacity: 0;
+	transition: opacity 0.5s ease-in-out 0s;
+	z-index: -1;
+}
+
+#post-new-lien:hover::after {
+	opacity: 1;
 }
 
 #post-new-lien:hover {
 	color: #333;
-	position: relative;
-	box-shadow: 0px 6px 20px 0px rgba(0, 0, 0, 0.19), 0px 8px 17px 0px rgba(0, 0, 0, 0.2);
 }
-
 
 #post-new-lien .contain-input {
 	margin-top: 5px;
@@ -54,7 +66,7 @@
 	width: 650px;
 	max-width: 100%;
 	padding: 20px;
-	box-shadow: 0 12px 24px 0 rgba(0, 0, 0, 0.3);
+	box-shadow: 0 0 24px 0 rgba(0, 0, 0, 0.3);
 	background: white;
 	display: flex;
 	flex-direction: column;
@@ -142,16 +154,29 @@
 }
 
 .linkbloc {
+	position: relative;
+	z-index: 1;
 	color: #444;
 	margin-top: 15px;
-	transition: box-shadow 0.5s ease 0s;
 }
 
+.linkbloc::after {
+	content: "";
+	position: absolute;
+	top: 0; left: 0;
+	width: 100%; height: 100%;
+	box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 0px 17px 0 rgba(0, 0, 0, 0.2);
+	opacity: 0;
+	transition: opacity 0.5s ease-in-out 0s;
+	z-index: -1;
+}
+
+.linkbloc:hover::after {
+	opacity: 1;
+}
 
 .linkbloc:hover {
 	color: #333;
-	position: relative;
-	box-shadow: 0px 6px 20px 0px rgba(0, 0, 0, 0.19), 0px 8px 17px 0px rgba(0, 0, 0, 0.2);
 }
 
 .linkbloc:hover .link-options {
@@ -268,7 +293,7 @@
 --------------------------------*/
 .linkbloc .link-footer {
 	display: flex;
-	background-color: #F9F9F9;
+	background-color: rgba(0, 0, 0, .05);
 	border-top: #eee;
 }
 
@@ -287,13 +312,13 @@
 	padding: 3px 4px;
 	color: inherit;
 	text-decoration: none;
-	background: #efefef;
+	background: rgba(0, 0, 0, .05);
 	border-radius: 3px;
-	box-shadow: 0 0px 1px rgba(0, 0, 0, .3) inset;
+	box-shadow: 0 0 1px rgba(0, 0, 0, .3) inset;
 }
 
 .linkbloc .link-tags a:hover {
-	background: #ddd;
+	background: rgba(0, 0, 0, .1);
 }
 
 

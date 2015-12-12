@@ -2,6 +2,8 @@
 @media (max-width: 850px) {
 	#axe {
 		padding: 20px 15px;
+		padding-top: 75px;
+
 	}
 	select {
 		max-width: 100%;
@@ -65,6 +67,7 @@
 	#top > #nav {
 		flex: 0 0 50px;
 		text-align: left;
+		background-color: inherit;
 	}
 
 	#top > #nav::before {
@@ -76,7 +79,8 @@
 		top: 8px;
 		left: 5px;
 		z-index: 8;
-		background: white url(sprites.png) no-repeat 1px 1px / 640px 400px;
+		background: url(sprites.png) no-repeat 1px 1px / 640px 400px;
+		background-color: inherit;
 	}
 
 	/* TOP > Search button + searchbar
@@ -106,7 +110,7 @@
 	#top > #search input:hover { /* hover */
 		box-shadow: 0px 1px 2px rgba(0, 0, 0, .3);
 		cursor: pointer;
-		background-color: white;
+		background-color: rgba(255, 255, 255, .3);
 	}
 
 	#top > #search input[value=""]:focus,
@@ -152,12 +156,12 @@
 	#top > #nav ul {
 		position: fixed;
 		line-height: 3;
-		background: white;
+		background-color: inherit;
 		width: 210px;
 		height: 100%;
 		left: -250px;
 		top: 40px;
-		box-shadow: 0px -10px 2px white, 0px 14px 24px rgba(0, 0, 0, 0.6);
+		box-shadow: 0px 14px 24px rgba(0, 0, 0, 0.6);
 		z-index: 20;
 		opacity: 0;
 		transition: opacity ease-in .2s, top ease-in .2s, left ease-out 0s .2s;
@@ -182,18 +186,18 @@
 		padding-left: 30px;
 		display: block;
 		text-decoration: none;
-		color: #666;
+		color: inherit;
 		vertical-align: middle;
 	}
 	#top > #nav > ul > li > a:hover {
-		background-color: #f5f5f5;
-		color: #404040;
+		background-color: rgba(0, 0, 0, .1);
+		color: inherit;
 		box-shadow: none;
 	}
 
 	#top > #nav >ul li a.current {
 		box-shadow: none;
-		background-color: #eee;
+		background-color: rgba(0, 0, 0, .1);
 		border: 0;
 	}
 
@@ -206,13 +210,13 @@
 		background: no-repeat url(sprites.png) 0 0 / 640px 400px;
 	}
 
-	#nav #lien-index:before    { background-position: -75px -1px; }/* +=37*/
-	#nav #lien-nouveau:before  { background-position: -112px -1px; }
-	#nav #lien-lscom:before    { background-position: -149px -1px; }
-	#nav #lien-liste:before    { background-position: -186px -1px; }
-	#nav #lien-fichiers:before { background-position: -223px -1px; }
-	#nav #lien-links:before    { background-position: -260px -1px; }
-	#nav #lien-rss:before      { background-position: -297px -1px; }
+	#nav #lien-index:before    { background-position: -75px -7px; }/* +=37*/
+	#nav #lien-nouveau:before  { background-position: -112px -7px; }
+	#nav #lien-lscom:before    { background-position: -149px -7px; }
+	#nav #lien-liste:before    { background-position: -186px -7px; }
+	#nav #lien-fichiers:before { background-position: -223px -7px; }
+	#nav #lien-links:before    { background-position: -260px -7px; }
+	#nav #lien-rss:before      { background-position: -297px -7px; }
 
 	#top > h1 {
 		display: block;

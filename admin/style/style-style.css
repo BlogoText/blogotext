@@ -34,13 +34,14 @@ body {
 html, body {
 	margin: 0; padding: 0;
 	background: #eee;
-	color: #333;
+	color: rgba(0, 0, 0, .87);
 	font-family: Roboto, Verdana, Helvetica, Arial, sans-serif;
 	word-wrap: break-word;
 }
 
 #axe { /* the entire page without top bar (#top) and footer (#footer) */ 
 	padding: 20px;
+	padding-top: 75px;
 }
 
 #page { /* the main frame. #axe minus the "filtre" forms, and the subnav */
@@ -180,8 +181,22 @@ q, blockquote {
 	min-height: 55px;
 	box-sizing: border-box;
 	background: #fefefe;
+	background: #4db6ac; /*teal*/
+	background: #f06292; /*pink*/
+	background: #4dd0e1; /*cyan*/
+	background: #0F9D58; /*green*/
+	background: #90a4ae; /*blue-gray*/
+	background: #fff176; /*yellow*/
+	background: #ffb74d; /*orange*/
+	background: #ba68c8; /*purple*/
+	background: #a1887f; /*brown*/
+	background: #ffd54f; /*amber*/
 	box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
 	padding: 0 0 0 20px;
+	position: absolute; /* set to "fixed" for fixed menu-bar and "absolute" eitherway */
+	width: 100%;
+	z-index: 100;
+	color: inherit;
 }
 
 #top > #nav,
@@ -193,6 +208,7 @@ q, blockquote {
 	line-height: 55px;
 	vertical-align: middle;
 	overflow: hidden;
+	color: inherit;
 }
 
 /* TOP > Left nav bar
@@ -200,6 +216,7 @@ q, blockquote {
 #top > #nav {
 	order: 1;
 	margin-left: 1%;
+	font-variant: small-caps;
 }
 /* TOP > Left nav bar > menu
 ----------------------------------------*/
@@ -225,14 +242,14 @@ q, blockquote {
 
 #top > #nav a.current{
 	font-weight: bold;
-	box-shadow: 0px -3px 0px #2196F3 inset;
+	box-shadow: 0px -3px 0px rgba(0, 0, 0, .3) inset;
 }
 #top > #nav a:hover {
-	box-shadow: 0px -3px 0px #2196F3 inset;
+	box-shadow: 0px -3px 0px rgba(0, 0, 0, .3) inset;
 }
 
 #top > #nav a:active {
-	box-shadow: 0px -3px 0px #42a5f5 inset;
+	box-shadow: 0px -3px 0px rgba(0, 0, 0, .5) inset;
 }
 
 
@@ -263,7 +280,7 @@ q, blockquote {
 	height: 40px;
 	max-width: 700px;
 	width: 100%;
-	background: #fafafa url(sprites.png) no-repeat 7px -40px / 640px 400px;
+	background: rgba(255, 255, 255, .7) url(sprites.png) no-repeat 7px -40px / 640px 400px;
 }
 
 #top > #search input:hover { /* hover */
@@ -275,6 +292,7 @@ q, blockquote {
 	border: 1px solid #2196F3;
 	position: relative;
 	z-index: 20;
+	background-color: rgba(255, 255, 255, .9);
 }
 
 /* TOP > Right nav bar
@@ -335,12 +353,11 @@ q, blockquote {
 	padding-right: 50px;
 	display: block;
 	text-decoration: none;
-	color: #666;
+	color: inherit;
 }
 
 #top > #nav-acc a:hover {
-	background: #f5f5f5;
-	color: #404040;
+	background: rgba(0, 0, 0, .1);
 }
 
 #top > #nav-acc a:after {
@@ -540,6 +557,9 @@ select optgroup::before {
 
 legend {
 	padding: 0;
+	text-align: center;
+	font-size: 1.1em;
+	font-variant: small-caps;
 }
 
 fieldset {
