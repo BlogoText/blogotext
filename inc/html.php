@@ -80,6 +80,7 @@ function afficher_topnav($active, $titre) {
 	echo "\t\t".'<li><a href="feed.php" id="lien-rss"', ($active == 'feed.php') ? ' class="current"' : '', '>'.ucfirst($GLOBALS['lang']['label_feeds']).'</a></li>'."\n";
 	echo "\t".'</ul>'."\n";
 	echo '</div>'."\n";
+
 	echo '<h1>'.$titre.'</h1>'."\n";
 
 	echo '<div id="nav-acc">'."\n";

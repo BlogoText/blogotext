@@ -22,7 +22,7 @@ $GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
 $step = 0;
 
 // modèle d'affichage d'un div pour un lien (avec un formaulaire d'édition par lien).
-function afficher_liens($link) {
+function afficher_lien($link) {
 	$list = '';
 
 	$list .= '<div class="linkbloc'.(!$link['bt_statut'] ? ' privatebloc' : '').'">'."\n";
@@ -162,7 +162,7 @@ echo '</div>'."\n";
 echo '<div id="page">'."\n";
 
 if ($step == 'edit' and !empty($tableau[0]) ) { // edit un lien : affiche le lien au dessus du champ d’édit
-	//afficher_liens($tableau[0]);
+	//afficher_lien($tableau[0]);
 	echo afficher_form_link($step, $erreurs_form, $tableau[0]);
 }
 elseif ($step == 2) { // lien donné dans l’URL
@@ -172,8 +172,9 @@ else { // aucun lien à ajouter ou éditer : champ nouveau lien + listage des li
 	echo afficher_form_link(1, $erreurs_form);
 	echo '<div id="list-link">'."\n";
 	foreach ($tableau as $link) {
-		afficher_liens($link);
+		afficher_lien($link);
 	}
+	echo '<a id="add-article" class="floating-action" href="links.php?ajout">'.$GLOBALS['lang']['label_lien_ajout'].'</a>'."\n";
 	echo '</div>'."\n";
 }
 

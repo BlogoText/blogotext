@@ -23,20 +23,22 @@
 
 /* GENERAL PAGE LAYOUT
 ------------------------------------------------------------ */
-html {
-	font-size: 16px;
-}
-
-body {
-	font-size: .875em; /* 14px */
-}
-
 html, body {
 	margin: 0; padding: 0;
 	background: #eee;
 	color: rgba(0, 0, 0, .87);
 	font-family: Roboto, Verdana, Helvetica, Arial, sans-serif;
 	word-wrap: break-word;
+}
+
+html {
+	font-size: 16px;
+}
+
+body {
+	font-size: .875em; /* 14px */
+	position: relative;
+	padding-bottom: 32px;
 }
 
 #axe { /* the entire page without top bar (#top) and footer (#footer) */ 
@@ -111,6 +113,7 @@ input[type="button"],
 input[type="reset"],
 button {
 	cursor:pointer;
+	text-transform: uppercase;
 }
 
 q, blockquote {
@@ -448,6 +451,41 @@ q, blockquote {
 	padding: 10px;
 }
 
+
+/* Floating action button
+------------------------------------------------------------------ */
+
+.floating-action {
+	display: inline-block;
+	height: 56px;
+	width: 56px;
+	border-radius: 50%;
+	box-shadow: 0 0 6px rgba(0, 0, 0, 0.15), 0 6px 12px rgba(0, 0, 0, 0.3);
+	cursor: pointer;
+	position: fixed;
+	right: 32px;
+	box-sizing: border-box;
+	padding-left: 56px;
+	overflow: hidden;
+	bottom: 32px;
+	z-index: 9999;
+	background: #db4437;
+}
+
+.floating-action::before {
+	content: "";
+	position: absolute;
+	top: 12px;
+	left: 12px;
+	height: 32px;
+	width: 32px;
+	background: #db4437 url("sprites.png") no-repeat scroll -299px -90px / 640px 400px;
+}
+
+.floating-action:focus {
+	box-shadow: 0 0 6px rgba(0, 0, 0, 0.15), 0 8px 17px 0 rgba(0, 0, 0, 0.4);
+	outline: none;
+}
 
 /* PAGE INDEX 
 ------------------------------------------------------------------------- */

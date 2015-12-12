@@ -83,10 +83,14 @@ function afficher_liste_articles($tableau) {
 		}
 
 		$out .= '</ul>'."\n\n";
-		echo $out;
 	} else {
-		echo info($GLOBALS['lang']['note_no_article']);
+		$out = info($GLOBALS['lang']['note_no_article']);
 	}
+
+	$out .= '<a id="add-article" class="floating-action" href="ecrire.php">'.$GLOBALS['lang']['titre_ecrire'].'</a>'."\n";
+
+	echo $out;
+
 }
 
 
