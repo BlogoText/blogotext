@@ -201,7 +201,6 @@
 .linkbloc .titre-lien {
 	text-decoration: none;
 	font-weight: bold;
-	font-size: 1.2em;
 	color: #333;
 	flex: 1;
 }
@@ -219,8 +218,6 @@
 
 /* link options button */
 .link-options {
-	//position: relative;
-	//visibility: hidden;
 	padding-right: 50px;
 
 }
@@ -286,8 +283,6 @@
 
 /* LINKS : link content 
 --------------------------------*/
-.linkbloc .link-content {
-}
 
 /* LINKS : link footer 
 --------------------------------*/

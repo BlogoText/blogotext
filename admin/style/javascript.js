@@ -92,6 +92,8 @@ function unfold(button) {
 
 	var elemToForground = button.parentNode.parentNode.parentNode.parentNode;
 	elemToForground.classList.toggle('foreground');
+
+	elemToForground.getElementsByTagName('textarea')[0].focus();
 }
 
 /*
@@ -180,7 +182,7 @@ function moveTag() {
 		oField.innerHTML += '<li class="tag"><span>'+iField.value+'</span><a href="javascript:void(0)" onclick="removeTag(this.parentNode)">×</a></li>';
 		iField.value = '';
 		return false;
-	}
+		}
 	// else : real submit : seek in the list of tags, extract the tags and submit these.
 	else {
 		var liste = oField.getElementsByTagName('li');
@@ -197,6 +199,20 @@ function removeTag(tag) {
 	tag.parentNode.removeChild(tag);
 	return false;
 }
+
+/* for links : hide the FAB button when focus on link field (more conveniant for mobile UX) */
+function hideFAB() {
+	if (document.getElementById('add-link')) {
+		document.getElementById('add-link').classList.add('hidden');
+	}
+}
+function unHideFAB() {
+	if (document.getElementById('add-link')) {
+		document.getElementById('add-link').classList.remove('hidden');
+	}
+}
+
+
 
 
 /**************************************************************************************************************************************

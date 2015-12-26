@@ -166,7 +166,7 @@ function afficher_form_commentaire($article_id, $mode, $erreurs='', $comm_id='')
 			$form .= "\t".'</fieldset><!--end info-->'."\n";
 			$form .= "\t".'<fieldset class="buttons">'."\n";
 			$form .= "\t\t".hidden_input('ID', $actual_comment['ID']);
-			$form .= "\t\t".'<p class="submit-bttns">';
+			$form .= "\t\t".'<p class="submit-bttns">'."\n";
 			$form .= "\t\t\t".'<button class="submit white-square" type="button" onclick="unfold(this);">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
 			$form .= "\t\t\t".'<input class="submit blue-square" type="submit" name="enregistrer" value="'.$GLOBALS['lang']['envoyer'].'" />'."\n";
 			$form .= "\t\t".'</p>'."\n";

@@ -305,19 +305,17 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 	if ($step == 1) { // postage de l'URL : un champ affiché en GET
 		$form .= '<form method="get" class="bordered-formbloc" id="post-new-lien" action="'.basename($_SERVER['PHP_SELF']).'">'."\n";
 		$form .= '<fieldset>'."\n";
-		//$form .= '<legend class="legend-link">'.$GLOBALS['lang']['label_nouv_lien'].' :</legend>'."\n";
 
 		$form .= "\t".'<div class="contain-input">'."\n";
 		$form .= "\t\t".'<label for="url">'.$GLOBALS['lang']['label_nouv_lien'].'</label>'."\n";
-		$form .= "\t\t".'<input type="text" name="url" id="url" value="" size="70" placeholder="http://www.example.com/" class="text" autofocus autocomplete="off" />'."\n";
-		$form .= "\t".'</div>';
+		$form .= "\t\t".'<input type="text" name="url" id="url" value="" size="70" placeholder="http://www.example.com/" class="text" autofocus autocomplete="off" onfocus="hideFAB();" onblur="unHideFAB()" />'."\n";
+		$form .= "\t".'</div>'."\n";
 		$form .= "\t".'<p class="submit-bttns"><input type="submit" value="'.$GLOBALS['lang']['envoyer'].'" class="submit blue-square" /></p>'."\n";
 		$form .= '</fieldset>'."\n";
 		$form .= '</form>'."\n\n";
 
 	} elseif ($step == 2) { // Form de l'URL, avec titre, description, en POST cette fois, et qu'il faut vérifier avant de stoquer dans la BDD.
 		$form .= '<form method="post" onsubmit="return moveTag();" class="bordered-formbloc" id="post-lien" action="'.basename($_SERVER['PHP_SELF']).'">'."\n";
-		//$form .= '<fieldset>'."\n";
 
 		$url = $_GET['url'];
 		$type = 'url';
@@ -429,7 +427,6 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= hidden_input('bt_author', $GLOBALS['auteur']);
 		$form .= hidden_input('token', new_token());
 		$form .= hidden_input('dossier', '');
-		//$form .= '</fieldset>'."\n";
 		$form .= '</form>'."\n\n";
 
 	} elseif ($step == 'edit') { // Form pour l'édition d'un lien : les champs sont remplis avec le "wiki_content" et il y a les boutons suppr/activer en plus.

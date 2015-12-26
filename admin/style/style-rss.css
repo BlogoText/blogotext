@@ -222,8 +222,12 @@
 }
 
 #post-list > li img,
-#post-list > li table,
-#post-list > li iframe {
+#post-list > li table {
+	max-width: 100%;
+	height: auto;
+}
+
+#post-list > li iframe[src="^https://www.youtube.com/"] {
 	max-width: 100%;
 	height: auto;
 }

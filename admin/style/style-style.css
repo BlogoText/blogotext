@@ -43,7 +43,6 @@ body {
 
 #axe { /* the entire page without top bar (#top) and footer (#footer) */ 
 	padding: 20px;
-	padding-top: 75px;
 }
 
 #page { /* the main frame. #axe minus the "filtre" forms, and the subnav */
@@ -113,7 +112,6 @@ input[type="button"],
 input[type="reset"],
 button {
 	cursor:pointer;
-	text-transform: uppercase;
 }
 
 q, blockquote {
@@ -196,7 +194,6 @@ q, blockquote {
 	background: #ffd54f; /*amber*/
 	box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
 	padding: 0 0 0 20px;
-	position: absolute; /* set to "fixed" for fixed menu-bar and "absolute" eitherway */
 	width: 100%;
 	z-index: 100;
 	color: inherit;
@@ -452,7 +449,7 @@ q, blockquote {
 }
 
 
-/* Floating action button
+/* Floating action button (FAB)
 ------------------------------------------------------------------ */
 
 .floating-action {
@@ -470,6 +467,7 @@ q, blockquote {
 	bottom: 32px;
 	z-index: 9999;
 	background: #db4437;
+	transition: transform .2s cubic-bezier(.57,.57,.96,1.39);
 }
 
 .floating-action::before {
@@ -485,6 +483,12 @@ q, blockquote {
 .floating-action:focus {
 	box-shadow: 0 0 6px rgba(0, 0, 0, 0.15), 0 8px 17px 0 rgba(0, 0, 0, 0.4);
 	outline: none;
+}
+
+.floating-action.hidden {
+	transform: scale(0);
+	transition: transform .2s cubic-bezier(.2,-.5,.5,.2);
+
 }
 
 /* PAGE INDEX 
@@ -565,6 +569,7 @@ select optgroup::before {
 	border-radius: 2px;
 	border: 1px solid transparent;
 	min-width: 100px;
+	text-transform: uppercase;
 }
 .white-square:hover {
 	border: 1px solid #ddd;

@@ -31,14 +31,31 @@
 	}
 
 	/* comms */
-	.comm-options {
+	.commentbloc .comm-options,
+	.commentbloc .webpage a,
+	.commentbloc .email a,
+	.commentbloc .reply {
 		visibility: visible;
 	}
-	.comm-options ul {
-		top: 20px;
+	.commentbloc .comm-header {
+		display: block;
 	}
-	.comm-options:hover ul {
-		top: 23px;
+	.commentbloc .comm-options {
+		position: absolute;
+		right: 0;
+		top: 0;
+		padding: 8px;
+	}
+	.commentbloc .comm-options ul {
+		top: -3px;
+	}
+	.commentbloc .comm-options:hover ul {
+		top: 0px;
+	}
+
+	.commentbloc .comm-content blockquote {
+		padding: 5px;
+		margin: 5px;
 	}
 
 	/* links */

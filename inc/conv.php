@@ -234,8 +234,8 @@ function formatage_commentaires($texte) {
 		'# ;#',																	// ;
 	);
 	$toreplacec = array(
-		'</p><blockquote>$1</blockquote><p>',		// citation (</p> and <p> needed for W3C)
-		'</p><blockquote>$1</blockquote><p>',		// citation (</p> and <p> needed for W3C)
+		'<blockquote>$1</blockquote>',		// citation (</p> and <p> needed for W3C)
+		'<blockquote>$1</blockquote>',		// citation (</p> and <p> needed for W3C)
 		'<p>',																// removes unwanted \n
 
 		'<code>$1</code>',													// code
@@ -259,7 +259,7 @@ function formatage_commentaires($texte) {
 
 	$texte = stripslashes($texte);
 	$texte = str_replace(array("\\"), array("&#92;"), $texte);
-	$texte = '<p>'.trim(nl2br($texte)).'</p>';
+	$texte = ''.trim(nl2br($texte)).'';
 	$texte = str_replace('<p></p>', '', $texte);
 	return $texte;
 }

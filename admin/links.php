@@ -93,7 +93,7 @@ if (isset($_POST['_verif_envoi'])) {
 // create link list.
 $tableau = array();
 
-// si on veut ajouter un lien : on n’affiche pas les anciens liens
+// on affiche les anciens liens seulement si on ne veut pas en ajouter un
 if (!isset($_GET['url']) and !isset($_GET['ajout'])) {
 	if ( !empty($_GET['filtre']) ) {
 		// for "tags" & "author" the requests is "tag.$search" : here we split the type of search and what we search.
@@ -174,7 +174,9 @@ else { // aucun lien à ajouter ou éditer : champ nouveau lien + listage des li
 	foreach ($tableau as $link) {
 		afficher_lien($link);
 	}
-	echo '<a id="add-article" class="floating-action" href="links.php?ajout">'.$GLOBALS['lang']['label_lien_ajout'].'</a>'."\n";
+	if (!isset($_GET['ajout'])) {
+		echo '<a id="add-link" class="floating-action" href="links.php?ajout">'.$GLOBALS['lang']['label_lien_ajout'].'</a>'."\n";
+	}
 	echo '</div>'."\n";
 }
 
