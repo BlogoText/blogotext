@@ -133,15 +133,16 @@ if (!isset($_GET['url']) and !isset($_GET['ajout'])) {
 $nb_links_displayed = count($tableau);
 
 afficher_html_head($GLOBALS['lang']['mesliens']);
-echo '<div id="top">'."\n";
-afficher_msg();
-echo moteur_recherche();
-afficher_topnav(basename($_SERVER['PHP_SELF']), $GLOBALS['lang']['mesliens']);
+
+echo '<div id="header">'."\n";
+	echo '<div id="top">'."\n";
+	afficher_msg();
+	echo moteur_recherche();
+	afficher_topnav(basename($_SERVER['PHP_SELF']), $GLOBALS['lang']['mesliens']);
+	echo '</div>'."\n";
 echo '</div>'."\n";
 
-
 echo '<div id="axe">'."\n";
-
 // SUBNAV
 echo '<div id="subnav">'."\n";
 	// Affichage formulaire filtrage liens
@@ -155,9 +156,7 @@ echo '<div id="subnav">'."\n";
 		echo "\t\t".ucfirst(nombre_objets($nb_links_displayed, 'link')).' '.$GLOBALS['lang']['sur'].' '.liste_elements_count("SELECT count(*) AS nbr FROM links", array(), 'links')."\n";
 		echo "\t".'</div>'."\n";
 	}
-
 echo '</div>'."\n";
-
 
 echo '<div id="page">'."\n";
 

@@ -156,14 +156,16 @@ function afficher_commentaire($comment, $with_link) {
 $msgg = $GLOBALS['lang']['titre_commentaires']. ((!empty($article_title)) ?' | '.$article_title : '');
 afficher_html_head($msgg);
 
-echo '<div id="top">'."\n";
-afficher_msg();
-echo moteur_recherche();
-afficher_topnav(basename($_SERVER['PHP_SELF']), $GLOBALS['lang']['titre_commentaires']);
+
+echo '<div id="header">'."\n";
+	echo '<div id="top">'."\n";
+	afficher_msg();
+	echo moteur_recherche();
+	afficher_topnav(basename($_SERVER['PHP_SELF']), $GLOBALS['lang']['titre_commentaires']);
+	echo '</div>'."\n";
 echo '</div>'."\n";
 
 echo '<div id="axe">'."\n";
-
 // SUBNAV
 echo '<div id="subnav">'."\n";
 	// Affichage formulaire filtrage commentaires
@@ -185,7 +187,6 @@ echo '<div id="subnav">'."\n";
 		echo ucfirst(nombre_objets(count($commentaires), 'commentaire')).' '.$GLOBALS['lang']['sur'].' '.$nb_total_comms;
 	}
 	echo '</div>'."\n";
-
 echo '</div>'."\n";
 
 echo '<div id="page">'."\n";

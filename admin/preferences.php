@@ -39,11 +39,12 @@ if (isset($_POST['_verif_envoi'])) {
 */
 function afficher_form_prefs($erreurs = '') {
 	afficher_html_head($GLOBALS['lang']['preferences']);
-	echo '<div id="top">';
-	afficher_msg();
-	afficher_topnav(basename($_SERVER['PHP_SELF']), $GLOBALS['lang']['preferences']);
-	echo '</div>';
-
+	echo '<div id="header">'."\n";
+		echo '<div id="top">'."\n";
+		afficher_msg();
+		afficher_topnav(basename($_SERVER['PHP_SELF']), $GLOBALS['lang']['preferences']);
+		echo '</div>'."\n";
+	echo '</div>'."\n";
 	echo '<div id="axe">'."\n";
 	echo '<div id="page">'."\n";
 	echo erreurs($erreurs);
@@ -290,10 +291,12 @@ function afficher_form_prefs($erreurs = '') {
 */
 function afficher_form_captcha() {
 	afficher_html_head($GLOBALS['lang']['preferences']);
-	echo '<div id="top">';
-	afficher_msg();
-	afficher_topnav(basename($_SERVER['PHP_SELF']), $GLOBALS['lang']['preferences']);
-	echo '</div>';
+	echo '<div id="header">'."\n";
+		echo '<div id="top">'."\n";
+		afficher_msg();
+		afficher_topnav(basename($_SERVER['PHP_SELF']), $GLOBALS['lang']['preferences']);
+		echo '</div>'."\n";
+	echo '</div>'."\n";
 
 	echo '<div id="axe">'."\n";
 	echo '<div id="page">'."\n";

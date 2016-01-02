@@ -18,9 +18,7 @@
 
 #auth p,
 #install p {
-//	display: flex;
 	justify-content: center;
-//	align-items: flex-end;
 	min-height: 40px;
 	padding: 5px 0;
 }
@@ -64,8 +62,9 @@
 	align-self: center;	
 }
 
-#auth p label[for="user"]     { background-position: -265px -131px; }
-#auth p label[for="password"] { background-position: -302px -131px; }
+#auth p label[for="user"]     { background-position: -266px -131px; }
+#auth p label[for="password"] { background-position: -303px -131px; }
+#auth p label[for="word"]     { background-position: -340px -131px; }
 
 
 #auth input.blue-square {

@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2015 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -322,12 +322,6 @@ function date_formate($id, $format_force='') {
 			$retour = $format[$format_force];
 		} else {
 			$retour = $format[$GLOBALS['format_date']];
-
-			if ( $time_article == $auj ) {
-				$retour = $GLOBALS['lang']['aujourdhui'].', '.$retour;
-			} elseif ( $time_article == $hier ) {
-				$retour = $GLOBALS['lang']['hier'].', '.$retour;
-			}
 		}
 	return ucfirst($retour);
 }

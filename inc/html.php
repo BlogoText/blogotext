@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2015 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -407,9 +407,15 @@ function liste_tags($billet, $html_link) {
 
 /* From DB : returns a HTML list with the feeds (the left panel) */
 function feed_list_html() {
-	// First item : button with all feeds
-	$html = "\t\t".'<li class="active-site"><button type="button" onclick="document.getElementById(\'markasread\').onclick=function(){sendMarkReadRequest(\'all\',\'\', true);}; return rss_feedlist(Rss);">'.$GLOBALS['lang']['rss_label_all_feeds'].'</button><span id="global-count-posts" data-nbrun=""></span></li>'."\n";
+	// counts unread feeds in DB
 	$feeds_nb = rss_count_feed();
+	$total_unread = 0;
+	foreach ($feeds_nb as $feed) {
+		$total_unread += $feed['nbrun'];
+	}
+
+	// First item : button with all feeds
+	$html = "\t\t".'<li class="all-feeds"><button type="button" onclick="document.getElementById(\'markasread\').onclick=function(){sendMarkReadRequest(\'all\',\'\', true);}; return sortAll();">'.$GLOBALS['lang']['rss_label_all_feeds'].' <span id="global-post-counter" data-nbrun="'.$total_unread.'">('.$total_unread.')</span></button></li>'."\n";
 
 	$feed_urls = array();
 	foreach ($feeds_nb as $i => $feed) {
@@ -419,36 +425,30 @@ function feed_list_html() {
 	// sort feeds by folder
 	$folders = array();
 	foreach ($GLOBALS['liste_flux'] as $i => $feed) {
+		$feed['nbrun'] = (isset($feed_urls[$feed['link']]['nbrun']) ? $feed_urls[$feed['link']]['nbrun'] : 0);
 		$folders[$feed['folder']][] = $feed;
 	}
 	krsort($folders);
 
 	// creates html : lists RSS feeds without folder separately from feeds with a folder
 	foreach ($folders as $i => $folder) {
+		//$folder = tri_selon_sous_cle($folder, 'nbrun');
 		$li_html = "";
 		$folder_count = 0;
 		foreach ($folder as $j => $feed) {
 			$js = 'onclick="document.getElementById(\'markasread\').onclick=function(){sendMarkReadRequest(\'site\', \''.$feed['link'].'\', true);}; sortSite(this);"';
-			if (array_key_exists($feed['link'], $feed_urls) and $feed_urls[$feed['link']]['nbrun'] != 0) {
-				$li_html .= "\t\t".'<li class="feed-not-null" data-nbrun="'.$feed_urls[$feed['link']]['nbrun'].'" data-feedurl="'.$feed['link'].'" title="'.$feed['link'].'">';
+				$li_html .= "\t\t".'<li class="" data-nbrun="'.$feed['nbrun'].'" data-feedurl="'.$feed['link'].'" title="'.$feed['link'].'">';
 				$li_html .= '<button type="button" '.(($feed['iserror'] > 2) ? 'class="feed-error" ': ' ' ).$js.'>'.$feed['title'].'</button>';
-				$li_html .= '<span>('.$feed_urls[$feed['link']]['nbrun'].')</span>';
+				$li_html .= '<span>('.$feed['nbrun'].')</span>';
 				$li_html .= '</li>'."\n";
-				$folder_count += $feed_urls[$feed['link']]['nbrun'];
-			} else {
-				$li_html .= "\t\t".'<li data-nbrun="0" data-feedurl="'.$feed['link'].'" title="'.$feed['link'].'">';
-				$li_html .= '<button type="button" '.(($feed['iserror'] > 2) ? 'class="feed-error" ': ' ' ).$js.'>'.$feed['title'].'</button>';
-				$li_html .= '<span>(0)</span>';
-				$li_html .= '</li>'."\n";
-			}
-
+				$folder_count += $feed['nbrun'];
 		}
 
 		if ($i != '') {
-			$html .= "\t\t".'<li class="feed-folder'.(($folder_count > 0) ? ' feed-not-null' : '').'" data-nbrun="'.$folder_count.'" data-folder="'.$i.'">'."\n";
-			$html .= "\t\t\t".'<span class="feedtitle">'."\n";
-			$html .= "\t\t\t\t".'<button type="button" onclick="return hideFolder(this)" class="unfold">+</button>'."\n";
-			$html .= "\t\t\t\t".'<button type="button" onclick="document.getElementById(\'markasread\').onclick=function(){sendMarkReadRequest(\'folder\', \''.$i.'\', true);}; sortFolder(this);">'.$i.'</button><span>('.$folder_count.')</span>'."\n";
+			$html .= "\t\t".'<li class="feed-folder" data-nbrun="'.$folder_count.'" data-folder="'.$i.'">'."\n";
+			$html .= "\t\t\t".'<span class="feed-folder-title">'."\n";
+			$html .= "\t\t\t\t".'<button type="button" onclick="document.getElementById(\'markasread\').onclick=function(){sendMarkReadRequest(\'folder\', \''.$i.'\', true);}; sortFolder(this);">'.$i.'<span>('.$folder_count.')</span></button>'."\n";
+			$html .= "\t\t\t\t".'<button type="button" onclick="return hideFolder(this)" class="unfold">unfold</button>'."\n";
 			$html .= "\t\t\t".'</span>'."\n";
 			$html .= "\t\t\t".'<ul>'."\n\t\t";
 		}

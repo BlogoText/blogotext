@@ -3,7 +3,12 @@
 	#axe {
 		padding: 20px 15px;
 		padding-top: 75px;
-
+	}
+	#subnav {
+		display: block;
+	}
+	#subnav .nombre-elem {
+		margin: 15px auto 10px;
 	}
 	select {
 		max-width: 100%;
@@ -55,8 +60,8 @@
 	#top > #search,
 	#top > #nav-acc {
 		box-sizing: border-box;
-		height: 50px;
-		line-height: 50px;
+		height: 60px;
+		line-height: 60px;
 		vertical-align: middle;
 		overflow: hidden;
 	}
@@ -65,7 +70,7 @@
 	/* TOP > Left nav bar
 	------------------------------------------------------*/
 	#top > #nav {
-		flex: 0 0 50px;
+		flex: 0 0 60px;
 		text-align: left;
 		background-color: inherit;
 	}
@@ -73,13 +78,13 @@
 	#top > #nav::before {
 		content: "";
 		position: absolute;
-		width: 40px;
+		width: 60px;
 		cursor: pointer;
-		height: 40px;
-		top: 8px;
-		left: 5px;
+		height: 60px;
+		top: 0px;
+		left: 0px;
 		z-index: 8;
-		background: url(sprites.png) no-repeat 1px 1px / 640px 400px;
+		background: url(sprites.png) no-repeat 14px 10px / 640px 400px;
 		background-color: inherit;
 	}
 
@@ -87,7 +92,7 @@
 	------------------------------------------------------*/
 	#top > #search {
 		order: 2;
-		flex: 0 0 50px;
+		flex: 0 0 60px;
 		padding: 0;
 	}
 
@@ -104,7 +109,8 @@
 		height: 40px;
 		width: 40px;
 		right: 0; left: 0;
-		background: url(sprites.png) no-repeat 7px -40px / 640px 400px;
+		background: url(sprites.png) no-repeat 8px -41px / 640px 400px;
+
 	}
 
 	#top > #search input:hover { /* hover */

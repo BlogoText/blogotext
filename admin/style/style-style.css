@@ -41,8 +41,16 @@ body {
 	padding-bottom: 32px;
 }
 
-#axe { /* the entire page without top bar (#top) and footer (#footer) */ 
-	padding: 20px;
+#header {/* the top bar(s) */
+	padding: 0;
+	box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+	width: 100%;
+	z-index: 100;
+	
+
+}
+#axe { /* the entire page without top bars (#header) and footer (#footer) */ 
+	padding: 25px 20px;
 }
 
 #page { /* the main frame. #axe minus the "filtre" forms, and the subnav */
@@ -179,7 +187,7 @@ q, blockquote {
 ------------------------------------------------------------------------ */
 #top {
 	display: flex;
-	min-height: 55px;
+	min-height: 60px;
 	box-sizing: border-box;
 	background: #fefefe;
 	background: #4db6ac; /*teal*/
@@ -192,10 +200,8 @@ q, blockquote {
 	background: #ba68c8; /*purple*/
 	background: #a1887f; /*brown*/
 	background: #ffd54f; /*amber*/
-	box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+	//position: relative;
 	padding: 0 0 0 20px;
-	width: 100%;
-	z-index: 100;
 	color: inherit;
 }
 
@@ -204,8 +210,8 @@ q, blockquote {
 #top > #search,
 #top > #nav-acc {
 	box-sizing: border-box;
-	min-height: 55px;
-	line-height: 55px;
+	//min-height: 60px;
+	line-height: 60px;
 	vertical-align: middle;
 	overflow: hidden;
 	color: inherit;
@@ -215,7 +221,6 @@ q, blockquote {
 ------------------------------------------------------*/
 #top > #nav {
 	order: 1;
-	margin-left: 1%;
 	font-variant: small-caps;
 }
 /* TOP > Left nav bar > menu
@@ -300,7 +305,7 @@ q, blockquote {
 #top > #nav-acc {
 	order: 3;
 	/*flex: 0 0 50px;*/
-	margin: 0 50px 0 0;
+	margin: 0 60px 0 0;
 	background-color: inherit;
 }
 
@@ -309,13 +314,13 @@ q, blockquote {
 	position: absolute;
 	border-radius: 50%;
 	background-color: inherit;
-	width: 40px;
-	height: 40px;
-	top: 5px;
-	right: 5px;
+	width: 60px;
+	height: 60px;
+	top: 0px;
+	right: 0px;
 	box-sizing: border-box;
 	z-index: 15;
-	background: url(sprites.png) no-repeat -36px 1px / 640px 400px;
+	background: transparent url("sprites.png") no-repeat scroll -23px 10px / 640px 400px
 }
 
 
@@ -380,17 +385,19 @@ q, blockquote {
 
 #subnav {
 	margin: 0 1% 30px;
-	padding: 10px;
+	padding: 10px 20px;
 	background: #fefefe;
-	box-shadow: 0px 1px 2px rgba(0, 0, 0, .25);
-	border-radius: 3px;
+	display: flex;
+	padding: 10px;
+	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25);
+	border-radius: 2px;
 }
 
 #subnav .nombre-elem {
 	font-weight: bold;
 	color: #333;
 	text-align: center;
-	margin: 15px auto 10px;
+	margin: auto auto;
 }
 #subnav .nombre-elem ul { /* list on link-hover on comm-page */
 	display: inline-block;
@@ -660,7 +667,7 @@ fieldset {
 #preferences,
 #preferences-captcha,
 #maintenance-form,
-#rss-list,
+/*#rss-list,*/
 #post-nv-commentaire,
 #form-rss-config,
 #form-rss-add

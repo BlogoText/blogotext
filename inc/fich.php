@@ -503,7 +503,6 @@ function feed2array($feed_content, $feedlink) {
 			if (!empty($feed_obj->entry)){ $items = $feed_obj->entry; }
 			if (empty($items)) { return $flux; }
 
-			//aff($feed_obj);
 			foreach ($items as $item) {
 				$c=count($flux['items']);
 				if (!empty($item->title)) {         $flux['items'][$c]['bt_title'] = (string)$item->title; }
@@ -565,7 +564,7 @@ function send_rss_json($rss_entries) {
 		// note : json_encode DOES add « " » on the data, so I use « encode() » and not '"'.encode().'"';
 		$out .= '{'.
 			'"id": "'.$entry['bt_id'].'",'.
-			'"date": "'.date_formate(date('YmdHis', $entry['bt_date'])).' - '.heure_formate(date('YmdHis', $entry['bt_date'])).'",'.
+			'"date": "'.date_formate(date('YmdHis', $entry['bt_date'])).', '.heure_formate(date('YmdHis', $entry['bt_date'])).'",'.
 			'"title": '.json_encode($entry['bt_title']).','.
 			'"link": '.json_encode($entry['bt_link']).','.
 			'"feed": '.json_encode($entry['bt_feed']).','.
