@@ -301,7 +301,7 @@ $GLOBALS['lang'] = array(
 'confirm_feeds_edit'				=> 'Les flux ont été édités.',
 'confirm_feed_ajout'				=> 'Le flux a été ajouté.',
 'confirm_feed_clean'				=> 'Tous les anciens éléments ont été supprimés.',
-// No-onfiramtion
+// No-confirmation
 'error_image_add'					=> 'Le fichier n’a pas pu être ajoutée',
 'error_phpajax'					=> 'Une erreur PHP/Ajax s’est produite :',
 'error_comment_suppr'			=> 'Le commentaire n’a pas été supprimé suite à une erreur.',

@@ -301,7 +301,7 @@ $GLOBALS['lang'] = array(
 'confirm_feeds_edit'				=> 'The feeds have been edited.',
 'confirm_feed_ajout'				=> 'The feed has been added.',
 'confirm_feed_clean'				=> 'All old feeds have removed.',
-// No-onfiramtion
+// No-confirmation
 'error_image_add'					=> 'File could not have been added',
 'error_phpajax'					=> 'Some PHP/Ajax Error happened:',
 'error_comment_suppr'			=> 'The comment has not been deleted since an error happened.',
