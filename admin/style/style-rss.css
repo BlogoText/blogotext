@@ -18,6 +18,7 @@
 	align-items: center;
 	padding: 0 30px;
 	background: #fefefe;
+	color: #333
 }
 
 #rss-menu #count-posts {
@@ -63,7 +64,6 @@
 }
 
 #rss-menu ul > li:nth-of-type(1) > button        { background-position: -0px -125px; }
-/*#rss-menu ul > li:nth-of-type(2) > button        { background-position: -148px -125px; }*/
 #rss-menu ul > li:nth-of-type(2) > button        { background-position: -185px -125px; }
 #rss-menu ul > li:nth-of-type(3) > button        { background-position: -222px -125px; }
 #rss-menu ul > li:nth-of-type(4) > button        { background-position: -0px -161px; }
@@ -92,7 +92,6 @@
 	padding: 0;
 	display: flex;
 	position: relative;
-	border-left: 2px solid transparent;
 	border-bottom: 1px solid #eee;
 }
 
@@ -205,19 +204,18 @@
 	color: red;
 }
 
-#feed-list li button:hover {
-	text-decoration: underline;
-}
 #feed-list li.active-site,
 #feed-list > li.feed-folder.active-site {
 	background-color: #eee;
-	border-left-color: #427fed;
-	transition: border 0.2s ease 0s
+	box-shadow: 3px 0 0 gray inset;
+	transition: box-shadow 0.2s ease 0s
 }
 
-#feed-list li.feed-folder.open > ul > .active-site {
-	margin-left: -2px;
-	padding-left: 2px
+#feed-list li.feed-folder:hover > span,
+#feed-list li:not(.feed-folder):hover,
+#feed-list > li.feed-folder li:hover {
+	box-shadow: 3px 0 0 gray inset;
+	transition: box-shadow 0.2s ease 0s
 }
 
 #feed-list li:not([data-nbrun="0"]) {
@@ -261,14 +259,12 @@
 }
 
 #post-list > li:hover {
-	position: relative;
-	box-shadow: 0 0 8px rgba(0, 0, 0, .4);
+	box-shadow: 4px 0px 0px gray inset;
 	cursor: pointer;
 }
 
 #post-list > li.read:not(.open-post) {
 	color: gray;
-//	padding-left: 45px;
 }
 
 #post-list > li img,
@@ -309,6 +305,11 @@
 	font-weight: bold;
 	flex: 1 0 auto;
 }
+
+#post-list > li:not(.open-post) .post-title a:hover {
+	text-decoration: none;
+}
+
 #post-list > li .post-title a:hover+.datesite {
 	flex: 0 10 auto;
 }
@@ -372,10 +373,7 @@
 
 #post-list > li.open-post .rss-item-content {
 	display: block;
-}
-
-#post-list > li.open-post .datesite {
-	padding-top: 4px;
+	margin-top: 15px;
 }
 
 #post-list > li .datesite .lien-share {

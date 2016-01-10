@@ -3,8 +3,6 @@
 @media (max-width: 700px) {
 	#axe {
 		padding: 20px 10px;
-		padding-top: 75px;
-
 	}
 
 	/* page écrire */
@@ -116,9 +114,11 @@
 
 
 	/* paged des RSS */
+	#rss-menu {
+		padding: 0 20px;
+	}
 	#posts-menu {
 		text-align: left;
-
 		border-left: none;
 		display: block;
 	}
@@ -145,6 +145,12 @@
 		padding-bottom: 10px;
 	}
 
+	#post-list > li .post-title {
+		display: block;
+	}
+	#post-list > li div.datesite {
+		font-size: 0.8em;
+	}
 	#graphs .month:nth-child(-n+24) {
 		display: none;
 	}

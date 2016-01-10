@@ -46,9 +46,9 @@ body {
 	box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
 	width: 100%;
 	z-index: 100;
-	
-
+	color: white;
 }
+
 #axe { /* the entire page without top bars (#header) and footer (#footer) */ 
 	padding: 25px 20px;
 }
@@ -200,7 +200,7 @@ q, blockquote {
 	background: #ba68c8; /*purple*/
 	background: #a1887f; /*brown*/
 	background: #ffd54f; /*amber*/
-	//position: relative;
+	background: #E9573F;
 	padding: 0 0 0 20px;
 	color: inherit;
 }
@@ -210,7 +210,6 @@ q, blockquote {
 #top > #search,
 #top > #nav-acc {
 	box-sizing: border-box;
-	//min-height: 60px;
 	line-height: 60px;
 	vertical-align: middle;
 	overflow: hidden;
@@ -221,7 +220,6 @@ q, blockquote {
 ------------------------------------------------------*/
 #top > #nav {
 	order: 1;
-	font-variant: small-caps;
 }
 /* TOP > Left nav bar > menu
 ----------------------------------------*/
@@ -245,16 +243,12 @@ q, blockquote {
 	transition: box-shadow 0.1s ease-in 0s;
 }
 
-#top > #nav a.current{
+#top > #nav a.current {
 	font-weight: bold;
-	box-shadow: 0px -3px 0px rgba(0, 0, 0, .3) inset;
 }
-#top > #nav a:hover {
-	box-shadow: 0px -3px 0px rgba(0, 0, 0, .3) inset;
-}
-
-#top > #nav a:active {
-	box-shadow: 0px -3px 0px rgba(0, 0, 0, .5) inset;
+#top > #nav a:hover,
+#top > #nav a.current {
+	box-shadow: 0px -3px 0px currentColor inset;
 }
 
 
@@ -285,7 +279,8 @@ q, blockquote {
 	height: 40px;
 	max-width: 700px;
 	width: 100%;
-	background: rgba(255, 255, 255, .7) url(sprites.png) no-repeat 7px -40px / 640px 400px;
+	background: rgba(255, 255, 255, .3) url(sprites.png) no-repeat 7px -197px / 640px 400px;
+	color: inherit;
 }
 
 #top > #search input:hover { /* hover */
@@ -294,10 +289,10 @@ q, blockquote {
 
 #top > #search input[value=""]:focus,
 #top > #search input:not([value=""]) { /* not empty : focus */
-	border: 1px solid #2196F3;
 	position: relative;
 	z-index: 20;
-	background-color: rgba(255, 255, 255, .9);
+	color: black;
+	background: rgba(255, 255, 255, .8) url(sprites.png) no-repeat 7px -40px / 640px 400px;
 }
 
 /* TOP > Right nav bar
@@ -330,7 +325,7 @@ q, blockquote {
 	position: absolute;
 	list-style-type: none;
 	line-height: 3;
-	margin: 50px 0 0;
+	margin: 60px 0 0;
 	padding: 0;
 	opacity: 0;
 	overflow: hidden;
@@ -345,7 +340,7 @@ q, blockquote {
 	text-align: right;
 }
 #top > #nav-acc:hover > ul {
-	top: -50px;
+	top: -60px;
 	opacity: 1;
 	right: 0;
 	transition: opacity .2s ease-in .05s, top .2s ease-in .05s, right 0s ease-out .05s;
@@ -469,12 +464,14 @@ q, blockquote {
 	position: fixed;
 	right: 32px;
 	box-sizing: border-box;
+	padding: 0;
 	padding-left: 56px;
 	overflow: hidden;
 	bottom: 32px;
 	z-index: 9999;
 	background: #db4437;
 	transition: transform .2s cubic-bezier(.57,.57,.96,1.39);
+	border: 0;
 }
 
 .floating-action::before {
@@ -495,9 +492,11 @@ q, blockquote {
 .floating-action.hidden {
 	transform: scale(0);
 	transition: transform .2s cubic-bezier(.2,-.5,.5,.2);
-
 }
 
+.floating-action#add-feed::before {
+	background-position: -447px -164px;
+}
 /* PAGE INDEX 
 ------------------------------------------------------------------------- */
 #resultat-recherche {

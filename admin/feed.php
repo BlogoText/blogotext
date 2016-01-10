@@ -88,6 +88,7 @@ echo '<div id="header">'."\n";
 		echo "\t\t\t".'<li><button type="button" onclick="return cleanList();" title="'.$GLOBALS['lang']['rss_label_clean'].'"></button></li>'."\n";
 		echo "\t\t".'</ul>'."\n";
 		echo "\t".'</div>'."\n";
+		echo '<button type="button" id="add-feed" class="floating-action" onclick="addNewFeed();" title="'.$GLOBALS['lang']['rss_label_config'].'">'.$GLOBALS['lang']['label_lien_ajout'].'</button>'."\n";
 	}
 
 echo '</div>'."\n";

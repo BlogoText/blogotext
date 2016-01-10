@@ -922,7 +922,7 @@ function rss_feedlist(RssPosts) {
 /* Sort and show all items */
 function sortAll() {
 	// unhighlight previously selected site
-	document.querySelector('.active-site').classList.remove('active-site');
+	if (document.querySelector('.active-site')) document.querySelector('.active-site').classList.remove('active-site');
 
 	rss_feedlist(Rss);
 	openAllSwich = 'open';
@@ -943,8 +943,8 @@ function sortSite(origine) {
 			newList.push(item);
 		}
 	}
-	// highlight selected site
-	document.querySelector('.active-site').classList.remove('active-site');
+	// unhightlight previous site and highlight new site
+	if (document.querySelector('.active-site')) document.querySelector('.active-site').classList.remove('active-site');
 	for (var i = 0, liList = document.querySelectorAll('#feed-list li'), len = liList.length ; i < len ; i++) {
 		if (liList[i].dataset.feedurl == choosensite) {
 			liList[i].classList.add('active-site');

@@ -2,7 +2,6 @@
 @media (max-width: 850px) {
 	#axe {
 		padding: 20px 15px;
-		padding-top: 75px;
 	}
 	#subnav {
 		display: block;
@@ -51,8 +50,8 @@
 	}
 	#top {
 		display: flex;
-		height: 50px;
 		box-sizing: border-box;
+		padding: 0;
 	}
 
 	#top > #nav,
@@ -85,7 +84,6 @@
 		left: 0px;
 		z-index: 8;
 		background: url(sprites.png) no-repeat 14px 10px / 640px 400px;
-		background-color: inherit;
 	}
 
 	/* TOP > Search button + searchbar
@@ -109,7 +107,7 @@
 		height: 40px;
 		width: 40px;
 		right: 0; left: 0;
-		background: url(sprites.png) no-repeat 8px -41px / 640px 400px;
+		background: url(sprites.png) no-repeat 8px -198px / 640px 400px;
 
 	}
 
@@ -124,7 +122,7 @@
 		border: 1px solid transparent;
 		margin: 0 auto;
 		position: absolute;
-		z-index: 10;
+		z-index: 20;
 		border-radius: 3px;
 		max-width: 550px;
 		padding: 0 10px 0 40px;
@@ -160,13 +158,13 @@
 	/* TOP > Left nav bar > menu
 	----------------------------------------*/
 	#top > #nav ul {
-		position: fixed;
+		position: absolute;
 		line-height: 3;
 		background-color: inherit;
 		width: 210px;
 		height: 100%;
 		left: -250px;
-		top: 40px;
+		top: 50px;
 		box-shadow: 0px 14px 24px rgba(0, 0, 0, 0.6);
 		z-index: 20;
 		opacity: 0;
@@ -175,7 +173,7 @@
 
 	#top > #nav:hover > ul {
 		left: 0;
-		top: 50px;
+		top: 60px;
 		opacity: 1;
 		transition: opacity .2s ease-in .05s, top .2s ease-in .05s, left 0s ease-out .05s;
 	}

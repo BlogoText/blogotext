@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2015 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -83,7 +83,7 @@ function afficher_liste_articles($tableau) {
 		$out = info($GLOBALS['lang']['note_no_article']);
 	}
 
-	$out .= '<a id="add-article" class="floating-action" href="ecrire.php">'.$GLOBALS['lang']['titre_ecrire'].'</a>'."\n";
+	$out .= '<a id="add-article" class="floating-action" href="ecrire.php" title="'.$GLOBALS['lang']['titre_ecrire'].'">'.$GLOBALS['lang']['titre_ecrire'].'</a>'."\n";
 
 	echo $out;
 
