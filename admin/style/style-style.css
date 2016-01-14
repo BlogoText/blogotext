@@ -189,18 +189,27 @@ q, blockquote {
 	display: flex;
 	min-height: 60px;
 	box-sizing: border-box;
-	background: #fefefe;
-	background: #4db6ac; /*teal*/
-	background: #f06292; /*pink*/
-	background: #4dd0e1; /*cyan*/
-	background: #0F9D58; /*green*/
-	background: #90a4ae; /*blue-gray*/
-	background: #fff176; /*yellow*/
-	background: #ffb74d; /*orange*/
+
+	/* colors from https://www.google.com/design/spec/style/color.html#color-color-palette */
 	background: #ba68c8; /*purple*/
+	background: #f44336; /*red*/
+	background: #3f51b5; /*indigo*/
 	background: #a1887f; /*brown*/
-	background: #ffd54f; /*amber*/
-	background: #E9573F;
+	background: #00bcd4; /*cyan*/
+	background: #009688; /*teal*/
+	background: #c0ca33; /*lime*/
+	background: #8bc34a; /*lightgreen*/
+	background: #4caf50; /*green*/
+	background: #f9a825; /*yellow*/
+	background: #ffa000; /*amber*/
+	background: #ff9800; /*orange*/
+	background: #9e9e9e; /*gray*/
+	background: #607d8b; /*bluegray*/
+	background: #ff5722; /*deeporange*/
+	background: #000000; /*black*/
+	background: #424242; /*dark gray*/
+	background: #795548; /*darker brown*/
+	background: #2196f3; /*blue*/
 	padding: 0 0 0 20px;
 	color: inherit;
 }

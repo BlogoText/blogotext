@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2014 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -505,8 +505,10 @@ function feed2array($feed_content, $feedlink) {
 
 			foreach ($items as $item) {
 				$c=count($flux['items']);
-				if (!empty($item->title)) {         $flux['items'][$c]['bt_title'] = (string)$item->title; }
-					else { $flux['items'][$c]['bt_title'] = "-"; }
+				if (!empty($item->title)) {
+					//$flux['items'][$c]['bt_title'] = (string)$item->title;
+					$flux['items'][$c]['bt_title'] = html_entity_decode((string)$item->title, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+				} else { $flux['items'][$c]['bt_title'] = "-"; }
 				if (!empty($item->link['href'])) {  $flux['items'][$c]['bt_link'] = (string)$item->link['href']; }
 				if (!empty($item->link)) {          $flux['items'][$c]['bt_link'] = (string)$item->link; }
 				if (!empty($item->author->name)) {  $flux['items'][$c]['bt_author'] = (string)$item->author->name; }
