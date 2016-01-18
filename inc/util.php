@@ -280,6 +280,7 @@ function parse_search($q) {
 
 /* for testing/dev purpose: shows a variable. */
 function debug($data) {
+	header('Content-Type: text/html; charset=utf-8');
 	echo '<pre>';
 	print_r($data);
 	die;

@@ -118,7 +118,7 @@ function parse_texte_paragraphs($texte) {
 	// removes empty lines at begining and end of raw texte
 	$texte_formate = preg_replace('#^(\r|<br>|<br/>|<br />){0,}(.*?)(\r|<br>|<br/>|<br />){0,}$#s', '$2', $texte);
 
-	$block_elements = 'address|article|aside|audio|blockquote|canvas|dd|li|div|[oud]l|fieldset|fig(caption|ure)|footer|form|h[1-6]|header|hgroup|hr|main|nav|noscript|output|p|pre|section|table|tfoot|video';
+	$block_elements = 'address|article|aside|audio|blockquote|canvas|dd|li|div|[oud]l|fieldset|fig(caption|ure)|footer|form|h[1-6]|header|hgroup|hr|main|nav|noscript|output|p|pre|prebtcode|section|table|tfoot|video';
 
 	$texte_final = '';
 	$finished = false;
@@ -177,7 +177,6 @@ function formatage_wiki($texte) {
 	$tofind = array(
 		// transforme certains \r en \n
 		'#<(.*?)>\r#',			// html (les <tag> suivi d’un \r ne prennent pas de <br/> (le <br> remplace un \r, pas un \n).
-		'#(\[/?code\])\r#',	// idem pour les balises [code], qui sont converties un peu à part, en <pre>
 
 		// css block elements
 		'#\[left\](.*?)\[/left\]#s',			// aligner à gauche
@@ -186,7 +185,7 @@ function formatage_wiki($texte) {
 		'#\[justify\](.*?)\[/justify\]#s',	// justifier
 
 		// misc
-		'#([^"\[\]|])((http|ftp)s?://([^"\'\[\]<>\s]+))#i',	// Regex URL
+		'#([^"\[\]|])((http|ftp)s?://([^"\'\[\]<>\s]+))#i',			// Regex URL
 		'#\[([^[]+)\|([^[]+)\]#',												// a href
 		'#\[(https?://)([^[]+)\]#',											// url
 		'#\[img\](.*?)(\|(.*?))?\[/img\]#s',								// [img]
@@ -195,12 +194,13 @@ function formatage_wiki($texte) {
 		'#\[s\](.*?)\[/s\]#s',													// strike
 		'#\[u\](.*?)\[/u\]#s',													// souligne
 		'#\*\*(.*?)(\r|$)#s',													// ul/li (br because of prev replace)
-		'#</ul>\r<ul>#s',																// ul/li
+		'#</ul>\r<ul>#s',															// ul/li
 		'#\#\#(.*?)(\r|$)#s',													// ol/li
-		'#</ol>\r<ol>#s',																// ol/li
+		'#</ol>\r<ol>#s',															// ol/li
 		'#\[quote\](.*?)\[/quote\]#s',										// citation
+		'#\[code\]\[/code\]#s',													// code
 		'#\[color=(\\\?")?(\w*|\#[0-9a-fA-F]{3}|\#[0-9a-fA-F]{6})(\\\?")?\](.*?)\[/color\]#s',			// color
-		'#\[size=(\\\?")?([0-9]{1,})(\\\?")?\](.*?)\[/size\]#s',			// size
+		'#\[size=(\\\?")?([0-9]{1,})(\\\?")?\](.*?)\[/size\]#s',		// size
 
 		// quelques &nbsp; que j’ajoute
 		'# »#',
@@ -212,7 +212,6 @@ function formatage_wiki($texte) {
 	$toreplace = array(
 		// transforme certains \r en \n
 		'<$1>'."\n",		// html
-		'$1'."\n",			// la balise code qui ne doit pas recevoir de <br/>
 
 		// css block elements
 		'<div style="text-align:left;">$1</div>',		// aligner à gauche
@@ -224,18 +223,19 @@ function formatage_wiki($texte) {
 		'$1<a href="$2">$2</a>',												// url regex
 		'<a href="$2">$1</a>',													// a href
 		'<a href="$1$2">$2</a>',												// url
-		'<img src="$1" alt="$3" />',														// img
+		'<img src="$1" alt="$3" />',											// img
 		'<strong>$1</strong>',													// strong
 		'<em>$1</em>',																// italic
 		'<del>$1</del>',															// barre
 		'<u>$1</u>',																// souligne
-		'<ul><li>$1</li></ul>'."\r",									// ul/li
-		'',																				// ul/li
-		'<ol><li>$1</li></ol>'."\r",									// ol/li
-		'',																				// ol/li
-		'<blockquote>$1</blockquote>'."\n",											// citation
+		'<ul><li>$1</li></ul>'."\r",											// ul/li
+		'',																			// ul/li
+		'<ol><li>$1</li></ol>'."\r",											// ol/li
+		'',																			// ol/li
+		'<blockquote>$1</blockquote>'."\r",									// citation
+		'<prebtcode></prebtcode>'."\r",										// code
 		'<span style="color:$2;">$4</span>',								// color
-		'<span style="font-size:$2pt;">$4</span>',								// text-size
+		'<span style="font-size:$2pt;">$4</span>',						// text-size
 
 		// quelques &nbsp; que j’ajoute
 		'&nbsp;»',
@@ -249,24 +249,20 @@ function formatage_wiki($texte) {
 	// il met en mémoire le contenu des balises [code] tels quelles
 	$nb_balises_code_avant = preg_match_all('#\[code\](.*?)\[/code\]#s', $texte, $balises_code, PREG_SET_ORDER);
 
-	// formate tout sauf les [code]
-	$texte_formate = $texte;
-
 	// vide les balises de code, vu qu’on ne souhaite pas les formater (leur contenu est en mémoire)
-	$texte_formate = preg_replace('#\[code\](.*?)\[/code\]#s', '[code][/code]', $texte_formate);
+	$texte_formate = preg_replace('#\[code\](.*?)\[/code\]#s', '[code][/code]', $texte);
 
+	// formate tout
 	$texte_formate = preg_replace($tofind, $toreplace, $texte_formate);
+
 	$texte_formate = parse_texte_paragraphs($texte_formate);
-
-
-
 
 	// remplace les balises [codes] modifiées par la balise code non formatée et précédement mises en mémoire.
 	// ceci permet de formater l’ensemble du message, sauf les balises [code],
 	if ($nb_balises_code_avant) {
-		$nb_balises_code_apres = preg_match_all('#\[code\](.*?)\[/code\]#s', $texte_formate, $balises_code_apres, PREG_SET_ORDER);
+		$nb_balises_code_apres = preg_match_all('#<prebtcode></prebtcode>#s', $texte_formate, $balises_code_apres, PREG_SET_ORDER);
 		foreach ($balises_code as $i => $code) {
-			$texte_formate = str_replace('<p>'.$balises_code_apres[$i][0].'</p>', '<pre>'.htmlspecialchars($balises_code[$i][1]).'</pre>', $texte_formate);
+			$texte_formate = str_replace($balises_code_apres[$i][0], '<pre>'.htmlspecialchars($balises_code[$i][1]).'</pre>', $texte_formate);
 
 		}
 	}
