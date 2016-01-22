@@ -402,13 +402,14 @@ q, blockquote {
 	color: #333;
 	text-align: center;
 	margin: auto auto;
+	width: 100%;
+	box-sizing: border-box;
 }
 #subnav .nombre-elem ul { /* list on link-hover on comm-page */
 	display: inline-block;
 	list-style: none;
 	margin: 0;
 	padding: 0;
-	vertical-align: middle;
 	position: relative;
 	z-index: 15;
 }
