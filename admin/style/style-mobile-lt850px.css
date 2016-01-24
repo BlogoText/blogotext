@@ -243,6 +243,7 @@
 		display: block;
 		line-height: initial;
 		text-align: right;
+		padding: 0 10px;
 	}
 	#billets > li > span:nth-of-type(2),
 	#billets > li > span:nth-of-type(3),
@@ -258,18 +259,14 @@
 		line-height: 50px;
 	}
 	#billets > li > span:nth-of-type(2) {
-		padding: 0;
-		display: block;
+		padding: 10px 10px 10px 0;
+	}
+	#billets > li > span:nth-of-type(2) > a+span {
+		display: none;
 	}
 	#billets > li > span:nth-of-type(3) {
 		padding: 0;
 		margin-left: 0;
-	}
-
-
-	/* index.php graphs */
-	#graphs .month:nth-child(-n+18) {
-		display: none;
 	}
 
 }

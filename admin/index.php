@@ -78,7 +78,7 @@ function scaled_size($tableau, $maximum) {
 */
 function get_tableau_date($data_type) {
 	$table_months = array();
-	for ($i = 35 ; $i >= 0 ; $i--) {
+	for ($i = 96 ; $i >= 0 ; $i--) {
 		$table_months[date('Ym', mktime(0, 0, 0, date("m")-$i, 1, date("Y")))] = 0;
 	}
 
@@ -104,13 +104,7 @@ function get_tableau_date($data_type) {
 	return $table_months;
 }
 
-
-
-
-
-
 /* Une recherche a été faite : affiche la recherche */
-
 if (!empty($_GET['q'])) {
 	$q = htmlspecialchars($_GET['q']);
 	$nb_commentaires = liste_elements_count("SELECT count(ID) AS nbr FROM commentaires WHERE bt_content LIKE ?", array('%'.$q.'%'));
@@ -137,14 +131,19 @@ else {
 	if (!$total_artic == 0) {
 		// print sur chaque div pour les articles.
 		echo '<p>'.ucfirst($GLOBALS['lang']['label_articles']).' :</p>'."\n";
+		echo '<div class="graph-container" id="graph-container-article">'."\n";
+		echo '<canvas height="150" width="400">Texte alternatif pour les navigateurs ne supportant pas Canvas.</canvas>'."\n";
 		echo '<div class="graphique" id="articles">'."\n";
 		$table = scaled_size(get_tableau_date('articles'), 150);
-		while ($table[0]['nb'] === 0) {
-			$first = array_shift($table);
-		}
+//		while ($table[0]['nb'] === 0) {
+//			$first = array_shift($table);
+//		}
+		$table = array_reverse($table);
+		echo '<div class="month"><div class="month-bar" style="height: 151px; margin-top:20px;"></div></div>';
 		foreach ($table as $i => $data) {
-			echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(20-$data['nb_scale'], 0).'px"></div><span class="month-nb">'.$data['nb'].'</span><a href="articles.php?filtre='.$data['date'].'"><span class="month-name">'.mb_substr(mois_en_lettres(substr($data['date'],4,2)),0,3)."\n".substr($data['date'],2,2).'</span></a></div>';
+			echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(3-$data['nb_scale'], 0).'px"></div><span class="month-nb">'.$data['nb'].'</span><a href="articles.php?filtre='.$data['date'].'"><span class="month-name">'.mb_substr(mois_en_lettres(substr($data['date'],4,2)),0,3)."\n".substr($data['date'],2,2).'</span></a></div>';
 		}
+		echo '</div>'."\n";
 		echo '</div>'."\n";
 	} else {
 		$nothingyet++;
@@ -153,14 +152,19 @@ else {
 	if (!$total_comms == 0) {
 		// print sur chaque div pour les com.
 		echo '<p>'.ucfirst($GLOBALS['lang']['label_commentaires']).' :</p>'."\n";
+		echo '<div class="graph-container" id="graph-container-commentaires">'."\n";
+		echo '<canvas height="150" width="400">Texte alternatif pour les navigateurs ne supportant pas Canvas.</canvas>'."\n";
 		echo '<div class="graphique" id="commentaires">'."\n";
 		$table = scaled_size(get_tableau_date('commentaires'), 150);
-		while ($table[0]['nb'] === 0) {
-			$first = array_shift($table);
-		}
+//		while ($table[0]['nb'] === 0) {
+//			$first = array_shift($table);
+//		}
+		$table = array_reverse($table);
+		echo '<div class="month"><div class="month-bar" style="height: 151px; margin-top:20px;"></div></div>';
 		foreach ($table as $i => $data) {
-			echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(20-$data['nb_scale'], 0).'px"></div><span class="month-nb">'.$data['nb'].'</span><a href="commentaires.php?filtre='.$data['date'].'"><span class="month-name">'.mb_substr(mois_en_lettres(substr($data['date'],4,2)),0,3)."\n".substr($data['date'],2,2).'</span></a></div>';
+			echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(3-$data['nb_scale'], 0).'px"></div><span class="month-nb">'.$data['nb'].'</span><a href="commentaires.php?filtre='.$data['date'].'"><span class="month-name">'.mb_substr(mois_en_lettres(substr($data['date'],4,2)),0,3)."\n".substr($data['date'],2,2).'</span></a></div>';
 		}
+		echo '</div>'."\n";
 		echo '</div>'."\n";
 	} else {
 		$nothingyet++;
@@ -169,14 +173,19 @@ else {
 	if (!$total_links == 0) {
 		// print sur chaque div pour les liens.
 		echo '<p>'.ucfirst($GLOBALS['lang']['label_links']).' :</p>'."\n";
+		echo '<div class="graph-container" id="graph-container-links">'."\n";
+		echo '<canvas height="150" width="400">Texte alternatif pour les navigateurs ne supportant pas Canvas.</canvas>'."\n";
 		echo '<div class="graphique" id="links">'."\n";
 		$table = scaled_size(get_tableau_date('links'), 150);
-		while ($table[0]['nb'] === 0) {
-			$first = array_shift($table);
-		}
+//		while ($table[0]['nb'] === 0) {
+//			$first = array_shift($table);
+//		}
+		$table = array_reverse($table);
+		echo '<div class="month"><div class="month-bar" style="height: 151px; margin-top:20px;"></div></div>';
 		foreach ($table as $i => $data) {
-			echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(20-$data['nb_scale'], 0).'px"></div><span class="month-nb">'.$data['nb'].'</span><a href="links.php?filtre='.$data['date'].'"><span class="month-name">'.mb_substr(mois_en_lettres(substr($data['date'],4,2)),0,3).".\n".substr($data['date'],2,2).'</span></a></div>';
+			echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(3-$data['nb_scale'], 0).'px"></div><span class="month-nb">'.$data['nb'].'</span><a href="links.php?filtre='.$data['date'].'"><span class="month-name">'.mb_substr(mois_en_lettres(substr($data['date'],4,2)),0,3)."\n".substr($data['date'],2,2).'</span></a></div>';
 		}
+		echo '</div>'."\n";
 		echo '</div>'."\n";
 	} else {
 		$nothingyet++;
@@ -195,6 +204,16 @@ else {
 
 	}
 }
+
+echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
+echo "\n".'<script type="text/javascript">'."\n";
+echo '\'use strict\''."\n";
+echo 'var canvas = document.querySelectorAll(".graph-container canvas");'."\n";
+echo 'var containers = document.querySelectorAll(".graph-container");'."\n";
+echo 'var graphiques = document.querySelectorAll(".graph-container .graphique");'."\n";
+echo 'window.addEventListener("resize", respondCanvas );'."\n";
+echo 'respondCanvas();'."\n";
+echo "\n".'</script>'."\n";
 
 footer('show_last_ip', $begin);
 ?>

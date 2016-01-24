@@ -151,11 +151,4 @@
 	#post-list > li div.datesite {
 		font-size: 0.8em;
 	}
-	#graphs .month:nth-child(-n+24) {
-		display: none;
-	}
-	.graphique .month {
-		width: 27px;
-	}
-
 }

@@ -68,7 +68,7 @@ function afficher_liste_articles($tableau) {
 			// TITRE + ICONE SELON STATUT
 			$out .= "\t\t".'<span class="'.( ($article['bt_statut'] == '1') ? 'on' : 'off').'">'.'<a href="ecrire.php?post_id='.$article['bt_id'].'" title="'.htmlspecialchars(trim(mb_substr(strip_tags($article['bt_abstract']), 0, 249)), ENT_QUOTES).'">'.$article['bt_title'].'</a>'.'</span>'."\n";
 			// DATE
-			$out .= "\t\t".'<span><a href="'.basename($_SERVER['PHP_SELF']).'?filtre='.substr($article['bt_date'],0,8).'">'.date_formate($article['bt_date']).'</a>, '.heure_formate($article['bt_date']).'</span>'."\n";
+			$out .= "\t\t".'<span><a href="'.basename($_SERVER['PHP_SELF']).'?filtre='.substr($article['bt_date'],0,8).'">'.date_formate($article['bt_date']).'</a><span>, '.heure_formate($article['bt_date']).'</span></span>'."\n";
 			// NOMBRE COMMENTS
 			$out .= "\t\t".'<span><a href="commentaires.php?post_id='.$article['bt_id'].'">'.$article['bt_nb_comments'].'</a></span>'."\n";
 			// STATUT
