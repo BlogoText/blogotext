@@ -280,7 +280,7 @@ else {
 	// paramètre de page "p"
 	if (isset($_GET['p']) and is_numeric($_GET['p']) and $_GET['p'] >= 1) {
 		$sql_p = 'LIMIT '.$GLOBALS['max_bill_acceuil'] * $_GET['p'].', '.$GLOBALS['max_bill_acceuil'];
-	} elseif (!isset($_GET['d']) ) {
+	} elseif (empty($_GET['d']) ) {
 		$sql_p = 'LIMIT '.$GLOBALS['max_bill_acceuil'];
 	} else {
 		$sql_p = '';
