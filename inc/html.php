@@ -206,13 +206,13 @@ function afficher_calendrier() {
 	$premier_jour = mktime('0', '0', '0', $ce_mois, '1', $annee);
 	$jours_dans_mois = date('t', $premier_jour);
 	$decalage_jour = date('w', $premier_jour-'1');
-	$prev_mois =      basename($_SERVER['PHP_SELF']).'?'.$qstring.'d='.$annee.'/'.str2($ce_mois-1);
-	if ($prev_mois == basename($_SERVER['PHP_SELF']).'?'.$qstring.'d='.$annee.'/'.'00') {
-		$prev_mois =   basename($_SERVER['PHP_SELF']).'?'.$qstring.'d='.($annee-'1').'/'.'12';
+	$prev_mois =      '?'.$qstring.'d='.$annee.'/'.str2($ce_mois-1);
+	if ($prev_mois == '?'.$qstring.'d='.$annee.'/'.'00') {
+		$prev_mois =   '?'.$qstring.'d='.($annee-'1').'/'.'12';
 	}
-	$next_mois =      basename($_SERVER['PHP_SELF']).'?'.$qstring.'d='.$annee.'/'.str2($ce_mois+1);
-	if ($next_mois == basename($_SERVER['PHP_SELF']).'?'.$qstring.'d='.$annee.'/'.'13') {
-		$next_mois =   basename($_SERVER['PHP_SELF']).'?'.$qstring.'d='.($annee+'1').'/'.'01';
+	$next_mois =      '?'.$qstring.'d='.$annee.'/'.str2($ce_mois+1);
+	if ($next_mois == '?'.$qstring.'d='.$annee.'/'.'13') {
+		$next_mois =   '?'.$qstring.'d='.($annee+'1').'/'.'01';
 	}
 
 	// On verifie si il y a un ou des articles/liens/commentaire du jour dans le mois courant
@@ -237,7 +237,7 @@ function afficher_calendrier() {
 	}
 
 	// Si on affiche un jour on ajoute le lien sur le mois
-	$html .= '<a href="'.basename($_SERVER['PHP_SELF']).'?'.$qstring.'d='.$annee.'/'.$ce_mois.'">'.mois_en_lettres($ce_mois).' '.$annee.'</a>';
+	$html .= '<a href="?'.$qstring.'d='.$annee.'/'.$ce_mois.'">'.mois_en_lettres($ce_mois).' '.$annee.'</a>';
 	// On ne peut pas aller dans le futur
 	if ( ($ce_mois != date('m')) || ($annee != date('Y')) ) {
 		$html .= '&nbsp;<a href="'.$next_mois.'">&#187;</a>';
@@ -256,7 +256,7 @@ function afficher_calendrier() {
 			$class = '';
 		}
 		if ( in_array($jour, $tableau) ) {
-			$lien = '<a href="'.basename($_SERVER['PHP_SELF']).'?'.$qstring.'d='.$annee.'/'.$ce_mois.'/'.str2($jour).'">'.$jour.'</a>';
+			$lien = '<a href="?'.$qstring.'d='.$annee.'/'.$ce_mois.'/'.str2($jour).'">'.$jour.'</a>';
 		} else {
 			$lien = $jour;
 		}
@@ -284,7 +284,7 @@ function afficher_calendrier() {
 
 function encart_commentaires() {
 	mb_internal_encoding('UTF-8');
-	$query = "SELECT c.bt_author, c.bt_id, c.bt_article_id, c.bt_content, a.bt_title FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id WHERE c.bt_statut=1 AND a.bt_statut=1 ORDER BY c.bt_id DESC LIMIT 5";
+	$query = "SELECT c.bt_author, c.bt_id, c.bt_article_id, c.bt_content FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id WHERE c.bt_statut=1 AND a.bt_statut=1 ORDER BY c.bt_id DESC LIMIT 5";
 	$tableau = liste_elements($query, array(), 'commentaires');
 	if (isset($tableau)) {
 		$listeLastComments = '<ul class="encart_lastcom">'."\n";
@@ -297,7 +297,7 @@ function encart_commentaires() {
 			if (strlen($comment['bt_author']) >= 30) {
 				$comment['bt_author'] = mb_substr($comment['bt_author'], 0, 29).'…';
 			}
-			$listeLastComments .= '<li title="'.date_formate($comment['bt_id']).'"><b>'.$comment['bt_author'].'</b> '.$GLOBALS['lang']['sur'].' <b>'.$comment['bt_title'].'</b><br/><a href="'.$comment['bt_link'].'">'.$comment['contenu_abbr'].'</a>'.'</li>'."\n";
+			$listeLastComments .= '<li title="'.date_formate($comment['bt_id']).'"><b>'.$comment['bt_author'].'</b> '.$GLOBALS['lang']['sur'].' <b>'.$comment['article_title'].'</b><br/><a href="'.$comment['bt_link'].'">'.$comment['contenu_abbr'].'</a>'.'</li>'."\n";
 		}
 		$listeLastComments .= '</ul>'."\n";
 		return $listeLastComments;
@@ -313,7 +313,7 @@ function encart_categories($mode) {
 
 		$liste = list_all_tags($where, '1');
 
-		// attach non-diacritic versions of tag, so that "ééé" does not pass after "zzz" and re-indexes
+		// attach non-diacritic versions of tag, so that "é" does not pass after "z" and re-indexes
 		foreach ($liste as $tag => $nb) {
 			$liste[$tag] = array(diacritique(trim($tag), FALSE, FALSE), $nb);
 		}
