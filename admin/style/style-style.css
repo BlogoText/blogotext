@@ -460,6 +460,11 @@ q, blockquote {
 	padding: 10px;
 }
 
+#subnav .nombre-elem > ul > li > a {
+	width: 100%;
+	box-sizing: border-box;
+}
+
 
 /* Floating action button (FAB)
 ------------------------------------------------------------------ */

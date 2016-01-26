@@ -865,6 +865,9 @@ function rss_feedlist(RssPosts) {
 		var date = document.createElement("div");
 		date.classList.add('date');
 		date.appendChild(document.createTextNode(' — '+item.date));
+		var time = document.createElement("span");
+		time.appendChild(document.createTextNode(', '+item.time));
+		date.appendChild(time);
 
 		var site = document.createElement("div");
 		site.classList.add('site');

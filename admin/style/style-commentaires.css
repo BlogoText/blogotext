@@ -87,6 +87,9 @@
 .commentbloc .p-date-title {
 	flex: 1 1 auto;
 	text-align: right;
+	line-height: 20px;
+	color: gray;
+	font-style: italic;
 }
 
 .commentbloc .comm-edit-hidden-bloc {
@@ -96,12 +99,7 @@
 
 .commentbloc a {
 	color: inherit;
-}
-
-.commentbloc .p-date-title {
-	line-height: 20px;
-	color: gray;
-	font-style: italic;
+	transition: color 0.5s ease-in-out 0s;
 }
 
 /* com options button */

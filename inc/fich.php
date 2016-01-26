@@ -566,7 +566,8 @@ function send_rss_json($rss_entries) {
 		// note : json_encode DOES add « " » on the data, so I use « encode() » and not '"'.encode().'"';
 		$out .= '{'.
 			'"id": "'.$entry['bt_id'].'",'.
-			'"date": "'.date_formate(date('YmdHis', $entry['bt_date'])).', '.heure_formate(date('YmdHis', $entry['bt_date'])).'",'.
+			'"date": "'.date_formate(date('YmdHis', $entry['bt_date'])).'",'.
+			'"time": "'.heure_formate(date('YmdHis', $entry['bt_date'])).'",'.
 			'"title": '.json_encode($entry['bt_title']).','.
 			'"link": '.json_encode($entry['bt_link']).','.
 			'"feed": '.json_encode($entry['bt_feed']).','.

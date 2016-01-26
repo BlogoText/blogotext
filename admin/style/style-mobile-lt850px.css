@@ -17,6 +17,12 @@
 	.commentbloc.foreground {
 		margin: 1%;
 	}
+
+	.commentbloc .p-date-title > span {
+		display: none;
+	}
+
+
 	/* liste fichiers */
 	#image-wall {
 		display: block;
@@ -268,5 +274,11 @@
 		padding: 0;
 		margin-left: 0;
 	}
+
+	/* les RSS */
+	#post-list > li .date > span {
+		display: none;
+	}
+
 
 }
