@@ -133,7 +133,7 @@ p.formatbut {
 	display: inline-block;
 	width: 16px;
 	height: 24px;
-	background: no-repeat 0 3px transparent url(format.png);
+	background: no-repeat transparent url(formatx2.png) 0 0 / 24px 563px;
 }
 
 .formatbut span.spacer {

@@ -299,7 +299,7 @@ function open_serialzd_file($fichier) {
 
 function get_external_file($url, $timeout=10) {
 	$headers = array(
-		'user_agent' => 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:33.0 BlogoText-UA) Gecko/20100101 Firefox/33.0',
+		'user_agent' => 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:44.0 BlogoText-UA) Gecko/20100101 Firefox/44.0',
 		'timeout' => $timeout,
 		'header'=> "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n",
 		'connection' => 'close',

@@ -191,25 +191,25 @@ q, blockquote {
 	box-sizing: border-box;
 
 	/* colors from https://www.google.com/design/spec/style/color.html#color-color-palette */
-	background: #ba68c8; /*purple*/
-	background: #f44336; /*red*/
-	background: #3f51b5; /*indigo*/
-	background: #a1887f; /*brown*/
-	background: #00bcd4; /*cyan*/
-	background: #009688; /*teal*/
-	background: #c0ca33; /*lime*/
-	background: #8bc34a; /*lightgreen*/
+	/*background: #ba68c8;*/ /*purple*/
+	/*background: #f44336;*/ /*red*/
+	/*background: #3f51b5;*/ /*indigo*/
+	/*background: #a1887f;*/ /*brown*/
+	/*background: #00bcd4;*/ /*cyan*/
+	/*background: #009688;*/ /*teal*/
+	/*background: #c0ca33;*/ /*lime*/
+	/*background: #8bc34a;*/ /*lightgreen*/
+	/*background: #2196f3;*/ /*blue*/
+	/*background: #f9a825;*/ /*yellow*/
+	/*background: #ffa000;*/ /*amber*/
+	/*background: #ff9800;*/ /*orange*/
+	/*background: #9e9e9e;*/ /*gray*/
+	/*background: #607d8b;*/ /*bluegray*/
+	/*background: #ff5722;*/ /*deeporange*/
+	/*background: #000000;*/ /*black*/
+	/*background: #424242;*/ /*dark gray*/
+	/*background: #795548;*/ /*darker brown*/
 	background: #4caf50; /*green*/
-	background: #f9a825; /*yellow*/
-	background: #ffa000; /*amber*/
-	background: #ff9800; /*orange*/
-	background: #9e9e9e; /*gray*/
-	background: #607d8b; /*bluegray*/
-	background: #ff5722; /*deeporange*/
-	background: #000000; /*black*/
-	background: #424242; /*dark gray*/
-	background: #795548; /*darker brown*/
-	background: #2196f3; /*blue*/
 	padding: 0 0 0 20px;
 	color: inherit;
 }

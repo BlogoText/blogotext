@@ -115,7 +115,10 @@
 
 	/* paged des RSS */
 	#rss-menu {
-		padding: 0 20px;
+		padding: 0 10px;
+	}
+	#post-list-title {
+		padding: 5px;
 	}
 	#posts-menu {
 		text-align: left;
@@ -141,8 +144,7 @@
 		margin: auto 0;
 	}
 	#post-list > li {
-		padding-top: 10px;
-		padding-bottom: 10px;
+		padding: 10px;
 	}
 
 	#post-list > li .post-title {

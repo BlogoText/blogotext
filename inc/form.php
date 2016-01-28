@@ -332,7 +332,8 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		// URL non vide
 		} else {
 			// Test du type de fichier
-			$rep_hdr = get_headers($url, 1);
+			$ext_file = get_external_file($url, 15);
+			$rep_hdr = $ext_file['headers'];
 			$cnt_type = (isset($rep_hdr['Content-Type'])) ? (is_array($rep_hdr['Content-Type']) ? $rep_hdr['Content-Type'][count($rep_hdr['Content-Type'])-1] : $rep_hdr['Content-Type']) : 'text/';
 			$cnt_type = (is_array($cnt_type)) ? $cnt_type[0] : $cnt_type;
 
@@ -346,47 +347,28 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 				}
 			}
 
-			// lien est un fichier non textuel
+			// lien est un fichier NON textuel
 			elseif (strpos($cnt_type, 'text/') !== 0 and strpos($cnt_type, 'xml') === FALSE) {
 				if ($GLOBALS['dl_link_to_files'] == 2) {
 					$type = 'file';
 				}
 			}
 
-			// URL est un lien normal : on récupère la page entière (pas juste les headers)
-			elseif ($ext_file = get_external_file($url, 15) ) {
-				$charset = 'utf-8';
+			// URL est un fichier textuel (lien d’une page HTML normal) : on récupère le titre
+			elseif (!empty($ext_file['body'])) {
+				try {
+					libxml_use_internal_errors(true);
+					$doc = new DOMDocument();
+					$doc->loadHTML($ext_file['body']);
+					$titles = $doc->getElementsByTagName('title');
+					$title = trim($titles->item(0)->nodeValue);
+					libxml_clear_errors();
 
-				// cherche le charset dans les headers
-				if (isset($ext_file['headers']['Content-Type']) and preg_match('#charset=(.*);?#', $ext_file['headers']['Content-Type'], $hdr_charset) and !empty($hdr_charset[1])) {
-					$charset = $hdr_charset[1];
-				}
-
-				// sinon cherche le charset dans le code HTML.
-				else {
-					// cherche la balise "meta charset"
-					preg_match('#<meta .*charset=([^\s]*)\s*/?>#Usi', $ext_file['body'], $meta);
-					$charset = (!empty($meta[1])) ? strtolower(str_replace(array("'", '"'), array('', ''), $meta[1]) ) : 'utf-8';
-				}
-
-				// récupère le titre, dans le tableau $titles, rempli par preg_match()
-				if (isset($_GET['title'])) {
-					$title = htmlspecialchars($_GET['title']);
-				}
-				else {
-					$ext_file = html_entity_decode( (($charset == 'iso-8859-1') ? utf8_encode($ext_file['body']) : $ext_file['body']), ENT_QUOTES | ENT_HTML5, 'UTF-8');
-					preg_match('#<title>(.*)</title>#Usi', $ext_file, $titles);
-
-					if (!empty($titles[1])) {
-						$html_title = trim($titles[1]);
-						$title = htmlspecialchars($html_title);
-					// si pas de titre : on utilise l’URL.
-					} else {
-						$title = htmlspecialchars($url);
-					}
+				} catch (Exception $e) {
+					echo $e-> getMessage();
+					echo ' Erreur parsage lien.'." \n";
 				}
 			}
-
 			$form .= "\t".'<input type="text" name="url" value="'.htmlspecialchars($url).'" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_url']).'" size="50" class="text readonly-like" />'."\n";
 			$form .= hidden_input('type', 'link');
 		}

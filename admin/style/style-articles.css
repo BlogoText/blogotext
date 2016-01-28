@@ -44,7 +44,7 @@
 }
 
 #billets > li > span:nth-of-type(1)::before {
-	margin-right: 10px;
+	margin-right: 20px;
 }
 
 #billets > li > span:nth-of-type(1).on::before {
