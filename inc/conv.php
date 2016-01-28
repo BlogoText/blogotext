@@ -114,34 +114,32 @@ function rel2abs_admin($article) { // pour le panel admin : l’aperçu de l’a
 }
 
 function parse_texte_paragraphs($texte) {
-
-	// removes empty lines at begining and end of raw texte
-	$texte_formate = preg_replace('#^(\r|<br>|<br/>|<br />){0,}(.*?)(\r|<br>|<br/>|<br />){0,}$#s', '$2', $texte);
-
-	$block_elements = 'address|article|aside|audio|blockquote|canvas|dd|li|div|[oud]l|fieldset|fig(caption|ure)|footer|form|h[1-6]|header|hgroup|hr|main|nav|noscript|output|p|pre|prebtcode|section|table|tfoot|video';
+	// trims empty lines at begining and end of raw texte
+	$texte_formate = preg_replace('#^(\r|\n|<br>|<br/>|<br />){0,}(.*?)(\r|<br>|<br/>|<br />){0,}$#s', '$2', $texte);
+	$block_elements = 'address|article|aside|audio|blockquote|canvas|dd|li|div|[oud]l|fieldset|fig(caption|ure)|footer|form|h[1-6]|header|hgroup|hr|main|nav|noscript|output|p|pre|prebtcode|section|table|thead|tfoot|tr|td|video';
 
 	$texte_final = '';
 	$finished = false;
-	// si commence par block-element, remove it and goes on
+	// if text begins with block-element, remove it and goes on
 	while ($finished === false) {
 		$matches = array();
-
 		// we have a block element
 		if ( preg_match('#^<('.$block_elements.') ?.*?>(.*?)</(\1)>#s', $texte_formate, $matches) ) {
 			// extract the block element
 			$texte_retire = $matches[0];
-			// add it to the final texte
-			$texte_final .= "\n".nl2br($texte_retire)."\n";
+			// parses inner text for nl2br(), but removes <br/> tha follow a block (ie: <block><br> → <block>)
+			$texte_nl2br = "\n".nl2br($texte_retire)."\n";
+			// add it to the final text
+			$texte_final .= preg_replace('#(</?('.$block_elements.') ?.*?>)(<br ?/?>)(\n?\r?)#s', '$1$3$5', $texte_nl2br);
 			// saves the remaining text
 			$texte_restant = preg_replace('#^<('.$block_elements.') ?.*?>(.*?)</(\1)>#s', '', $texte_formate, 1);
 			// again, removes empty lines+spaces at begin or end TODO : save the lines to make <br/> (??)
-			$texte_restant = preg_replace('#^(\r|<br>|<br/>|<br />){0,}(.*?)(\r|<br>|<br/>|<br />){0,}$#s', '$2', $texte_restant);
+			$texte_restant = preg_replace('#^(\r|\n|<br>|<br/>|<br />){0,}(.*?)(\r|<br>|<br/>|<br />){0,}$#s', '$2', $texte_restant);
 			// if no matches for block elements, we are finished
 			$finished = (strlen($texte_retire) === 0) ? TRUE : FALSE;
 		}
-
-		// we have an inline element (or text) : do set it in <p></p>
 		else {
+		// we have an inline element (or text) : do set it in <p></p>
 			// grep the text until newline OR new block element
 			$texte_restant = preg_replace('#^(.*?)(\r\r|<('.$block_elements.') ?.*?>)#s', '$2', $texte_formate, 1);
 			// saves the text we just "greped"
@@ -163,11 +161,10 @@ function parse_texte_paragraphs($texte) {
 		}
 
 		//  again, removes empty lines+spaces at begin or end TODO : save the lines to make <br/> (??)
-		$texte_restant = preg_replace('#^(\r|<br>|<br/>|<br />){0,}(.*?)(\r|<br>|<br/>|<br />){0,}$#s', '$2', $texte_restant);
+		$texte_restant = preg_replace('#^(\r|\n|<br>|<br/>|<br />){0,}(.*?)(\r|<br>|<br/>|<br />){0,}$#s', '$2', $texte_restant);
 		// loops on the text, to find the next element.
 		$texte_formate = $texte_restant;
 	}
-
 
 	return $texte_final;
 }
@@ -229,7 +226,7 @@ function formatage_wiki($texte) {
 		'<del>$1</del>',															// barre
 		'<u>$1</u>',																// souligne
 		'<ul><li>$1</li></ul>'."\r",											// ul/li
-		'',																			// ul/li
+		"\r",																			// ul/li
 		'<ol><li>$1</li></ol>'."\r",											// ol/li
 		'',																			// ol/li
 		'<blockquote>$1</blockquote>'."\r",									// citation
