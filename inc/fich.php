@@ -299,7 +299,7 @@ function open_serialzd_file($fichier) {
 
 function get_external_file($url, $timeout=10) {
 	$headers = array(
-		'user_agent' => 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:44.0 BlogoText-UA) Gecko/20100101 Firefox/44.0',
+		'user_agent' => $_SERVER['HTTP_USER_AGENT'],
 		'timeout' => $timeout,
 		'header'=> "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n",
 		'connection' => 'close',
@@ -326,8 +326,7 @@ function get_external_file($url, $timeout=10) {
 
 // TODO: unify get_external_file() with c_get_external_file() in one single Curl function, accepting 1 or many url and returning array().
 function c_get_external_file($feeds) {
-	// uses chunks of 40 feeds because Curl has problems with too big (~150) "multi" requests.
-	// $feeds = array_splice($feeds, 60, 20);
+	// uses chunks of 30 feeds because Curl has problems with too big (~150) "multi" requests.
 	$chunks = array_chunk($feeds, 30, true);
 	$results = array();
 	$total_feed = count($feeds);
@@ -340,20 +339,20 @@ function c_get_external_file($feeds) {
 		$total_feed_chunk = count($chunk)+count($results);
 
 		// init each url
-		foreach ($chunk as $i => $feed) {
+		foreach ($chunk as $i => $url) {
 
-			$curl_arr[$i] = curl_init(trim($i));
-			curl_setopt_array($curl_arr[$i], array(
-					CURLOPT_RETURNTRANSFER => TRUE,
-					CURLOPT_FOLLOWLOCATION => TRUE,
-					CURLOPT_CONNECTTIMEOUT => 0, // 0 = indefinately
-					CURLOPT_TIMEOUT => 25,
-					CURLOPT_USERAGENT => $_SERVER['HTTP_USER_AGENT'],
-					CURLOPT_SSL_VERIFYPEER => FALSE,
-					CURLOPT_SSL_VERIFYHOST => FALSE,
-					CURLOPT_ENCODING => "gzip",
+			$curl_arr[$url] = curl_init(trim($url));
+			curl_setopt_array($curl_arr[$url], array(
+					CURLOPT_RETURNTRANSFER => TRUE, // force Curl to return data instead of displaying it
+					CURLOPT_FOLLOWLOCATION => TRUE, // follow 302 ans 301 redirects
+					CURLOPT_CONNECTTIMEOUT => 0, // 0 = indefinately ; no connection-timeout (ruled out by "set_time_limit" hereabove)
+					CURLOPT_TIMEOUT => 25, // downloading timeout
+					CURLOPT_USERAGENT => $_SERVER['HTTP_USER_AGENT'], // User-agent (uses the UA of browser)
+					CURLOPT_SSL_VERIFYPEER => FALSE, // ignore SSL errors
+					CURLOPT_SSL_VERIFYHOST => FALSE, // ignore SSL errors
+					CURLOPT_ENCODING => "gzip", // take into account gziped pages
 				));
-			curl_multi_add_handle($master, $curl_arr[$i]);
+			curl_multi_add_handle($master, $curl_arr[$url]);
 		}
 
 		// exec connexions
@@ -361,17 +360,16 @@ function c_get_external_file($feeds) {
 
 		do {
 			curl_multi_exec($master, $running);
+			// echoes the nb of feeds remaining
 			echo ($total_feed_chunk-$running).'/'.$total_feed.' '; ob_flush(); flush();
 			usleep(100000);
 		} while ($running > 0);
 
 
 		// multi select contents
-		foreach ($chunk as $url => $feed) {
+		foreach ($chunk as $i => $url) {
 			$results[$url] = curl_multi_getcontent($curl_arr[$url]);
 		}
-
-
 		// Ferme les gestionnaires
 		curl_multi_close($master);
 	}
@@ -392,58 +390,57 @@ function rafraichir_cache() {
 
 /* retrieve all the feeds, returns the amount of new elements */
 function refresh_rss($feeds) {
-	$all_flux = array();
+	$new_feed_elems = array();
 	$guid_in_db = rss_list_guid();
 	$count_new = 0;
 	$total_feed = count($feeds);
-	$new_feeds = get_new_feeds($feeds);
 
-	if (!$new_feeds) return 0;
+	$retrieved_elements = retrieve_new_feeds(array_keys($feeds));
 
-	foreach ($new_feeds as $url => $feed) {
-		if ($feed === FALSE) {
+	if (!$retrieved_elements) return 0;
+
+	foreach ($retrieved_elements as $feed_url => $feed_elmts) {
+		if ($feed_elmts === FALSE) {
 			continue;
 		} else {
-			$items = $feed['items'];
-
-			// if we are here, there are new posts in the feed (md5 test on rss file is positive). Now test on each post.
+			// there are new posts in the feed (md5 test on feed content file is positive). Now test on each post.
 			// only keep new post that are not in DB (in $guid_in_db) OR that are newer than the last post ever retreived.
-			foreach($items as $key => $item) {
-				if ( (in_array($item['bt_id'], $guid_in_db)) or ($item['bt_date'] <= $feeds[$url]['time']) ) {
-					unset($items[$key]);
+			foreach($feed_elmts['items'] as $key => $item) {
+				if ( (in_array($item['bt_id'], $guid_in_db)) or ($item['bt_date'] <= $feeds[$feed_url]['time']) ) {
+					unset($feed_elmts['items'][$key]);
 				}
-					// si le post est plus récent que le dernier post reçu de ce flux,
-					// enregistre la date du post avec le flux
-					// on n’enregistre pas la date de dernière vérification, car la date peut être à un mauvais fuseau.
-					if ($item['bt_date'] > $GLOBALS['liste_flux'][$feeds[$url]['link']]['time']) {
-						$GLOBALS['liste_flux'][$feeds[$url]['link']]['time'] = $item['bt_date'];
+					// only save elements that are more recent
+					// we save the date of the last element on that feed
+					// we do not use the time of last retreiving, because it might not be correct due to different time-zones with the feeds date.
+					if ($item['bt_date'] > $GLOBALS['liste_flux'][$feeds[$feed_url]['link']]['time']) {
+						$GLOBALS['liste_flux'][$feeds[$feed_url]['link']]['time'] = $item['bt_date'];
 					}
 			}
-			if (!empty($items)) {
-				$all_flux = array_merge($all_flux, $items);
+			if (!empty($feed_elmts['items'])) {
+				// populates the list of post we keep, to be saved in DB
+				$new_feed_elems = array_merge($new_feed_elems, $feed_elmts['items']);
 			}
 		}
 	}
 
 	// if list of new elements is !empty, save new elements
-	if (!empty($all_flux)) {
-		$count_new = count($all_flux);
-		$ret = bdd_rss($all_flux, 'enregistrer-nouveau');
+	if (!empty($new_feed_elems)) {
+		$count_new = count($new_feed_elems);
+		$ret = bdd_rss($new_feed_elems, 'enregistrer-nouveau');
 		if ($ret !== TRUE) {
 			echo $ret;
 		}
 	}
 
-
-	// save last success time
+	// save last success time in the feed list
 	file_put_contents($GLOBALS['fichier_liste_fluxrss'], '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_flux']))).' */');
 	return $count_new;
 }
 
 
 
-function get_new_feeds($feedlink, $md5='') {
-	if (!$feeds = c_get_external_file($feedlink)) {
+function retrieve_new_feeds($feedlinks, $md5='') {
+	if (!$feeds = c_get_external_file($feedlinks)) {
 		return FALSE;
 	}
 	$return = array();

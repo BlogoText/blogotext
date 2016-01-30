@@ -305,7 +305,6 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 	if ($step == 1) { // postage de l'URL : un champ affiché en GET
 		$form .= '<form method="get" class="bordered-formbloc" id="post-new-lien" action="'.basename($_SERVER['PHP_SELF']).'">'."\n";
 		$form .= '<fieldset>'."\n";
-
 		$form .= "\t".'<div class="contain-input">'."\n";
 		$form .= "\t\t".'<label for="url">'.$GLOBALS['lang']['label_nouv_lien'].'</label>'."\n";
 		$form .= "\t\t".'<input type="text" name="url" id="url" value="" size="70" placeholder="http://www.example.com/" class="text" autofocus autocomplete="off" onfocus="hideFAB();" onblur="unHideFAB()" />'."\n";
@@ -319,25 +318,26 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 
 		$url = $_GET['url'];
 		$type = 'url';
-		$title = htmlspecialchars($url);
+		$title = $url;
+		$charset = "UTF-8";
 		$new_id = date('YmdHis');
 
-		// URL vide ou pas une URL : c’est une "note" et on masque le champ du lien
+		// URL is empty or no URI. It’s a note: we hide the URI field.
 		if (empty($url) or (strpos($url, 'http') !== 0) ) {
 			$type = 'note';
-			$title = 'Note'.(!empty($url) ? ' : '.htmlspecialchars($url) : '');
+			$title = 'Note'.(!empty($url) ? ' : '.html_entity_decode( $url, ENT_QUOTES | ENT_HTML5, 'UTF-8') : '');
 			$url = $GLOBALS['racine'].'?mode=links&amp;id='.$new_id;
 			$form .= hidden_input('url', $url);
 			$form .= hidden_input('type', 'note');
-		// URL non vide
+		// URL is not empty
 		} else {
-			// Test du type de fichier
+			// Find out type of file
 			$ext_file = get_external_file($url, 15);
 			$rep_hdr = $ext_file['headers'];
 			$cnt_type = (isset($rep_hdr['Content-Type'])) ? (is_array($rep_hdr['Content-Type']) ? $rep_hdr['Content-Type'][count($rep_hdr['Content-Type'])-1] : $rep_hdr['Content-Type']) : 'text/';
 			$cnt_type = (is_array($cnt_type)) ? $cnt_type[0] : $cnt_type;
 
-			// lien est une image
+			// Image
 			if (strpos($cnt_type, 'image/') === 0) {
 				$title = $GLOBALS['lang']['label_image'];
 				if (list($width, $height) = @getimagesize($url)) {
@@ -347,33 +347,34 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 				}
 			}
 
-			// lien est un fichier NON textuel
+			// Non-image NON-textual file (pdf…)
 			elseif (strpos($cnt_type, 'text/') !== 0 and strpos($cnt_type, 'xml') === FALSE) {
 				if ($GLOBALS['dl_link_to_files'] == 2) {
 					$type = 'file';
 				}
 			}
 
-			// URL est un fichier textuel (lien d’une page HTML normal) : on récupère le titre
+			// a textual document: parse it for any <title> element (+charset for title decoding ; fallback=UTF-8) ; fallback=$url
 			elseif (!empty($ext_file['body'])) {
-				try {
-					libxml_use_internal_errors(true);
-					$doc = new DOMDocument();
-					$doc->loadHTML($ext_file['body']);
-					$titles = $doc->getElementsByTagName('title');
-					$title = trim($titles->item(0)->nodeValue);
-					libxml_clear_errors();
-
-				} catch (Exception $e) {
-					echo $e-> getMessage();
-					echo ' Erreur parsage lien.'." \n";
+				// Search for charset in the headers
+				if (preg_match('#charset=(.*);?#', $ext_file['headers']['Content-Type'], $hdr_charset) and !empty($hdr_charset[1])) {
+					$charset = $hdr_charset[1];
 				}
+				// If not found, search it in HTML
+				elseif (preg_match('#<meta .*charset=(["\']?)([^\s>"\']*)([\'"]?)\s*/?>#Usi', $ext_file['body'], $meta_charset) and !empty($meta_charset[2])) {
+					$charset = $meta_charset[2];
+				}
+				// get title in the proper encoding
+				$ext_file = html_entity_decode( ((strtolower($charset) == 'iso-8859-1') ? utf8_encode($ext_file['body']) : $ext_file['body']), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+				preg_match('#<title ?[^>]*>(.*)</title>#Usi', $ext_file, $titles);
+				if (!empty($titles[1])) { $title = trim($titles[1]); }
 			}
+
 			$form .= "\t".'<input type="text" name="url" value="'.htmlspecialchars($url).'" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_url']).'" size="50" class="text readonly-like" />'."\n";
 			$form .= hidden_input('type', 'link');
 		}
 
-		$link = array('title' => $title, 'url' => htmlspecialchars($url));
+		$link = array('title' => htmlspecialchars($title), 'url' => htmlspecialchars($url));
 		$form .= "\t".'<input type="text" name="title" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_titre']).'" required="" value="'.$link['title'].'" size="50" class="text" autofocus />'."\n";
 		if ($type == 'image') { // si le lien est une image, on ajoute une miniature de l’image;
 			$form .= "\t".'<span id="description-box">'."\n";
@@ -639,7 +640,7 @@ function form_mois($mois_affiche) {
 
 function form_annee($annee_affiche) {
 	$annees = array();
-	for ($annee = date('Y') -3, $annee_max = date('Y') +3; $annee <= $annee_max; $annee++) {
+	for ($annee = date('Y') -7, $annee_max = date('Y') +3; $annee <= $annee_max; $annee++) {
 		$annees[$annee] = $annee;
 	}
 	$ret = '<select name="annee">'."\n" ;
