@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2015 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -253,10 +253,12 @@ function afficher_form_prefs($erreurs = '') {
 	// Get latest version number at most once a day.
 	if ($GLOBALS['check_update'] == 1) {
 		if ( !is_file($GLOBALS['last-online-file']) or (filemtime($GLOBALS['last-online-file']) < time()-(24*60*60)) ) {
-			$last_version = get_external_file('http://lehollandaisvolant.net/blogotext/version.php', 6);
-			if (empty($last_version['body'])) { $last_version = $GLOBALS['version']; }
+			$version_hit_url = 'http://lehollandaisvolant.net/blogotext/version.php';
+			$response = request_external_files(array($version_hit_url), 6, false);
+			$last_version = $response[$version_hit_url]['body'];
 			// If failed, nevermind. We don't want to bother the user with that.
-			file_put_contents($GLOBALS['last-online-file'], $last_version['body']); // touch file date
+			if (empty($last_version)) { $last_version = $GLOBALS['version']; }
+			file_put_contents($GLOBALS['last-online-file'], $last_version); // touch file date
 		}
 
 		// Compare versions:

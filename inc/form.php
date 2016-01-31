@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2015 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -332,7 +332,8 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		// URL is not empty
 		} else {
 			// Find out type of file
-			$ext_file = get_external_file($url, 15);
+			$response = request_external_files(array($url), 15, false);
+			$ext_file = $response[$url];
 			$rep_hdr = $ext_file['headers'];
 			$cnt_type = (isset($rep_hdr['Content-Type'])) ? (is_array($rep_hdr['Content-Type']) ? $rep_hdr['Content-Type'][count($rep_hdr['Content-Type'])-1] : $rep_hdr['Content-Type']) : 'text/';
 			$cnt_type = (is_array($cnt_type)) ? $cnt_type[0] : $cnt_type;
@@ -376,12 +377,8 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 
 		$link = array('title' => htmlspecialchars($title), 'url' => htmlspecialchars($url));
 		$form .= "\t".'<input type="text" name="title" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_titre']).'" required="" value="'.$link['title'].'" size="50" class="text" autofocus />'."\n";
-		if ($type == 'image') { // si le lien est une image, on ajoute une miniature de l’image;
-			$form .= "\t".'<span id="description-box">'."\n";
-			$form .= "\t\t".'<span id="img-container"><img src="'.$fdata.'" alt="img" class="preview-img" height="'.$height.'" width="'.$width.'"/></span>';
-		} else {
-			$form .= "\t".'<span id="description-box">'."\n";
-		}
+		$form .= "\t".'<span id="description-box">'."\n";
+		$form .= ($type == 'image') ? "\t\t".'<span id="img-container"><img src="'.$fdata.'" alt="img" class="preview-img" height="'.$height.'" width="'.$width.'"/></span>' : '';
 		$form .= "\t\t".'<textarea class="text description" name="description" cols="40" rows="7" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_description']).'"></textarea>'."\n";
 		$form .= "\t".'</span>'."\n";
 
@@ -392,15 +389,12 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= "\t".'</div>'."\n";
 
 		$form .= "\t".'<label class="forcheckbox">'.$GLOBALS['lang']['label_lien_priv'].'<input type="checkbox" name="statut" />'.'</label>';
-		// download of file is asked
-		if ( ($type == 'image' or $type == 'file') and $GLOBALS['dl_link_to_files'] == 2 ) {
-			$form .= "\t".'<label>'.$GLOBALS['lang']['label_dl_fichier'].'<input type="checkbox" name="add_to_files" /></label>'."\n";
+		if ($type == 'image' or $type == 'file') {
+			// download of file is asked
+			$form .= ($GLOBALS['dl_link_to_files'] == 2) ? "\t".'<label class="forcheckbox">'.$GLOBALS['lang']['label_dl_fichier'].'<input type="checkbox" name="add_to_files" /></label>'."\n" : '';
+			// download of file is systematic
+			$form .= ($GLOBALS['dl_link_to_files'] == 1) ? hidden_input('add_to_files', 'on') : '';
 		}
-		// download of file is systematic
-		elseif ( ($type == 'image' or $type == 'file') and $GLOBALS['dl_link_to_files'] == 1 ) {
-			$form .= hidden_input('add_to_files', 'on');
-		}
-
 		$form .= "\t".'<p class="submit-bttns">'."\n";
 		$form .= "\t\t".'<button class="submit white-square" type="button" onclick="annuler(\'links.php\');">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
 		$form .= "\t\t".'<input class="submit blue-square" type="submit" name="enregistrer" id="valid-link" value="'.$GLOBALS['lang']['envoyer'].'" />'."\n";
@@ -455,6 +449,51 @@ function afficher_form_billet($article, $erreurs) {
 	}
 	function s_u($char) {
 		return '<button type="button" onclick="insertChar(\''.$char.'\', \'contenu\');"><span>'.$char.'</span></button>';
+	}
+
+	function form_annee($annee_affiche) {
+		for ($annee = date('Y') -7, $annee_max = date('Y') +3; $annee <= $annee_max; $annee++) $annees[$annee] = $annee;
+		$ret = '<select name="annee">'."\n" ;
+			foreach ($annees as $option => $label) {
+				$ret .= "\t".'<option value="'.htmlentities($option).'"'.(($annee_affiche == $option) ? ' selected="selected"' : '').'>'.htmlentities($label).'</option>'."\n";
+			}
+		$ret .= '</select>'."\n";
+		return $ret;
+	}
+
+	function form_mois($mois_affiche) {
+		$mois = array(
+			"01" => $GLOBALS['lang']['janvier'],	"02" => $GLOBALS['lang']['fevrier'],	"03" => $GLOBALS['lang']['mars'],
+			"04" => $GLOBALS['lang']['avril'],		"05" => $GLOBALS['lang']['mai'],			"06" => $GLOBALS['lang']['juin'],
+			"07" => $GLOBALS['lang']['juillet'],	"08" => $GLOBALS['lang']['aout'],		"09" => $GLOBALS['lang']['septembre'],
+			"10" => $GLOBALS['lang']['octobre'],	"11" => $GLOBALS['lang']['novembre'],	"12" => $GLOBALS['lang']['decembre']
+		);
+		$ret = '<select name="mois">'."\n" ;
+		foreach ($mois as $option => $label) {
+			$ret .= "\t".'<option value="'.htmlentities($option).'"'.(($mois_affiche == $option) ? ' selected="selected"' : '').'>'.$label.'</option>'."\n";
+		}
+		$ret .= '</select>'."\n";
+		return $ret;
+	}
+
+	function form_jour($jour_affiche) {
+		for ($jour=1 ; $jour <=31 ; $jour++) $jours[str2($jour)] = $jour;
+		$ret = '<select name="jour">'."\n";
+		foreach ($jours as $option => $label) {
+			$ret .= "\t".'<option value="'.htmlentities($option).'"'.(($jour_affiche == $option) ? ' selected="selected"' : '').'>'.htmlentities($label).'</option>'."\n";
+		}
+		$ret .= '</select>'."\n";
+		return $ret;
+	}
+
+	function form_statut($etat) {
+		$choix = array('1' => $GLOBALS['lang']['label_publie'], '0' => $GLOBALS['lang']['label_invisible']);
+		return form_select('statut', $choix, $etat, $GLOBALS['lang']['label_dp_etat']);
+	}
+
+	function form_allow_comment($etat) {
+		$choix= array('1' => $GLOBALS['lang']['ouverts'], '0' => $GLOBALS['lang']['fermes']);
+		return form_select('allowcomment', $choix, $etat, $GLOBALS['lang']['label_dp_commentaires']);
 	}
 
 	if ($article != '') {
@@ -567,20 +606,22 @@ function afficher_form_billet($article, $erreurs) {
 	echo '<div id="date-and-opts">'."\n";
 	echo '<div id="date">'."\n";
 		echo '<span id="formdate">'."\n";
-			form_annee($defaut_annee);
-			form_mois($defaut_mois);
-			form_jour($defaut_jour);
+			echo form_annee($defaut_annee);
+			echo form_mois($defaut_mois);
+			echo form_jour($defaut_jour);
 		echo '</span>'."\n\n";
 		echo '<span id="formheure">';
-			form_heure($defaut_heure, $defaut_minutes, $defaut_secondes);
+			echo '<input name="heure" type="text" size="2" maxlength="2" value="'.$defaut_heure.'" required="" class="text" /> : ';
+			echo '<input name="minutes" type="text" size="2" maxlength="2" value="'.$defaut_minutes.'" required="" class="text" /> : ';
+			echo '<input name="secondes" type="text" size="2" maxlength="2" value="'.$defaut_secondes.'" required="" class="text" />';
 		echo '</span>'."\n";
 		echo '</div>'."\n";
 		echo '<div id="opts">'."\n";
 			echo '<span id="formstatut">'."\n";
-				form_statut($statutdefaut);
+				echo form_statut($statutdefaut);
 			echo '</span>'."\n";
 			echo '<span id="formallowcomment">'."\n";
-				form_allow_comment($allowcommentdefaut);
+				echo form_allow_comment($allowcommentdefaut);
 			echo '</span>'."\n";
 		echo '</div>'."\n";
 
@@ -588,10 +629,10 @@ function afficher_form_billet($article, $erreurs) {
 	echo '<p class="submit-bttns">'."\n";
 
 	if ($article) {
-		echo "\t".'<input class="submit red-square" type="button" name="supprimer" value="'.$GLOBALS['lang']['supprimer'].'" onclick="contenuLoad = document.getElementById(\'contenu\').value; rmArticle(this)" />'."\n";
 		echo hidden_input('article_id', $article['bt_id']);
 		echo hidden_input('article_date', $article['bt_date']);
 		echo hidden_input('ID', $article['ID']);
+		echo "\t".'<input class="submit red-square" type="button" name="supprimer" value="'.$GLOBALS['lang']['supprimer'].'" onclick="contenuLoad = document.getElementById(\'contenu\').value; rmArticle(this)" />'."\n";
 	}
 	echo "\t".'<button class="submit white-square" type="button" onclick="annuler(\'articles.php\');">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
 	echo "\t".'<input class="submit blue-square" type="submit" name="enregistrer" onclick="contenuLoad=document.getElementById(\'contenu\').value" value="'.$GLOBALS['lang']['envoyer'].'" tabindex="70" />'."\n";
@@ -602,81 +643,6 @@ function afficher_form_billet($article, $erreurs) {
 	echo '</form>'."\n";
 }
 // FIN AFFICHER_FORM_BILLET
-
-// ELEMENTS FORM ECRIRE //////////
-
-function form_jour($jour_affiche) {
-	$jours = array(
-		"01" => '1',  "02" => '2',  "03" => '3',  "04" => '4',  "05" => '5',  "06" => '6',  "07" => '7',
-		"08" => '8',  "09" => '9',  "10" => '10', "11" => '11', "12" => '12', "13" => '13', "14" => '14',
-		"15" => '15', "16" => '16', "17" => '17', "18" => '18', "19" => '19', "20" => '20', "21" => '21',
-		"22" => '22', "23" => '23', "24" => '24', "25" => '25', "26" => '26', "27" => '27', "28" => '28',
-		"29" => '29', "30" => '30', "31" => '31'
-	);
-	$ret = '<select name="jour">'."\n";
-	foreach ($jours as $option => $label) {
-		$ret .= "\t".'<option value="'.htmlentities($option).'"'.(($jour_affiche == $option) ? ' selected="selected"' : '').'>'.htmlentities($label).'</option>'."\n";
-	}
-	$ret .= '</select>'."\n";
-	echo $ret;
-}
-
-function form_mois($mois_affiche) {
-	$mois = array(
-		"01" => $GLOBALS['lang']['janvier'],	"02" => $GLOBALS['lang']['fevrier'],
-		"03" => $GLOBALS['lang']['mars'],		"04" => $GLOBALS['lang']['avril'],
-		"05" => $GLOBALS['lang']['mai'],			"06" => $GLOBALS['lang']['juin'],
-		"07" => $GLOBALS['lang']['juillet'],	"08" => $GLOBALS['lang']['aout'],
-		"09" => $GLOBALS['lang']['septembre'],	"10" => $GLOBALS['lang']['octobre'],
-		"11" => $GLOBALS['lang']['novembre'],	"12" => $GLOBALS['lang']['decembre']
-	);
-	$ret = '<select name="mois">'."\n" ;
-	foreach ($mois as $option => $label) {
-		$ret .= "\t".'<option value="'.htmlentities($option).'"'.(($mois_affiche == $option) ? ' selected="selected"' : '').'>'.$label.'</option>'."\n";
-	}
-	$ret .= '</select>'."\n";
-	echo $ret;
-}
-
-function form_annee($annee_affiche) {
-	$annees = array();
-	for ($annee = date('Y') -7, $annee_max = date('Y') +3; $annee <= $annee_max; $annee++) {
-		$annees[$annee] = $annee;
-	}
-	$ret = '<select name="annee">'."\n" ;
-	foreach ($annees as $option => $label) {
-		$ret .= "\t".'<option value="'.htmlentities($option).'"'. (($annee_affiche == $option) ? ' selected="selected"' : ''). '>'.htmlentities($label).'</option>'."\n";
-	}
-	$ret .= '</select>'."\n";
-	echo $ret;
-}
-
-function form_heure($heureaffiche, $minutesaffiche, $secondesaffiche) {
-	$ret = '<input name="heure" type="text" size="2" maxlength="2" value="'.$heureaffiche.'" required="" class="text" /> : ';
-	$ret .= '<input name="minutes" type="text" size="2" maxlength="2" value="'.$minutesaffiche.'" required="" class="text" /> : ' ;
-	$ret .= '<input name="secondes" type="text" size="2" maxlength="2" value="'.$secondesaffiche.'" required="" class="text" />' ;
-	echo $ret;
-}
-
-function form_statut($etat) {
-	$choix= array(
-		'1' => $GLOBALS['lang']['label_publie'],
-		'0' => $GLOBALS['lang']['label_invisible']
-	);
-	echo form_select('statut', $choix, $etat, $GLOBALS['lang']['label_dp_etat']);
-}
-
-function form_allow_comment($etat) {
-	$choix= array(
-		'1' => $GLOBALS['lang']['ouverts'],
-		'0' => $GLOBALS['lang']['fermes']
-	);
-	// Compatibilite version sans
-	if ('' == $etat) {
-		$etat= '1';
-	}
-	echo form_select('allowcomment', $choix, $etat, $GLOBALS['lang']['label_dp_commentaires']);
-}
 
 function form_categories_links($where, $tags_post) {
 	$tags = list_all_tags($where, FALSE);
@@ -708,8 +674,6 @@ function form_categories_links($where, $tags_post) {
 	$html .= '</ul>'."\n";
 	return $html;
 }
-
-
 
 /* form config RSS feeds: allow changing feeds (title, url) or remove a feed */
 function afficher_form_rssconf($errors='') {
@@ -760,7 +724,6 @@ function afficher_form_rssconf($errors='') {
 		$out .= "\t\t".'</div>'."\n";
 		$out .= "\t".'</li>'."\n";
 	}
-
 	$out .= '</ul>'."\n";
 	$out .= '<p class="submit-bttns">'."\n";
 	$out .= "\t".'<input class="submit blue-square" type="submit" name="send" value="'.$GLOBALS['lang']['envoyer'].'" />'."\n";

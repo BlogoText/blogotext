@@ -328,8 +328,7 @@ function encart_categories($mode) {
 
 		// create the <UL> with "tags (nb) "
 		foreach($liste as $tag => $nb) {
-			$tagurl = urlencode(trim($tag));
-			$uliste .= "\t".'<li><a href="'.basename($_SERVER['PHP_SELF']).'?tag='.$tagurl.$ampmode.'" rel="tag">'.ucfirst($tag).' ('.$nb.')</a></li>'."\n";
+			$uliste .= "\t".'<li><a href="'.basename($_SERVER['PHP_SELF']).'?tag='.urlencode(trim($tag)).$ampmode.'" rel="tag">'.ucfirst($tag).' ('.$nb.')</a></li>'."\n";
 		}
 		$uliste .= '</ul>'."\n";
 		return $uliste;
@@ -389,8 +388,7 @@ function liste_tags($billet, $html_link) {
 		if ($html_link == 1) {
 			foreach($tag_list as $tag) {
 				$tag = trim($tag);
-				$tagurl = urlencode($tag);
-				$liste .= '<a href="'.basename($_SERVER['PHP_SELF']).'?tag='.$tagurl.$mode.'" rel="tag">'.$tag.'</a>';
+				$liste .= '<a href="'.basename($_SERVER['PHP_SELF']).'?tag='.urlencode($tag).$mode.'" rel="tag">'.$tag.'</a>';
 			}
 		} else {
 			foreach($tag_list as $tag) {
@@ -459,7 +457,6 @@ function feed_list_html() {
 		}
 
 	}
-
 	return $html;
 }
 

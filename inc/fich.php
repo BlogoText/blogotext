@@ -296,44 +296,19 @@ function open_serialzd_file($fichier) {
 	return $liste;
 }
 
-
-function get_external_file($url, $timeout=10) {
-	$headers = array(
-		'user_agent' => $_SERVER['HTTP_USER_AGENT'],
-		'timeout' => $timeout,
-		'header'=> "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n",
-		'connection' => 'close',
-		'ignore_errors' => TRUE);
-
-	$context = stream_context_create(array('http'=> $headers));
-	$data = @file_get_contents($url, false, $context, -1, 4000000); // We download at most 4 Mb from source.
-	if (isset($data) and isset($http_response_header[0]) and ( strpos($http_response_header[0], '200 OK') | (strpos($http_response_header[0], '302 Found') ) | (strpos($http_response_header[0], '301 Moved') | (strpos($http_response_header[0], '302 Moved')) ) !== FALSE ) ) {
-
-		// detect gzip data
-		foreach($http_response_header as $i => $h) {
-			// if gzip : decode it
-			if(stristr($h, 'content-encoding') and stristr($h, 'gzip')) {
-				$data = gzinflate( substr($data,10,-8) );
-			}
-		}
-		return array('body' => $data, 'headers' => http_parse_headers($http_response_header));
-	} else {
-		return array();
-	}
-}
-
-
-
-// TODO: unify get_external_file() with c_get_external_file() in one single Curl function, accepting 1 or many url and returning array().
-function c_get_external_file($feeds) {
+// $feeds is an array of URLs: Array( [http://…], [http://…], …)
+// Returns the same array: Array([http://…] [[headers]=> 'string', [body]=> 'string'], …)
+function request_external_files($feeds, $timeout, $echo_progress=false) {
 	// uses chunks of 30 feeds because Curl has problems with too big (~150) "multi" requests.
 	$chunks = array_chunk($feeds, 30, true);
 	$results = array();
 	$total_feed = count($feeds);
-	echo '0/'.$total_feed.' '; ob_flush(); flush(); // for Ajax
+	if ($echo_progress === true) {
+		echo '0/'.$total_feed.' '; ob_flush(); flush(); // for Ajax
+	}
 
 	foreach ($chunks as $chunk) {
-		set_time_limit (30);
+		set_time_limit(30);
 		$curl_arr = array();
 		$master = curl_multi_init();
 		$total_feed_chunk = count($chunk)+count($results);
@@ -345,12 +320,14 @@ function c_get_external_file($feeds) {
 			curl_setopt_array($curl_arr[$url], array(
 					CURLOPT_RETURNTRANSFER => TRUE, // force Curl to return data instead of displaying it
 					CURLOPT_FOLLOWLOCATION => TRUE, // follow 302 ans 301 redirects
-					CURLOPT_CONNECTTIMEOUT => 0, // 0 = indefinately ; no connection-timeout (ruled out by "set_time_limit" hereabove)
-					CURLOPT_TIMEOUT => 25, // downloading timeout
+					CURLOPT_CONNECTTIMEOUT => 100, // 0 = indefinately ; no connection-timeout (ruled out by "set_time_limit" hereabove)
+					CURLOPT_TIMEOUT => $timeout, // downloading timeout
 					CURLOPT_USERAGENT => $_SERVER['HTTP_USER_AGENT'], // User-agent (uses the UA of browser)
 					CURLOPT_SSL_VERIFYPEER => FALSE, // ignore SSL errors
 					CURLOPT_SSL_VERIFYHOST => FALSE, // ignore SSL errors
 					CURLOPT_ENCODING => "gzip", // take into account gziped pages
+					//CURLOPT_VERBOSE => 1,
+					CURLOPT_HEADER => 1, // also return header
 				));
 			curl_multi_add_handle($master, $curl_arr[$url]);
 		}
@@ -360,20 +337,25 @@ function c_get_external_file($feeds) {
 
 		do {
 			curl_multi_exec($master, $running);
-			// echoes the nb of feeds remaining
-			echo ($total_feed_chunk-$running).'/'.$total_feed.' '; ob_flush(); flush();
+
+			if ($echo_progress === true) {
+				// echoes the nb of feeds remaining
+				echo ($total_feed_chunk-$running).'/'.$total_feed.' '; ob_flush(); flush();
+			}
 			usleep(100000);
 		} while ($running > 0);
 
 
 		// multi select contents
 		foreach ($chunk as $i => $url) {
-			$results[$url] = curl_multi_getcontent($curl_arr[$url]);
+			$response = curl_multi_getcontent($curl_arr[$url]);
+			$header_size = curl_getinfo($curl_arr[$url], CURLINFO_HEADER_SIZE);
+			$results[$url]['headers'] = http_parse_headers(substr($response, 0, $header_size));
+			$results[$url]['body'] = substr($response, $header_size);
 		}
 		// Ferme les gestionnaires
 		curl_multi_close($master);
 	}
-
 	return $results;
 }
 
@@ -440,16 +422,16 @@ function refresh_rss($feeds) {
 
 
 function retrieve_new_feeds($feedlinks, $md5='') {
-	if (!$feeds = c_get_external_file($feedlinks)) {
+	if (!$feeds = request_external_files($feedlinks, 25, true)) { // timeout = 25s
 		return FALSE;
 	}
 	$return = array();
-	foreach ($feeds as $url => $content) {
-		if (!empty($content)) {
-			$new_md5 = md5($content);
+	foreach ($feeds as $url => $response) {
+		if (!empty($response['body'])) {
+			$new_md5 = md5($response['body']);
 			// if Feed has changed : parse it (otherwise, do nothing : no need)
 			if ($md5 != $new_md5 or '' == $md5) {
-				$data_array = feed2array($content, $url);
+				$data_array = feed2array($response['body'], $url);
 				if ($data_array !== FALSE) {
 					$return[$url] = $data_array;
 					$data_array['infos']['md5'] = $md5;
@@ -585,14 +567,16 @@ if (!function_exists('http_parse_headers')) {
 	function http_parse_headers($raw_headers) {
 		$headers = array();
 
-		foreach ($raw_headers as $i => $h) {
+		$array_headers = (is_array($raw_headers) ? $raw_headers : explode("\n", $raw_headers));
+
+		foreach ($array_headers as $i => $h) {
 			$h = explode(':', $h, 2);
 
 			if (isset($h[1])) {
 				$headers[$h[0]] = trim($h[1]);
 			}
 		}
-
 		return $headers;
 	}
 }
+
