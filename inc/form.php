@@ -55,6 +55,14 @@ function select_yes_no($name, $defaut, $label) {
 	return $form;
 }
 
+function form_checkbox($name, $checked, $label) {
+	$checked = ($checked) ? "checked " : '';
+	$form = '<input type="checkbox" id="'.$name.'" name="'.$name.'" '.$checked.'/>'."\n" ;
+	$form .= '<label for="'.$name.'" >'.$label.'</label>'."\n";
+	return $form;
+}
+
+
 function form_format_date($defaut) {
 	$jour_l = jour_en_lettres(date('d'), date('m'), date('Y'));
 	$mois_l = mois_en_lettres(date('m'));
@@ -801,7 +809,7 @@ function afficher_form_prefs($erreurs = '') {
 
 		if (in_array('gd', get_loaded_extensions())) { // captcha only possible if GD library is installed.
 			$fld_securite .= '<p>'."\n";
-			$fld_securite .= select_yes_no('connexion_captcha', $GLOBALS['connexion_captcha'], $GLOBALS['lang']['pref_connexion_captcha'] );
+			$fld_securite .= form_checkbox('connexion_captcha', $GLOBALS['connexion_captcha'], $GLOBALS['lang']['pref_connexion_captcha']);
 			$fld_securite .= '</p>'."\n";
 		} else {
 			$fld_securite .= hidden_input('connexion_captcha', '0');
@@ -823,10 +831,10 @@ function afficher_form_prefs($erreurs = '') {
 		$fld_apparence .= '</p>'."\n";
 
 		$fld_apparence .= '<p>'."\n";
-		$fld_apparence .= select_yes_no('aff_onglet_rss', $GLOBALS['onglet_rss'], $GLOBALS['lang']['pref_afficher_rss'] );
+		$fld_apparence .= form_checkbox('aff_onglet_rss', $GLOBALS['onglet_rss'], $GLOBALS['lang']['pref_afficher_rss'] );
 		$fld_apparence .= '</p>'."\n";
 		$fld_apparence .= '<p>'."\n";
-		$fld_apparence .= select_yes_no('aff_onglet_liens', $GLOBALS['onglet_liens'], $GLOBALS['lang']['pref_afficher_liens'] );
+		$fld_apparence .= form_checkbox('aff_onglet_liens', $GLOBALS['onglet_liens'], $GLOBALS['lang']['pref_afficher_liens'] );
 		$fld_apparence .= '</p>'."\n";
 		$fld_apparence .= '</div>'."\n";
 		$fld_apparence .= '</div>';
@@ -870,19 +878,19 @@ function afficher_form_prefs($erreurs = '') {
 		$fld_cfg_blog .= '</p>'."\n";
 
 		$fld_cfg_blog .= '<p>'."\n";
-		$fld_cfg_blog .= select_yes_no('activer_categories', $GLOBALS['activer_categories'], $GLOBALS['lang']['pref_categories'] );
+		$fld_cfg_blog .= form_checkbox('activer_categories', $GLOBALS['activer_categories'], $GLOBALS['lang']['pref_categories'] );
 		$fld_cfg_blog .= '</p>'."\n";
 
 		$fld_cfg_blog .= '<p>'."\n";
-		$fld_cfg_blog .= select_yes_no('auto_keywords', $GLOBALS['automatic_keywords'], $GLOBALS['lang']['pref_automatic_keywords'] );
+		$fld_cfg_blog .= form_checkbox('auto_keywords', $GLOBALS['automatic_keywords'], $GLOBALS['lang']['pref_automatic_keywords'] );
 		$fld_cfg_blog .= '</p>'."\n";
 
 		$fld_cfg_blog .= '<p>'."\n";
-		$fld_cfg_blog .= select_yes_no('global_comments', $GLOBALS['global_com_rule'], $GLOBALS['lang']['pref_allow_global_coms']);
+		$fld_cfg_blog .= form_checkbox('global_comments', $GLOBALS['global_com_rule'], $GLOBALS['lang']['pref_allow_global_coms']);
 		$fld_cfg_blog .= '</p>'."\n";
 
 		$fld_cfg_blog .= '<p>'."\n";
-		$fld_cfg_blog .= select_yes_no('require_email', $GLOBALS['require_email'], $GLOBALS['lang']['pref_force_email']);
+		$fld_cfg_blog .= form_checkbox('require_email', $GLOBALS['require_email'], $GLOBALS['lang']['pref_force_email']);
 		$fld_cfg_blog .= '</p>'."\n";
 
 		$fld_cfg_blog .= '<p>'."\n";
@@ -929,7 +937,7 @@ function afficher_form_prefs($erreurs = '') {
 		$fld_maintenance .= '<div class="form-lines">'."\n";
 
 		$fld_maintenance .= '<p>'."\n";
-		$fld_maintenance .= select_yes_no('check_update', $GLOBALS['check_update'], $GLOBALS['lang']['pref_check_update'] );
+		$fld_maintenance .= form_checkbox('check_update', $GLOBALS['check_update'], $GLOBALS['lang']['pref_check_update'] );
 		$fld_maintenance .= '</p>'."\n";
 
 		$fld_maintenance .= '<p>'."\n";

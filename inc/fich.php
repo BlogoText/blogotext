@@ -85,16 +85,16 @@ function fichier_prefs() {
 		$format_date = htmlspecialchars($_POST['format_date']);
 		$format_heure = htmlspecialchars($_POST['format_heure']);
 		$fuseau_horaire = addslashes(clean_txt(htmlspecialchars($_POST['fuseau_horaire'])));
-		$global_com_rule = htmlspecialchars($_POST['global_comments']);
-		$connexion_captcha = htmlspecialchars($_POST['connexion_captcha']);
-		$activer_categories = htmlspecialchars($_POST['activer_categories']);
-		$afficher_rss = htmlspecialchars($_POST['aff_onglet_rss']);
-		$afficher_liens = htmlspecialchars($_POST['aff_onglet_liens']);
+		$global_com_rule = (isset($_POST['global_comments'])) ? '1' : '0';
+		$connexion_captcha = (isset($_POST['connexion_captcha'])) ? '1' : '0';
+		$activer_categories = (isset($_POST['activer_categories'])) ? '1' : '0';
+		$afficher_rss = (isset($_POST['aff_onglet_rss'])) ? '1' : '0';
+		$afficher_liens = (isset($_POST['aff_onglet_liens'])) ? '1' : '0';
 		$theme_choisi = addslashes(clean_txt(htmlspecialchars($_POST['theme'])));
 		$comm_defaut_status = htmlspecialchars($_POST['comm_defaut_status']);
-		$automatic_keywords = htmlspecialchars($_POST['auto_keywords']);
-		$require_email = htmlspecialchars($_POST['require_email']);
-		$auto_check_updates = htmlspecialchars($_POST['check_update']);
+		$automatic_keywords = (isset($_POST['auto_keywords'])) ? '1' : '0';
+		$require_email = (isset($_POST['require_email'])) ? '1' : '0';
+		$auto_check_updates = (isset($_POST['check_update'])) ? '1' : '0';
 		// linx
 //		$autoriser_liens_public = $_POST['allow_public_linx'];
 //		$linx_defaut_status = $_POST['linx_defaut_status'];
