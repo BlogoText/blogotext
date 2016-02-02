@@ -153,6 +153,7 @@ $GLOBALS['lang'] = array(
 'label_suivant'					=> 'éléments plus anciens',
 'label_dl_fichier'				=> 'Également importer le fichier&thinsp;? ',
 'label_combien'					=> 'Combien&thinsp;?',
+'label_all_comm_by_author'		=> 'Tous les commentaires de cet auteur',
 // Label avec "&thinsp;: "
 'label_dp_lien'					=> 'Lien&thinsp;: ',
 'label_dp_fichier'				=> 'Fichier&thinsp;: ',

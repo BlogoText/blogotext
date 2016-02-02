@@ -153,6 +153,7 @@ $GLOBALS['lang'] = array(
 'label_suivant'					=> 'Older entries',
 'label_dl_fichier'				=> 'Also import file localy? ',
 'label_combien'					=> 'How much?',
+'label_all_comm_by_author'		=> 'All comments by this author',
 // Label avec ": "
 'label_dp_lien'					=> 'Link: ',
 'label_dp_fichier'				=> 'File: ',

@@ -84,6 +84,13 @@
 	font-size: 1em;
 }
 
+.commentbloc .author a,
+.commentbloc .author a:hover,
+.commentbloc:hover .author a {
+	color: inherit;
+	text-decoration: none;
+}
+
 .commentbloc .p-date-title {
 	flex: 1 1 auto;
 	text-align: right;

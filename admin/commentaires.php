@@ -129,7 +129,7 @@ function afficher_commentaire($comment, $with_link) {
 
 	echo '<div class="comm-header">'."\n";
 	echo "\t".'<div class="comm-title">'."\n";
-	echo "\t\t".'<span class="author">'.$comment['bt_author'].'</span>'."\n";
+	echo "\t\t".'<span class="author"><a href="?filtre=auteur.'.$comment['bt_author'].'" title="'.$GLOBALS['lang']['label_all_comm_by_author'].'">'.$comment['bt_author'].'</a></span>'."\n";
 	echo "\t\t".'<span class="reply" onclick="reply(\'[b]@['.str_replace('\'', '\\\'', $comment['bt_author']).'|#'.article_anchor($comment['bt_id']).'] :[/b] \'); ">Reply</span> ';
 	echo (!empty($comment['bt_webpage'])) ? "\t\t".'<span class="webpage"><a href="'.$comment['bt_webpage'].'" title="'.$comment['bt_webpage'].'">'.$comment['bt_webpage'].'</a></span>'."\n" : '';
 	echo (!empty($comment['bt_email'])) ? "\t\t".'<span class="email"><a href="mailto:'.$comment['bt_email'].'" title="'.$comment['bt_email'].'">'.$comment['bt_email'].'</a></span>'."\n" : '';
