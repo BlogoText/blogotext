@@ -4,7 +4,7 @@
 
 This is [Blogotext](http://lehollandaisvolant.net/blogotext/), the lightweight SQLite Blog-Engine.
 
-2011 - 2015 Timo van Neerden
+2011 - 2016 Timo van Neerden
 
 ---
 
@@ -20,17 +20,14 @@ This is [Blogotext](http://lehollandaisvolant.net/blogotext/), the lightweight S
 
 - Recommended
   * PHP GD (for captcha);
-  * cURL, LibXML (for RSS reader)
+  * cURL, LibXML (for RSS reader and links sharing)
   * GZip (for zip exporting function)
 
 - Installation
-  * Unzip the downloaded " blogotext.zip " file
-  * Upload folder to your site (eg : http://example.com/blog)
+  * Unzip the downloaded archive file
+  * Upload folder to your site (eg: to http://example.com/blog)
   * Use your browser to go to your site
   * Follow the few steps
 
 - Bugs
-  * Please, report any bugs to me using [my email](http://lehollandaisvolant.net/contact). It will help me.
-
-
-
+  * Please, report any bugs to me using [my email](http://lehollandaisvolant.net/contact) or the Github bugtracking system.
