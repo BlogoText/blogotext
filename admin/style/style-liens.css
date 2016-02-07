@@ -212,6 +212,7 @@
 .linkbloc .hard-link {
 	font-size: .9em;
 	color: #aaa;
+	align-self: center;
 }
 
 
@@ -299,7 +300,8 @@
 }
 
 .linkbloc .link-tags li {
-	display: inline;
+	display: inline-block;
+	padding: 6px 0;
 }
 
 .linkbloc .link-tags a {

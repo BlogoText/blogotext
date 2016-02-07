@@ -315,7 +315,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= '<fieldset>'."\n";
 		$form .= "\t".'<div class="contain-input">'."\n";
 		$form .= "\t\t".'<label for="url">'.$GLOBALS['lang']['label_nouv_lien'].'</label>'."\n";
-		$form .= "\t\t".'<input type="text" name="url" id="url" value="" size="70" placeholder="http://www.example.com/" class="text" autofocus autocomplete="off" onfocus="hideFAB();" onblur="unHideFAB()" />'."\n";
+		$form .= "\t\t".'<input type="text" name="url" id="url" value="" size="70" placeholder="http://www.example.com/" class="text" autocomplete="off" />'."\n";
 		$form .= "\t".'</div>'."\n";
 		$form .= "\t".'<p class="submit-bttns"><input type="submit" value="'.$GLOBALS['lang']['envoyer'].'" class="submit blue-square" /></p>'."\n";
 		$form .= '</fieldset>'."\n";
