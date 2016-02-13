@@ -3,7 +3,7 @@
 // http://lehollandaisvolant.net/blogotext/
 //
 // 2006      Frederic Nassar.
-// 2010-2015 Timo Van Neerden <timo@neerden.eu>
+// 2010-2016 Timo Van Neerden <timo@neerden.eu>
 //
 // BlogoText is free software.
 // You can redistribute it under the terms of the MIT / X11 Licence.
@@ -92,6 +92,8 @@ function unfold(button) {
 
 	var elemToForground = button.parentNode.parentNode.parentNode.parentNode;
 	elemToForground.classList.toggle('foreground');
+
+	elemToForground.getElementsByTagName('textarea')[0].focus();
 }
 
 /*
@@ -180,7 +182,7 @@ function moveTag() {
 		oField.innerHTML += '<li class="tag"><span>'+iField.value+'</span><a href="javascript:void(0)" onclick="removeTag(this.parentNode)">×</a></li>';
 		iField.value = '';
 		return false;
-	}
+		}
 	// else : real submit : seek in the list of tags, extract the tags and submit these.
 	else {
 		var liste = oField.getElementsByTagName('li');
@@ -197,6 +199,20 @@ function removeTag(tag) {
 	tag.parentNode.removeChild(tag);
 	return false;
 }
+
+/* for links : hide the FAB button when focus on link field (more conveniant for mobile UX) */
+function hideFAB() {
+	if (document.getElementById('add-link')) {
+		document.getElementById('add-link').classList.add('hidden');
+	}
+}
+function unHideFAB() {
+	if (document.getElementById('add-link')) {
+		document.getElementById('add-link').classList.remove('hidden');
+	}
+}
+
+
 
 
 /**************************************************************************************************************************************
@@ -775,7 +791,7 @@ function addToReadQueue(elem) {
 	readQueue.count++;
 	readQueue.urlList.push(elem);
 
-	console.log(JSON.stringify(readQueue.urlList));
+	//console.log(JSON.stringify(readQueue.urlList));
 
 	// if 10 items in queue, send XHR request and reset list to zero.
 	if (readQueue.count == 10) {
@@ -836,25 +852,26 @@ function rss_feedlist(RssPosts) {
 		if (item.statut == 0) { li.classList.add('read'); }
 
 		// new line with the title
-		var title = document.createElement("p");
-		//title.innerHTML = '<a href="'+item.link+'" target="_blank">'+item.title+'</a>';
-		title.title = item.title;
+		var title = document.createElement("div");
 		title.classList.add('post-title');
 		var titleLink = document.createElement("a");
 		titleLink.href = item.link;
+		titleLink.title = item.title;
 		titleLink.target = "_blank";
 		titleLink.appendChild(document.createTextNode(item.title));
 		title.appendChild(titleLink);
 		
-
 		// bloc with date + site name + share-link
 		var date = document.createElement("div");
 		date.classList.add('date');
-		date.appendChild(document.createTextNode(item.date));
+		date.appendChild(document.createTextNode(' — '+item.date));
+		var time = document.createElement("span");
+		time.appendChild(document.createTextNode(', '+item.time));
+		date.appendChild(time);
 
 		var site = document.createElement("div");
 		site.classList.add('site');
-		site.appendChild(document.createTextNode(item.sitename+'  —  '));
+		site.appendChild(document.createTextNode(item.sitename));
 
 		var share = document.createElement("div");
 		share.classList.add('share');
@@ -881,28 +898,39 @@ function rss_feedlist(RssPosts) {
 		var hr = document.createElement("hr");
 		hr.classList.add('clearboth');
 
+		title.appendChild(datesite);
 		li.appendChild(title);
 		li.appendChild(content);
 		li.appendChild(hr);
-		li.appendChild(datesite);
 
 		postlist.appendChild(li);
-	}
-	//if (RssPosts != rss_entries.list) { alert(postlist); return false };
+	}	
 
-	// displays the number of unread items
-	if (document.querySelector('#global-count-posts').firstChild) {
-		document.querySelector('#global-count-posts').firstChild.nodeValue = '('+unread+')';
-		document.querySelector('#global-count-posts').dataset.nbrun = unread;
-		
+	// displays the number of unread items (local counter)
+	var count = document.querySelector('#post-counter');
+	if (count.firstChild) {
+		count.firstChild.nodeValue = unread;
+		count.dataset.nbrun = unread;
 	} else {
-		document.querySelector('#global-count-posts').appendChild(document.createTextNode('('+unread+')'))
-		document.querySelector('#global-count-posts').dataset.nbrun = unread;
+		count.appendChild(document.createTextNode(unread));
+		count.dataset.nbrun = unread;
 	}
 
-	document.getElementById('posts-wrapper').appendChild(postlist);
+
+	document.getElementById('post-list-wrapper').appendChild(postlist);
 
 	return false;
+}
+
+/* Sort and show all items */
+function sortAll() {
+	// unhighlight previously selected site
+	if (document.querySelector('.active-site')) document.querySelector('.active-site').classList.remove('active-site');
+
+	rss_feedlist(Rss);
+	openAllSwich = 'open';
+	document.getElementById('openallitemsbutton').classList.remove('unfold');
+	if (Rss.length != 0) window.location.hash = '';
 }
 
 /* Sort rss entries from a site */
@@ -918,8 +946,8 @@ function sortSite(origine) {
 			newList.push(item);
 		}
 	}
-	// highlight selected site
-	document.querySelector('.active-site').classList.remove('active-site');
+	// unhightlight previous site and highlight new site
+	if (document.querySelector('.active-site')) document.querySelector('.active-site').classList.remove('active-site');
 	for (var i = 0, liList = document.querySelectorAll('#feed-list li'), len = liList.length ; i < len ; i++) {
 		if (liList[i].dataset.feedurl == choosensite) {
 			liList[i].classList.add('active-site');
@@ -927,7 +955,9 @@ function sortSite(origine) {
 		}
 	}
 	rss_feedlist(newList);
-	if (newList.length != 0) window.location.hash = 'rss-list';
+	openAllSwich = 'open';
+	document.getElementById('openallitemsbutton').classList.remove('unfold');
+	if (newList.length != 0) window.location.hash = '';
 }
 
 /* Sort rss entries from a folder */
@@ -952,7 +982,10 @@ function sortFolder(origine) {
 	}
 
 	rss_feedlist(newList);
-	window.location.hash = 'rss-list';
+	openAllSwich = 'open';
+	document.getElementById('openallitemsbutton').classList.remove('unfold');
+
+	window.location.hash = '';
 }
 
 /* Starts the refreshing process (AJAX) */
@@ -1016,7 +1049,8 @@ function refresh_all_feeds(refreshLink) {
 function markAsRead(what, url) {
 	var notifDiv = document.createElement('div');
 	var notifNode = document.getElementById('message-return');
-	var gCount = document.querySelector('#global-count-posts');
+	var gCount = document.querySelector('#global-post-counter');
+	var count = document.querySelector('#post-counter');
 
 	// if all data is charged to be marked as read, ask confirmation.
 	if (what == 'all') {
@@ -1030,7 +1064,6 @@ function markAsRead(what, url) {
 		for (var i = 0, len = liList.length ; i < len ; i++) { liList[i].classList.add('read'); }
 		// mark feed list items as containing 0 unread
 		for (var i = 0, liList = document.querySelectorAll('#feed-list li'), len = liList.length ; i < len ; i++) {
-			liList[i].classList.remove('feed-not-null');
 			liList[i].dataset.nbrun = 0;
 			liList[i].querySelector('span').firstChild.nodeValue = '('+liList[i].dataset.nbrun+')';
 		}
@@ -1038,6 +1071,8 @@ function markAsRead(what, url) {
 		// mark global counter
 		gCount.dataset.nbrun = 0;
 		gCount.firstChild.nodeValue = '(0)';
+		count.dataset.nbrun = 0;
+		count.firstChild.nodeValue = '0';
 
 		// markitems as read in (var)Rss list.
 		for (var i = 0, len = Rss.length ; i < len ; i++) { Rss[i].statut = 0; }
@@ -1054,14 +1089,17 @@ function markAsRead(what, url) {
 		for (var i = 0, len = liList.length ; i < len ; i++) { liList[i].classList.add('read'); }
 		var activeSite = document.querySelector('.active-site');
 		// mark feeds in feed-list as containing (0) unread
-		activeSite.classList.remove('feed-not-null');
 		var liCount = activeSite.dataset.nbrun;
 		activeSite.dataset.nbrun = 0;
 		activeSite.querySelector('span').firstChild.nodeValue = '(0)';
 
 		// mark global counter
 		gCount.dataset.nbrun -= liCount;
-		gCount.firstChild.nodeValue = '('+gCount.dataset.nbrun+')'; 
+		gCount.firstChild.nodeValue = '('+gCount.dataset.nbrun+')';
+		count.dataset.nbrun = 0;
+		count.firstChild.nodeValue = '0';
+
+
 
 		// mark items as read in (var)Rss.list.
 		for (var i = 0, len = Rss.length ; i < len ; i++) { if (Rss[i].feed == url) { Rss[i].statut = 0; } }
@@ -1072,10 +1110,6 @@ function markAsRead(what, url) {
 
 			activeSite.parentNode.parentNode.dataset.nbrun -= liCount;
 			fCount.firstChild.nodeValue = '('+activeSite.parentNode.parentNode.dataset.nbrun+')';
-
-			if (activeSite.parentNode.parentNode.dataset.nbrun == 0) {
-				activeSite.parentNode.parentNode.classList.remove('feed-not-null');
-			}
 		}
 
 		loading_animation('off');
@@ -1091,25 +1125,23 @@ function markAsRead(what, url) {
 		for (var i = 0, len = liList.length ; i < len ; i++) { liList[i].classList.add('read'); }
 
 		// mark folder row in feeds-list as containing 0 unread
-		activeSite.classList.remove('feed-not-null');
 		var liCount = activeSite.dataset.nbrun;
 		activeSite.dataset.nbrun = 0;
 		activeSite.querySelector('span span').firstChild.nodeValue = '(0)';
 
 		// mark global counter
 		gCount.dataset.nbrun -= liCount;
-		gCount.firstChild.nodeValue = '('+gCount.dataset.nbrun+')'; 
+		gCount.firstChild.nodeValue = '('+gCount.dataset.nbrun+')';
+		count.dataset.nbrun = 0;
+		count.firstChild.nodeValue = '0';
+
 
 		// mark sites in folder as read aswell
-		var siteList = activeSite.querySelectorAll('.feed-not-null');
-		for (var i = 0, len = siteList.length ; i < len ; i++) {
-			// span counter
-			siteList[i].querySelector('span').firstChild.nodeValue = '(0)'
-			// dataset counter
-			siteList[i].dataset.nbrun = 0;
-			// class un read 
-			siteList[i].classList.remove('feed-not-null');
+		for (var i = 0, liList = activeSite.querySelectorAll('li'), len = liList.length ; i < len ; i++) {
+			liList[i].dataset.nbrun = 0;
+			liList[i].querySelector('span').firstChild.nodeValue = '(0)';
 		}
+
 
 		// mark items as read in (var)Rss list.
 		for (var i = 0, len = Rss.length ; i < len ; i++) { if (Rss[i].folder == url) { Rss[i].statut = 0; } }
@@ -1131,9 +1163,6 @@ function markAsRead(what, url) {
 				var liCount = liList[i].dataset.nbrun;
 				liList[i].dataset.nbrun -= 1;
 				liList[i].querySelector('span').firstChild.nodeValue = '('+liList[i].dataset.nbrun+')';
-				if (liList[i].dataset.nbrun == 0) {
-					liList[i].classList.remove('feed-not-null');
-				}
 
 				// remove "1" from folder counter (if folder applies)
 				if (liList[i].parentNode.parentNode.dataset.folder) {
@@ -1141,10 +1170,6 @@ function markAsRead(what, url) {
 
 					liList[i].parentNode.parentNode.dataset.nbrun -= 1;
 					fCount.firstChild.nodeValue = '('+liList[i].parentNode.parentNode.dataset.nbrun+')';
-
-					if (liList[i].parentNode.parentNode.dataset.nbrun == 0) {
-						liList[i].parentNode.parentNode.classList.remove('feed-not-null');
-					}
 				}
 
 				break;
@@ -1153,7 +1178,10 @@ function markAsRead(what, url) {
 
 		// mark global counter
 		gCount.dataset.nbrun -= 1;
-		gCount.firstChild.nodeValue = '('+gCount.dataset.nbrun+')'; 
+		gCount.firstChild.nodeValue = '('+gCount.dataset.nbrun+')';
+		count.dataset.nbrun -= 1;
+		count.firstChild.nodeValue = count.dataset.nbrun;
+
 
 		// markitems as read in (var)Rss list.
 		for (var i = 0, len = Rss.length ; i < len ; i++) {
@@ -1282,7 +1310,6 @@ function handleTouchStart(evt) {
 	yDown = evt.touches[0].clientY;
 }
 
-
 /* Swipe on slideshow to change images */
 function swipeSlideshow(evt) {
 	if ( !xDown || !yDown || doTouchBreak || document.getElementById('slider').style.display != 'block' ) { return; }
@@ -1313,3 +1340,79 @@ function swipeSlideshow(evt) {
 		yDown = null;
 	}
 }
+
+
+
+
+/**************************************************************************************************************************************
+	CANVAS FOR index.php GRAPHS
+**************************************************************************************************************************************/
+function respondCanvas(){
+	for (var i=0, len=containers.length; i<len ; i++) {
+		containers[i].querySelector('canvas').width = parseInt(containers[i].querySelector('.graphique').getBoundingClientRect().width);
+		draw(containers[i]);
+	}
+}
+
+function draw(container) {
+	var c = container.querySelector('canvas');
+	var months = container.querySelectorAll('.graphique .month');
+	var ctx = c.getContext("2d");
+	var cont = {
+		x:container.getBoundingClientRect().left,
+		y:container.getBoundingClientRect().top
+	};
+
+	// strokes the background lines at 0%, 25%, 50%, 75% and 100%.
+	ctx.beginPath();
+	for (var i=months.length-1 ; i>=0 ; i--) {
+		if (months[i].getBoundingClientRect().top < months[0].getBoundingClientRect().bottom) {
+			var topLeft = months[i].getBoundingClientRect().left -15;
+			break;
+		}
+	}
+
+	var coordScale = { x:topLeft, xx:months[1].getBoundingClientRect().left };
+	for (var i = 0; i < 5 ; i++) {
+		ctx.moveTo(coordScale.x, i*c.height/4 +1);
+		ctx.lineTo(coordScale.xx, i*c.height/4 +1);
+		ctx.strokeStyle = "rgba(0, 0, 0, .05)";
+	}
+	ctx.stroke();
+
+	// strokes the lines of the chart
+	ctx.beginPath();
+	for (var i=1, len=months.length ; i<len ; i++) {
+		var coordsNew = months[i].getBoundingClientRect();
+		if (i == 1) {
+			ctx.moveTo(coordsNew.left - cont.x + coordsNew.width/2, coordsNew.top - cont.y);
+		} else {
+			if (coordsNew.top - cont.y <= 150)
+			ctx.lineTo(coordsNew.left - cont.x + coordsNew.width/2, coordsNew.top - cont.y);
+		}
+	}
+	ctx.lineWidth = 2;
+	ctx.strokeStyle = "rgba(33,150,243,1)";
+	ctx.stroke();
+	ctx.closePath();
+
+	// fills the chart
+	ctx.beginPath();
+	for (var i=1, len=months.length ; i<len ; i++) {
+		var coordsNew = months[i].getBoundingClientRect();
+		if (i == 1) {
+			ctx.moveTo(coordsNew.left - cont.x + coordsNew.width/2, 150);
+			ctx.lineTo(coordsNew.left - cont.x + coordsNew.width/2, coordsNew.top - cont.y);
+		} else {
+			if (coordsNew.top - cont.y < 150) {
+				ctx.lineTo(coordsNew.left - cont.x + coordsNew.width/2, coordsNew.top - cont.y);
+				var coordsOld = coordsNew;
+			}
+		}
+	}
+	ctx.lineTo(coordsOld.left - cont.x + coordsOld.width/2, 150);
+	ctx.fillStyle = "rgba(33,150,243,.2)";
+	ctx.fill();
+	ctx.closePath();
+}
+

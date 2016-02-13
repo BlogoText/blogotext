@@ -23,9 +23,12 @@ $GLOBALS['liste_fichiers'] = open_serialzd_file($GLOBALS['fichier_liste_fichiers
 $GLOBALS['liste_flux'] = open_serialzd_file($GLOBALS['fichier_liste_fluxrss']);
 
 afficher_html_head($GLOBALS['lang']['titre_maintenance']);
-echo '<div id="top">'."\n";
-afficher_msg();
-afficher_topnav('preferences.php', $GLOBALS['lang']['titre_maintenance']);
+
+echo '<div id="header">'."\n";
+	echo '<div id="top">'."\n";
+	afficher_msg();
+	afficher_topnav('preferences.php', $GLOBALS['lang']['titre_maintenance']);
+	echo '</div>'."\n";
 echo '</div>'."\n";
 
 echo '<div id="axe">'."\n";
@@ -602,7 +605,7 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 	echo '</form>'."\n";
 
 	// Form optimi
-	echo '<form action="maintenance.php" metЬ or ь hod="get" class="bordered-formbloc" id="form_optimi">'."\n";
+	echo '<form action="maintenance.php" method="get" class="bordered-formbloc" id="form_optimi">'."\n";
 		echo '<fieldset class="pref valid-center">';
 		echo legend($GLOBALS['lang']['maintenance_optim'], 'legend-sweep');
 

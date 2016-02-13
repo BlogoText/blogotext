@@ -4,6 +4,27 @@
 /* LINKS : Post new link
 ------------------------------------------------------*/
 #post-new-lien {
+	position: relative;
+	z-index: 1;
+}
+
+#post-new-lien::after {
+	content: "";
+	position: absolute;
+	top: 0; left: 0;
+	width: 100%; height: 100%;
+	box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 0 17px 0 rgba(0, 0, 0, 0.2);
+	opacity: 0;
+	transition: opacity 0.5s ease-in-out 0s;
+	z-index: -1;
+}
+
+#post-new-lien:hover::after {
+	opacity: 1;
+}
+
+#post-new-lien:hover {
+	color: #333;
 }
 
 #post-new-lien .contain-input {
@@ -45,7 +66,7 @@
 	width: 650px;
 	max-width: 100%;
 	padding: 20px;
-	box-shadow: 0 12px 24px 0 rgba(0, 0, 0, 0.3);
+	box-shadow: 0 0 24px 0 rgba(0, 0, 0, 0.3);
 	background: white;
 	display: flex;
 	flex-direction: column;
@@ -128,9 +149,30 @@
 --------------------------------------------------------------*/
 /* LINKS : a link bloc
 -------------------------------------------*/
+#list-link .linkbloc {
+	padding: 0;
+}
+
 .linkbloc {
+	position: relative;
+	z-index: 1;
 	color: #444;
-	margin-top: 10px
+	margin-top: 15px;
+}
+
+.linkbloc::after {
+	content: "";
+	position: absolute;
+	top: 0; left: 0;
+	width: 100%; height: 100%;
+	box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 0px 17px 0 rgba(0, 0, 0, 0.2);
+	opacity: 0;
+	transition: opacity 0.5s ease-in-out 0s;
+	z-index: -1;
+}
+
+.linkbloc:hover::after {
+	opacity: 1;
 }
 
 .linkbloc:hover {
@@ -141,18 +183,24 @@
 	visibility: visible;
 }
 
+.linkbloc .link-header,
+.linkbloc .link-content,
+.linkbloc .link-footer {
+	padding: 15px;
+}
 
 /* LINKS : link header 
 --------------------------------*/
 .linkbloc .link-header {
 	display: flex;
 	align-items: center;
+	border-bottom: 1px solid #eee;
+	position: relative;
 }
 
 .linkbloc .titre-lien {
 	text-decoration: none;
 	font-weight: bold;
-	font-size: 1.2em;
 	color: #333;
 	flex: 1;
 }
@@ -170,24 +218,26 @@
 
 /* link options button */
 .link-options {
-	position: relative;
-	visibility: hidden;
+	padding-right: 50px;
+
 }
 
 .link-options::before {
 	content: "";
 	cursor: pointer;
-	background: url(sprites.png) no-repeat -599px -7px / 640px 400px;
-	width: 24px;
-	height: 24px;
+	background: url(sprites.png) no-repeat -585px 5px / 640px 400px;
+	width: 50px;
+	height: 50px;
 	display: block;
-	margin-left: 10px;
+	position: absolute;
+	top: 0;
+	right: 0;
 }
 
 .link-options > ul {
 	right: 9999px;
 	position: absolute;
-	top: -10px;
+	top: 0px;
 	background: white;
 	margin: 0;
 	padding: 4px 0;
@@ -200,9 +250,9 @@
 }
 
 .link-options:hover ul {
-	right: 0;
+	right: 15px;
 	opacity: 1;
-	top: 0;
+	top: 15px;
 	transition: top .2s ease-in .05s, opacity .2s ease-in .05s, right 0s ease-out .05s;
 }
 
@@ -233,14 +283,13 @@
 
 /* LINKS : link content 
 --------------------------------*/
-.linkbloc .link-content {
-	padding: 10px 0
-}
 
 /* LINKS : link footer 
 --------------------------------*/
 .linkbloc .link-footer {
 	display: flex;
+	background-color: rgba(0, 0, 0, .05);
+	border-top: #eee;
 }
 
 .linkbloc .link-tags {
@@ -258,9 +307,13 @@
 	padding: 3px 4px;
 	color: inherit;
 	text-decoration: none;
-	background: #efefef;
+	background: rgba(0, 0, 0, .05);
 	border-radius: 3px;
-	box-shadow: 0 0px 1px rgba(0, 0, 0, .3) inset;
+	box-shadow: 0 0 1px rgba(0, 0, 0, .3) inset;
+}
+
+.linkbloc .link-tags a:hover {
+	background: rgba(0, 0, 0, .1);
 }
 
 

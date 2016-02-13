@@ -21,8 +21,4 @@
 		max-width: 100%;
 	}
 
-	/* index.php graphs */
-	#graphs .month:nth-child(-n+12) {
-		display: none;
-	}
 }

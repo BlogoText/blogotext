@@ -1,14 +1,14 @@
-<article class="article post">
+<article class="article post" itemscope itemtype="http://schema.org/BlogPosting">
 	<header class="art-title post-title">
-		<h1><a href="{article_lien}">{article_titre}</a></h1>
-		<div class="date"><time datetime="{article_date_iso}">{article_date}</time> ⋅ <a href="{article_lien}#commentaires">{nombre_commentaires}</a></div>
-		<div class="author" rel="author">Par <em>{blog_auteur}</em></div>
+		<h1 class="entry-title" itemprop="name"><a href="{article_lien}" itemprop="url">{article_titre}</a></h1>
+		<div class="date"><time datetime="{article_date_iso}" itemprop="datePublished dateCreated">{article_date}</time> ⋅ <a href="{article_lien}#commentaires">{nombre_commentaires}</a></div>
+		<div class="author" itemprop="author" itemscope itemtype="https://schema.org/Person">Par <em itemprop="name">{blog_auteur}</em></div>
 	</header>
-	<div class="art-content post-content">
+	<div class="art-content post-content entry-content" itemprop="articleBody">
 		{article_contenu}
 	</div>
-	<footer class="art-footer post-footer">
+	<footer class="art-footer post-footer entry-footer">
 		<div class="art-tags post-tags">{article_tags}</div>
-		<div class="art-com"><a href="{article_lien}#commentaires">{nombre_commentaires}</a></div>
+		<div class="art-com"><a href="{article_lien}#commentaires" itemprop="discussionUrl">{nombre_commentaires}</a></div>
 	</footer> 
 </article>

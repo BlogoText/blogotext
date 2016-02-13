@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2015 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -280,6 +280,7 @@ function parse_search($q) {
 
 /* for testing/dev purpose: shows a variable. */
 function debug($data) {
+	header('Content-Type: text/html; charset=utf-8');
 	echo '<pre>';
 	print_r($data);
 	die;

@@ -71,8 +71,8 @@ if (isset($_GET['id']) and preg_match('#^[0-9]{14}$#', $_GET['id'])) {
 	} else {
 		$xml .= '<item>'."\n";
 			$xml .= '<title>'.$GLOBALS['lang']['note_no_commentaire'].'</title>'."\n";
-			$xml .= '<guid isPermaLink="false">'.$GLOBALS['racine'].'index.php</guid>'."\n";
-			$xml .= '<link>'.$GLOBALS['racine'].'index.php</link>'."\n";
+			$xml .= '<guid isPermaLink="false">'.$GLOBALS['racine'].'</guid>'."\n";
+			$xml .= '<link>'.$GLOBALS['racine'].'</link>'."\n";
 			$xml .= '<pubDate>'.date('r').'</pubDate>'."\n";
 			$xml .= '<description>'.$GLOBALS['lang']['no_comments'].'</description>'."\n";
 		$xml .= '</item>'."\n";
@@ -166,7 +166,7 @@ else {
 		// normal code
 		$xml_post = '<item>'."\n";
 		$xml_post .= '<title>'.$title.'</title>'."\n";
-		$xml_post .= '<guid isPermaLink="false">'.$GLOBALS['racine'].'?mode=links&amp;id='.$elem['bt_id'].'</guid>'."\n";
+		$xml_post .= '<guid isPermaLink="false">'.$elem['bt_id'].'-'.$elem['bt_type'].'</guid>'."\n";
 		$xml_post .= '<pubDate>'.date_create_from_format('YmdHis', $time)->format('r').'</pubDate>'."\n";
 		if ($elem['bt_type'] == 'link') {
 			if ($invert) {

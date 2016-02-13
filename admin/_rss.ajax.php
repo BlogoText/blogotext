@@ -72,7 +72,8 @@ if (isset($_POST['add-feed'])) {
 
 	$new_feed = trim($_POST['add-feed']);
 	$new_feed_folder = htmlspecialchars(trim($_POST['add-feed-folder']));
-	$feed_array = get_new_feeds(array($new_feed => array()), '');
+	$feed_array = retrieve_new_feeds(array($new_feed), '');
+
 
 	if (!($feed_array[$new_feed]['infos']['type'] == 'ATOM' or $feed_array[$new_feed]['infos']['type'] == 'RSS')) {
 		die('Error: Invalid ressource (not an RSS/ATOM feed)');

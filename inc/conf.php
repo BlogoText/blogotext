@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2015 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -19,7 +19,7 @@ if (!empty($GLOBALS['fuseau_horaire'])) {
 }
 
 // BLOGOTEXT VERSION (do not change it)
-$GLOBALS['version'] = '3.0.2';
+$GLOBALS['version'] = '3.2.0';
 $GLOBALS['last-online-file'] = '../config/version.txt';
 
 // MINIMAL REQUIRED PHP VERSION
@@ -128,7 +128,8 @@ function init_list_articles($article) {
 function init_list_comments($comment) {
 		$comment['auteur_lien'] = (!empty($comment['bt_webpage'])) ? '<a href="'.$comment['bt_webpage'].'" class="webpage">'.$comment['bt_author'].'</a>' : $comment['bt_author'] ;
 		$comment['anchor'] = article_anchor($comment['bt_id']);
-		$comment['bt_link'] = get_blogpath($comment['bt_article_id'], '').'#'.$comment['anchor'];
+		$comment['article_title'] = get_entry($GLOBALS['db_handle'], 'articles', 'bt_title', $comment['bt_article_id'], 'return');
+		$comment['bt_link'] = get_blogpath($comment['bt_article_id'], $comment['article_title']).'#'.$comment['anchor'];
 		$comment = array_merge($comment, decode_id($comment['bt_id']));
 	return $comment;
 }

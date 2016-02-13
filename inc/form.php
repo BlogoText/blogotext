@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2015 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -54,6 +54,14 @@ function select_yes_no($name, $defaut, $label) {
 	$form .= '</select>'."\n";
 	return $form;
 }
+
+function form_checkbox($name, $checked, $label) {
+	$checked = ($checked) ? "checked " : '';
+	$form = '<input type="checkbox" id="'.$name.'" name="'.$name.'" '.$checked.'/>'."\n" ;
+	$form .= '<label for="'.$name.'" >'.$label.'</label>'."\n";
+	return $form;
+}
+
 
 function form_format_date($defaut) {
 	$jour_l = jour_en_lettres(date('d'), date('m'), date('Y'));
@@ -305,40 +313,40 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 	if ($step == 1) { // postage de l'URL : un champ affiché en GET
 		$form .= '<form method="get" class="bordered-formbloc" id="post-new-lien" action="'.basename($_SERVER['PHP_SELF']).'">'."\n";
 		$form .= '<fieldset>'."\n";
-		//$form .= '<legend class="legend-link">'.$GLOBALS['lang']['label_nouv_lien'].' :</legend>'."\n";
-
 		$form .= "\t".'<div class="contain-input">'."\n";
 		$form .= "\t\t".'<label for="url">'.$GLOBALS['lang']['label_nouv_lien'].'</label>'."\n";
-		$form .= "\t\t".'<input type="text" name="url" id="url" value="" size="70" placeholder="http://www.example.com/" class="text" autofocus autocomplete="off" />'."\n";
-		$form .= "\t".'</div>';
+		$form .= "\t\t".'<input type="text" name="url" id="url" value="" size="70" placeholder="http://www.example.com/" class="text" autofocus autocomplete="off" onfocus="hideFAB();" onblur="unHideFAB()" />'."\n";
+		$form .= "\t".'</div>'."\n";
 		$form .= "\t".'<p class="submit-bttns"><input type="submit" value="'.$GLOBALS['lang']['envoyer'].'" class="submit blue-square" /></p>'."\n";
 		$form .= '</fieldset>'."\n";
 		$form .= '</form>'."\n\n";
 
 	} elseif ($step == 2) { // Form de l'URL, avec titre, description, en POST cette fois, et qu'il faut vérifier avant de stoquer dans la BDD.
 		$form .= '<form method="post" onsubmit="return moveTag();" class="bordered-formbloc" id="post-lien" action="'.basename($_SERVER['PHP_SELF']).'">'."\n";
-		//$form .= '<fieldset>'."\n";
 
 		$url = $_GET['url'];
 		$type = 'url';
-		$title = htmlspecialchars($url);
+		$title = $url;
+		$charset = "UTF-8";
 		$new_id = date('YmdHis');
 
-		// URL vide ou pas une URL : c’est une "note" et on masque le champ du lien
+		// URL is empty or no URI. It’s a note: we hide the URI field.
 		if (empty($url) or (strpos($url, 'http') !== 0) ) {
 			$type = 'note';
-			$title = 'Note'.(!empty($url) ? ' : '.htmlspecialchars($url) : '');
+			$title = 'Note'.(!empty($url) ? ' : '.html_entity_decode( $url, ENT_QUOTES | ENT_HTML5, 'UTF-8') : '');
 			$url = $GLOBALS['racine'].'?mode=links&amp;id='.$new_id;
 			$form .= hidden_input('url', $url);
 			$form .= hidden_input('type', 'note');
-		// URL non vide
+		// URL is not empty
 		} else {
-			// Test du type de fichier
-			$rep_hdr = get_headers($url, 1);
+			// Find out type of file
+			$response = request_external_files(array($url), 15, false);
+			$ext_file = $response[$url];
+			$rep_hdr = $ext_file['headers'];
 			$cnt_type = (isset($rep_hdr['Content-Type'])) ? (is_array($rep_hdr['Content-Type']) ? $rep_hdr['Content-Type'][count($rep_hdr['Content-Type'])-1] : $rep_hdr['Content-Type']) : 'text/';
 			$cnt_type = (is_array($cnt_type)) ? $cnt_type[0] : $cnt_type;
 
-			// lien est une image
+			// Image
 			if (strpos($cnt_type, 'image/') === 0) {
 				$title = $GLOBALS['lang']['label_image'];
 				if (list($width, $height) = @getimagesize($url)) {
@@ -348,78 +356,53 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 				}
 			}
 
-			// lien est un fichier non textuel
+			// Non-image NON-textual file (pdf…)
 			elseif (strpos($cnt_type, 'text/') !== 0 and strpos($cnt_type, 'xml') === FALSE) {
 				if ($GLOBALS['dl_link_to_files'] == 2) {
 					$type = 'file';
 				}
 			}
 
-			// URL est un lien normal : on récupère la page entière (pas juste les headers)
-			elseif ($ext_file = get_external_file($url, 15) ) {
-				$charset = 'utf-8';
-
-				// cherche le charset dans les headers
+			// a textual document: parse it for any <title> element (+charset for title decoding ; fallback=UTF-8) ; fallback=$url
+			elseif (!empty($ext_file['body'])) {
+				// Search for charset in the headers
 				if (preg_match('#charset=(.*);?#', $ext_file['headers']['Content-Type'], $hdr_charset) and !empty($hdr_charset[1])) {
 					$charset = $hdr_charset[1];
 				}
-
-				// sinon cherche le charset dans le code HTML.
-				else {
-					// cherche la balise "meta charset"
-					preg_match('#<meta .*charset=([^\s]*)\s*/?>#Usi', $ext_file['body'], $meta);
-					$charset = (!empty($meta[1])) ? strtolower(str_replace(array("'", '"'), array('', ''), $meta[1]) ) : 'utf-8';
+				// If not found, search it in HTML
+				elseif (preg_match('#<meta .*charset=(["\']?)([^\s>"\']*)([\'"]?)\s*/?>#Usi', $ext_file['body'], $meta_charset) and !empty($meta_charset[2])) {
+					$charset = $meta_charset[2];
 				}
-
-				// récupère le titre, dans le tableau $titles, rempli par preg_match()
-				if (isset($_GET['title'])) {
-					$title = htmlspecialchars($_GET['title']);
-				}
-				else {
-					$ext_file = html_entity_decode( (($charset == 'iso-8859-1') ? utf8_encode($ext_file['body']) : $ext_file['body']), ENT_QUOTES | ENT_HTML5, 'UTF-8');
-					preg_match('#<title>(.*)</title>#Usi', $ext_file, $titles);
-
-					if (!empty($titles[1])) {
-						$html_title = trim($titles[1]);
-						$title = htmlspecialchars($html_title);
-					// si pas de titre : on utilise l’URL.
-					} else {
-						$title = htmlspecialchars($url);
-					}
-				}
+				// get title in the proper encoding
+				$ext_file = html_entity_decode( ((strtolower($charset) == 'iso-8859-1') ? utf8_encode($ext_file['body']) : $ext_file['body']), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+				preg_match('#<title ?[^>]*>(.*)</title>#Usi', $ext_file, $titles);
+				if (!empty($titles[1])) { $title = trim($titles[1]); }
 			}
 
 			$form .= "\t".'<input type="text" name="url" value="'.htmlspecialchars($url).'" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_url']).'" size="50" class="text readonly-like" />'."\n";
 			$form .= hidden_input('type', 'link');
 		}
 
-		$link = array('title' => $title, 'url' => htmlspecialchars($url));
+		$link = array('title' => htmlspecialchars($title), 'url' => htmlspecialchars($url));
 		$form .= "\t".'<input type="text" name="title" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_titre']).'" required="" value="'.$link['title'].'" size="50" class="text" autofocus />'."\n";
-		if ($type == 'image') { // si le lien est une image, on ajoute une miniature de l’image;
-			$form .= "\t".'<span id="description-box">'."\n";
-			$form .= "\t\t".'<span id="img-container"><img src="'.$fdata.'" alt="img" class="preview-img" height="'.$height.'" width="'.$width.'"/></span>';
-		} else {
-			$form .= "\t".'<span id="description-box">'."\n";
-		}
+		$form .= "\t".'<span id="description-box">'."\n";
+		$form .= ($type == 'image') ? "\t\t".'<span id="img-container"><img src="'.$fdata.'" alt="img" class="preview-img" height="'.$height.'" width="'.$width.'"/></span>' : '';
 		$form .= "\t\t".'<textarea class="text description" name="description" cols="40" rows="7" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_description']).'"></textarea>'."\n";
 		$form .= "\t".'</span>'."\n";
 
 		$form .= "\t".'<div id="tag_bloc">'."\n";
 		$form .= form_categories_links('links', '');
-		$form .= "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'"/>'."\n";
+		$form .= "\t".'<input list="htmlListTags" autocomplete="off" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'"/>'."\n";
 		$form .= "\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
 		$form .= "\t".'</div>'."\n";
 
 		$form .= "\t".'<label class="forcheckbox">'.$GLOBALS['lang']['label_lien_priv'].'<input type="checkbox" name="statut" />'.'</label>';
-		// download of file is asked
-		if ( ($type == 'image' or $type == 'file') and $GLOBALS['dl_link_to_files'] == 2 ) {
-			$form .= "\t".'<label>'.$GLOBALS['lang']['label_dl_fichier'].'<input type="checkbox" name="add_to_files" /></label>'."\n";
+		if ($type == 'image' or $type == 'file') {
+			// download of file is asked
+			$form .= ($GLOBALS['dl_link_to_files'] == 2) ? "\t".'<label class="forcheckbox">'.$GLOBALS['lang']['label_dl_fichier'].'<input type="checkbox" name="add_to_files" /></label>'."\n" : '';
+			// download of file is systematic
+			$form .= ($GLOBALS['dl_link_to_files'] == 1) ? hidden_input('add_to_files', 'on') : '';
 		}
-		// download of file is systematic
-		elseif ( ($type == 'image' or $type == 'file') and $GLOBALS['dl_link_to_files'] == 1 ) {
-			$form .= hidden_input('add_to_files', 'on');
-		}
-
 		$form .= "\t".'<p class="submit-bttns">'."\n";
 		$form .= "\t\t".'<button class="submit white-square" type="button" onclick="annuler(\'links.php\');">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
 		$form .= "\t\t".'<input class="submit blue-square" type="submit" name="enregistrer" id="valid-link" value="'.$GLOBALS['lang']['envoyer'].'" />'."\n";
@@ -429,7 +412,6 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= hidden_input('bt_author', $GLOBALS['auteur']);
 		$form .= hidden_input('token', new_token());
 		$form .= hidden_input('dossier', '');
-		//$form .= '</fieldset>'."\n";
 		$form .= '</form>'."\n\n";
 
 	} elseif ($step == 'edit') { // Form pour l'édition d'un lien : les champs sont remplis avec le "wiki_content" et il y a les boutons suppr/activer en plus.
@@ -442,7 +424,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= "\t".'</div>'."\n";
 		$form .= "\t".'<div id="tag_bloc">'."\n";
 		$form .= form_categories_links('links', $editlink['bt_tags']);
-		$form .= "\t\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'"/>'."\n";
+		$form .= "\t\t".'<input list="htmlListTags" autocomplete="off" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'"/>'."\n";
 		$form .= "\t\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
 		$form .= "\t".'</div>'."\n";
 		$form .= "\t".'<label class="forcheckbox">'.$GLOBALS['lang']['label_lien_priv'].'<input type="checkbox" name="statut" '.(($editlink['bt_statut'] == 0) ? 'checked ' : '').'/>'.'</label>'."\n";
@@ -475,6 +457,51 @@ function afficher_form_billet($article, $erreurs) {
 	}
 	function s_u($char) {
 		return '<button type="button" onclick="insertChar(\''.$char.'\', \'contenu\');"><span>'.$char.'</span></button>';
+	}
+
+	function form_annee($annee_affiche) {
+		for ($annee = date('Y') -7, $annee_max = date('Y') +3; $annee <= $annee_max; $annee++) $annees[$annee] = $annee;
+		$ret = '<select name="annee">'."\n" ;
+			foreach ($annees as $option => $label) {
+				$ret .= "\t".'<option value="'.htmlentities($option).'"'.(($annee_affiche == $option) ? ' selected="selected"' : '').'>'.htmlentities($label).'</option>'."\n";
+			}
+		$ret .= '</select>'."\n";
+		return $ret;
+	}
+
+	function form_mois($mois_affiche) {
+		$mois = array(
+			"01" => $GLOBALS['lang']['janvier'],	"02" => $GLOBALS['lang']['fevrier'],	"03" => $GLOBALS['lang']['mars'],
+			"04" => $GLOBALS['lang']['avril'],		"05" => $GLOBALS['lang']['mai'],			"06" => $GLOBALS['lang']['juin'],
+			"07" => $GLOBALS['lang']['juillet'],	"08" => $GLOBALS['lang']['aout'],		"09" => $GLOBALS['lang']['septembre'],
+			"10" => $GLOBALS['lang']['octobre'],	"11" => $GLOBALS['lang']['novembre'],	"12" => $GLOBALS['lang']['decembre']
+		);
+		$ret = '<select name="mois">'."\n" ;
+		foreach ($mois as $option => $label) {
+			$ret .= "\t".'<option value="'.htmlentities($option).'"'.(($mois_affiche == $option) ? ' selected="selected"' : '').'>'.$label.'</option>'."\n";
+		}
+		$ret .= '</select>'."\n";
+		return $ret;
+	}
+
+	function form_jour($jour_affiche) {
+		for ($jour=1 ; $jour <=31 ; $jour++) $jours[str2($jour)] = $jour;
+		$ret = '<select name="jour">'."\n";
+		foreach ($jours as $option => $label) {
+			$ret .= "\t".'<option value="'.htmlentities($option).'"'.(($jour_affiche == $option) ? ' selected="selected"' : '').'>'.htmlentities($label).'</option>'."\n";
+		}
+		$ret .= '</select>'."\n";
+		return $ret;
+	}
+
+	function form_statut($etat) {
+		$choix = array('1' => $GLOBALS['lang']['label_publie'], '0' => $GLOBALS['lang']['label_invisible']);
+		return form_select('statut', $choix, $etat, $GLOBALS['lang']['label_dp_etat']);
+	}
+
+	function form_allow_comment($etat) {
+		$choix= array('1' => $GLOBALS['lang']['ouverts'], '0' => $GLOBALS['lang']['fermes']);
+		return form_select('allowcomment', $choix, $etat, $GLOBALS['lang']['label_dp_commentaires']);
 	}
 
 	if ($article != '') {
@@ -575,7 +602,7 @@ function afficher_form_billet($article, $erreurs) {
 	if ($GLOBALS['activer_categories'] == '1') {
 		echo "\t".'<div id="tag_bloc">'."\n";
 		echo form_categories_links('articles', $categoriesdefaut);
-		echo "\t\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'" tabindex="65"/>'."\n";
+		echo "\t\t".'<input list="htmlListTags" autocomplete="off" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'" tabindex="65"/>'."\n";
 		echo "\t\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
 		echo "\t".'</div>'."\n";
 	}
@@ -587,20 +614,22 @@ function afficher_form_billet($article, $erreurs) {
 	echo '<div id="date-and-opts">'."\n";
 	echo '<div id="date">'."\n";
 		echo '<span id="formdate">'."\n";
-			form_annee($defaut_annee);
-			form_mois($defaut_mois);
-			form_jour($defaut_jour);
+			echo form_annee($defaut_annee);
+			echo form_mois($defaut_mois);
+			echo form_jour($defaut_jour);
 		echo '</span>'."\n\n";
 		echo '<span id="formheure">';
-			form_heure($defaut_heure, $defaut_minutes, $defaut_secondes);
+			echo '<input name="heure" type="text" size="2" maxlength="2" value="'.$defaut_heure.'" required="" class="text" /> : ';
+			echo '<input name="minutes" type="text" size="2" maxlength="2" value="'.$defaut_minutes.'" required="" class="text" /> : ';
+			echo '<input name="secondes" type="text" size="2" maxlength="2" value="'.$defaut_secondes.'" required="" class="text" />';
 		echo '</span>'."\n";
 		echo '</div>'."\n";
 		echo '<div id="opts">'."\n";
 			echo '<span id="formstatut">'."\n";
-				form_statut($statutdefaut);
+				echo form_statut($statutdefaut);
 			echo '</span>'."\n";
 			echo '<span id="formallowcomment">'."\n";
-				form_allow_comment($allowcommentdefaut);
+				echo form_allow_comment($allowcommentdefaut);
 			echo '</span>'."\n";
 		echo '</div>'."\n";
 
@@ -608,10 +637,10 @@ function afficher_form_billet($article, $erreurs) {
 	echo '<p class="submit-bttns">'."\n";
 
 	if ($article) {
-		echo "\t".'<input class="submit red-square" type="button" name="supprimer" value="'.$GLOBALS['lang']['supprimer'].'" onclick="contenuLoad = document.getElementById(\'contenu\').value; rmArticle(this)" />'."\n";
 		echo hidden_input('article_id', $article['bt_id']);
 		echo hidden_input('article_date', $article['bt_date']);
 		echo hidden_input('ID', $article['ID']);
+		echo "\t".'<input class="submit red-square" type="button" name="supprimer" value="'.$GLOBALS['lang']['supprimer'].'" onclick="contenuLoad = document.getElementById(\'contenu\').value; rmArticle(this)" />'."\n";
 	}
 	echo "\t".'<button class="submit white-square" type="button" onclick="annuler(\'articles.php\');">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
 	echo "\t".'<input class="submit blue-square" type="submit" name="enregistrer" onclick="contenuLoad=document.getElementById(\'contenu\').value" value="'.$GLOBALS['lang']['envoyer'].'" tabindex="70" />'."\n";
@@ -622,81 +651,6 @@ function afficher_form_billet($article, $erreurs) {
 	echo '</form>'."\n";
 }
 // FIN AFFICHER_FORM_BILLET
-
-// ELEMENTS FORM ECRIRE //////////
-
-function form_jour($jour_affiche) {
-	$jours = array(
-		"01" => '1',  "02" => '2',  "03" => '3',  "04" => '4',  "05" => '5',  "06" => '6',  "07" => '7',
-		"08" => '8',  "09" => '9',  "10" => '10', "11" => '11', "12" => '12', "13" => '13', "14" => '14',
-		"15" => '15', "16" => '16', "17" => '17', "18" => '18', "19" => '19', "20" => '20', "21" => '21',
-		"22" => '22', "23" => '23', "24" => '24', "25" => '25', "26" => '26', "27" => '27', "28" => '28',
-		"29" => '29', "30" => '30', "31" => '31'
-	);
-	$ret = '<select name="jour">'."\n";
-	foreach ($jours as $option => $label) {
-		$ret .= "\t".'<option value="'.htmlentities($option).'"'.(($jour_affiche == $option) ? ' selected="selected"' : '').'>'.htmlentities($label).'</option>'."\n";
-	}
-	$ret .= '</select>'."\n";
-	echo $ret;
-}
-
-function form_mois($mois_affiche) {
-	$mois = array(
-		"01" => $GLOBALS['lang']['janvier'],	"02" => $GLOBALS['lang']['fevrier'],
-		"03" => $GLOBALS['lang']['mars'],		"04" => $GLOBALS['lang']['avril'],
-		"05" => $GLOBALS['lang']['mai'],			"06" => $GLOBALS['lang']['juin'],
-		"07" => $GLOBALS['lang']['juillet'],	"08" => $GLOBALS['lang']['aout'],
-		"09" => $GLOBALS['lang']['septembre'],	"10" => $GLOBALS['lang']['octobre'],
-		"11" => $GLOBALS['lang']['novembre'],	"12" => $GLOBALS['lang']['decembre']
-	);
-	$ret = '<select name="mois">'."\n" ;
-	foreach ($mois as $option => $label) {
-		$ret .= "\t".'<option value="'.htmlentities($option).'"'.(($mois_affiche == $option) ? ' selected="selected"' : '').'>'.$label.'</option>'."\n";
-	}
-	$ret .= '</select>'."\n";
-	echo $ret;
-}
-
-function form_annee($annee_affiche) {
-	$annees = array();
-	for ($annee = date('Y') -3, $annee_max = date('Y') +3; $annee <= $annee_max; $annee++) {
-		$annees[$annee] = $annee;
-	}
-	$ret = '<select name="annee">'."\n" ;
-	foreach ($annees as $option => $label) {
-		$ret .= "\t".'<option value="'.htmlentities($option).'"'. (($annee_affiche == $option) ? ' selected="selected"' : ''). '>'.htmlentities($label).'</option>'."\n";
-	}
-	$ret .= '</select>'."\n";
-	echo $ret;
-}
-
-function form_heure($heureaffiche, $minutesaffiche, $secondesaffiche) {
-	$ret = '<input name="heure" type="text" size="2" maxlength="2" value="'.$heureaffiche.'" required="" class="text" /> : ';
-	$ret .= '<input name="minutes" type="text" size="2" maxlength="2" value="'.$minutesaffiche.'" required="" class="text" /> : ' ;
-	$ret .= '<input name="secondes" type="text" size="2" maxlength="2" value="'.$secondesaffiche.'" required="" class="text" />' ;
-	echo $ret;
-}
-
-function form_statut($etat) {
-	$choix= array(
-		'1' => $GLOBALS['lang']['label_publie'],
-		'0' => $GLOBALS['lang']['label_invisible']
-	);
-	echo form_select('statut', $choix, $etat, $GLOBALS['lang']['label_dp_etat']);
-}
-
-function form_allow_comment($etat) {
-	$choix= array(
-		'1' => $GLOBALS['lang']['ouverts'],
-		'0' => $GLOBALS['lang']['fermes']
-	);
-	// Compatibilite version sans
-	if ('' == $etat) {
-		$etat= '1';
-	}
-	echo form_select('allowcomment', $choix, $etat, $GLOBALS['lang']['label_dp_commentaires']);
-}
 
 function form_categories_links($where, $tags_post) {
 	$tags = list_all_tags($where, FALSE);
@@ -728,8 +682,6 @@ function form_categories_links($where, $tags_post) {
 	$html .= '</ul>'."\n";
 	return $html;
 }
-
-
 
 /* form config RSS feeds: allow changing feeds (title, url) or remove a feed */
 function afficher_form_rssconf($errors='') {
@@ -780,7 +732,6 @@ function afficher_form_rssconf($errors='') {
 		$out .= "\t\t".'</div>'."\n";
 		$out .= "\t".'</li>'."\n";
 	}
-
 	$out .= '</ul>'."\n";
 	$out .= '<p class="submit-bttns">'."\n";
 	$out .= "\t".'<input class="submit blue-square" type="submit" name="send" value="'.$GLOBALS['lang']['envoyer'].'" />'."\n";
@@ -791,5 +742,247 @@ function afficher_form_rssconf($errors='') {
 	$out .= '</form>'."\n";
 
 	return $out;
+}
+
+
+/* FORMULAIRE NORMAL DES PRÉFÉRENCES */
+function afficher_form_prefs($erreurs = '') {
+
+	echo '<form id="preferences" class="bordered-formbloc" method="post" action="'.basename($_SERVER['PHP_SELF']).'" >' ;
+		echo erreurs($erreurs);
+		$fld_user = '<div role="group" class="pref">'; /* no fieldset because browset can’t style them correctly */
+		$fld_user .= '<div class="form-legend">'.legend($GLOBALS['lang']['prefs_legend_utilisateur'], 'legend-user').'</div>'."\n";
+
+		$fld_user .= '<div class="form-lines">'."\n";
+		$fld_user .= '<p>'."\n";
+		$fld_user .= "\t".'<label for="auteur">'.$GLOBALS['lang']['pref_auteur'].'</label>'."\n";
+		$fld_user .= "\t".'<input type="text" id="auteur" name="auteur" size="30" value="'.(empty($GLOBALS['auteur']) ? $GLOBALS['identifiant'] : $GLOBALS['auteur']).'" class="text" />'."\n";
+		$fld_user .= '</p>'."\n";
+
+		$fld_user .= '<p>'."\n";
+		$fld_user .= "\t".'<label for="email">'.$GLOBALS['lang']['pref_email'].'</label>'."\n";
+		$fld_user .= "\t".'<input type="text" id="email" name="email" size="30" value="'.$GLOBALS['email'].'" class="text" />'."\n";
+		$fld_user .= '</p>'."\n";
+
+		$fld_user .= '<p>'."\n";
+		$fld_user .= "\t".'<label for="nomsite">'.$GLOBALS['lang']['pref_nom_site'].'</label>'."\n";
+		$fld_user .= "\t".'<input type="text" id="nomsite" name="nomsite" size="30" value="'.$GLOBALS['nom_du_site'].'" class="text" />'."\n";
+		$fld_user .= '</p>'."\n";
+
+		$fld_user .= '<p>'."\n";
+		$fld_user .= "\t".'<label for="racine">'.$GLOBALS['lang']['pref_racine'].'</label>'."\n";
+		$fld_user .= "\t".'<input type="text" id="racine" name="racine" size="30" value="'.$GLOBALS['racine'].'" class="text" />'."\n";
+		$fld_user .= '</p>'."\n";
+
+		$fld_user .= '<p>'."\n";
+		$fld_user .= "\t".'<label for="description">'.$GLOBALS['lang']['label_dp_description'].'</label>'."\n";
+		$fld_user .= "\t".'<textarea id="description" name="description" cols="35" rows="2" class="text" >'.$GLOBALS['description'].'</textarea>'."\n";
+		$fld_user .= '</p>'."\n";
+
+		$fld_user .= '<p>'."\n";
+		$fld_user .= "\t".'<label for="keywords">'.$GLOBALS['lang']['pref_keywords'].'</label>';
+		$fld_user .= "\t".'<textarea id="keywords" name="keywords" cols="35" rows="2" class="text" >'.$GLOBALS['keywords'].'</textarea>'."\n";
+		$fld_user .= '</p>'."\n";
+		$fld_user .= '</div>'."\n";
+
+		$fld_user .= '</div>';
+	echo $fld_user;
+
+		$fld_securite = '<div role="group" class="pref">';
+		$fld_securite .= '<div class="form-legend">'.legend($GLOBALS['lang']['prefs_legend_securite'], 'legend-securite').'</div>'."\n";
+
+		$fld_securite .= '<div class="form-lines">'."\n";
+		$fld_securite .= '<p>'."\n";
+		$fld_securite .= "\t".'<label for="identifiant">'.$GLOBALS['lang']['pref_identifiant'].'</label>'."\n";
+		$fld_securite .= "\t".'<input type="text" id="identifiant" name="identifiant" size="30" value="'.$GLOBALS['identifiant'].'" class="text" />'."\n";
+		$fld_securite .= '</p>'."\n";
+
+		$fld_securite .= '<p>'."\n";
+		$fld_securite .= "\t".'<label for="mdp">'.$GLOBALS['lang']['pref_mdp'].'</label>';
+		$fld_securite .= "\t".'<input type="password" id="mdp" name="mdp" size="30" value="" class="text" autocomplete="off" />'."\n";
+		$fld_securite .= '</p>'."\n";
+
+		$fld_securite .= '<p>'."\n";
+		$fld_securite .= "\t".'<label for="mdp_rep">'.$GLOBALS['lang']['pref_mdp_nouv'].'</label>';
+		$fld_securite .= "\t".'<input type="password" id="mdp_rep" name="mdp_rep" size="30" value="" class="text" autocomplete="off" />'."\n";
+		$fld_securite .= '</p>'."\n";
+
+		if (in_array('gd', get_loaded_extensions())) { // captcha only possible if GD library is installed.
+			$fld_securite .= '<p>'."\n";
+			$fld_securite .= form_checkbox('connexion_captcha', $GLOBALS['connexion_captcha'], $GLOBALS['lang']['pref_connexion_captcha']);
+			$fld_securite .= '</p>'."\n";
+		} else {
+			$fld_securite .= hidden_input('connexion_captcha', '0');
+		}
+		$fld_securite .= '</div>';
+		$fld_securite .= '</div>';
+	echo $fld_securite;
+
+		$fld_apparence = '<div role="group" class="pref">';
+		$fld_apparence .= '<div class="form-legend">'.legend($GLOBALS['lang']['prefs_legend_apparence'], 'legend-apparence').'</div>'."\n";
+
+		$fld_apparence .= '<div class="form-lines">'."\n";
+		$fld_apparence .= '<p>'."\n";
+		$fld_apparence .= form_select('theme', liste_themes($GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_themes']), $GLOBALS['theme_choisi'],$GLOBALS['lang']['pref_theme']);
+		$fld_apparence .= '</p>'."\n";
+
+		$fld_apparence .= '<p>'."\n";
+		$fld_apparence .= form_select('nb_maxi', array('5'=>'5', '10'=>'10', '15'=>'15', '20'=>'20', '25'=>'25', '50'=>'50'), $GLOBALS['max_bill_acceuil'],$GLOBALS['lang']['pref_nb_maxi']);
+		$fld_apparence .= '</p>'."\n";
+
+		$fld_apparence .= '<p>'."\n";
+		$fld_apparence .= form_checkbox('aff_onglet_rss', $GLOBALS['onglet_rss'], $GLOBALS['lang']['pref_afficher_rss'] );
+		$fld_apparence .= '</p>'."\n";
+		$fld_apparence .= '<p>'."\n";
+		$fld_apparence .= form_checkbox('aff_onglet_liens', $GLOBALS['onglet_liens'], $GLOBALS['lang']['pref_afficher_liens'] );
+		$fld_apparence .= '</p>'."\n";
+		$fld_apparence .= '</div>'."\n";
+		$fld_apparence .= '</div>';
+	echo $fld_apparence;
+
+		$fld_dateheure = '<div role="group" class="pref">';
+		$fld_dateheure .= '<div class="form-legend">'.legend($GLOBALS['lang']['prefs_legend_langdateheure'], 'legend-dateheure').'</div>'."\n";
+
+		$fld_dateheure .= '<div class="form-lines">'."\n";
+		$fld_dateheure .= '<p>'."\n";
+		$fld_dateheure .= form_langue($GLOBALS['lang']['id']);
+		$fld_dateheure .= '</p>'."\n";
+
+		$fld_dateheure .= '<p>'."\n";
+		$fld_dateheure .= form_format_date($GLOBALS['format_date']);
+		$fld_dateheure .= '</p>'."\n";
+
+		$fld_dateheure .= '<p>'."\n";
+		$fld_dateheure .= form_format_heure($GLOBALS['format_heure']);
+		$fld_dateheure .= '</p>'."\n";
+
+		$fld_dateheure .= '<p>'."\n";
+		$fld_dateheure .= form_fuseau_horaire($GLOBALS['fuseau_horaire']);
+		$fld_dateheure .= '</p>'."\n";
+		$fld_dateheure .= '</div>'."\n";
+
+		$fld_dateheure .= '</div>';
+	echo $fld_dateheure;
+
+		$fld_cfg_blog = '<div role="group" class="pref">';
+		$fld_cfg_blog .= '<div class="form-legend">'.legend($GLOBALS['lang']['prefs_legend_configblog'], 'legend-config').'</div>'."\n";
+		$fld_cfg_blog .= '<div class="form-lines">'."\n";
+		$nbs = array('10'=>'10', '25'=>'25', '50'=>'50', '100'=>'100', '300'=>'300', '-1' => $GLOBALS['lang']['pref_all']);
+
+		$fld_cfg_blog .= '<p>'."\n";
+		$fld_cfg_blog .= form_select('nb_list', $nbs, $GLOBALS['max_bill_admin'],$GLOBALS['lang']['pref_nb_list']);
+		$fld_cfg_blog .= '</p>'."\n";
+
+		$fld_cfg_blog .= '<p>'."\n";
+		$fld_cfg_blog .= form_select('nb_list_com', $nbs, $GLOBALS['max_comm_admin'],$GLOBALS['lang']['pref_nb_list_com']);
+		$fld_cfg_blog .= '</p>'."\n";
+
+		$fld_cfg_blog .= '<p>'."\n";
+		$fld_cfg_blog .= form_checkbox('activer_categories', $GLOBALS['activer_categories'], $GLOBALS['lang']['pref_categories'] );
+		$fld_cfg_blog .= '</p>'."\n";
+
+		$fld_cfg_blog .= '<p>'."\n";
+		$fld_cfg_blog .= form_checkbox('auto_keywords', $GLOBALS['automatic_keywords'], $GLOBALS['lang']['pref_automatic_keywords'] );
+		$fld_cfg_blog .= '</p>'."\n";
+
+		$fld_cfg_blog .= '<p>'."\n";
+		$fld_cfg_blog .= form_checkbox('global_comments', $GLOBALS['global_com_rule'], $GLOBALS['lang']['pref_allow_global_coms']);
+		$fld_cfg_blog .= '</p>'."\n";
+
+		$fld_cfg_blog .= '<p>'."\n";
+		$fld_cfg_blog .= form_checkbox('require_email', $GLOBALS['require_email'], $GLOBALS['lang']['pref_force_email']);
+		$fld_cfg_blog .= '</p>'."\n";
+
+		$fld_cfg_blog .= '<p>'."\n";
+		$fld_cfg_blog .= form_select('comm_defaut_status', array('1' => $GLOBALS['lang']['pref_comm_black_list'], '0' => $GLOBALS['lang']['pref_comm_white_list']), $GLOBALS['comm_defaut_status'],$GLOBALS['lang']['pref_comm_BoW_list']);
+		$fld_cfg_blog .= '</p>'."\n";
+		$fld_cfg_blog .= '</div>'."\n";
+
+		$fld_cfg_blog .= '</div>';
+	echo $fld_cfg_blog;
+
+
+		$fld_cfg_linx = '<div role="group" class="pref">';
+		$fld_cfg_linx .= '<div class="form-legend">'.legend($GLOBALS['lang']['prefs_legend_configlinx'], 'legend-config').'</div>'."\n";
+
+		$fld_cfg_linx .= '<div class="form-lines">'."\n";
+		// nb liens côté admin
+		$nbs = array('50'=>'50', '100'=>'100', '200'=>'200', '300'=>'300', '500'=>'500', '-1' => $GLOBALS['lang']['pref_all']);
+
+		$fld_cfg_linx .= '<p>'."\n";
+		$fld_cfg_linx .= form_select('nb_list_linx', $nbs, $GLOBALS['max_linx_admin'], $GLOBALS['lang']['pref_nb_list_linx']);
+		$fld_cfg_linx .= '</p>'."\n";
+
+		// partage de fichiers !pages : télécharger dans fichiers automatiquement ?
+		$nbs = array('0'=> $GLOBALS['lang']['non'], '1'=> $GLOBALS['lang']['oui'], '2' => $GLOBALS['lang']['pref_ask_everytime']);
+
+		$fld_cfg_linx .= '<p>'."\n";
+		$fld_cfg_linx .= form_select('dl_link_to_files', $nbs, $GLOBALS['dl_link_to_files'], $GLOBALS['lang']['pref_linx_dl_auto']);
+		$fld_cfg_linx .= '</p>'."\n";
+
+		// lien à glisser sur la barre des favoris
+		$a = explode('/', dirname($_SERVER['PHP_SELF']));
+		$fld_cfg_linx .= '<p>';
+		$fld_cfg_linx .= '<label>'.$GLOBALS['lang']['pref_label_bookmark_lien'].'</label>'."\n";
+		$fld_cfg_linx .= '<a class="dnd-to-favs" onclick="alert(\''.$GLOBALS['lang']['pref_alert_bookmark_link'].'\');return false;" href="javascript:javascript:(function(){window.open(\''.$GLOBALS['racine'].$a[count($a)-1].'/links.php?url=\'+encodeURIComponent(location.href));})();"><b>Save link</b></a>';
+		$fld_cfg_linx .= '</p>'."\n";
+		$fld_cfg_linx .= '</div>'."\n";
+
+		$fld_cfg_linx .= '</div>';
+	echo $fld_cfg_linx;
+
+		$fld_maintenance = '<div role="group" class="pref">';
+		$fld_maintenance .= '<div class="form-legend">'.legend($GLOBALS['lang']['titre_maintenance'], 'legend-sweep').'</div>'."\n";
+
+		$fld_maintenance .= '<div class="form-lines">'."\n";
+
+		$fld_maintenance .= '<p>'."\n";
+		$fld_maintenance .= form_checkbox('check_update', $GLOBALS['check_update'], $GLOBALS['lang']['pref_check_update'] );
+		$fld_maintenance .= '</p>'."\n";
+
+		$fld_maintenance .= '<p>'."\n";
+		$fld_maintenance .= "\t".'<label>'.$GLOBALS['lang']['pref_go_to_maintenance'].'</label>'."\n";
+		$fld_maintenance .= "\t".'<a href="maintenance.php">Maintenance</a>'."\n";
+		$fld_maintenance .= '</p>'."\n";
+		$fld_maintenance .= '</div>'."\n";
+
+		$fld_maintenance .= '</div>';
+	echo $fld_maintenance;
+
+	// check if a new Blogotext version is available (code from Shaarli, by Sebsauvage).
+	// Get latest version number at most once a day.
+	if ($GLOBALS['check_update'] == 1) {
+		if ( !is_file($GLOBALS['last-online-file']) or (filemtime($GLOBALS['last-online-file']) < time()-(24*60*60)) ) {
+			$version_hit_url = 'http://lehollandaisvolant.net/blogotext/version.php';
+			$response = request_external_files(array($version_hit_url), 6, false);
+			$last_version = $response[$version_hit_url]['body'];
+			// If failed, nevermind. We don't want to bother the user with that.
+			if (empty($last_version)) { $last_version = $GLOBALS['version']; }
+			file_put_contents($GLOBALS['last-online-file'], $last_version); // touch file date
+		}
+
+		// Compare versions:
+		$newestversion = file_get_contents($GLOBALS['last-online-file']);
+		if (version_compare($newestversion, $GLOBALS['version']) == 1) {
+				$fld_update = '<div role="group" class="pref">';
+				$fld_update .= '<div class="form-legend">'.legend($GLOBALS['lang']['maint_chk_update'], 'legend-update').'</div>'."\n";
+				$fld_update .= '<div class="form-lines">'."\n";
+				$fld_update .= '<p>'."\n";
+				$fld_update .= "\t".'<label>'.$GLOBALS['lang']['maint_update_youisbad'].' ('.$newestversion.'). '.$GLOBALS['lang']['maint_update_go_dl_it'].'</label>'."\n";
+				$fld_update .= "\t".'<a href="http://lehollandaisvolant.net/blogotext/">lehollandaisvolant.net/blogotext</a>.';
+				$fld_update .= '</p>'."\n";
+				$fld_update .= '</div>'."\n";
+				$fld_update .= '</div>'."\n";
+			echo $fld_update;
+		}
+	}
+
+	echo '<div class="submit-bttns">';
+	echo hidden_input('_verif_envoi', '1');
+	echo hidden_input('token', new_token());
+	echo '<button class="submit white-square" type="button" onclick="annuler(\'preferences.php\');" >'.$GLOBALS['lang']['annuler'].'</button>'."\n";
+	echo '<input class="submit blue-square" type="submit" name="enregistrer" value="'.$GLOBALS['lang']['enregistrer'].'" />'."\n";
+	echo '</div>';
+	echo '</form>';
 }
 

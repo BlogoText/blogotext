@@ -76,15 +76,16 @@ if (isset($_POST['_verif_envoi'])) {
 
 afficher_html_head($GLOBALS['lang']['titre_fichier']);
 
-echo '<div id="top">'."\n";
-afficher_msg();
-echo moteur_recherche($GLOBALS['lang']['search_in_files']);
-afficher_topnav(basename($_SERVER['PHP_SELF']), $GLOBALS['lang']['titre_fichier']);
+
+echo '<div id="header">'."\n";
+	echo '<div id="top">'."\n";
+	afficher_msg();
+	echo moteur_recherche();
+	afficher_topnav(basename($_SERVER['PHP_SELF']), $GLOBALS['lang']['titre_fichier']);
+	echo '</div>'."\n";
 echo '</div>'."\n";
 
 echo '<div id="axe">'."\n";
-
-
 // SUBNAV
 echo '<div id="subnav">'."\n";
 	// Affichage formulaire filtrage liens
@@ -95,8 +96,6 @@ echo '<div id="subnav">'."\n";
 	}
 echo '</div>'."\n";
 
-
-// SUBNAV
 echo '<div id="page">'."\n";
 
 

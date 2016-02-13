@@ -1,90 +1,105 @@
 /* GRAPHS */
 #mainpage {
 	padding: 15px 0;
+	margin: auto 1%;
 	text-align: center;
 }
 
-#graphs {
-	vertical-align: middle;
-	text-align: center;
-}
 #graphs > p {
 	height: 25px;
-	margin: 0;
 	font-weight: bold;
 }
 
-.graphique a {
+.graph-container {
+	position: relative;
+	height: 180px;
+	margin: 30px 0 40px;
+}
+
+.graph-container canvas {
+	height: 150px;
+}
+
+.graph-container .graphique {
+	position: relative;
+	top: -181px;
+	height: 180px;
+	padding: 30px 0 0;
+	text-align: center;
+	line-height: 20px;
+	direction: rtl;
+	overflow: hidden;
+}
+
+.graph-container .graphique a {
 	color: black;
 	text-decoration: none;
 }
-.graphique {
-	padding: 0px 0px 22px;
-	text-align: center;
-	position: relative;
-	line-height: 20px;
-}
 
-.graphique .month {
+.graph-container .month {
 	vertical-align: bottom;
 	display: inline-block;
 	text-align: center;
-}
-.graphique .month-bar {
-	border-bottom: transparent 2px solid;
-	min-height: 1px;
-}
-
-.graphique .month:hover .month-bar {
-	border-bottom: black 2px solid;
-}
-
-/* articles */
-.graphique {
-	margin-bottom: 35px;
-}
-
-.graphique .month {
+	padding-bottom: 50px;
 	width: 30px;
 	position: relative;
 }
 
-#articles .month-bar {
-	background: #f44336;
+.graph-container .month:first-of-type {
+	background: red;
+	width: 0px;
 }
 
-.graphique .month-name {
+.graph-container .month::before {
+	content: '';
+	border: 2px solid white;
+	height: 5px;
+	width: 5px;
+	transform: translateX(5px) translateY(-5px);
+	display: inline-block;
+	position: absolute;
+	border-radius: 50%;
+	background: rgba(33,150,243,1);
+}
+
+.graph-container .month:first-of-type::before {
+	content: none;
+}
+
+.graph-container .month-bar {
+	min-height: 1px;
+}
+
+.graph-container .month-name {
 	bottom: 0;
 	display: block;
 	white-space: pre;
 	font-size: 80%;
 	line-height: 100%;
 	text-transform: capitalize;
+	border: 1px solid transparent;
+	border-radius: 2px;
 }
 
-.graphique .month:hover .month-name {
-	font-weight: bold;
-}
-
-.graphique .month-nb {
-	top: 3px;
+.graph-container .month-nb {
+	top: -25px;
 	left: 0px;
 	position: absolute;
 	width: 30px;
-	color: white;
+	color: #777;
 	font-weight: bold;
 }
 
-/* commentaires */
-#commentaires .month-bar {
-	background: #3f51b5;
+.graph-container .month:hover::before {
+	border: 2px solid rgba(33,150,243,1);
+	background: white;
 }
 
-/* liens */
- .month-bar {
-	background: #ffc107;
+.graph-container .month:hover .month-bar {
+	background: linear-gradient(to left, transparent 13px, rgba(33,150,243,1) 10px, rgba(33,150,243,1) 15px, transparent 15px);
 }
 
-
-
-
+.graph-container .month:hover .month-name {
+	font-weight: bold;
+	border-color: currentColor;
+}

@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2015 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -22,7 +22,7 @@ $GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
 $step = 0;
 
 // modèle d'affichage d'un div pour un lien (avec un formaulaire d'édition par lien).
-function afficher_liens($link) {
+function afficher_lien($link) {
 	$list = '';
 
 	$list .= '<div class="linkbloc'.(!$link['bt_statut'] ? ' privatebloc' : '').'">'."\n";
@@ -34,14 +34,12 @@ function afficher_liens($link) {
 	$list .= "\t\t".'<ul>'."\n";
 	$list .= "\t\t\t".'<li class="ll-edit"><a href="'.basename($_SERVER['PHP_SELF']).'?id='.$link['bt_id'].'">'.$GLOBALS['lang']['editer'].'</a></li>'."\n";
 	$list .= ($link['bt_statut'] == '1') ? "\t\t\t".'<li class="ll-seepost"><a href="'.$GLOBALS['racine'].'?mode=links&amp;id='.$link['bt_id'].'">'.$GLOBALS['lang']['voir_sur_le_blog'].'</a></li>'."\n" : "";
-	//$list .=  "\t\t\t".'<li class="ll-suppr">'.$GLOBALS['lang']['supprimer'].'</li>'."\n";
+	//$list .=  "\t\t\t".'<li class="ll-suppr"><a>'.$GLOBALS['lang']['supprimer'].'</a></li>'."\n";
 	$list .= "\t\t".'</ul>'."\n";
 	$list .= "\t".'</div>'."\n";
 	$list .=  '</div>'."\n";
 
-
-
-	$list .= "\t".'<p class="link-content">'.$link['bt_content'].'</p>'."\n";
+	$list .= (!empty($link['bt_content'])) ? "\t".'<div class="link-content">'.$link['bt_content'].'</div>'."\n" : '';
 
 	$list .= "\t".'<div class="link-footer">'."\n";
 	$list .= "\t\t".'<ul class="link-tags">'."\n";
@@ -95,7 +93,7 @@ if (isset($_POST['_verif_envoi'])) {
 // create link list.
 $tableau = array();
 
-// si on veut ajouter un lien : on n’affiche pas les anciens liens
+// on affiche les anciens liens seulement si on ne veut pas en ajouter un
 if (!isset($_GET['url']) and !isset($_GET['ajout'])) {
 	if ( !empty($_GET['filtre']) ) {
 		// for "tags" & "author" the requests is "tag.$search" : here we split the type of search and what we search.
@@ -135,15 +133,16 @@ if (!isset($_GET['url']) and !isset($_GET['ajout'])) {
 $nb_links_displayed = count($tableau);
 
 afficher_html_head($GLOBALS['lang']['mesliens']);
-echo '<div id="top">'."\n";
-afficher_msg();
-echo moteur_recherche($GLOBALS['lang']['search_in_links']);
-afficher_topnav(basename($_SERVER['PHP_SELF']), $GLOBALS['lang']['mesliens']);
+
+echo '<div id="header">'."\n";
+	echo '<div id="top">'."\n";
+	afficher_msg();
+	echo moteur_recherche();
+	afficher_topnav(basename($_SERVER['PHP_SELF']), $GLOBALS['lang']['mesliens']);
+	echo '</div>'."\n";
 echo '</div>'."\n";
 
-
 echo '<div id="axe">'."\n";
-
 // SUBNAV
 echo '<div id="subnav">'."\n";
 	// Affichage formulaire filtrage liens
@@ -157,14 +156,12 @@ echo '<div id="subnav">'."\n";
 		echo "\t\t".ucfirst(nombre_objets($nb_links_displayed, 'link')).' '.$GLOBALS['lang']['sur'].' '.liste_elements_count("SELECT count(*) AS nbr FROM links", array(), 'links')."\n";
 		echo "\t".'</div>'."\n";
 	}
-
 echo '</div>'."\n";
-
 
 echo '<div id="page">'."\n";
 
 if ($step == 'edit' and !empty($tableau[0]) ) { // edit un lien : affiche le lien au dessus du champ d’édit
-	//afficher_liens($tableau[0]);
+	//afficher_lien($tableau[0]);
 	echo afficher_form_link($step, $erreurs_form, $tableau[0]);
 }
 elseif ($step == 2) { // lien donné dans l’URL
@@ -174,7 +171,10 @@ else { // aucun lien à ajouter ou éditer : champ nouveau lien + listage des li
 	echo afficher_form_link(1, $erreurs_form);
 	echo '<div id="list-link">'."\n";
 	foreach ($tableau as $link) {
-		afficher_liens($link);
+		afficher_lien($link);
+	}
+	if (!isset($_GET['ajout'])) {
+		echo '<a id="add-link" class="floating-action" href="links.php?ajout" title="'.$GLOBALS['lang']['label_lien_ajout'].'">'.$GLOBALS['lang']['label_lien_ajout'].'</a>'."\n";
 	}
 	echo '</div>'."\n";
 }

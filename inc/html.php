@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2015 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -80,6 +80,7 @@ function afficher_topnav($active, $titre) {
 	echo "\t\t".'<li><a href="feed.php" id="lien-rss"', ($active == 'feed.php') ? ' class="current"' : '', '>'.ucfirst($GLOBALS['lang']['label_feeds']).'</a></li>'."\n";
 	echo "\t".'</ul>'."\n";
 	echo '</div>'."\n";
+
 	echo '<h1>'.$titre.'</h1>'."\n";
 
 	echo '<div id="nav-acc">'."\n";
@@ -156,14 +157,13 @@ function apercu($article) {
 	}
 }
 
-function moteur_recherche($placeholder) {
+function moteur_recherche() {
 	$requete='';
 	if (isset($_GET['q'])) {
 		$requete = htmlspecialchars(stripslashes($_GET['q']));
 	}
-	if (empty($placeholder)) $placeholder = $GLOBALS['lang']['rechercher'];
 	$return = '<form action="'.basename($_SERVER['PHP_SELF']).'" method="get" id="search">'."\n";
-	$return .= '<input id="q" name="q" type="search" size="20" value="'.$requete.'" placeholder="'.$placeholder.'" accesskey="f" />'."\n";
+	$return .= '<input id="q" name="q" type="search" size="20" value="'.$requete.'" placeholder="'.$GLOBALS['lang']['placeholder_search'].'" accesskey="f" />'."\n";
 	if (isset($_GET['mode'])) {
 		$return .= '<input id="mode" name="mode" type="hidden" value="'.htmlspecialchars(stripslashes($_GET['mode'])).'"/>'."\n";
 	}
@@ -206,13 +206,13 @@ function afficher_calendrier() {
 	$premier_jour = mktime('0', '0', '0', $ce_mois, '1', $annee);
 	$jours_dans_mois = date('t', $premier_jour);
 	$decalage_jour = date('w', $premier_jour-'1');
-	$prev_mois =      basename($_SERVER['PHP_SELF']).'?'.$qstring.'d='.$annee.'/'.str2($ce_mois-1);
-	if ($prev_mois == basename($_SERVER['PHP_SELF']).'?'.$qstring.'d='.$annee.'/'.'00') {
-		$prev_mois =   basename($_SERVER['PHP_SELF']).'?'.$qstring.'d='.($annee-'1').'/'.'12';
+	$prev_mois =      '?'.$qstring.'d='.$annee.'/'.str2($ce_mois-1);
+	if ($prev_mois == '?'.$qstring.'d='.$annee.'/'.'00') {
+		$prev_mois =   '?'.$qstring.'d='.($annee-'1').'/'.'12';
 	}
-	$next_mois =      basename($_SERVER['PHP_SELF']).'?'.$qstring.'d='.$annee.'/'.str2($ce_mois+1);
-	if ($next_mois == basename($_SERVER['PHP_SELF']).'?'.$qstring.'d='.$annee.'/'.'13') {
-		$next_mois =   basename($_SERVER['PHP_SELF']).'?'.$qstring.'d='.($annee+'1').'/'.'01';
+	$next_mois =      '?'.$qstring.'d='.$annee.'/'.str2($ce_mois+1);
+	if ($next_mois == '?'.$qstring.'d='.$annee.'/'.'13') {
+		$next_mois =   '?'.$qstring.'d='.($annee+'1').'/'.'01';
 	}
 
 	// On verifie si il y a un ou des articles/liens/commentaire du jour dans le mois courant
@@ -237,7 +237,7 @@ function afficher_calendrier() {
 	}
 
 	// Si on affiche un jour on ajoute le lien sur le mois
-	$html .= '<a href="'.basename($_SERVER['PHP_SELF']).'?'.$qstring.'d='.$annee.'/'.$ce_mois.'">'.mois_en_lettres($ce_mois).' '.$annee.'</a>';
+	$html .= '<a href="?'.$qstring.'d='.$annee.'/'.$ce_mois.'">'.mois_en_lettres($ce_mois).' '.$annee.'</a>';
 	// On ne peut pas aller dans le futur
 	if ( ($ce_mois != date('m')) || ($annee != date('Y')) ) {
 		$html .= '&nbsp;<a href="'.$next_mois.'">&#187;</a>';
@@ -256,7 +256,7 @@ function afficher_calendrier() {
 			$class = '';
 		}
 		if ( in_array($jour, $tableau) ) {
-			$lien = '<a href="'.basename($_SERVER['PHP_SELF']).'?'.$qstring.'d='.$annee.'/'.$ce_mois.'/'.str2($jour).'">'.$jour.'</a>';
+			$lien = '<a href="?'.$qstring.'d='.$annee.'/'.$ce_mois.'/'.str2($jour).'">'.$jour.'</a>';
 		} else {
 			$lien = $jour;
 		}
@@ -284,7 +284,7 @@ function afficher_calendrier() {
 
 function encart_commentaires() {
 	mb_internal_encoding('UTF-8');
-	$query = "SELECT c.bt_author, c.bt_id, c.bt_article_id, c.bt_content, a.bt_title FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id WHERE c.bt_statut=1 AND a.bt_statut=1 ORDER BY c.bt_id DESC LIMIT 5";
+	$query = "SELECT c.bt_author, c.bt_id, c.bt_article_id, c.bt_content FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id WHERE c.bt_statut=1 AND a.bt_statut=1 ORDER BY c.bt_id DESC LIMIT 5";
 	$tableau = liste_elements($query, array(), 'commentaires');
 	if (isset($tableau)) {
 		$listeLastComments = '<ul class="encart_lastcom">'."\n";
@@ -297,7 +297,7 @@ function encart_commentaires() {
 			if (strlen($comment['bt_author']) >= 30) {
 				$comment['bt_author'] = mb_substr($comment['bt_author'], 0, 29).'…';
 			}
-			$listeLastComments .= '<li title="'.date_formate($comment['bt_id']).'"><b>'.$comment['bt_author'].'</b> '.$GLOBALS['lang']['sur'].' <b>'.$comment['bt_title'].'</b><br/><a href="'.$comment['bt_link'].'">'.$comment['contenu_abbr'].'</a>'.'</li>'."\n";
+			$listeLastComments .= '<li title="'.date_formate($comment['bt_id']).'"><b>'.$comment['bt_author'].'</b> '.$GLOBALS['lang']['sur'].' <b>'.$comment['article_title'].'</b><br/><a href="'.$comment['bt_link'].'">'.$comment['contenu_abbr'].'</a>'.'</li>'."\n";
 		}
 		$listeLastComments .= '</ul>'."\n";
 		return $listeLastComments;
@@ -313,7 +313,7 @@ function encart_categories($mode) {
 
 		$liste = list_all_tags($where, '1');
 
-		// attach non-diacritic versions of tag, so that "ééé" does not pass after "zzz" and re-indexes
+		// attach non-diacritic versions of tag, so that "é" does not pass after "z" and re-indexes
 		foreach ($liste as $tag => $nb) {
 			$liste[$tag] = array(diacritique(trim($tag), FALSE, FALSE), $nb);
 		}
@@ -328,8 +328,7 @@ function encart_categories($mode) {
 
 		// create the <UL> with "tags (nb) "
 		foreach($liste as $tag => $nb) {
-			$tagurl = urlencode(trim($tag));
-			$uliste .= "\t".'<li><a href="'.basename($_SERVER['PHP_SELF']).'?tag='.$tagurl.$ampmode.'" rel="tag">'.ucfirst($tag).' ('.$nb.')</a></li>'."\n";
+			$uliste .= "\t".'<li><a href="'.basename($_SERVER['PHP_SELF']).'?tag='.urlencode(trim($tag)).$ampmode.'" rel="tag">'.ucfirst($tag).' ('.$nb.')</a></li>'."\n";
 		}
 		$uliste .= '</ul>'."\n";
 		return $uliste;
@@ -389,8 +388,7 @@ function liste_tags($billet, $html_link) {
 		if ($html_link == 1) {
 			foreach($tag_list as $tag) {
 				$tag = trim($tag);
-				$tagurl = urlencode($tag);
-				$liste .= '<a href="'.basename($_SERVER['PHP_SELF']).'?tag='.$tagurl.$mode.'" rel="tag">'.$tag.'</a>';
+				$liste .= '<a href="'.basename($_SERVER['PHP_SELF']).'?tag='.urlencode($tag).$mode.'" rel="tag">'.$tag.'</a>';
 			}
 		} else {
 			foreach($tag_list as $tag) {
@@ -407,9 +405,15 @@ function liste_tags($billet, $html_link) {
 
 /* From DB : returns a HTML list with the feeds (the left panel) */
 function feed_list_html() {
-	// First item : button with all feeds
-	$html = "\t\t".'<li class="active-site"><button type="button" onclick="document.getElementById(\'markasread\').onclick=function(){sendMarkReadRequest(\'all\',\'\', true);}; return rss_feedlist(Rss);">'.$GLOBALS['lang']['rss_label_all_feeds'].'</button><span id="global-count-posts" data-nbrun=""></span></li>'."\n";
+	// counts unread feeds in DB
 	$feeds_nb = rss_count_feed();
+	$total_unread = 0;
+	foreach ($feeds_nb as $feed) {
+		$total_unread += $feed['nbrun'];
+	}
+
+	// First item : button with all feeds
+	$html = "\t\t".'<li class="all-feeds"><button type="button" onclick="document.getElementById(\'markasread\').onclick=function(){sendMarkReadRequest(\'all\',\'\', true);}; return sortAll();">'.$GLOBALS['lang']['rss_label_all_feeds'].' <span id="global-post-counter" data-nbrun="'.$total_unread.'">('.$total_unread.')</span></button></li>'."\n";
 
 	$feed_urls = array();
 	foreach ($feeds_nb as $i => $feed) {
@@ -419,36 +423,30 @@ function feed_list_html() {
 	// sort feeds by folder
 	$folders = array();
 	foreach ($GLOBALS['liste_flux'] as $i => $feed) {
+		$feed['nbrun'] = (isset($feed_urls[$feed['link']]['nbrun']) ? $feed_urls[$feed['link']]['nbrun'] : 0);
 		$folders[$feed['folder']][] = $feed;
 	}
 	krsort($folders);
 
 	// creates html : lists RSS feeds without folder separately from feeds with a folder
 	foreach ($folders as $i => $folder) {
+		//$folder = tri_selon_sous_cle($folder, 'nbrun');
 		$li_html = "";
 		$folder_count = 0;
 		foreach ($folder as $j => $feed) {
 			$js = 'onclick="document.getElementById(\'markasread\').onclick=function(){sendMarkReadRequest(\'site\', \''.$feed['link'].'\', true);}; sortSite(this);"';
-			if (array_key_exists($feed['link'], $feed_urls) and $feed_urls[$feed['link']]['nbrun'] != 0) {
-				$li_html .= "\t\t".'<li class="feed-not-null" data-nbrun="'.$feed_urls[$feed['link']]['nbrun'].'" data-feedurl="'.$feed['link'].'" title="'.$feed['link'].'">';
+				$li_html .= "\t\t".'<li class="" data-nbrun="'.$feed['nbrun'].'" data-feedurl="'.$feed['link'].'" title="'.$feed['link'].'">';
 				$li_html .= '<button type="button" '.(($feed['iserror'] > 2) ? 'class="feed-error" ': ' ' ).$js.'>'.$feed['title'].'</button>';
-				$li_html .= '<span>('.$feed_urls[$feed['link']]['nbrun'].')</span>';
+				$li_html .= '<span>('.$feed['nbrun'].')</span>';
 				$li_html .= '</li>'."\n";
-				$folder_count += $feed_urls[$feed['link']]['nbrun'];
-			} else {
-				$li_html .= "\t\t".'<li data-nbrun="0" data-feedurl="'.$feed['link'].'" title="'.$feed['link'].'">';
-				$li_html .= '<button type="button" '.(($feed['iserror'] > 2) ? 'class="feed-error" ': ' ' ).$js.'>'.$feed['title'].'</button>';
-				$li_html .= '<span>(0)</span>';
-				$li_html .= '</li>'."\n";
-			}
-
+				$folder_count += $feed['nbrun'];
 		}
 
 		if ($i != '') {
-			$html .= "\t\t".'<li class="feed-folder'.(($folder_count > 0) ? ' feed-not-null' : '').'" data-nbrun="'.$folder_count.'" data-folder="'.$i.'">'."\n";
-			$html .= "\t\t\t".'<span class="feedtitle">'."\n";
-			$html .= "\t\t\t\t".'<button type="button" onclick="return hideFolder(this)" class="unfold">+</button>'."\n";
-			$html .= "\t\t\t\t".'<button type="button" onclick="document.getElementById(\'markasread\').onclick=function(){sendMarkReadRequest(\'folder\', \''.$i.'\', true);}; sortFolder(this);">'.$i.'</button><span>('.$folder_count.')</span>'."\n";
+			$html .= "\t\t".'<li class="feed-folder" data-nbrun="'.$folder_count.'" data-folder="'.$i.'">'."\n";
+			$html .= "\t\t\t".'<span class="feed-folder-title">'."\n";
+			$html .= "\t\t\t\t".'<button type="button" onclick="document.getElementById(\'markasread\').onclick=function(){sendMarkReadRequest(\'folder\', \''.$i.'\', true);}; sortFolder(this);">'.$i.'<span>('.$folder_count.')</span></button>'."\n";
+			$html .= "\t\t\t\t".'<button type="button" onclick="return hideFolder(this)" class="unfold">unfold</button>'."\n";
 			$html .= "\t\t\t".'</span>'."\n";
 			$html .= "\t\t\t".'<ul>'."\n\t\t";
 		}
@@ -459,7 +457,6 @@ function feed_list_html() {
 		}
 
 	}
-
 	return $html;
 }
 

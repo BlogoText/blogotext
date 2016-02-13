@@ -110,17 +110,14 @@ else {
 		}
 	}
 	elseif (!empty($_GET['q'])) {
-
-
-			$arr = parse_search($_GET['q']);
-			$sql_where = implode(array_fill(0, count($arr), 'c.bt_content LIKE ? '), 'AND ');
-			$query = "SELECT c.*, a.bt_title FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id WHERE ".$sql_where."ORDER BY c.bt_id DESC";
-			$commentaires = liste_elements($query, $arr, 'commentaires');
+		$arr = parse_search($_GET['q']);
+		$sql_where = implode(array_fill(0, count($arr), 'c.bt_content LIKE ? '), 'AND ');
+		$query = "SELECT c.*, a.bt_title FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id WHERE ".$sql_where."ORDER BY c.bt_id DESC";
+		$commentaires = liste_elements($query, $arr, 'commentaires');
 	}
 	else { // no filter, so list'em all
-			$query = "SELECT c.*, a.bt_title FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id ORDER BY c.bt_id DESC LIMIT ".$GLOBALS['max_comm_admin'];
-//			die($query);
-			$commentaires = liste_elements($query, array(), 'commentaires');
+		$query = "SELECT c.*, a.bt_title FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id ORDER BY c.bt_id DESC LIMIT ".$GLOBALS['max_comm_admin'];
+		$commentaires = liste_elements($query, array(), 'commentaires');
 	}
 	$nb_total_comms = liste_elements_count("SELECT count(*) AS nbr FROM commentaires", array());
 	$param_makeup['show_links'] = '1';
@@ -132,27 +129,25 @@ function afficher_commentaire($comment, $with_link) {
 
 	echo '<div class="comm-header">'."\n";
 	echo "\t".'<div class="comm-title">'."\n";
-	echo "\t\t".'<span class="reply" onclick="reply(\'[b]@['.str_replace('\'', '\\\'', $comment['bt_author']).'|#'.article_anchor($comment['bt_id']).'] :[/b] \'); ">@</span> ';
-	echo "\t\t".'<span class="author">'.$comment['auteur_lien'].'</span>'."\n";
-	echo "\t\t".'<span class="email"><a href="mailto:'.$comment['bt_email'].'">'.$comment['bt_email'].'</a></span>'."\n";
+	echo "\t\t".'<span class="author"><a href="?filtre=auteur.'.$comment['bt_author'].'" title="'.$GLOBALS['lang']['label_all_comm_by_author'].'">'.$comment['bt_author'].'</a></span>'."\n";
+	echo "\t\t".'<span class="reply" onclick="reply(\'[b]@['.str_replace('\'', '\\\'', $comment['bt_author']).'|#'.article_anchor($comment['bt_id']).'] :[/b] \'); ">Reply</span> ';
+	echo (!empty($comment['bt_webpage'])) ? "\t\t".'<span class="webpage"><a href="'.$comment['bt_webpage'].'" title="'.$comment['bt_webpage'].'">'.$comment['bt_webpage'].'</a></span>'."\n" : '';
+	echo (!empty($comment['bt_email'])) ? "\t\t".'<span class="email"><a href="mailto:'.$comment['bt_email'].'" title="'.$comment['bt_email'].'">'.$comment['bt_email'].'</a></span>'."\n" : '';
+
 	echo "\t".'</div>'."\n";
+	echo "\t".'<span class="p-date-title">'.date_formate($comment['bt_id']).'<span>, '.heure_formate($comment['bt_id']).'</span>'.( ($with_link == 1 and !empty($comment['bt_title'])) ? ' '.$GLOBALS['lang']['sur'].' <a href="'.basename($_SERVER['PHP_SELF']).'?post_id='.$comment['bt_article_id'].'">'.$comment['bt_title'].'</a>' : '').'</span>'."\n" ;
 	echo "\t".'<div class="comm-options">'."\n";
 	echo "\t\t".'<ul>'."\n";
 	echo "\t\t\t".'<li class="cl-edit" onclick="unfold(this);">'.$GLOBALS['lang']['editer'].'</li>'."\n";
-	echo "\t\t\t".'<li class="cl-activ" onclick="activate_comm(this);" data-comm-id="'.$comment['ID'].'" data-comm-art-id="'.$comment['bt_article_id'].'">'.$GLOBALS['lang'][(!$comment['bt_statut'] ? '' : 'des').'activer'].'</li>'."\n";
+	echo "\t\t\t".'<li class="cl-activ" onclick="activate_comm(this);" data-comm-id="'.$comment['ID'].'" data-comm-btid="'.$comment['bt_id'].'" data-comm-art-id="'.$comment['bt_article_id'].'">'.$GLOBALS['lang'][(!$comment['bt_statut'] ? '' : 'des').'activer'].'</li>'."\n";
 	echo "\t\t\t".'<li class="cl-suppr" onclick="suppr_comm(this);" data-comm-id="'.$comment['ID'].'" data-comm-art-id="'.$comment['bt_article_id'].'">'.$GLOBALS['lang']['supprimer'].'</li>'."\n";
 	echo "\t\t".'</ul>'."\n";
 	echo "\t".'</div>'."\n";
 	echo '</div>'."\n";
 
-	
+	echo '<div class="comm-content">'."\n";
 	echo $comment['bt_content'];
-	echo '<p class="p-date-title">'."\n";
-	echo $GLOBALS['lang']['le'].' '.date_formate($comment['bt_id']).', '.heure_formate($comment['bt_id']);
-	if ($with_link == 1 and !empty($comment['bt_title'])) {
-		echo ' '.$GLOBALS['lang']['sur'].' <a href="'.basename($_SERVER['PHP_SELF']).'?post_id='.$comment['bt_article_id'].'">'.$comment['bt_title'].'</a>';
-	}
-	echo '</p>'."\n";
+	echo '</div>'."\n";
 	echo $GLOBALS['form_commentaire'];
 	echo '</div>'."\n\n";
 }
@@ -161,14 +156,16 @@ function afficher_commentaire($comment, $with_link) {
 $msgg = $GLOBALS['lang']['titre_commentaires']. ((!empty($article_title)) ?' | '.$article_title : '');
 afficher_html_head($msgg);
 
-echo '<div id="top">'."\n";
-afficher_msg();
-echo moteur_recherche($GLOBALS['lang']['search_in_comments']);
-afficher_topnav(basename($_SERVER['PHP_SELF']), $GLOBALS['lang']['titre_commentaires']);
+
+echo '<div id="header">'."\n";
+	echo '<div id="top">'."\n";
+	afficher_msg();
+	echo moteur_recherche();
+	afficher_topnav(basename($_SERVER['PHP_SELF']), $GLOBALS['lang']['titre_commentaires']);
+	echo '</div>'."\n";
 echo '</div>'."\n";
 
 echo '<div id="axe">'."\n";
-
 // SUBNAV
 echo '<div id="subnav">'."\n";
 	// Affichage formulaire filtrage commentaires
@@ -190,26 +187,23 @@ echo '<div id="subnav">'."\n";
 		echo ucfirst(nombre_objets(count($commentaires), 'commentaire')).' '.$GLOBALS['lang']['sur'].' '.$nb_total_comms;
 	}
 	echo '</div>'."\n";
-
 echo '</div>'."\n";
-
-//echo erreurs($erreurs_form);
 
 echo '<div id="page">'."\n";
 
 
 // COMMENTAIRES
-echo '<div id="liste-commentaires">'."\n";
 if (count($commentaires) > 0) {
+	echo '<div id="liste-commentaires">'."\n";
 	$token = new_token();
 	foreach ($commentaires as $content) {
 		$content['comm-token'] = $token;
 		afficher_commentaire($content, $param_makeup['show_links']);
 	}
+	echo '</div>'."\n";
 } else {
 	echo info($GLOBALS['lang']['note_no_commentaire']);
 }
-echo '</div>'."\n";
 
 
 if ($param_makeup['menu_theme'] == 'for_article') {

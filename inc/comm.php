@@ -166,7 +166,7 @@ function afficher_form_commentaire($article_id, $mode, $erreurs='', $comm_id='')
 			$form .= "\t".'</fieldset><!--end info-->'."\n";
 			$form .= "\t".'<fieldset class="buttons">'."\n";
 			$form .= "\t\t".hidden_input('ID', $actual_comment['ID']);
-			$form .= "\t\t".'<p class="submit-bttns">';
+			$form .= "\t\t".'<p class="submit-bttns">'."\n";
 			$form .= "\t\t\t".'<button class="submit white-square" type="button" onclick="unfold(this);">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
 			$form .= "\t\t\t".'<input class="submit blue-square" type="submit" name="enregistrer" value="'.$GLOBALS['lang']['envoyer'].'" />'."\n";
 			$form .= "\t\t".'</p>'."\n";
@@ -182,11 +182,11 @@ function afficher_form_commentaire($article_id, $mode, $erreurs='', $comm_id='')
 	// COMMENT ON PUBLIC SIDE
 	} else {
 		// ALLOW COMMENTS : OFF
-		if (get_entry($GLOBALS['db_handle'], 'articles', 'bt_allow_comments', $article_id, 'return') == '0' or $GLOBALS['global_com_rule'] == '1') {
+		if (get_entry($GLOBALS['db_handle'], 'articles', 'bt_allow_comments', $article_id, 'return') == 0 or $GLOBALS['global_com_rule'] == '1') {
 			$GLOBALS['form_commentaire'] .= '<p>'.$GLOBALS['lang']['comment_not_allowed'].'</p>'."\n";
 		}
 
-		// ALLOW COMMENTS : OFF
+		// ALLOW COMMENTS : ON
 		else {
 			// Formulaire commun
 			$form = "\n".'<form id="form-commentaire" class="form-commentaire" method="post" action="'.'?'.$_SERVER['QUERY_STRING'].'#erreurs" >'."\n";

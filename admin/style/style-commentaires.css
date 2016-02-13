@@ -5,13 +5,39 @@
 	padding: .1px 0 0; /* firefix (parent + padding-top:0) + (child with margin-top) « bug » */
 }
 
+
+
+
 .commentbloc {
-	padding : 15px 15px 50px;
-	color: #444;
-	transition: margin .2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow .2s ease;
+  position: relative;
+	z-index: 1;
 }
+
+.commentbloc::after {
+	content: "";
+	position: absolute;
+	top: 0; left: 0;
+	width: 100%; height: 100%;
+	box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 8px 17px 0 rgba(0, 0, 0, 0.2);
+	opacity: 0;
+	transition: opacity 0.5s ease-in-out 0s;
+	z-index: -1;
+}
+
+.commentbloc:hover::after {
+  opacity: 1;
+}
+
+
+
+.commentbloc {
+	padding : 15px 15px 20px;
+	color: #444;
+}
+
 .commentbloc:hover {
 	color: #333;
+	z-index: 10;
 }
 
 .commentbloc .comm-header {
@@ -19,27 +45,58 @@
 }
 
 .commentbloc .comm-title {
-	flex: 1;
+	flex: 0 0 auto;
 }
 
 .commentbloc .reply {
 	cursor: pointer;
 }
 
-.commentbloc .author a,
-.commentbloc .email a {
-	margin-right: 15px;
+.commentbloc .webpage a,
+.commentbloc .email a,
+.commentbloc .reply {
 	text-decoration: none;
 	vertical-align: middle;
+	background: url(sprites.png) no-repeat 0 0 / 640px 400px;
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	overflow: hidden;
+	padding-left: 20px;
+	box-sizing: border-box;
+	visibility: hidden;
+}
+
+.commentbloc .email a {
+	background-position: -9px -97px;
+}
+
+.commentbloc .webpage a {
+	background: url(sprites.png) no-repeat -157px -170px / 640px 400px;
+}
+
+.commentbloc .reply {
+	background: url(sprites.png) no-repeat -230px -170px / 640px 400px;
 }
 
 .commentbloc .author {
 	font-weight: bold;
-	font-size: 1.2em;
+	font-size: 1em;
 }
 
-.commentbloc .email {
-	visibility: hidden;
+.commentbloc .author a,
+.commentbloc .author a:hover,
+.commentbloc:hover .author a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.commentbloc .p-date-title {
+	flex: 1 1 auto;
+	text-align: right;
+	line-height: 20px;
+	color: gray;
+	font-style: italic;
 }
 
 .commentbloc .comm-edit-hidden-bloc {
@@ -49,25 +106,20 @@
 
 .commentbloc a {
 	color: inherit;
-}
-
-.commentbloc .p-date-title {
-	margin-bottom: 5px;
-	color: gray;
-	font-style: italic;
+	transition: color 0.5s ease-in-out 0s;
 }
 
 /* com options button */
 .comm-options {
 	position: relative;
-	visibility: hidden;
 	z-index: 1;
+	margin-left: 20px;
 }
 
 .comm-options::before {
 	content: "";
 	cursor: pointer;
-	background: url(sprites.png) no-repeat -599px -7px / 640px 400px;
+	background: url(sprites.png) no-repeat -266px -168px / 640px 400px;
 	width: 24px;
 	height: 24px;
 	display: block;
@@ -107,6 +159,17 @@
 }
 
 
+.commentbloc .comm-content {
+	padding: 1em 0 1em 10px;
+}
+
+.commentbloc .comm-content blockquote {
+	padding: 10px;
+	margin: 10px 5px;
+}
+.commentbloc:hover .comm-content blockquote {
+	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+}
 
 /* desactivated comments */
 .privatebloc {
@@ -126,10 +189,11 @@
 .commentbloc:hover a {
 	color: #45a6ff;
 }
-.commentbloc:hover .email,
-.commentbloc:hover .comm-options,
-.commentbloc:hover .p-date-title button,
-.commentbloc.foreground .comm-options {
+
+.commentbloc.foreground .comm-options,
+.commentbloc:hover .webpage a,
+.commentbloc:hover .email a,
+.commentbloc:hover .reply {
 	visibility: visible;
 }
 
@@ -137,7 +201,7 @@
 /* Commentbloc on Edit */
 .commentbloc.foreground {
 	margin: 5%;
-	box-shadow: 0 12px 24px 0 rgba(0, 0, 0, 0.3);
+	box-shadow: 0 0 24px 0 rgba(0, 0, 0, 0.3);
 	background: white;
 	padding: 15px;
 	transition: margin .2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow .4s ease .3s;

@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2015 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -80,7 +80,7 @@ function clean_txt($text) {
 	} else {
 		$return = trim($text);
 	}
-return $return;
+	return $return;
 }
 
 function clean_txt_array($array) {
@@ -113,19 +113,67 @@ function rel2abs_admin($article) { // pour le panel admin : l’aperçu de l’a
 	return $article;
 }
 
+function parse_texte_paragraphs($texte) {
+	// trims empty lines at begining and end of raw texte
+	$texte_formate = preg_replace('#^(\r|\n|<br>|<br/>|<br />){0,}(.*?)(\r|<br>|<br/>|<br />){0,}$#s', '$2', $texte);
+	$block_elements = 'address|article|aside|audio|blockquote|canvas|dd|li|div|[oud]l|fieldset|fig(caption|ure)|footer|form|h[1-6]|header|hgroup|hr|main|nav|noscript|output|p|pre|prebtcode|section|table|thead|tfoot|tr|td|video';
 
-function formatage_wiki($texte) {
-	if ($GLOBALS['use_markdown']) {
-		include_once('parsedown/parsedown.php');
-		$Parsedown = new Parsedown();
-		return stripslashes($Parsedown->text($texte));
+	$texte_final = '';
+	$finished = false;
+	// if text begins with block-element, remove it and goes on
+	while ($finished === false) {
+		$matches = array();
+		// we have a block element
+		if ( preg_match('#^<('.$block_elements.') ?.*?>(.*?)</(\1)>#s', $texte_formate, $matches) ) {
+			// extract the block element
+			$texte_retire = $matches[0];
+			// parses inner text for nl2br(), but removes <br/> tha follow a block (ie: <block><br> → <block>)
+			$texte_nl2br = "\n".nl2br($texte_retire)."\n";
+			// add it to the final text
+			$texte_final .= preg_replace('#(</?('.$block_elements.') ?.*?>)(<br ?/?>)(\n?\r?)#s', '$1$3$5', $texte_nl2br);
+			// saves the remaining text
+			$texte_restant = preg_replace('#^<('.$block_elements.') ?.*?>(.*?)</(\1)>#s', '', $texte_formate, 1);
+			// again, removes empty lines+spaces at begin or end TODO : save the lines to make <br/> (??)
+			$texte_restant = preg_replace('#^(\r|\n|<br>|<br/>|<br />){0,}(.*?)(\r|<br>|<br/>|<br />){0,}$#s', '$2', $texte_restant);
+			// if no matches for block elements, we are finished
+			$finished = (strlen($texte_retire) === 0) ? TRUE : FALSE;
+		}
+		else {
+		// we have an inline element (or text) : do set it in <p></p>
+			// grep the text until newline OR new block element
+			$texte_restant = preg_replace('#^(.*?)(\r\r|<('.$block_elements.') ?.*?>)#s', '$2', $texte_formate, 1);
+			// saves the text we just "greped"
+			$texte_retire = trim(substr($texte_formate, 0, -strlen($texte_restant)));
+
+			// greped text is empty: no text or no further block element (or new line)
+			if (strlen($texte_retire) === 0) {
+				// remaining text is NOT empty : keep it in a <p></p>
+				if (strlen($texte_restant) !== 0) {
+					$texte_final .= "\n".'<p>'.nl2br($texte_restant).'</p>'."\n";
+				}
+				// since the entire remaining text is in a new <p></p>, we are finished
+				$finished = true;
+
+			// greped text is not empty: keep it in a new <p></p>.
+			} else {
+				$texte_final .= "\n".'<p>'.nl2br($texte_retire).'</p>'."\n";
+			}
+		}
+
+		//  again, removes empty lines+spaces at begin or end TODO : save the lines to make <br/> (??)
+		$texte_restant = preg_replace('#^(\r|\n|<br>|<br/>|<br />){0,}(.*?)(\r|<br>|<br/>|<br />){0,}$#s', '$2', $texte_restant);
+		// loops on the text, to find the next element.
+		$texte_formate = $texte_restant;
 	}
 
-	$texte = preg_replace("/(\r\n|\r\n\r|\n|\n\r|\r)/", "\r", /*"\r\r".*/$texte/*."\r\r"*/);
+	return $texte_final;
+}
+
+function formatage_wiki($texte) {
+	$texte = preg_replace("/(\r\n|\r\n\r|\n|\n\r|\r)/", "\r", $texte);
 	$tofind = array(
 		// transforme certains \r en \n
 		'#<(.*?)>\r#',			// html (les <tag> suivi d’un \r ne prennent pas de <br/> (le <br> remplace un \r, pas un \n).
-		'#(\[/?code\])\r#',	// idem pour les balises [code], qui sont converties un peu à part, en <pre>
 
 		// css block elements
 		'#\[left\](.*?)\[/left\]#s',			// aligner à gauche
@@ -134,8 +182,7 @@ function formatage_wiki($texte) {
 		'#\[justify\](.*?)\[/justify\]#s',	// justifier
 
 		// misc
-		'#([^"\[\]|])((http|ftp)s?://([^"\'\[\]<>\s]+))#i',	// Regex URL
-		'#(.*?)\r#',																// br : retour à la ligne sans saut de ligne
+		'#([^"\[\]|])((http|ftp)s?://([^"\'\[\]<>\s]+))#i',			// Regex URL
 		'#\[([^[]+)\|([^[]+)\]#',												// a href
 		'#\[(https?://)([^[]+)\]#',											// url
 		'#\[img\](.*?)(\|(.*?))?\[/img\]#s',								// [img]
@@ -143,14 +190,14 @@ function formatage_wiki($texte) {
 		'#\[i\](.*?)\[/i\]#s',													// italic
 		'#\[s\](.*?)\[/s\]#s',													// strike
 		'#\[u\](.*?)\[/u\]#s',													// souligne
-		'#%%#',																		// br
-		'#\*\*(.*?)(<br/>\n|$)#s',													// ul/li (br because of prev replace)
-		'#</ul>\n<ul>#s',																// ul/li
-		'#\#\#(.*?)(<br/>\n|$)#s',													// ol/li
-		'#</ol>\n<ol>#s',																// ol/li
+		'#\*\*(.*?)(\r|$)#s',													// ul/li (br because of prev replace)
+		'#</ul>\r<ul>#s',															// ul/li
+		'#\#\#(.*?)(\r|$)#s',													// ol/li
+		'#</ol>\r<ol>#s',															// ol/li
 		'#\[quote\](.*?)\[/quote\]#s',										// citation
+		'#\[code\]\[/code\]#s',													// code
 		'#\[color=(\\\?")?(\w*|\#[0-9a-fA-F]{3}|\#[0-9a-fA-F]{6})(\\\?")?\](.*?)\[/color\]#s',			// color
-		'#\[size=(\\\?")?([0-9]{1,})(\\\?")?\](.*?)\[/size\]#s',			// size
+		'#\[size=(\\\?")?([0-9]{1,})(\\\?")?\](.*?)\[/size\]#s',		// size
 
 		// quelques &nbsp; que j’ajoute
 		'# »#',
@@ -162,7 +209,6 @@ function formatage_wiki($texte) {
 	$toreplace = array(
 		// transforme certains \r en \n
 		'<$1>'."\n",		// html
-		'$1'."\n",			// la balise code qui ne doit pas recevoir de <br/>
 
 		// css block elements
 		'<div style="text-align:left;">$1</div>',		// aligner à gauche
@@ -172,22 +218,21 @@ function formatage_wiki($texte) {
 
 		// misc
 		'$1<a href="$2">$2</a>',												// url regex
-		'$1<br/>'."\n",															// br : retour à la ligne sans saut de ligne
 		'<a href="$2">$1</a>',													// a href
 		'<a href="$1$2">$2</a>',												// url
-		'<img src="$1" alt="$3" />',														// img
+		'<img src="$1" alt="$3" />',											// img
 		'<strong>$1</strong>',													// strong
 		'<em>$1</em>',																// italic
 		'<del>$1</del>',															// barre
 		'<u>$1</u>',																// souligne
-		'<br />',																	// br
-		'<ul>'."\n".'<li>$1</li></ul>'."\n",									// ul/li
-		'',																				// ul/li
-		'<ol>'."\n".'<li>$1</li></ol>'."\n",									// ol/li
-		'',																				// ol/li
-		'<blockquote>$1</blockquote>'."\n",											// citation
+		'<ul><li>$1</li></ul>'."\r",											// ul/li
+		"\r",																			// ul/li
+		'<ol><li>$1</li></ol>'."\r",											// ol/li
+		'',																			// ol/li
+		'<blockquote>$1</blockquote>'."\r",									// citation
+		'<prebtcode></prebtcode>'."\r",										// code
 		'<span style="color:$2;">$4</span>',								// color
-		'<span style="font-size:$2pt;">$4</span>',								// text-size
+		'<span style="font-size:$2pt;">$4</span>',						// text-size
 
 		// quelques &nbsp; que j’ajoute
 		'&nbsp;»',
@@ -201,16 +246,24 @@ function formatage_wiki($texte) {
 	// il met en mémoire le contenu des balises [code] tels quelles
 	$nb_balises_code_avant = preg_match_all('#\[code\](.*?)\[/code\]#s', $texte, $balises_code, PREG_SET_ORDER);
 
-	// formate tout sauf les [code]
-	$texte_formate = preg_replace($tofind, $toreplace, $texte);
+	// vide les balises de code, vu qu’on ne souhaite pas les formater (leur contenu est en mémoire)
+	$texte_formate = preg_replace('#\[code\](.*?)\[/code\]#s', '[code][/code]', $texte);
+
+	// formate tout
+	$texte_formate = preg_replace($tofind, $toreplace, $texte_formate);
+
+	$texte_formate = parse_texte_paragraphs($texte_formate);
 
 	// remplace les balises [codes] modifiées par la balise code non formatée et précédement mises en mémoire.
 	// ceci permet de formater l’ensemble du message, sauf les balises [code],
 	if ($nb_balises_code_avant) {
-		$nb_balises_code_apres = preg_match_all('#\[code\](.*?)\[/code\]#s', $texte_formate, $balises_code_apres, PREG_SET_ORDER);
+		$nb_balises_code_apres = preg_match_all('#<prebtcode></prebtcode>#s', $texte_formate, $balises_code_apres, PREG_SET_ORDER);
 		foreach ($balises_code as $i => $code) {
-			$texte_formate = str_replace($balises_code_apres[$i][0], '<pre>'.htmlspecialchars($balises_code[$i][1]).'</pre>', $texte_formate);
-
+			// needed to not replace all the #<prebtcode></prebtcode># with the first code (since there is no limit to str_replace() to we could increment the replacements)
+			$pos = strpos($texte_formate, $balises_code_apres[$i][0]);
+			if ($pos !== false) {
+				 $texte_formate = substr_replace($texte_formate, '<pre>'.htmlspecialchars($balises_code[$i][1]).'</pre>', $pos, strlen($balises_code_apres[$i][0]));
+			}
 		}
 	}
 
@@ -219,12 +272,6 @@ function formatage_wiki($texte) {
 }
 
 function formatage_commentaires($texte) {
-	if ($GLOBALS['use_markdown']) {
-		include_once('parsedown/parsedown.php');
-		$Parsedown = new Parsedown();
-		return stripslashes($Parsedown->setMarkupEscaped(true)->text($texte));
-	}
-
 	$texte = " ".$texte;
 	$texte = preg_replace('#\[([^|]+)\|(\s*javascript.*)\]#i', '$1', $texte);
 	$tofindc = array(
@@ -246,8 +293,8 @@ function formatage_commentaires($texte) {
 		'# ;#',																	// ;
 	);
 	$toreplacec = array(
-		'</p><blockquote>$1</blockquote><p>',		// citation (</p> and <p> needed for W3C)
-		'</p><blockquote>$1</blockquote><p>',		// citation (</p> and <p> needed for W3C)
+		'<blockquote>$1</blockquote>',		// citation (</p> and <p> needed for W3C)
+		'<blockquote>$1</blockquote>',		// citation (</p> and <p> needed for W3C)
 		'<p>',																// removes unwanted \n
 
 		'<code>$1</code>',													// code
@@ -271,18 +318,12 @@ function formatage_commentaires($texte) {
 
 	$texte = stripslashes($texte);
 	$texte = str_replace(array("\\"), array("&#92;"), $texte);
-	$texte = '<p>'.trim(nl2br($texte)).'</p>';
+	$texte = ''.trim(nl2br($texte)).'';
 	$texte = str_replace('<p></p>', '', $texte);
 	return $texte;
 }
 
 function formatage_links($texte) {
-	if ($GLOBALS['use_markdown']) {
-		include_once('parsedown/parsedown.php');
-		$Parsedown = new Parsedown();
-		return stripslashes($Parsedown->setMarkupEscaped(true)->text($texte));
-	}
-
 	$tofind = array(
 		'#([^"\[\]|])((http|ftp)s?://([^"\'\[\]<>\s]+))#i',		// Regex URL 
 		'#\[([^[]+)\|([^[]+)\]#',											// a href
@@ -340,12 +381,6 @@ function date_formate($id, $format_force='') {
 			$retour = $format[$format_force];
 		} else {
 			$retour = $format[$GLOBALS['format_date']];
-
-			if ( $time_article == $auj ) {
-				$retour = $GLOBALS['lang']['aujourdhui'].', '.$retour;
-			} elseif ( $time_article == $hier ) {
-				$retour = $GLOBALS['lang']['hier'].', '.$retour;
-			}
 		}
 	return ucfirst($retour);
 }

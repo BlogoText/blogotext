@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2015 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -89,7 +89,6 @@ function conversions_theme($texte, $solo_art, $cnt_mode) {
 	$texte = str_replace($GLOBALS['balises']['version'], $GLOBALS['version'], $texte);
 	$texte = str_replace($GLOBALS['balises']['app_name'], $GLOBALS['nom_application'], $texte);
 	$texte = str_replace($GLOBALS['balises']['style'], $GLOBALS['theme_style'], $texte);
-	$texte = str_replace($GLOBALS['balises']['blog_description'], $GLOBALS['description'], $texte);
 	$texte = str_replace($GLOBALS['balises']['racine_du_site'], $GLOBALS['racine'], $texte);
 	$texte = str_replace($GLOBALS['balises']['blog_auteur'], $GLOBALS['auteur'], $texte);
 	$texte = str_replace($GLOBALS['balises']['blog_email'], $GLOBALS['email'], $texte);
@@ -101,7 +100,8 @@ function conversions_theme($texte, $solo_art, $cnt_mode) {
 		$texte = str_replace($GLOBALS['balises']['article_titre_echape'], urlencode($solo_art['bt_title']), $texte);
 		$texte = str_replace($GLOBALS['balises']['article_lien'], $solo_art['bt_link'], $texte);
 		if ($solo_art['bt_type'] == 'article') {
-			$texte = str_replace($GLOBALS['balises']['article_chapo'], $solo_art['bt_abstract'], $texte);
+			$texte = str_replace($GLOBALS['balises']['blog_description'], '', $texte);
+			$texte = str_replace($GLOBALS['balises']['article_chapo'], str_replace(array("\r", "\n"), ' ', $solo_art['bt_abstract']), $texte);
 			$texte = str_replace($GLOBALS['balises']['blog_motscles'], $solo_art['bt_keywords'], $texte);
 		}
 		if ($solo_art['bt_type'] == 'link' or $solo_art['bt_type'] == 'note') {
@@ -110,10 +110,12 @@ function conversions_theme($texte, $solo_art, $cnt_mode) {
 	}
 
 	// si remplacé, ceci ne sert à rien. Si pas remplacé, ça sert.
+	$texte = str_replace($GLOBALS['balises']['blog_description'], $GLOBALS['description'], $texte);
 	$texte = str_replace($GLOBALS['balises']['article_titre_page'], '', $texte);
 	$texte = str_replace($GLOBALS['balises']['blog_motscles'], $GLOBALS['keywords'], $texte);
 	$texte = str_replace($GLOBALS['balises']['article_titre_echape'], '', $texte);
 	$texte = str_replace($GLOBALS['balises']['article_lien'], $GLOBALS['racine'], $texte);
+	$texte = str_replace($GLOBALS['balises']['article_chapo'], '', $texte);
 
 	$texte = str_replace($GLOBALS['balises']['pagination'], lien_pagination(), $texte);
 

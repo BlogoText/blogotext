@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2015 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -96,10 +96,11 @@ $sc = '
 // show form for new rss feed
 function addNewFeed() {
 	var newLink = window.prompt(\''.$GLOBALS['lang']['rss_jsalert_new_link'].'\', \'\');
-	var newFolder = window.prompt(\''.$GLOBALS['lang']['rss_jsalert_new_link_folder'].'\', \'\');
-	var notifDiv = document.createElement(\'div\');
 	// empty string : stops here
 	if (!newLink) return false;
+
+	var newFolder = window.prompt(\''.$GLOBALS['lang']['rss_jsalert_new_link_folder'].'\', \'\');
+	var notifDiv = document.createElement(\'div\');
 
 	// otherwise continu.
 	var notifNode = document.getElementById(\'message-return\');
@@ -336,8 +337,8 @@ function activate_comm(button) {
 	formData.append(\'token\', csrf_token);
 	formData.append(\'_verif_envoi\', 1);
 
-
 	formData.append(\'com_activer\', button.dataset.commId);
+	formData.append(\'com_bt_id\', button.dataset.commBtid);
 	formData.append(\'com_article_id\', button.dataset.commArtId);
 
 	xhr.send(formData);

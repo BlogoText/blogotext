@@ -13,14 +13,23 @@
 }
 
 #billets > li {
-	padding: 0 15px 0 5px;
+	padding: 0 20px;
 	min-height: 50px;
 	line-height: 50px;
 	display: flex;
 	margin-top: 10px;
 	align-items: center;
+	transition: box-shadow 0.5s ease 0s;
 }
 
+#billets > li:hover {
+	position: relative;
+	box-shadow: 0px 6px 20px 0px rgba(0, 0, 0, 0.19), 0px 8px 17px 0px rgba(0, 0, 0, 0.2);
+}
+
+#billets > li.planned {
+	background: #f0f0f0;
+}
 
 #billets > li > span:nth-of-type(1)::before,
 #billets > li > span:nth-of-type(2)::before,
@@ -35,7 +44,7 @@
 }
 
 #billets > li > span:nth-of-type(1)::before {
-	margin-right: 10px;
+	margin-right: 20px;
 }
 
 #billets > li > span:nth-of-type(1).on::before {
@@ -49,7 +58,7 @@
 
 #billets > li > span:nth-of-type(1) { /*title*/
 	flex: 1;
-	padding: 0 10px 0 5px;
+	padding: 0 10px 0 0;
 }
 
 #billets > li > span:nth-of-type(1),
@@ -76,6 +85,14 @@
 }
 #billets > li > span:nth-of-type(3)::before {
 	background-position: -451px -9px;
+}
+
+#billets > li > span:nth-of-type(4) a {
+	display: inline-block;
+	width: 24px;
+	height: 24px;
+	vertical-align: middle;
+	background: url('sprites.png') no-repeat -303px -169px / 640px 400px;
 }
 
 

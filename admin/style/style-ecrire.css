@@ -21,10 +21,6 @@
 #apercu > div {
 	margin: 20px;
 }
-#apercu p {
-	margin-top: 5px;
-	margin-bottom: 5px;
-}
 
 #apercu img {
 	padding: 2px;
@@ -51,6 +47,16 @@
 	border: 0;
 	border-bottom: 1px solid silver;
 	padding: 10px 5px;
+}
+
+#titre:invalid:focus,
+#chapo:invalid:focus,
+#notes:invalid:focus,
+#contenu:invalid:focus,
+#type_tags:invalid:focus,
+#mots_cles:invalid:focus {
+    border-bottom-color: #F44336;
+    box-shadow: 0px -1px 0px #F44336 inset;
 }
 
 #titre:focus,
@@ -127,7 +133,7 @@ p.formatbut {
 	display: inline-block;
 	width: 16px;
 	height: 24px;
-	background: no-repeat 0 3px transparent url(format.png);
+	background: no-repeat transparent url(formatx2.png) 0 0 / 24px 563px;
 }
 
 .formatbut span.spacer {
