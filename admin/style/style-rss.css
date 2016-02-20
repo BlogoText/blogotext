@@ -48,29 +48,33 @@
 }
 
 .rss-menu-buttons button {
-	background: transparent no-repeat url(sprites.png) 0 0 / 640px 400px;
+	background-color: transparent;
 	border: 1px solid transparent;
 	border-radius: 50%;
-	display: inline-block;
 	height: 40px;
 	width: 40px;
-	position: relative;
 	transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+	padding: 0;
+	color: rgba(0, 0, 0, .6);
+}
+
+.rss-menu-buttons button::before {
+	font-size: 2em;
 }
 
 .rss-menu-buttons li > button:focus,
 .rss-menu-buttons li > button::-moz-focus-inner {
 	background-color: rgba(0, 0, 0, .05);
 	transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0s;
-   outline:none;
-   border-color: transparent;
+   outline: none;
+	border-color: transparent;
 }
 
 
-#rss-menu ul > li:nth-of-type(1) > button        { background-position: -0px -125px; }
-#rss-menu ul > li:nth-of-type(2) > button        { background-position: -185px -125px; }
-#rss-menu ul > li:nth-of-type(3) > button        { background-position: -222px -125px; }
-#rss-menu ul > li:nth-of-type(4) > button        { background-position: -0px -161px; }
+#rss-menu ul > li:nth-of-type(1) > button::before { content: "\e92e"; }
+#rss-menu ul > li:nth-of-type(2) > button::before { content: "\e92f"; }
+#rss-menu ul > li:nth-of-type(3) > button::before { content: "\e938"; }
+#rss-menu ul > li:nth-of-type(4) > button::before { content: "\e90f"; }
 #rss-menu #count-posts > button { background-image: none; }
 
 /* bloc with feed lists (sites) + feed posts (the actually posts) */
@@ -112,11 +116,11 @@
 #feed-list > li.all-feeds button::before {
 	display: inline-block;
 	vertical-align: middle;
-	content: "";
-	left: 0px;
-	height: 20px;
-	width: 20px;
-	background: transparent url(sprites.png) no-repeat -159px -170px / 640px 400px;
+	content: "\e901";
+	font-size: 1.6em;
+	font-weight: normal;
+	padding-right: 5px;
+	color: rgba(0, 0, 0, .6);
 }
 
 #feed-list > li.feed-folder {
@@ -191,16 +195,19 @@
 
 
 #feed-list li.feed-folder button.unfold {
-	text-align: right;
 	flex: 0 0 40px;
 	padding: 0 0 0 40px;
 	margin-right: 10px;
 	overflow: hidden;
-	box-sizing: border-box;
-	background: transparent url("sprites.png") no-repeat scroll 0 0 / 640px 400px;
-	background-position: -371px -161px;
 	transition: transform ease .2s;
-	vertical-align: middle;
+}
+
+#feed-list li.feed-folder button.unfold::before {
+	content: "\e92d";
+	position: relative;
+	left: -35px;
+	font-size: 2em;
+	color: rgba(0, 0, 0, .6);
 }
 
 #feed-list li.feed-folder.open button.unfold {
@@ -245,9 +252,9 @@
 	text-align: left;
 }
 
-#post-list-title ul > li:nth-of-type(1) > button        { background-position: -37px -125px; }
-#post-list-title ul > li:nth-of-type(2) > button        { background-position: -74px -125px; }
-#post-list-title ul > li:nth-of-type(2) > button.unfold { background-position: -111px -125px; }
+#post-list-title ul > li:nth-of-type(1) > button::before        { content: "\e91c"; }
+#post-list-title ul > li:nth-of-type(2) > button::before        { content: "\e90a"; }
+#post-list-title ul > li:nth-of-type(2) > button.unfold::before { content: "\e90b"; }
 
 
 #post-list {
@@ -255,8 +262,7 @@
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
-	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25);
-	box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25)
+	box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
 }
 
 #post-list > li {
@@ -291,25 +297,23 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 	margin: 0;
-	font-weight: bold;
 	display: flex;
 	min-width: 0;
+	align-items: center;
 }
-#post-list > li .post-title a {
+#post-list > li .post-title > a {
+	font-weight: bold;
 	text-decoration: none;
 	color: inherit;
 	flex: 1 1 auto;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	vertical-align: middle;
 	padding-right: 10px;
 }
 
 #post-list > li .post-title a:hover {
 	text-decoration: underline;
-	color: inherit;
-	font-weight: bold;
 	flex: 1 0 auto;
 }
 
@@ -323,11 +327,10 @@
 
 #post-list > li div.datesite {
 	display: flex;
-	font-size: .9em;
-	font-weight: 300;
-	justify-content: flex-end;
+	align-items: center;
 	flex: 0 0 auto;
 	min-width: 0;
+	font-size: .9em;
 }
 
 
@@ -384,14 +387,15 @@
 }
 
 #post-list > li .datesite .lien-share {
-	width: 20px;
-	height: 16px;
-	display: inline-block;
 	margin-left: 5px;
-	padding-right: 0;
 	text-decoration: none;
-	background: transparent url("sprites.png") no-repeat scroll -47px -172px / 640px 400px;
 }
+#post-list > li .datesite .lien-share::before {
+	content: "\e91f";
+	font-size: 1.3em;
+	color: rgba(0, 0, 0, .4);
+}
+
 
 /* RSS Config Page -------------------- */
 #form-rss-config,
@@ -400,78 +404,113 @@
 }
 
 #form-rss-config ul {
-	text-align: center;
+//	text-align: center;
 	padding: 0;
 	margin: 0;
 	list-style: none;
 }
 
 #form-rss-config li {
-	display: inline-block;
-	width: 400px;
+	display: flex;
 	margin-bottom: 25px;
 	text-align: left;
+	line-height: 1.6em;
 }
 
-#form-rss-config div {
-	padding-left: 20px;
+#form-rss-config li span {
+	display: flex;
 }
 
-#form-rss-config li p {
-	margin: 2px;
-}
-
-#form-rss-config li p.feed-error {
+#form-rss-config li span.feed-error {
 	color: red;
 }
 
-#form-rss-config li > p {
-	line-height: 1.6em;
+#form-rss-config li span:first-of-type { /* name */
+	flex: 1 1 auto;
+}
+#form-rss-config li span:first-of-type input { /* name */
 	font-weight: bold;
+	-moz-appearance: none;
+}
+
+#form-rss-config li span:nth-of-type(2) {
+	flex: 0 0 20%;
+}
+#form-rss-config li span:nth-of-type(2) input { /* url */
+	text-overflow: ellipsis;
+}
+#form-rss-config li span:nth-of-type(3) { /* folder */
+	flex: 0 0 auto;
+}
+
+#form-rss-config li span:nth-of-type(4) { /* suppr+annuler buttons */
+	flex: 0 0 auto;
 }
 
 #form-rss-config li .white-square {
 	display: none;
 }
 
+#form-rss-add label {
+	text-align: right;
+	display: inline-block;
+	height: 24px;
+}
 
 #form-rss-config li label,
 #form-rss-add label {
-	padding: 0 0 0 24px;
+	height: 38px;
 	width: 24px;
-	height: 24px;
-	box-sizing: border-box;
 	overflow: hidden;
-	display: inline-block;
-	vertical-align: middle;
-	background: white url(sprites.png) no-repeat 0 0 / 640px 400px;
+	line-height: 38px;
 }
 
-#form-rss-config label[for^="i_"] { background-position: -410px -132px; }
-#form-rss-config label[for^="j_"] { background-position: -79px -95px; }
-#form-rss-config label[for^="l_"] { background-position: -374px -130px; }
-#form-rss-add label               { background-position: -374px -130px; }
+#form-rss-config li label::before,
+#form-rss-add label::before {
+	content: "\e901";
+	font-size: 1.3em;
+	color: rgba(0, 0, 0, .5);
+}
+
+#form-rss-config label[for^="i_"]::before { content: "\e903"; }
+#form-rss-config label[for^="j_"]::before { content: "\e926"; }
+#form-rss-config label[for^="l_"]::before { content: "\e91a"; }
 
 #form-rss-config li input.text,
 #form-rss-add input.text {
 	text-align: left;
-	width: 325px;
-	height: 20px;
 	margin: 0px 5px;
-	display: inline-block;
 	border: 0;
 	border-bottom: 1px solid #DADADA;
 	padding: 0;
+	width: 60%;
 }
 
+#form-rss-config li input.text {
+	width: 100%;
+	border-bottom-color: transparent;
+}
+
+#form-rss-add input.text:focus,
 #form-rss-config li .text:focus {
-    border-bottom-color: #2196F3;
-    box-shadow: 0px -1px 0px #2196F3 inset;
+	border-bottom-color: #2196F3;
+	box-shadow: 0px -1px 0px #2196F3 inset;
 }
 
 #form-rss-config li button.red-square {
 	margin-left: 10px;
+	margin-top: 0;
 	vertical-align: middle;
+	background: none;
+	color: #f44336;
+	box-shadow: none;
+}
+#form-rss-config li button.red-square:hover {
+	border: 1px solid #ddd;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+#form-rss-config li button.red-square:active {
+	box-shadow: none;
 }
 
 #form-rss-config li.to-remove > p {

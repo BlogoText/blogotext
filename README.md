@@ -13,7 +13,7 @@ This is [Blogotext](http://lehollandaisvolant.net/blogotext/), the lightweight S
 ---
 
 - Requirements
-  * PHP 5.3
+  * PHP >5.5
   * SQLite with PDO support (or MySQL with PDO Support)
   * A CSS3 / HTML5 compatible Browser (Firefox, Chrome…)
   * min 1 Mo disk space (more data = more space needed)

@@ -29,7 +29,7 @@ function afficher_lien($link) {
 
 	$list .= '<div class="link-header">'."\n";
 	$list .= "\t".'<a class="titre-lien" href="'.$link['bt_link'].'">'.$link['bt_title'].'</a>'."\n";
-	$list .= "\t".'<div class="date">'.date_formate($link['bt_id']).', '.heure_formate($link['bt_id']).'</div>'."\n";
+	$list .= "\t".'<span class="date">'.date_formate($link['bt_id']).', '.heure_formate($link['bt_id']).'</span>'."\n";
 	$list .= "\t".'<div class="link-options">';
 	$list .= "\t\t".'<ul>'."\n";
 	$list .= "\t\t\t".'<li class="ll-edit"><a href="'.basename($_SERVER['PHP_SELF']).'?id='.$link['bt_id'].'">'.$GLOBALS['lang']['editer'].'</a></li>'."\n";

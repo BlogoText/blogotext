@@ -42,11 +42,6 @@ function get_blogpath($id, $titre) {
 	return $path;
 }
 
-function hash_password($text, $salt) {
-	$out = hash("sha512", $text.$salt);	// PHP 5
-	return $out;
-}
-
 function article_anchor($id) {
 	$anchor = 'id'.substr(md5($id), 0, 6);
 	return $anchor;
@@ -71,29 +66,36 @@ function tri_selon_sous_cle($table, $cle) {
 }
 
 
-function get_real_ip() {
+function get_ip() {
 	return (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) ? htmlspecialchars($_SERVER['HTTP_X_FORWARDED_FOR']) : htmlspecialchars($_SERVER['REMOTE_ADDR']);
 }
 
 
 function check_session() {
 	if ($GLOBALS['use_ip_in_session'] == 1) {
-		$ip = get_real_ip();
+		$ip = get_ip();
 	} else {
 		$ip = date('m');
 	}
 	@session_start();
 	ini_set('session.cookie_httponly', TRUE);
-	// use a cookie to remain logged in
-	$user_id = hash_password($GLOBALS['mdp'].$GLOBALS['identifiant'].$GLOBALS['salt'], md5($_SERVER['HTTP_USER_AGENT'].$ip.$GLOBALS['salt']));
 
-	if (isset($_COOKIE['BT-admin-stay-logged']) and $_COOKIE['BT-admin-stay-logged'] == $user_id) {
-		$_SESSION['user_id'] = md5($user_id);
+	// generate hash for cookie
+	$newUID = hash('sha256', $GLOBALS['mdp_hash'].$GLOBALS['identifiant'].md5($_SERVER['HTTP_USER_AGENT'].$ip));
+
+	// check old cookie  with newUID
+	if (isset($_COOKIE['BT-admin-stay-logged']) and $_COOKIE['BT-admin-stay-logged'] == $newUID) {
+		$_SESSION['user_id'] = md5($newUID);
 		session_set_cookie_params(365*24*60*60); // set new expiration time to the browser
 		session_regenerate_id(true);  // Send cookie
+		// Still logged in, return
 		return TRUE;
+	} else {
+		return FALSE;
 	}
-	if ( (!isset($_SESSION['user_id'])) or ($_SESSION['user_id'] != $GLOBALS['identifiant'].$GLOBALS['mdp'].md5($_SERVER['HTTP_USER_AGENT'].$ip)) ) {
+
+	// no "stay-logged" cookie : check session.
+	if ( (!isset($_SESSION['user_id'])) or ($_SESSION['user_id'] != $GLOBALS['identifiant'].hash('sha256', $GLOBALS['mdp_hash'].$_SERVER['HTTP_USER_AGENT'].$ip)) ) {
 		return FALSE;
 	} else {
 		return TRUE;

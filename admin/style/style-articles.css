@@ -8,14 +8,14 @@
 	list-style: none;
 }
 
-#billets a:not(:hover) {
+#billets a:not(:hover),
+#billets > li > span:nth-of-type(4) a:hover {
 	text-decoration: none;
 }
 
 #billets > li {
 	padding: 0 20px;
 	min-height: 50px;
-	line-height: 50px;
 	display: flex;
 	margin-top: 10px;
 	align-items: center;
@@ -33,28 +33,27 @@
 
 #billets > li > span:nth-of-type(1)::before,
 #billets > li > span:nth-of-type(2)::before,
-#billets > li > span:nth-of-type(3)::before {
-	content: '';
-	display: inline-block;
-	width: 24px;
-	height: 24px;
-	position: relative;
-	vertical-align: middle;
-	background: url('sprites.png') no-repeat 0 0 / 640px 400px;
+#billets > li > span:nth-of-type(3)::before,
+#billets > li > span:nth-of-type(4) a::before {
+	font-size: 1.4em;
+	margin-right: 5px;
+	color: rgba(0, 0, 0, .5);
 }
 
 #billets > li > span:nth-of-type(1)::before {
+	font-size: 1.9em;
 	margin-right: 20px;
 }
 
 #billets > li > span:nth-of-type(1).on::before {
-	background-position: -562px -9px;
+	content: "\e91c";
+	color: rgba(101, 234, 143, 1);
 }
 
 #billets > li > span:nth-of-type(1).off::before {
-	background-position: -525px -9px;
+	content: "\e917";
+	color: rgba(252, 101, 101, 1);
 }
-
 
 #billets > li > span:nth-of-type(1) { /*title*/
 	flex: 1;
@@ -72,27 +71,24 @@
 	text-align: center;
 }
 #billets > li > span:nth-of-type(2)::before {
-	background-position: -488px -9px;
+	content: "\e918";
+	color: rgba(252, 101, 101, 1);
 }
 
 #billets > li > span:nth-of-type(3) { /*comms*/
 	padding: 0 0 0 12px;
-	margin-right: 15px;
-	margin-left: 10px;
+	margin: 0 15px 0 10px;
 }
 #billets > li > span:nth-of-type(3) a {
 	padding: 0 7px;
 }
 #billets > li > span:nth-of-type(3)::before {
-	background-position: -451px -9px;
+	content: "\e91b";
+	color: rgba(101, 234, 143, 1);
 }
 
-#billets > li > span:nth-of-type(4) a {
-	display: inline-block;
-	width: 24px;
-	height: 24px;
-	vertical-align: middle;
-	background: url('sprites.png') no-repeat -303px -169px / 640px 400px;
+#billets > li > span:nth-of-type(4) a::before {
+	content: "\e902";
 }
 
 

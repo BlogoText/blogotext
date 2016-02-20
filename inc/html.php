@@ -164,10 +164,11 @@ function moteur_recherche() {
 	}
 	$return = '<form action="'.basename($_SERVER['PHP_SELF']).'" method="get" id="search">'."\n";
 	$return .= '<input id="q" name="q" type="search" size="20" value="'.$requete.'" placeholder="'.$GLOBALS['lang']['placeholder_search'].'" accesskey="f" />'."\n";
+	$return .= '<label for="q">'.'</label>'."\n";
+	$return .= '<input class="silver-square" id="input-rechercher" type="submit" value="'.$GLOBALS['lang']['rechercher'].'" />'."\n";
 	if (isset($_GET['mode'])) {
 		$return .= '<input id="mode" name="mode" type="hidden" value="'.htmlspecialchars(stripslashes($_GET['mode'])).'"/>'."\n";
 	}
-	$return .= '<input class="silver-square" id="input-rechercher" type="submit" value="'.$GLOBALS['lang']['rechercher'].'" />'."\n";
 	$return .= '</form>'."\n\n";
 	return $return;
 }

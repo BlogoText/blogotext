@@ -13,12 +13,9 @@
 		margin-right: 330px;
 	}
 	/* préférences */
-	#preferences label {
-		display: inline-block;
-		width: 40%;
-	}
 	#preferences p {
 		max-width: 100%;
 	}
-
 }
+
+

@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2014 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -35,7 +35,7 @@ function valider_form_commentaire($commentaire, $mode) {
 	}
 	if ($mode != 'admin') { // if public : tests captcha as well
 		$ua = (isset($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : '';
-		if ($_POST['_token'] != sha1($ua.$_POST['captcha'].$GLOBALS['salt']) ) {
+		if ($_POST['_token'] != sha1($ua.$_POST['captcha']) ) {
 			$erreurs[] = $GLOBALS['lang']['err_comm_captcha'];
 		}
 	} else { // mode admin : test token
@@ -113,7 +113,7 @@ function valider_form_preferences() {
 	if ( ($_POST['identifiant']) !=$GLOBALS['identifiant'] and (!strlen($_POST['mdp'])) ) {
 		$erreurs[] = $GLOBALS['lang']['err_prefs_id_mdp'];
 	}
-	if ( (!empty($_POST['mdp'])) and (hash_password($_POST['mdp'], $GLOBALS['salt']) != $GLOBALS['mdp']) ) {
+	if ( (!empty($_POST['mdp'])) and (!password_verify($_POST['mdp'], $GLOBALS['mdp_hash'])) ) {
 		$erreurs[] = $GLOBALS['lang']['err_prefs_oldmdp'];
 	}
 	if ( (!empty($_POST['mdp'])) and (strlen($_POST['mdp_rep']) < '6') ) {
@@ -204,4 +204,4 @@ function valider_form_maintenance() {
 	return $erreurs;
 }
 
-?>
+

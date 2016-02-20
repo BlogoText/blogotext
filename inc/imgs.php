@@ -81,11 +81,12 @@ function afficher_liste_images($images) {
 
 		$out .= "\t\t".'<ul id="slider-nav-bar">'."\n";
 		$out .= "\t\t\t".'<li><button id="slider-nav-close" class="slider-nav-button" onclick="slideshow(\'close\');"></button></li>'."\n";
-		$out .= "\t\t\t".'<li><a id="slider-nav-dl" class="slider-nav-button" title="'.$GLOBALS['lang']['telecharger'].'" href=""></a></li>'."\n";
-		$out .= "\t\t\t".'<li><a id="slider-nav-share" class="slider-nav-button" title="'.$GLOBALS['lang']['partager'].'" href=""></a></li>'."\n";
-		$out .= "\t\t\t".'<li><button id="slider-nav-infos" class="slider-nav-button" title="'.$GLOBALS['lang']['infos'].'"></button></li>'."\n";
-		$out .= "\t\t\t".'<li><a id="slider-nav-edit" class="slider-nav-button" title="'.$GLOBALS['lang']['editer'].'" href=""></a></li>'."\n";
-		$out .= "\t\t\t".'<li><button id="slider-nav-suppr" class="slider-nav-button" title="'.$GLOBALS['lang']['supprimer'].'"></button></li>'."\n";
+		$out .= "\t\t\t".'<li><button id="slider-nav-dl"    class="slider-nav-button" onclick="triggerClick(document.getElementById(\'slider-nav-dl-link\'))" title="'.$GLOBALS['lang']['telecharger'].'"></button><a id="slider-nav-dl-link" download></a></li>'."\n";
+		$out .= "\t\t\t".'<li><button id="slider-nav-share" class="slider-nav-button" onclick="triggerClick(document.getElementById(\'slider-nav-share-link\'))" title="'.$GLOBALS['lang']['partager'].   '"></button><a id="slider-nav-share-link"></a></li>'."\n";
+		$out .= "\t\t\t".'<li><button id="slider-nav-infos" class="slider-nav-button" onclick="" title="'.$GLOBALS['lang']['infos'].      '"></button></li>'."\n";
+		$out .= "\t\t\t".'<li><button id="slider-nav-edit"  class="slider-nav-button" onclick="triggerClick(document.getElementById(\'slider-nav-edit-link\'))" title="'.$GLOBALS['lang']['editer'].     '"></button><a id="slider-nav-edit-link"></a></li>'."\n";
+
+		$out .= "\t\t\t".'<li><button id="slider-nav-suppr" class="slider-nav-button" title="'.$GLOBALS['lang']['supprimer'].  '"></button></li>'."\n";
 		$out .= "\t\t".'</ul>'."\n";
 		$out .= "\t\t".'<div id="slider-display">'."\n";
 		$out .= "\t\t\t".'<img id="slider-img" src="" alt=""/>'."\n";
@@ -116,8 +117,29 @@ function afficher_liste_images($images) {
 
 		foreach ($images as $i => $im) {
 			//debug($im);
-			$img_src = chemin_thb_img_test($dossier_relatif.$im['bt_path'].'/'.$im['bt_filename']);
-			$out .=  '{"index": "'.$i.'", "filename":'."\n".'["'.$dossier.$im['bt_path'].'/'.$im['bt_filename'].'", "'.$im['bt_filename'].'", "'.$img_src.'"], "id": "'.$im['bt_id'].'", "desc": "'.addslashes(preg_replace('#(\n|\r|\n\r)#', '', nl2br($im['bt_content']))).'", "dossier": "'.(isset($im['bt_dossier']) ? $im['bt_dossier'] : '').'", "width": "'.$im['bt_dim_w'].'", "height": "'.$im['bt_dim_h'].'", "weight": "'.$im['bt_filesize'].'", "date":'."\n".'["'.date_formate($im['bt_id']).'", "'.heure_formate($im['bt_id']).'"]},'."\n";
+			$rel_thb_src = chemin_thb_img_test($dossier_relatif.$im['bt_path'].'/'.$im['bt_filename']);
+			$out .= '
+			{
+				"index": "'.$i.'",
+				"filename":
+					[
+					"'.$dossier.$im['bt_path'].'/'.$im['bt_filename'].'",
+					"'.$im['bt_filename'].'",
+					"'.$rel_thb_src.'",
+					"'.$dossier_relatif.$im['bt_path'].'/'.$im['bt_filename'].'"
+					],
+				"id": "'.$im['bt_id'].'",
+				"desc": "'.addslashes(preg_replace('#(\n|\r|\n\r)#', '', nl2br($im['bt_content']))).'",
+				"dossier": "'.(isset($im['bt_dossier']) ? $im['bt_dossier'] : '').'",
+				"width": "'.$im['bt_dim_w'].'",
+				"height": "'.$im['bt_dim_h'].'",
+				"weight": "'.$im['bt_filesize'].'",
+				"date":
+					[
+					"'.date_formate($im['bt_id']).'",
+					"'.heure_formate($im['bt_id']).'"
+					]
+			},';
 		}
 			$out .= ']'."\n";
 		$out .= '};'."\n";
@@ -470,26 +492,25 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 	// si ID dans l’URL, il s’agit également du seul fichier dans le tableau fichiers, d’où le [0]
 	elseif (!empty($fichiers) and isset($_GET['file_id']) and preg_match('/\d{14}/',($_GET['file_id']))) {
 		$myfile = $fichiers[0];
-		if ($myfile['bt_type'] == 'image') {
-			$dossier = $GLOBALS['racine'].$GLOBALS['dossier_images'].$myfile['bt_path'];
-		} else {
-			$dossier = $GLOBALS['racine'].$GLOBALS['dossier_fichiers'];
-		}
+		$absolute_URI = $GLOBALS['racine'].$GLOBALS['dossier_'.(($myfile['bt_type'] == 'image') ? 'images' : 'fichiers')].'/'.$myfile['bt_filename'];
+		$relative_path = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_'.(($myfile['bt_type'] == 'image') ? 'images' : 'fichiers')].$myfile['bt_path'].'/'.$myfile['bt_filename'];
+		$absolute_path = $GLOBALS['dossier_'.(($myfile['bt_type'] == 'image') ? 'images' : 'fichiers')].$myfile['bt_path'].'/'.$myfile['bt_filename'];
+
 
 		$form .= '<div class="edit-fichier">'."\n";
 
 		// codes d’intégrations pour les médias
 		// Video
 		if ($myfile['bt_type'] == 'video') {
-			$form .= '<div class="display-media"><video class="media" src="'.$dossier.'/'.$myfile['bt_filename'].'" type="video/'.$myfile['bt_fileext'].'" load controls="controls"></video></div>'."\n";
+			$form .= '<div class="display-media"><video class="media" src="'.$relative_path.'" type="video/'.$myfile['bt_fileext'].'" load controls="controls"></video></div>'."\n";
 		}
 		// image
 		if ($myfile['bt_type'] == 'image') {
-			$form .= '<div class="display-media"><a href="'.$dossier.'/'.$myfile['bt_filename'].'"><img class="media" src="'.$dossier.'/'.$myfile['bt_filename'].'" alt="'.$myfile['bt_filename'].'" width="'.$myfile['bt_dim_w'].'" height="'.$myfile['bt_dim_h'].'" /></a></div>'."\n";
+			$form .= '<div class="display-media"><a href="'.$relative_path.'"><img class="media" src="'.$relative_path.'" alt="'.$myfile['bt_filename'].'" width="'.$myfile['bt_dim_w'].'" height="'.$myfile['bt_dim_h'].'" /></a></div>'."\n";
 		}
 		// audio
 		if ($myfile['bt_type'] == 'music') {
-			$form .= '<div class="display-media"><audio class="media" src="'.$dossier.'/'.$myfile['bt_filename'].'" type="audio/'.$myfile['bt_fileext'].'" load controls="controls"></audio></div>'."\n";
+			$form .= '<div class="display-media"><audio class="media" src="'.$relative_path.'" type="audio/'.$myfile['bt_fileext'].'" load controls="controls"></audio></div>'."\n";
 		}
 
 		// la partie listant les infos du fichier.
@@ -508,16 +529,16 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 		// la partie des codes d’intégration (bbcode, etc.)
 		$form .= '<div id="interg-codes">'."\n";
 		$form .= '<p><strong>'.ucfirst('codes d’intégration :').'</strong></p>'."\n";
-		$form .= '<input onfocus="this.select()" class="text" type="text" value=\''.$dossier.'/'.$myfile['bt_filename'].'\' />'."\n";
+		$form .= '<input onfocus="this.select()" class="text" type="text" value=\''.$absolute_URI.'\' />'."\n";
 		if ($myfile['bt_type'] == 'image') { // si le fichier est une image, on ajout BBCode pour [IMG] et le code en <img/>
-			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'<img src="'.$dossier.'/'.$myfile['bt_filename'].'" alt="i" width="'.$myfile['bt_dim_w'].'" height="'.$myfile['bt_dim_h'].'" style="max-width: 100%; height: auto;" />\' />'."\n";
-			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'<img src="/'.$GLOBALS['dossier_images'].$myfile['bt_path'].'/'.$myfile['bt_filename'].'" alt="i" width="'.$myfile['bt_dim_w'].'" height="'.$myfile['bt_dim_h'].'" style="max-width: 100%; height: auto;" />\' />'."\n";
-			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'<img src="'.$GLOBALS['dossier_images'].$myfile['bt_path'].'/'.$myfile['bt_filename'].'" alt="i" width="'.$myfile['bt_dim_w'].'" height="'.$myfile['bt_dim_h'].'" style="max-width: 100%; height: auto;" />\' />'."\n";
-			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'[img]'.$dossier.'/'.$myfile['bt_filename'].'[/img]\' />'."\n";
-			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'[spoiler][img]'.$dossier.'/'.$myfile['bt_filename'].'[/img][/spoiler]\' />'."\n";
+			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'<img src="'.$absolute_URI.'" alt="i" width="'.$myfile['bt_dim_w'].'" height="'.$myfile['bt_dim_h'].'" style="max-width: 100%; height: auto;" />\' />'."\n";
+			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'<img src="/'.$absolute_path.'" alt="i" width="'.$myfile['bt_dim_w'].'" height="'.$myfile['bt_dim_h'].'" style="max-width: 100%; height: auto;" />\' />'."\n";
+			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'<img src="'.$absolute_path.'" alt="i" width="'.$myfile['bt_dim_w'].'" height="'.$myfile['bt_dim_h'].'" style="max-width: 100%; height: auto;" />\' />'."\n";
+			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'[img]'.$absolute_URI.'[/img]\' />'."\n";
+			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'[spoiler][img]'.$absolute_URI.'[/img][/spoiler]\' />'."\n";
 		} else {
-			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'<a href="'.$dossier.'/'.$myfile['bt_filename'].'" />'.$myfile['bt_filename'].'</a>\' />'."\n";
-			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'[url]'.$dossier.'/'.$myfile['bt_filename'].'[/url]\' />'."\n";
+			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'<a href="'.$absolute_URI.'" />'.$myfile['bt_filename'].'</a>\' />'."\n";
+			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'[url]'.$absolute_URI.'[/url]\' />'."\n";
 		}
 
 		$form .= '</div>'."\n";
@@ -555,6 +576,7 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 // affichage de la liste des fichiers
 function afficher_liste_fichiers($tableau) {
 	$dossier = $GLOBALS['racine'].$GLOBALS['dossier_fichiers'];
+	$dossier_relatif = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_fichiers'];
 	$out = '';
 	if (!empty($tableau)) {
 		// affichage sous la forme d’icônes, comme les images.
@@ -591,7 +613,7 @@ function afficher_liste_fichiers($tableau) {
 					$out .= '<a class="lien lien-edit" href="fichiers.php?file_id='.$file['bt_id'].'&amp;edit"></a>';
 					$out .= '<a class="lien lien-supr" href="#" onclick="request_delete_form(\''.$file['bt_id'].'\'); return false;" ></a>';
 					$out .= '</span>'."\n";
-					$out .= "\t".'<a class="lien" href="'.$dossier.'/'.$file['bt_filename'].'" download><img src="style/filetypes/'.$file['bt_type'].'.png" id="'.$file['bt_id'].'" alt="'.$file['bt_filename'].'" /></a><br/><span class="description">'.$file['bt_filename']."</span>\n";
+					$out .= "\t".'<a class="lien" href="'.$dossier_relatif.'/'.$file['bt_filename'].'" download><img src="style/filetypes/'.$file['bt_type'].'.png" id="'.$file['bt_id'].'" alt="'.$file['bt_filename'].'" /></a><br/><span class="description">'.$file['bt_filename']."</span>\n";
 				$out .= '</div>'."\n\n";
 			}
 			$out .= '</div>'."\n";

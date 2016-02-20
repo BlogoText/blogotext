@@ -382,7 +382,9 @@ function slideshow(action, image) {
 		ElemImg.height = im.height;
 		ElemImg.width = im.width;
 		// description
-		document.getElementById('infos-content').appendChild(document.createTextNode(im.desc));
+		var icont = document.getElementById('infos-content');
+		while (icont.firstChild) {icont.removeChild(icont.firstChild);}
+		icont.appendChild(document.createTextNode(im.desc));
 		// details
 		var idet = document.getElementById('infos-details');
 		while (idet.firstChild) {idet.removeChild(idet.firstChild);}
@@ -418,25 +420,24 @@ function slideshow(action, image) {
 		ElemImg.style.marginTop = '0';
 	};
 	ElemImg.src = '';
-	newImg.src = curr_img[counter].filename[0];
+	newImg.src = curr_img[counter].filename[3];
 	assingButtons(curr_img[counter]);
 }
 
 /* Assigne the events on the buttons from the slideshow */
 function assingButtons(file) {
-	// dl button
+	// dl button/link
 	var dl = document.getElementById('slider-nav-dl');
-	dl.href = file.filename[0];
-	dl.setAttribute('download', '');
+	document.getElementById('slider-nav-dl-link').href = file.filename[3];
 
 	// share button
-	document.getElementById('slider-nav-share').href = 'links.php?url='+file.filename[0];
+	document.getElementById('slider-nav-share-link').href = 'links.php?url='+file.filename[0];
 
 	// infos button
 	document.getElementById('slider-nav-infos').onclick = function(){ document.getElementById('slider-main-content').classList.toggle('infos-on'); };
 
 	// edit button
-	document.getElementById('slider-nav-edit').href = '?file_id='+file.id;
+	document.getElementById('slider-nav-edit-link').href = '?file_id='+file.id;
 
 	// suppr button
 	document.getElementById('slider-nav-suppr').dataset.id = file.id;
@@ -445,6 +446,12 @@ function assingButtons(file) {
 		request_delete_form(event.target.dataset.id);
 		this.removeEventListener('click', currImageDelUpdate);
 	};
+}
+
+function triggerClick(el) {
+	var evt = document.createEvent("MouseEvents");
+	evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+	el.dispatchEvent(evt);
 }
 
 
@@ -1246,12 +1253,12 @@ function sendMarkReadRequest(what, url, async) {
 
 /* in RSS config : mark a feed as "to remove" */
 function markAsRemove(link) {
-	var li = link.parentNode.parentNode.parentNode;
+	var li = link.parentNode.parentNode;
 	li.classList.add('to-remove');
 	li.getElementsByClassName('remove-feed')[0].value = 0;
 }
 function unMarkAsRemove(link) {
-	var li = link.parentNode.parentNode.parentNode;
+	var li = link.parentNode.parentNode;
 	li.classList.remove('to-remove');
 	li.getElementsByClassName('remove-feed')[0].value = 1;
 }

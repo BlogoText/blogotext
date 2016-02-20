@@ -1,15 +1,10 @@
-
-
 @media (max-width: 700px) {
 	#axe {
 		padding: 20px 10px;
 	}
 
 	/* page écrire */
-	#tag_bloc {
-		display: block;
-	}
-	#date-and-opts {
+	#tag_bloc, #date-and-opts {
 		display: block;
 	}
 	#formdate, #formheure, #formstatut, #formallowcomment {
@@ -38,48 +33,15 @@
 	.commentbloc .comm-header {
 		display: block;
 	}
-	.commentbloc .comm-options {
-		position: absolute;
-		right: 0;
-		top: 0;
-		padding: 8px;
-	}
-	.commentbloc .comm-options ul {
-		top: -3px;
-	}
-	.commentbloc .comm-options:hover ul {
-		top: 0px;
-	}
-
 	.commentbloc .comm-content blockquote {
 		padding: 5px;
 		margin: 5px;
 	}
 
 	/* links */
-	.linkbloc .link-header {
-		display: block;
-		position: relative;
-	}
-	.linkbloc .titre-lien {
-		padding-right: 50px;
-	}
-
-	.link-options ul {
-		top: 0px;
-	}
-	.link-options:hover ul {
-		top: 5px;
-		right: 5px;
-	}
-
-	.linkbloc .link-footer {
+	.linkbloc .link-header, .linkbloc .link-footer {
 		display: block;
 	}
-	.linkbloc .link-tags {
-		padding: 5px 0;
-	}
-
 	/* file edit */
 	#fichier-meta-info {
 		margin: 20px 0;
@@ -88,6 +50,9 @@
 	}
 
 	/* preferences */
+	#preferences p {
+		display: block;
+	}
 	#preferences .form-legend {
 		padding: 0;
 		margin-top: 20px;
@@ -99,6 +64,7 @@
 	#preferences .text,
 	#preferences textarea.text {
 		width: 100%;
+		display: block;
 	}
 
 	/* maintenance */
@@ -152,5 +118,8 @@
 	}
 	#post-list > li div.datesite {
 		font-size: 0.8em;
+		justify-content: flex-end;
 	}
 }
+
+
