@@ -350,31 +350,31 @@ function slideshow(action, image) {
 	}
 
 	window.addEventListener('keydown', checkKey);
+	var isSlide = false;
 
 	var ElemImg = document.getElementById('slider-img');
-
+	var oldCounter = counter;
 	switch (action) {
 		case 'start':
 			document.getElementById('slider').style.display = 'block';
 			counter = parseInt(image);
 			break;
 
-		case 'first':
-			counter = 0;
-			break;
-
 		case 'prev':
 			counter = Math.max(counter-1, 0);
+			isSlide = (oldCounter == counter) ? false : 'animSlideToRight';
 			break;
 
 		case 'next':
-			counter = Math.min(++counter, curr_max)
-			break;
-
-		case 'last':
-			counter = curr_max;
+			counter = Math.min(++counter, curr_max);
+			isSlide = (oldCounter == counter) ? false : 'animSlideToLeft';
 			break;
 	}
+
+	if (isSlide) {
+		ElemImg.classList.add(isSlide);
+	}
+
 
 	var newImg = new Image();
 	newImg.onload = function() {
@@ -419,9 +419,20 @@ function slideshow(action, image) {
 		document.getElementById('slider-img-a').href = '#';
 		ElemImg.style.marginTop = '0';
 	};
-	ElemImg.src = '';
-	newImg.src = curr_img[counter].filename[3];
-	assingButtons(curr_img[counter]);
+
+	if (isSlide) {
+		ElemImg.addEventListener('animationend', function() {
+			ElemImg.src = '';
+			newImg.src = curr_img[counter].filename[3];
+			assingButtons(curr_img[counter]);
+			ElemImg.classList.remove(isSlide);
+		});
+	} else {
+		ElemImg.src = '';
+		newImg.src = curr_img[counter].filename[3];
+		assingButtons(curr_img[counter]);
+	}
+
 }
 
 /* Assigne the events on the buttons from the slideshow */
@@ -508,10 +519,8 @@ function image_vignettes() {
 	if (!document.getElementById('image-wall')) { return };
 	var wall = document.getElementById('image-wall');
 	while (wall.firstChild) {wall.removeChild(wall.firstChild);}
-	var loadedFlag = 0;
 	// populates the wall with images in $curr_img (sorted by folder_sort())
 	for (var i = 0, len = curr_img.length ; i < len ; i++) {
-		loadedFlag++;
 		var img = curr_img[i];
 		var div = document.createElement('div');
 		div.classList.add('image_bloc');
@@ -532,78 +541,12 @@ function image_vignettes() {
 		newImg.onload = function() {
 			newImg.id = img.id;
 			newImg.alt = img.filename[1];
-			loadedFlag--;
-			if (loadedFlag == 0) tileImages();
 		}
 		div.appendChild(newImg);
 		wall.appendChild(div);
 		newImg.src = img.filename[2];
 	}
 }
-
-
-/* Used to tile images for a nicer fit, using a personnal implementation of the partition problem
-where the partition are resizeable (images are resizeable — but distorted) */
-function tileImages() {
-	var blocs = document.querySelectorAll('#image-wall .image_bloc');
-	var container = document.querySelector('#image-wall');
-	if (window.getComputedStyle(container).display != 'flex') return;
-
-	var containerW = parseInt(container.clientWidth) - parseInt(getComputedStyle(container).paddingLeft) - parseInt(getComputedStyle(container).paddingRight) -1 ;
-
-	for (var i=0, len=blocs.length, summedBlocWidth=0, fstImOfRow=0, fixedSummedBlocWidth=0 ; i<len ; i++) {
-		var currBloc = blocs[i];
-		var cW = parseInt(getComputedStyle(currBloc).width),
-		    cML = parseInt(getComputedStyle(currBloc).marginLeft),
-		    cMR = parseInt(getComputedStyle(currBloc).marginRight),
-		    cPL = parseInt(getComputedStyle(currBloc).paddingLeft),
-		    cPR = parseInt(getComputedStyle(currBloc).paddingRight),
-		    cBL = parseInt(getComputedStyle(currBloc).borderLeftWidth),
-		    cBR = parseInt(getComputedStyle(currBloc).borderRightWidth);
-		var currBlocW = cW + cML + cMR + cBL + cBR + cPL + cPR;
-
-		// if we have fallen on a new row
-		if (summedBlocWidth + currBlocW >= containerW) {
-				var whiteSpace = containerW - summedBlocWidth;
-				var delta = ( whiteSpace)/(i-fstImOfRow);
-				for (var j=fstImOfRow ; j<i ; j++) {
-					var jW = parseInt(getComputedStyle(blocs[j]).width),
-						 jML = parseInt(getComputedStyle(blocs[j]).marginLeft),
-						 jMR = parseInt(getComputedStyle(blocs[j]).marginRight),
-						 jPL = parseInt(getComputedStyle(blocs[j]).paddingLeft),
-						 jPR = parseInt(getComputedStyle(blocs[j]).paddingRight),
-						 jBL = parseInt(getComputedStyle(blocs[j]).borderLeftWidth),
-						 jBR = parseInt(getComputedStyle(blocs[j]).borderRightWidth);
-					var jiW = parseInt(getComputedStyle(blocs[j].querySelector('img')).width),
-						 jiML = parseInt(getComputedStyle(blocs[j].querySelector('img')).marginLeft),
-						 jiMR = parseInt(getComputedStyle(blocs[j].querySelector('img')).marginRight),
-						 jiPL = parseInt(getComputedStyle(blocs[j].querySelector('img')).paddingLeft),
-						 jiPR = parseInt(getComputedStyle(blocs[j].querySelector('img')).paddingRight),
-						 jiBL = parseInt(getComputedStyle(blocs[j].querySelector('img')).borderLeftWidth),
-						 jiBR = parseInt(getComputedStyle(blocs[j].querySelector('img')).borderRightWidth);
-
-					// the last image of the row gets the few remaining pixels.
-					if (j == i-1) {
-						//delta = ;
-					}
-					var w = jW - jPL - jPR;
-					// if the bloc is bigger than the image (i.e. on purpose, if bloc haz min-width), give the delta to the bloc, not the image in the bloc
-					if ( parseInt(blocs[j].querySelector('img').clientWidth) < w-3 ) {
-						blocs[j].style.width = (jW + delta) + 'px';
-						fixedSummedBlocWidth += getComputedStyle(blocs[j]).width + jPL+jPR+jBL+jBR+jMR+jML;
-					} else {
-						blocs[j].querySelector('img').style.width = (jiW + delta) + 'px';
-						fixedSummedBlocWidth += getComputedStyle(blocs[j].querySelector('img')).width + jiPL+jiPR+jiBL+jiBR+jiMR+jiML;
-					}
-				}
-				fstImOfRow = i;
-			summedBlocWidth = 0;
-			fixedSummedBlocWidth = 0;
-		}
-		summedBlocWidth += currBlocW;
-	}
-}
-
 
 
 // process bunch of files

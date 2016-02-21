@@ -52,6 +52,9 @@
 	border-bottom: 1px solid #eee;
 }
 
+.commentbloc .comm-header {
+	padding: 10px 40px 10px 20px
+}
 
 .commentbloc .comm-title {
 	flex: 0 1 auto;

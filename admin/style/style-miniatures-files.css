@@ -256,10 +256,10 @@
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: flex-start;
+	background-color: rgba(0, 0, 0, .2);
 }
 
 #image-wall .image_bloc {
-	margin: 2px;
 	height: 200px;
 	min-width:150px;
 	position: relative;
@@ -268,6 +268,8 @@
 	justify-content: center;
 	align-items: center;
 	background: rgba(0, 0, 0, .2);
+	background: white;
+	padding: 2px;
 }
 
 #image-wall .image_bloc > span {
@@ -303,6 +305,7 @@
 	padding: 0;
 	margin: 0;
 	background: url(data:image/gif;base64,R0lGODdhEAAQAIACAGZmZpmZmSwAAAAAEAAQAAACH4RvoauIzNyBSyYaLMDZcv15HAaSIlWiJ5Sya/RWVgEAOw==);
+	max-width: 350px;
 }
 
 
@@ -483,6 +486,22 @@
 -------------------------------------------------- */
 
 /* IMAGES : slider : img display : img */
+
+#slider-img.animSlideToLeft {
+	animation: .1s ease-in 0s forwards slideleft;
+}
+#slider-img.animSlideToRight {
+	animation: .1s ease-in 0s forwards slideright;
+}
+
+@keyframes slideright {
+	  0% { left: 50%; opacity: 1; }
+	100% { left: 60%; opacity: 0; }
+}
+@keyframes slideleft {
+	  0% { left: 50%; opacity: 1; }
+	100% { left: 40%; opacity: 0; }
+}
 
 #slider-display {
 	display: inline-block;

@@ -92,11 +92,9 @@ function afficher_liste_images($images) {
 		$out .= "\t\t\t".'<img id="slider-img" src="" alt=""/>'."\n";
 		$out .= "\t\t\t".'<div id="slider-box-buttons">'."\n";
 		$out .= "\t\t\t\t".'<ul id="slider-buttons">'."\n";
-		//$out .= "\t\t\t\t\t".'<li><button id="slider-first" onclick="slideshow(\'first\');"></button></li>'."\n";
 		$out .= "\t\t\t\t\t".'<li><button id="slider-prev" onclick="slideshow(\'prev\');"></button></li>'."\n";
 		$out .= "\t\t\t\t\t".'<li class="spacer"></li>'."\n";
 		$out .= "\t\t\t\t\t".'<li><button id="slider-next" onclick="slideshow(\'next\');"></button></li>'."\n";
-		//$out .= "\t\t\t\t\t".'<li><button id="slider-last" onclick="slideshow(\'last\');"></button></li>'."\n";
 		$out .= "\t\t\t\t".'</ul>'."\n";
 		$out .= "\t\t\t".'</div>'."\n";
 		$out .= "\t\t".'</div>'."\n";
