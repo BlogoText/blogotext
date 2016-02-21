@@ -29,7 +29,7 @@ function afficher_lien($link) {
 
 	$list .= '<div class="link-header">'."\n";
 	$list .= "\t".'<a class="titre-lien" href="'.$link['bt_link'].'">'.$link['bt_title'].'</a>'."\n";
-	$list .= "\t".'<div class="date">'.date_formate($link['bt_id']).', '.heure_formate($link['bt_id']).'</div>'."\n";
+	$list .= "\t".'<span class="date">'.date_formate($link['bt_id']).', '.heure_formate($link['bt_id']).'</span>'."\n";
 	$list .= "\t".'<div class="link-options">';
 	$list .= "\t\t".'<ul>'."\n";
 	$list .= "\t\t\t".'<li class="ll-edit"><a href="'.basename($_SERVER['PHP_SELF']).'?id='.$link['bt_id'].'">'.$GLOBALS['lang']['editer'].'</a></li>'."\n";
@@ -180,8 +180,15 @@ else { // aucun lien à ajouter ou éditer : champ nouveau lien + listage des li
 }
 
 echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
-echo '<script type="text/javascript">';
+echo '<script type="text/javascript">'."\n";
 echo js_red_button_event(0);
+echo 'document.getElementById(\'url\').addEventListener(\'focus\', hideFAB, false);'."\n";
+echo 'document.getElementById(\'url\').addEventListener(\'blur\', unHideFAB, false);'."\n";
+
+echo 'if (window.getComputedStyle(document.querySelector(\'#nav > ul\')).position != \'absolute\') {'."\n";
+//echo '	document.getElementById(\'url\').setAttribute(\'autofocus\', \'\');'."\n";
+echo '	document.getElementById(\'url\').focus();'."\n";
+echo '}'."\n";
 echo '</script>';
 
 footer('', $begin);

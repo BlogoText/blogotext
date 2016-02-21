@@ -19,20 +19,19 @@ if (!empty($GLOBALS['fuseau_horaire'])) {
 }
 
 // BLOGOTEXT VERSION (do not change it)
-$GLOBALS['version'] = '3.2.0';
+$GLOBALS['version'] = '3.2.2';
 $GLOBALS['last-online-file'] = '../config/version.txt';
 
 // MINIMAL REQUIRED PHP VERSION
-$GLOBALS['minimal_php_version'] = '5.3';
+$GLOBALS['minimal_php_version'] = '5.5';
 
 // GENERAL
 $GLOBALS['nom_application']= 'BlogoText';
 $GLOBALS['appsite']= 'http://lehollandaisvolant.net/blogotext/';
-$GLOBALS['date_premier_message_blog'] = '199701'; // (this value is a fallback. Actual value is in /config/config-advanced.ini)
-$GLOBALS['salt']= '123456'; // (this value is a fallback. Actual value is in /config/config-advanced.ini)
-$GLOBALS['show_errors'] = -1; // (this value is a fallback. Actual value is in /config/config-advanced.ini)
-$GLOBALS['use_ip_in_session'] = 1; // (this value is a fallback. Actual value is in /config/config-advanced.ini)
-$GLOBALS['gravatar_link'] = 'themes/default/gravatars/get.php?g='; // (this value is a fallback. Actual value is in /config/config-advanced.ini)
+$GLOBALS['date_premier_message_blog'] = '199701'; // this is overwritten by value /config/config-advanced.ini if exists
+$GLOBALS['show_errors'] = -1; // this too
+$GLOBALS['use_ip_in_session'] = 1; // this too
+$GLOBALS['gravatar_link'] = 'themes/default/gravatars/get.php?g='; // this too
 
 // FOLDERS (change this only if you know what you are doing...)
 $GLOBALS['dossier_admin'] = 'admin';
@@ -65,14 +64,12 @@ if (is_file($mysql_file) and is_readable($mysql_file) and file_get_contents($mys
 	$GLOBALS['sgdb'] = 'sqlite';
 }
 
-
-
 // regenerate captcha (always)
 if (!isset($GLOBALS['captcha'])) {
 	$ua = (isset($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : '';
 	$GLOBALS['captcha']['x'] = rand(4, 9);
 	$GLOBALS['captcha']['y'] = rand(1, 6);
-	$GLOBALS['captcha']['hash'] = sha1($ua.($GLOBALS['captcha']['x']+$GLOBALS['captcha']['y']).$GLOBALS['salt']);
+	$GLOBALS['captcha']['hash'] = sha1($ua.($GLOBALS['captcha']['x']+$GLOBALS['captcha']['y']));
 }
 
 // THEMES
@@ -248,5 +245,4 @@ function init_post_link2() { // second init : the whole link data needs to be st
 
 	return $link;
 }
-
 

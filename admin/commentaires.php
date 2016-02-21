@@ -135,7 +135,7 @@ function afficher_commentaire($comment, $with_link) {
 	echo (!empty($comment['bt_email'])) ? "\t\t".'<span class="email"><a href="mailto:'.$comment['bt_email'].'" title="'.$comment['bt_email'].'">'.$comment['bt_email'].'</a></span>'."\n" : '';
 
 	echo "\t".'</div>'."\n";
-	echo "\t".'<span class="p-date-title">'.date_formate($comment['bt_id']).'<span>, '.heure_formate($comment['bt_id']).'</span>'.( ($with_link == 1 and !empty($comment['bt_title'])) ? ' '.$GLOBALS['lang']['sur'].' <a href="'.basename($_SERVER['PHP_SELF']).'?post_id='.$comment['bt_article_id'].'">'.$comment['bt_title'].'</a>' : '').'</span>'."\n" ;
+	echo "\t".'<span class="date">'.date_formate($comment['bt_id']).'<span>, '.heure_formate($comment['bt_id']).'</span>'.( ($with_link == 1 and !empty($comment['bt_title'])) ? ' '.$GLOBALS['lang']['sur'].' <a href="'.basename($_SERVER['PHP_SELF']).'?post_id='.$comment['bt_article_id'].'">'.$comment['bt_title'].'</a>' : '').'</span>'."\n" ;
 	echo "\t".'<div class="comm-options">'."\n";
 	echo "\t\t".'<ul>'."\n";
 	echo "\t\t\t".'<li class="cl-edit" onclick="unfold(this);">'.$GLOBALS['lang']['editer'].'</li>'."\n";

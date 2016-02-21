@@ -315,7 +315,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= '<fieldset>'."\n";
 		$form .= "\t".'<div class="contain-input">'."\n";
 		$form .= "\t\t".'<label for="url">'.$GLOBALS['lang']['label_nouv_lien'].'</label>'."\n";
-		$form .= "\t\t".'<input type="text" name="url" id="url" value="" size="70" placeholder="http://www.example.com/" class="text" autofocus autocomplete="off" onfocus="hideFAB();" onblur="unHideFAB()" />'."\n";
+		$form .= "\t\t".'<input type="text" name="url" id="url" value="" size="70" placeholder="http://www.example.com/" class="text" autocomplete="off" />'."\n";
 		$form .= "\t".'</div>'."\n";
 		$form .= "\t".'<p class="submit-bttns"><input type="submit" value="'.$GLOBALS['lang']['envoyer'].'" class="submit blue-square" /></p>'."\n";
 		$form .= '</fieldset>'."\n";
@@ -705,31 +705,26 @@ function afficher_form_rssconf($errors='') {
 
 	// Form edit + list feeds.
 	$out .= '<form id="form-rss-config" method="post" action="feed.php?config">'."\n";
-	$out .= '<fieldset class="pref">'."\n";
-	$out .= '<legend class="legend-link">'.$GLOBALS['lang']['label_feed_yours'].'</legend>'."\n";
 	$out .= '<ul>'."\n";
 	foreach($GLOBALS['liste_flux'] as $i => $flux) {
 		$out .= "\t".'<li>'."\n";
-		$out .= "\t\t".'<p'.( ($flux['iserror'] > 2) ? ' class="feed-error" ' : ''  ).'>'.$flux['title'].' '.( ($flux['iserror'] > 2) ? '('.$flux['iserror'].' last requests were errors.)' : '' ).'</p>'."\n";
-		$out .= "\t\t".'<div>'."\n";
-		$out .= "\t\t\t".'<p>'."\n";
-		$out .= "\t\t\t\t".'<label for="i_'.$flux['checksum'].'">'.$GLOBALS['lang']['rss_label_titre_flux'].'</label>'."\n";
-		$out .= "\t\t\t\t".'<input id="i_'.$flux['checksum'].'" name="i_'.$flux['checksum'].'" type="text" class="text" value="'.htmlspecialchars($flux['title']).'">'."\n";
-		$out .= "\t\t\t".'</p>'."\n";
-		$out .= "\t\t\t".'<p>'."\n";
-		$out .= "\t\t\t\t".'<label for="j_'.$flux['checksum'].'">'.$GLOBALS['lang']['rss_label_url_flux'].'</label>'."\n";
-		$out .= "\t\t\t\t".'<input id="j_'.$flux['checksum'].'" name="j_'.$flux['checksum'].'" type="text" class="text" value="'.htmlspecialchars($flux['link']).'">'."\n";
-		$out .= "\t\t\t".'</p>'."\n";
-		$out .= "\t\t\t".'<p>'."\n";
-		$out .= "\t\t\t\t".'<label for="l_'.$flux['checksum'].'">'.$GLOBALS['lang']['rss_label_dossier'].'</label>'."\n";
-		$out .= "\t\t\t\t".'<input id="l_'.$flux['checksum'].'" name="l_'.$flux['checksum'].'" type="text" class="text" value="'.htmlspecialchars($flux['folder']).'">'."\n";
-		$out .= "\t\t\t\t".'<input class="remove-feed" name="k_'.$flux['checksum'].'" type="hidden" value="1">'."\n";
-		$out .= "\t\t\t".'</p>'."\n";
-		$out .= "\t\t\t".'<p>'."\n";
-		$out .= "\t\t\t".'<button type="button" class="red-square" onclick="markAsRemove(this)">'.$GLOBALS['lang']['supprimer'].'</button>'."\n";
+		$out .= "\t\t".'<span'.( ($flux['iserror'] > 2) ? ' class="feed-error" title="'.$flux['iserror'].' last requests were errors.)" ' : ''  ).'>'."\n";
+		$out .= "\t\t\t".'<label for="i_'.$flux['checksum'].'">'.$GLOBALS['lang']['rss_label_titre_flux'].'</label>'."\n";
+		$out .= "\t\t\t".'<input id="i_'.$flux['checksum'].'" name="i_'.$flux['checksum'].'" type="text" class="text" value="'.htmlspecialchars($flux['title']).'">'."\n";
+		$out .= "\t\t".'</span>'."\n";
+		$out .= "\t\t".'<span>'."\n";
+		$out .= "\t\t\t".'<label for="j_'.$flux['checksum'].'">'.$GLOBALS['lang']['rss_label_url_flux'].'</label>'."\n";
+		$out .= "\t\t\t".'<input id="j_'.$flux['checksum'].'" name="j_'.$flux['checksum'].'" type="text" class="text" value="'.htmlspecialchars($flux['link']).'">'."\n";
+		$out .= "\t\t".'</span>'."\n";
+		$out .= "\t\t".'<span>'."\n";
+		$out .= "\t\t\t".'<label for="l_'.$flux['checksum'].'">'.$GLOBALS['lang']['rss_label_dossier'].'</label>'."\n";
+		$out .= "\t\t\t".'<input id="l_'.$flux['checksum'].'" name="l_'.$flux['checksum'].'" type="text" class="text" value="'.htmlspecialchars($flux['folder']).'">'."\n";
+		$out .= "\t\t\t".'<input class="remove-feed" name="k_'.$flux['checksum'].'" type="hidden" value="1">'."\n";
+		$out .= "\t\t".'</span>'."\n";
+		$out .= "\t\t".'<span>'."\n";
 		$out .= "\t\t\t".'<button type="button" class="white-square" onclick="unMarkAsRemove(this)">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
-		$out .= "\t\t\t".'</p>';
-		$out .= "\t\t".'</div>'."\n";
+		$out .= "\t\t\t".'<button type="button" class="red-square" onclick="markAsRemove(this)">'.$GLOBALS['lang']['supprimer'].'</button>'."\n";
+		$out .= "\t\t".'</span>';
 		$out .= "\t".'</li>'."\n";
 	}
 	$out .= '</ul>'."\n";
@@ -738,7 +733,6 @@ function afficher_form_rssconf($errors='') {
 	$out .= '</p>'."\n";
 	$out .= hidden_input('token', new_token());
 	$out .= hidden_input('verif_envoi', 1);
-	$out .= '</fieldset>'."\n";
 	$out .= '</form>'."\n";
 
 	return $out;
@@ -865,7 +859,7 @@ function afficher_form_prefs($erreurs = '') {
 	echo $fld_dateheure;
 
 		$fld_cfg_blog = '<div role="group" class="pref">';
-		$fld_cfg_blog .= '<div class="form-legend">'.legend($GLOBALS['lang']['prefs_legend_configblog'], 'legend-config').'</div>'."\n";
+		$fld_cfg_blog .= '<div class="form-legend">'.legend($GLOBALS['lang']['prefs_legend_configblog'], 'legend-blogcomm').'</div>'."\n";
 		$fld_cfg_blog .= '<div class="form-lines">'."\n";
 		$nbs = array('10'=>'10', '25'=>'25', '50'=>'50', '100'=>'100', '300'=>'300', '-1' => $GLOBALS['lang']['pref_all']);
 
@@ -903,7 +897,7 @@ function afficher_form_prefs($erreurs = '') {
 
 
 		$fld_cfg_linx = '<div role="group" class="pref">';
-		$fld_cfg_linx .= '<div class="form-legend">'.legend($GLOBALS['lang']['prefs_legend_configlinx'], 'legend-config').'</div>'."\n";
+		$fld_cfg_linx .= '<div class="form-legend">'.legend($GLOBALS['lang']['prefs_legend_configlinx'], 'legend-links').'</div>'."\n";
 
 		$fld_cfg_linx .= '<div class="form-lines">'."\n";
 		// nb liens côté admin

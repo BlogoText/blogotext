@@ -5,7 +5,7 @@
 	font-size: 1em;
 	display: block;
 	clear: both;
-	margin: 10px auto 10px;
+	margin: auto;
 	text-align: center;
 }
 
@@ -16,26 +16,38 @@
 	box-sizing: border-box;
 }
 
-#auth p,
-#install p {
+#auth p {
+	display: flex;
 	justify-content: center;
-	min-height: 40px;
 	padding: 5px 0;
 }
 
+#install p {
+	padding: 5px 0;
+	width: 240px;
+	text-align: left;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 #auth p label:not([for="stay_logged"]) {
-	padding: 0 0 0 24px;
 	width: 24px;
-	height: 28px;
+	height: 1.7em;
 	box-sizing: border-box;
 	overflow: hidden;
 	display: inline-block;
-	vertical-align: middle;
-	background: white url(sprites.png) no-repeat 0 0 / 640px 400px;
+	color: rgba(0, 0, 0, .5);
+	font-size: 1.7em;
 }
+
+#auth p label:not([for="stay_logged"])::before {
+	height: 1.7em;
+	line-height: 1.7em;
+}
+
 #install p label,
 #install p input.text {
-	height: 28px;
+//	height: 28px;
 	line-height: 28px;
 	box-sizing: border-box;
 	display: inline-block;
@@ -48,7 +60,13 @@
 	border: 0;
 	margin: 0;
 	border-bottom: 1px solid silver;
-	padding: 5px;
+	padding: 0 5px;
+	line-height: 1.7em;
+}
+
+#install input.text {
+	width: 240px;
+	padding: 0;
 }
 
 #auth input.text:focus,
@@ -62,9 +80,9 @@
 	align-self: center;	
 }
 
-#auth p label[for="user"]     { background-position: -266px -131px; }
-#auth p label[for="password"] { background-position: -303px -131px; }
-#auth p label[for="word"]     { background-position: -340px -131px; }
+#auth p label[for="user"]::before     { content: "\e930"; }
+#auth p label[for="password"]::before { content: "\e93d"; }
+#auth p label[for="word"]::before     { content: "\e93b"; }
 
 
 #auth input.blue-square {
@@ -73,8 +91,8 @@
 }
 
 #pageauth h1 {
-	margin: 0 auto 30px;
-	font-size: 3em;
+	margin: 0 auto 25px;
+	font-size: 2.7em;
 }
 
 #pageauth h1#step { /* install */
@@ -92,11 +110,5 @@
 
 #pageauth label[for="sgdb"] {
 	display: inline;
-}
-
-
-#install p label {
-	text-align: left;
-	width: 220px;
 }
 

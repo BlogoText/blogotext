@@ -155,7 +155,7 @@ function afficher_form_1($erreurs='') {
 	form_langue_install('Choisissez votre langue / Choose your language: ');
 	echo hidden_input('verif_envoi_1', '1');
 	echo '</p>';
-	echo '<p><input class="inpauth blue-square" type="submit" name="enregistrer" value="Ok" /></p>'."\n";
+	echo '<input class="inpauth blue-square" type="submit" name="enregistrer" value="Ok" />'."\n";
 	echo '<div>'."\n";
 	echo '</form>'."\n";
 }
@@ -171,17 +171,17 @@ function afficher_form_2($erreurs='') {
 	echo '<form method="post" action="install.php?s='.$GLOBALS['step'].'&amp;l='.$GLOBALS['lang']['id'].'" onsubmit="return verifForm2(this)">'."\n".'<div id="erreurs_js" class="erreurs"></div>'."\n";
 	echo '<div id="install">'."\n";
 	echo '<p>';
-	echo '<label for="identifiant">'.$GLOBALS['lang']['install_id'].' </label><input type="text" name="identifiant" id="identifiant" size="30" value="" class="text" />'."\n";
+	echo '<label for="identifiant">'.$GLOBALS['lang']['install_id'].' </label><input type="text" name="identifiant" id="identifiant" size="30" value="" class="text" placeholder="John Doe" />'."\n";
 	echo '</p>'."\n";
 	echo '<p>';
-	echo '<label for="mdp">'.$GLOBALS['lang']['install_mdp'].' </label><input type="password" name="mdp" id="mdp" size="30" value="" class="text" autocomplete="off" />'."\n";
+	echo '<label for="mdp">'.$GLOBALS['lang']['install_mdp'].' </label><input type="password" name="mdp" id="mdp" size="30" value="" class="text" autocomplete="off" placeholder="••••••••••••" />'."\n";
 	echo '</p>'."\n";
 	echo '<p>';
-	echo '<label for="mdp_rep">'.$GLOBALS['lang']['install_remdp'].' </label><input type="password" name="mdp_rep" id="mdp_rep" size="30" value="" class="text" autocomplete="off" />'."\n";
-	$lien = str_replace('admin/install.php', '', 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF']);
+	echo '<label for="mdp_rep">'.$GLOBALS['lang']['install_remdp'].' </label><input type="password" name="mdp_rep" id="mdp_rep" size="30" value="" class="text" autocomplete="off" placeholder="••••••••••••" />'."\n";
+	$lien = str_replace($GLOBALS['dossier_admin'].'/install.php', '', 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF']);
 	echo '</p>'."\n";
 	echo '<p>';
-	echo '<label for="racine">'.$GLOBALS['lang']['pref_racine'].' </label><input type="text" name="racine" id="racine" size="30" value="'.$lien.'" class="text" />'."\n";
+	echo '<label for="racine">'.$GLOBALS['lang']['pref_racine'].' </label><input type="text" name="racine" id="racine" size="30" value="'.$lien.'" class="text"  placeholder="'.$lien.'"/>'."\n";
 	echo '</p>'."\n";
 	echo hidden_input('comm_defaut_status', '1');
 	echo hidden_input('langue', $GLOBALS['lang']['id']);
@@ -215,10 +215,14 @@ function afficher_form_3($erreurs='') {
 
 	echo '<div id="mysql_vars" style="display:none;">'."\n";
 	if (extension_loaded('pdo_mysql') ) {
-		echo '<p><label for="mysql_user">MySQL User: </label><input type="text" id="mysql_user" name="mysql_user" size="30" value="" class="text" /></p>'."\n";
-		echo '<p><label for="mysql_password">MySQL Password: </label><input id="mysql_password" type="password" name="mysql_passwd" size="30" value="" class="text" autocomplete="off" /></p>'."\n";
-		echo '<p><label for="mysql_db">MySQL Database: </label><input type="text" id="mysql_db" name="mysql_db" size="30" value="" class="text" /></p>'."\n";
-		echo '<p><label for="mysql_host">MySQL Host: </label><input type="text" id="mysql_host" name="mysql_host" size="30" value="" class="text" /></p>'."\n";
+		echo '<p><label for="mysql_user">MySQL User: </label>
+					<input type="text" id="mysql_user" name="mysql_user" size="30" value="" class="text" placeholder="mysql_user" /></p>'."\n";
+		echo '<p><label for="mysql_password">MySQL Password: </label>
+					<input type="password" id="mysql_password" name="mysql_passwd" size="30" value="" class="text" placeholder="••••••••••••" autocomplete="off" /></p>'."\n";
+		echo '<p><label for="mysql_db">MySQL Database: </label>
+					<input type="text" id="mysql_db" name="mysql_db" size="30" value="" class="text" placeholder="db_blogotext" /></p>'."\n";
+		echo '<p><label for="mysql_host">MySQL Host: </label>
+					<input type="text" id="mysql_host" name="mysql_host" size="30" value="" class="text" placeholder="localhost" /></p>'."\n";
 	}
 	echo '</div>'."\n";
 

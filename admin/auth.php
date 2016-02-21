@@ -42,15 +42,15 @@ if (check_session() === TRUE) { // return to index if session is already open.
 // Auth checking :
 if (isset($_POST['_verif_envoi']) and valider_form() === TRUE) { // OK : getting in.
 	if ($GLOBALS['use_ip_in_session'] == 1) {
-		$ip = get_real_ip();
+		$ip = get_ip();
 	} else {
 		$ip = date('m'); // make session expire at least once a month, disregarding IP changes.
 	}
-	$_SESSION['user_id'] = $_POST['nom_utilisateur'].hash_password($_POST['mot_de_passe'], $GLOBALS['salt']).md5($_SERVER['HTTP_USER_AGENT'].$ip); // set special hash
+	$_SESSION['user_id'] = $_POST['nom_utilisateur'].hash('sha256', $_POST['mot_de_passe'].$_SERVER['HTTP_USER_AGENT'].$ip); // set special hash
 	usleep(100000); // 100ms sleep to avoid bruteforce
 
 	if (!empty($_POST['stay_logged'])) { // if user wants to stay logged
-		$user_id = hash_password($GLOBALS['mdp'].$GLOBALS['identifiant'].$GLOBALS['salt'], md5($_SERVER['HTTP_USER_AGENT'].$ip.$GLOBALS['salt']));
+		$user_id = hash('sha256', $GLOBALS['mdp_hash'].$GLOBALS['identifiant'].md5($_SERVER['HTTP_USER_AGENT'].$ip));
 		setcookie('BT-admin-stay-logged', $user_id, time()+365*24*60*60, null, null, false, true);
 		session_set_cookie_params(365*24*60*60); // set expiration time to the browser
 	} else {
@@ -87,7 +87,6 @@ if (isset($_POST['_verif_envoi']) and valider_form() === TRUE) { // OK : getting
 			echo '<p><label for="word">'.ucfirst($GLOBALS['lang']['label_dp_word_captcha']).'</label><input class="text" type="text" id="word" name="word" value="" /></p>'."\n";
 			echo '<p><a href="#" onclick="new_freecap();return false;" title="'.$GLOBALS['lang']['label_dp_changer_captcha'].'"><img src="../inc/freecap/freecap.php" id="freecap" alt="captcha"></a></p>'."\n";
 		}
-
 		echo '<p><label for="stay_logged">'.$GLOBALS['lang']['label_stay_logged'].'</label><input type="checkbox" id="stay_logged" name="stay_logged" checked /></p>'."\n";
 		echo '<input class="blue-square" type="submit" name="submit" value="'.$GLOBALS['lang']['connexion'].'" />'."\n";
 		echo '<input type="hidden" name="_verif_envoi" value="1" />'."\n";
@@ -96,10 +95,8 @@ if (isset($_POST['_verif_envoi']) and valider_form() === TRUE) { // OK : getting
 }
 
 function valider_form() {
-	$mot_de_passe_ok = $GLOBALS['mdp'].$GLOBALS['identifiant'];
-	$mot_de_passe_essai = hash_password($_POST['mot_de_passe'], $GLOBALS['salt']).$_POST['nom_utilisateur'];
 	// first test password
-	if ($mot_de_passe_essai != $mot_de_passe_ok) {
+	if (!password_verify($_POST['mot_de_passe'], $GLOBALS['mdp_hash'])) {
 		return FALSE;
 	}
 	// then test captcha
@@ -109,10 +106,9 @@ function valider_form() {
 		}
 		$_SESSION['freecap_word_hash'] = FALSE; // reset captcha word
 	}
-
 	return TRUE;
 }
 
 echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
 footer();
-?>
+

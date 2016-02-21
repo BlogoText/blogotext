@@ -133,7 +133,7 @@ function parse_texte_paragraphs($texte) {
 			$texte_final .= preg_replace('#(</?('.$block_elements.') ?.*?>)(<br ?/?>)(\n?\r?)#s', '$1$3$5', $texte_nl2br);
 			// saves the remaining text
 			$texte_restant = preg_replace('#^<('.$block_elements.') ?.*?>(.*?)</(\1)>#s', '', $texte_formate, 1);
-			// again, removes empty lines+spaces at begin or end TODO : save the lines to make <br/> (??)
+			// again, removes empty lines+spaces at begin or end TODO : save the lines to make multiple "<br/>" spaces (??)
 			$texte_restant = preg_replace('#^(\r|\n|<br>|<br/>|<br />){0,}(.*?)(\r|<br>|<br/>|<br />){0,}$#s', '$2', $texte_restant);
 			// if no matches for block elements, we are finished
 			$finished = (strlen($texte_retire) === 0) ? TRUE : FALSE;
@@ -160,7 +160,7 @@ function parse_texte_paragraphs($texte) {
 			}
 		}
 
-		//  again, removes empty lines+spaces at begin or end TODO : save the lines to make <br/> (??)
+		//  again, removes empty lines+spaces at begin or end
 		$texte_restant = preg_replace('#^(\r|\n|<br>|<br/>|<br />){0,}(.*?)(\r|<br>|<br/>|<br />){0,}$#s', '$2', $texte_restant);
 		// loops on the text, to find the next element.
 		$texte_formate = $texte_restant;

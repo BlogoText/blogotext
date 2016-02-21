@@ -34,13 +34,13 @@ function fichier_user() {
 	$fichier_user = '../'.$GLOBALS['dossier_config'].'/user.php';
 	$user='';
 	if (strlen(trim($_POST['mdp'])) == 0) {
-		$new_mdp = $GLOBALS['mdp']; 
+		$new_mdp = $GLOBALS['mdp_hash']; 
 	} else {
-		$new_mdp = hash_password($_POST['mdp_rep'], $GLOBALS['salt']);
+		$new_mdp = password_hash($_POST['mdp_rep'], PASSWORD_BCRYPT);
 	}
 	$user .= "<?php\n";
 	$user .= "\$GLOBALS['identifiant'] = '".addslashes(clean_txt(htmlspecialchars($_POST['identifiant'])))."';\n";
-	$user .= "\$GLOBALS['mdp'] = '".$new_mdp."';\n";
+	$user .= "\$GLOBALS['mdp_hash'] = '".$new_mdp."';\n";
 	$user .= "?>";
 	if (file_put_contents($fichier_user, $user) === FALSE) {
 		return FALSE;
