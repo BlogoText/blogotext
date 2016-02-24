@@ -88,7 +88,7 @@ echo '<div id="header">'."\n";
 		echo "\t\t\t".'<li><button type="button" onclick="return cleanList();" title="'.$GLOBALS['lang']['rss_label_clean'].'"></button></li>'."\n";
 		echo "\t\t".'</ul>'."\n";
 		echo "\t".'</div>'."\n";
-		echo '<button type="button" id="add-feed" class="floating-action" onclick="addNewFeed();" title="'.$GLOBALS['lang']['rss_label_config'].'">'.$GLOBALS['lang']['label_lien_ajout'].'</button>'."\n";
+		echo '<button type="button" id="fab" class="add-feed" onclick="addNewFeed();" title="'.$GLOBALS['lang']['rss_label_config'].'">'.$GLOBALS['lang']['label_lien_ajout'].'</button>'."\n";
 	}
 
 echo '</div>'."\n";
@@ -154,6 +154,9 @@ else {
 			}
 			else { return true; }
 		});'."\n";
+
+	echo 'var scrollPos = 0;'."\n";
+	echo 'window.addEventListener(\'scroll\', function(){ scrollingFabHideShow() });'."\n";
 
 	echo ''."\n";
 	echo js_rss_add_feed(0);

@@ -221,7 +221,8 @@ q, blockquote {
 	/*background: #795548;*/ /*darker brown*/
 	/*background: #4caf50;*/ /*green*/
 	/*background: #0F9D58;*/ /*darkgreen*/
-	background: #f44336; /*red*/
+	background: #263238; /*darkblue*/
+	/*background: #DB4437;*/ /*red*/
 	padding: 0 0 0 20px;
 	color: inherit;
 }
@@ -500,7 +501,7 @@ q, blockquote {
 /* Floating action button (FAB)
 ------------------------------------------------------------------ */
 
-.floating-action {
+#fab {
 	display: inline-block;
 	height: 56px;
 	width: 56px;
@@ -520,7 +521,7 @@ q, blockquote {
 	border: 0;
 }
 
-.floating-action::before {
+#fab::before {
 	content: "\e903";
 	position: absolute;
 	top: 0; left: 0; bottom: 0; right: 0;
@@ -531,17 +532,17 @@ q, blockquote {
 	background: #db4437;
 }
 
-.floating-action:focus {
+#fab:focus {
 	box-shadow: 0 0 6px rgba(0, 0, 0, 0.15), 0 8px 17px 0 rgba(0, 0, 0, 0.4);
 	outline: none;
 }
 
-.floating-action.hidden {
+#fab.hidden {
 	transform: scale(0);
 	transition: transform .2s cubic-bezier(.2,-.5,.5,.2);
 }
 
-.floating-action#add-feed::before {
+#fab.add-feed::before {
 	content: "\e927";
 }
 /* PAGE INDEX 

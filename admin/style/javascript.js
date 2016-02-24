@@ -202,16 +202,25 @@ function removeTag(tag) {
 
 /* for links : hide the FAB button when focus on link field (more conveniant for mobile UX) */
 function hideFAB() {
-	if (document.getElementById('add-link')) {
-		document.getElementById('add-link').classList.add('hidden');
+	if (document.getElementById('fab')) {
+		document.getElementById('fab').classList.add('hidden');
 	}
 }
 function unHideFAB() {
-	if (document.getElementById('add-link')) {
-		document.getElementById('add-link').classList.remove('hidden');
+	if (document.getElementById('fab')) {
+		document.getElementById('fab').classList.remove('hidden');
 	}
 }
 
+/* for several pages: eventlistener to show/hide FAB on scrolling (avoids FAB from beeing in the way) */
+function scrollingFabHideShow() {
+	if ((document.body.getBoundingClientRect()).top > scrollPos) {
+		unHideFAB();
+	} else {
+		hideFAB();
+	}
+	scrollPos = (document.body.getBoundingClientRect()).top;
+}
 
 
 
@@ -1365,4 +1374,5 @@ function draw(container) {
 	ctx.fill();
 	ctx.closePath();
 }
+
 

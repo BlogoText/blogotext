@@ -83,7 +83,7 @@ function afficher_liste_articles($tableau) {
 		$out = info($GLOBALS['lang']['note_no_article']);
 	}
 
-	$out .= '<a id="add-article" class="floating-action" href="ecrire.php" title="'.$GLOBALS['lang']['titre_ecrire'].'">'.$GLOBALS['lang']['titre_ecrire'].'</a>'."\n";
+	$out .= '<a id="fab" class="add-article" href="ecrire.php" title="'.$GLOBALS['lang']['titre_ecrire'].'">'.$GLOBALS['lang']['titre_ecrire'].'</a>'."\n";
 
 	echo $out;
 
@@ -118,5 +118,9 @@ echo '<div id="page">'."\n";
 afficher_liste_articles($tableau);
 
 echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
+	echo "\n".'<script type="text/javascript">'."\n";
+	echo 'var scrollPos = 0;'."\n";
+	echo 'window.addEventListener(\'scroll\', function(){ scrollingFabHideShow() });'."\n";
+	echo "\n".'</script>'."\n";
 footer('', $begin);
 ?>

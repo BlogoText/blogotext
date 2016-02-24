@@ -174,7 +174,7 @@ else { // aucun lien à ajouter ou éditer : champ nouveau lien + listage des li
 		afficher_lien($link);
 	}
 	if (!isset($_GET['ajout'])) {
-		echo '<a id="add-link" class="floating-action" href="links.php?ajout" title="'.$GLOBALS['lang']['label_lien_ajout'].'">'.$GLOBALS['lang']['label_lien_ajout'].'</a>'."\n";
+		echo '<a id="fab" class="add-link" href="links.php?ajout" title="'.$GLOBALS['lang']['label_lien_ajout'].'">'.$GLOBALS['lang']['label_lien_ajout'].'</a>'."\n";
 	}
 	echo '</div>'."\n";
 }
@@ -186,9 +186,11 @@ echo 'document.getElementById(\'url\').addEventListener(\'focus\', hideFAB, fals
 echo 'document.getElementById(\'url\').addEventListener(\'blur\', unHideFAB, false);'."\n";
 
 echo 'if (window.getComputedStyle(document.querySelector(\'#nav > ul\')).position != \'absolute\') {'."\n";
-//echo '	document.getElementById(\'url\').setAttribute(\'autofocus\', \'\');'."\n";
 echo '	document.getElementById(\'url\').focus();'."\n";
 echo '}'."\n";
+
+echo 'var scrollPos = 0;'."\n";
+echo 'window.addEventListener(\'scroll\', function(){ scrollingFabHideShow() });'."\n";
 echo '</script>';
 
 footer('', $begin);
