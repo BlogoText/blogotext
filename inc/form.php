@@ -824,6 +824,16 @@ function afficher_form_prefs($erreurs = '') {
 		$fld_apparence .= form_select('nb_maxi', array('5'=>'5', '10'=>'10', '15'=>'15', '20'=>'20', '25'=>'25', '50'=>'50'), $GLOBALS['max_bill_acceuil'],$GLOBALS['lang']['pref_nb_maxi']);
 		$fld_apparence .= '</p>'."\n";
 
+		$nbs = array('10'=>'10', '25'=>'25', '50'=>'50', '100'=>'100', '300'=>'300', '-1' => $GLOBALS['lang']['pref_all']);
+		$fld_apparence .= '<p>'."\n";
+		$fld_apparence .= form_select('nb_list', $nbs, $GLOBALS['max_bill_admin'],$GLOBALS['lang']['pref_nb_list']);
+		$fld_apparence .= '</p>'."\n";
+
+		$fld_apparence .= '<p>'."\n";
+		$fld_apparence .= form_select('nb_list_com', $nbs, $GLOBALS['max_comm_admin'],$GLOBALS['lang']['pref_nb_list_com']);
+		$fld_apparence .= '</p>'."\n";
+
+
 		$fld_apparence .= '<p>'."\n";
 		$fld_apparence .= form_checkbox('aff_onglet_rss', $GLOBALS['onglet_rss'], $GLOBALS['lang']['pref_afficher_rss'] );
 		$fld_apparence .= '</p>'."\n";
@@ -861,15 +871,6 @@ function afficher_form_prefs($erreurs = '') {
 		$fld_cfg_blog = '<div role="group" class="pref">';
 		$fld_cfg_blog .= '<div class="form-legend">'.legend($GLOBALS['lang']['prefs_legend_configblog'], 'legend-blogcomm').'</div>'."\n";
 		$fld_cfg_blog .= '<div class="form-lines">'."\n";
-		$nbs = array('10'=>'10', '25'=>'25', '50'=>'50', '100'=>'100', '300'=>'300', '-1' => $GLOBALS['lang']['pref_all']);
-
-		$fld_cfg_blog .= '<p>'."\n";
-		$fld_cfg_blog .= form_select('nb_list', $nbs, $GLOBALS['max_bill_admin'],$GLOBALS['lang']['pref_nb_list']);
-		$fld_cfg_blog .= '</p>'."\n";
-
-		$fld_cfg_blog .= '<p>'."\n";
-		$fld_cfg_blog .= form_select('nb_list_com', $nbs, $GLOBALS['max_comm_admin'],$GLOBALS['lang']['pref_nb_list_com']);
-		$fld_cfg_blog .= '</p>'."\n";
 
 		$fld_cfg_blog .= '<p>'."\n";
 		$fld_cfg_blog .= form_checkbox('activer_categories', $GLOBALS['activer_categories'], $GLOBALS['lang']['pref_categories'] );

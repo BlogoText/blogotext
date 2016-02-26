@@ -28,8 +28,8 @@
 #preferences .legend-sweep::before { content: "\e93c";}
 
 #preferences p {
-	max-width: 80%;
-	margin: 20px 0;
+	max-width: 100%;
+	margin: 20px auto;
 	display: flex;
 	align-items: baseline;
 }
@@ -38,7 +38,7 @@
 	text-align: right;
 	padding-right: 5px;
 	margin: 10px 0;
-	flex: 0 1 40%;
+	flex: 0 1 45%;
 }
 
 #preferences .text {

@@ -13,42 +13,46 @@ header("Content-type: text/css; charset: UTF-8");
 /* FOR MAINTENANCE : CSS FILES ARE SPLITED IN MULTIPLE FILES
 -------------------------------------------------------------*/
 
-echo '/* Page de styles plus générales */'."\n";
+echo '/* General styles (layout, forms, multi-pages elements…) */'."\n";
 readfile('style-style.css');
 
-echo '/* Page d’authentification */'."\n";
+echo '/* Auth page */'."\n";
 readfile('style-auth.css');
 
-echo '/* Résumé page : for the graphs and the thumbnails */'."\n";
+echo '/* Home page, with graphs */'."\n";
 readfile('style-graphs.css');
 
-echo '/* Page des articles : liste sous la forme d’un tableau */'."\n";
+echo '/* Article lists page */'."\n";
 readfile('style-articles.css');
 
-echo '/* Écrire page : for the new article form page */'."\n";
+echo '/* Write page: new article form */'."\n";
 readfile('style-ecrire.css');
 
-echo '/* Page des commentaires : formulaires + blocs */'."\n";
+echo '/* Comments page: forms+comm list */'."\n";
 readfile('style-commentaires.css');
 
-echo '/* Images and files : miniatures blocs + formulaires */'."\n";
+echo '/* Images and files: form + listing */'."\n";
 readfile('style-miniatures-files.css');
 
-echo '/* Page des liens : formulaire + blocs. */'."\n";
+echo '/* Links page: form + listing. */'."\n";
 readfile('style-liens.css');
 
-echo '/* Page des flux RSS */'."\n";
+echo '/* RSS page: listing + forms */'."\n";
 readfile('style-rss.css');
 
-echo '/* Page des préférences et de maintenance */'."\n";
+echo '/* Prefs + maintainance pages */'."\n";
 readfile('style-preferences.css');
 
-echo '/* Page de styles plus mobile < 1100px de large */'."\n";
+echo '/* Media-queries < 1100px */'."\n";
 readfile('style-mobile-lt1100px.css');
 
-echo '/* Page de styles plus mobile < 850px de large */'."\n";
+echo '/* Media-queries < 850px */'."\n";
 readfile('style-mobile-lt850px.css');
 
-echo '/* Page de styles plus mobile < 700px de large */'."\n";
+echo '/* Media-queries < 700px */'."\n";
 readfile('style-mobile-lt700px.css');
 
+if (is_file('../../config/custom-styles.css')) {
+	echo '/* User-Custom CSS */'."\n";
+	readfile('../../config/custom-styles.css');
+}
