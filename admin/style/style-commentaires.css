@@ -13,6 +13,20 @@
 	padding : 0;
 }
 
+.commentbloc {
+	border-bottom: 1px solid #eee;
+	margin: 0;
+}
+
+.commentbloc:not(:first-child) {
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+}
+.commentbloc:not(:last-child) {
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
 .commentbloc::after,
 .linkbloc::after {
 	content: "";
@@ -53,7 +67,8 @@
 }
 
 .commentbloc .comm-header {
-	padding: 10px 40px 10px 20px
+	padding: 10px 40px 10px 20px;
+	border-bottom: 0;
 }
 
 .commentbloc .comm-title {

@@ -426,7 +426,7 @@
 }
 
 #form-rss-config li span:first-of-type { /* name */
-	flex: 1 1 auto;
+	flex: 1;
 }
 #form-rss-config li span:first-of-type input { /* name */
 	font-weight: bold;
@@ -440,7 +440,7 @@
 	text-overflow: ellipsis;
 }
 #form-rss-config li span:nth-of-type(3) { /* folder */
-	flex: 0 0 auto;
+	flex: 0 0 20%;
 }
 
 #form-rss-config li span:nth-of-type(4) { /* suppr+annuler buttons */

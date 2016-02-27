@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2015 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -275,7 +275,7 @@ function traiter_install_3() {
 			'bt_title' => 'README / LISEZ-MOI',
 			'bt_abstract' => 'Instructions / Instructions',
 			'bt_content' => gzinflate(base64_decode('rVPLjtQwELzPV7T2MoDC7A+sVgIE0t5WYuHecXoSC8c9+JHs7NdwJELiB7htfoxuJwOzB+DCSGNZdruqq7qyuesoEmAgiNwTWB9TyCZZ9hH2HCB1coN7SkfgPRw5B6gdt7urOlxeb248cGhIyhgOgROZtNQcKET26EoxYIsKDJgSmk+xgtdyKtX3cuQcj1EfKcZVfR3IozSivBfY9NZfSB9OOK4u6+sdfIjWt+X23d0tGPaeSrf6ujCPVL/sOCYpqwps7Di7BgIJ1RH+CK8AY4eJBtnruxF92mlHN2kbwXNSPww1FdQ5gU0wWufEMCPIYmFHOFghKIYloWlTp5adSX3qQtGz2HjrFKIC3KeVfGmzKWhrf89s8R8afl7JfU99Tct8PI1QVNVkMEdVh2t7nkc5PYdRiA4HUr0t62rPhojGUIylvrgDB/TknujYbZamX/zH34K4rB/ZGgufMzn5Rx1xJOsiHHS6DiHOk8nBpnmChmBg8fo8kq/20rVcaBznqRVZv0sUTPfNdp4G8kk4nFDoQJTrPJcD56gp7ikp2hJM7nvBcwLAMVrZPn5bbXr8scTzrYecrLNRwqPNloDeaz41rvOXtRmKBzTaRzdPMsVWpulTtZA2NARLD/APPiCh8oBZ8aRSHVsAZGkCPZTsviHx0m9JYnfACFw722JiK296tOIuSZPYz5OzHCigau3R2/mr2hRQviPF/YvtJ0/PjdypGcs43m+tW810OH9XkZQlmUVgIm+LPs95IMxPdTTq3YMoPMmvwGAAU9SYk2jF36MoxtV5scmocb9MO33nJUAS8HnSsAtsyfZus/kJ')),
-			'bt_wiki_content' => 'Once readed, you may delete this post / Une fois que vous avez lu ceci, vous pouvez supprimer l\'article',
+			'bt_wiki_content' => 'Once read, you should delete this post / Une fois que vous avez lu ceci, vous pouvez supprimer l\'article',
 			'bt_keywords' => '',
 			'bt_statut' => '0',
 			'bt_allow_comments' => '0'
@@ -308,8 +308,6 @@ function traiter_install_3() {
 		bdd_lien($link_ar, 'enregistrer-nouveau'); // lien
 		bdd_lien($link_ar2, 'enregistrer-nouveau'); // lien
 
-
-
 		$comm_ar = array(
 			'bt_type' => 'comment',
 			'bt_id' => date('YmdHis', $time+6),
@@ -325,7 +323,6 @@ function traiter_install_3() {
 		);
 
 		bdd_commentaire($comm_ar, 'enregistrer-nouveau'); // commentaire sur l’article
-
 
 	}
 }

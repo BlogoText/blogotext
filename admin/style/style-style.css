@@ -687,7 +687,7 @@ fieldset {
 #billets > li,
 #auth, #install,
 #form-image, #image-section, #files-section,
-#preferences,
+#preferences > div,
 #preferences-captcha,
 #maintenance-form,
 #post-nv-commentaire,

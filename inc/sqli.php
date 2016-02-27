@@ -4,13 +4,12 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2015 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
 #
 # *** LICENSE ***
-
 
 /*  Creates a new BlogoText base.
     if file does not exists, it is created, as well as the tables.
@@ -20,10 +19,9 @@ function create_tables() {
 	if (file_exists($GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_config'].'/'.'mysql.php')) {
 		include($GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_config'].'/'.'mysql.php');
 	}
-	$if_not_exists = ($GLOBALS['sgdb'] == 'mysql') ? 'IF NOT EXISTS' : ''; // SQLite does'nt know these syntaxes.
-	$auto_increment = ($GLOBALS['sgdb'] == 'mysql') ? 'AUTO_INCREMENT' : ''; // SQLite does'nt know these syntaxes, but MySQL needs it.
+	$auto_increment = ($GLOBALS['sgdb'] == 'mysql') ? 'AUTO_INCREMENT' : ''; // SQLite does'nt need this, but MySQL does.
 
-	$GLOBALS['dbase_structure']['links'] = "CREATE TABLE ".$if_not_exists." links
+	$GLOBALS['dbase_structure']['links'] = "CREATE TABLE IF NOT EXISTS links
 		(
 			ID INTEGER PRIMARY KEY $auto_increment,
 			bt_type CHAR(20),
@@ -37,7 +35,7 @@ function create_tables() {
 			bt_statut TINYINT
 		); CREATE INDEX dateL ON links ( bt_id );";
 
-	$GLOBALS['dbase_structure']['commentaires'] = "CREATE TABLE ".$if_not_exists." commentaires
+	$GLOBALS['dbase_structure']['commentaires'] = "CREATE TABLE IF NOT EXISTS commentaires
 		(
 			ID INTEGER PRIMARY KEY $auto_increment,
 			bt_type CHAR(20),
@@ -54,7 +52,7 @@ function create_tables() {
 		); CREATE INDEX dateC ON commentaires ( bt_id );";
 
 
-	$GLOBALS['dbase_structure']['articles'] = "CREATE TABLE ".$if_not_exists." articles
+	$GLOBALS['dbase_structure']['articles'] = "CREATE TABLE IF NOT EXISTS articles
 		(
 			ID INTEGER PRIMARY KEY $auto_increment,
 			bt_type CHAR(20),
@@ -74,7 +72,7 @@ function create_tables() {
 		); CREATE INDEX dateidA ON articles (bt_date, bt_id );";
 
 	/* here bt_ID is a GUID, from the feed, not only a 'YmdHis' date string.*/
-	$GLOBALS['dbase_structure']['rss'] = "CREATE TABLE ".$if_not_exists." rss
+	$GLOBALS['dbase_structure']['rss'] = "CREATE TABLE IF NOT EXISTS rss
 		(
 			ID INTEGER PRIMARY KEY $auto_increment,
 			bt_id TEXT,
@@ -88,7 +86,7 @@ function create_tables() {
 		); CREATE INDEX dateidR ON rss (bt_date, bt_id );";
 
 	/*
-	* SQLite : opens file, check tables by listing them, create the one that miss.
+	* SQLite
 	*
 	*/
 	switch ($GLOBALS['sgdb']) {
@@ -97,28 +95,16 @@ function create_tables() {
 				if (!creer_dossier($GLOBALS['BT_ROOT_PATH'].''.$GLOBALS['dossier_db'])) {
 					die('Impossible de creer le dossier databases (chmod?)');
 				}
-
 				$file = $GLOBALS['BT_ROOT_PATH'].''.$GLOBALS['dossier_db'].'/'.$GLOBALS['db_location'];
 				// open tables
-
 				try {
 					$db_handle = new PDO('sqlite:'.$file);
 					$db_handle->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 					$db_handle->query("PRAGMA temp_store=MEMORY; PRAGMA synchronous=OFF; PRAGMA journal_mode=WAL;");
-					// list tables
-					$list_tbl = $db_handle->query("SELECT name FROM sqlite_master WHERE type='table'");
-					// make an normal array, need for "in_array()"
-					$tables = array();
-					foreach($list_tbl as $j) {
-						$tables[] = $j['name'];
-					}
 
-					// check each wanted table (this is because the "IF NOT EXISTS" condition doesn’t exist in lower versions of SQLite.
 					$wanted_tables = array('commentaires', 'articles', 'links', 'rss');
 					foreach ($wanted_tables as $i => $name) {
-						if (!in_array($name, $tables)) {
-							$results = $db_handle->query($GLOBALS['dbase_structure'][$name]);
-						}
+						$results = $db_handle->query($GLOBALS['dbase_structure'][$name]);
 					}
 				} catch (Exception $e) {
 					die('Erreur 1: '.$e->getMessage());
@@ -126,7 +112,7 @@ function create_tables() {
 			break;
 
 		/*
-		* MySQL : create tables with the IF NOT EXISTS condition. Easy.
+		* MySQL
 		*
 		*/
 		case 'mysql':

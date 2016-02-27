@@ -172,6 +172,10 @@
 	color: #aaa;
 }
 
+.linkbloc .hard-link {
+	word-break: break-all;
+}
+
 /* link options button */
 	/*  see comm-options button */
 

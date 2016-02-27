@@ -311,7 +311,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 	}
 	$form = '';
 	if ($step == 1) { // postage de l'URL : un champ affiché en GET
-		$form .= '<form method="get" class="bordered-formbloc" id="post-new-lien" action="'.basename($_SERVER['PHP_SELF']).'">'."\n";
+		$form .= '<form method="get" id="post-new-lien" action="'.basename($_SERVER['PHP_SELF']).'">'."\n";
 		$form .= '<fieldset>'."\n";
 		$form .= "\t".'<div class="contain-input">'."\n";
 		$form .= "\t\t".'<label for="url">'.$GLOBALS['lang']['label_nouv_lien'].'</label>'."\n";
@@ -322,7 +322,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= '</form>'."\n\n";
 
 	} elseif ($step == 2) { // Form de l'URL, avec titre, description, en POST cette fois, et qu'il faut vérifier avant de stoquer dans la BDD.
-		$form .= '<form method="post" onsubmit="return moveTag();" class="bordered-formbloc" id="post-lien" action="'.basename($_SERVER['PHP_SELF']).'">'."\n";
+		$form .= '<form method="post" onsubmit="return moveTag();" id="post-lien" action="'.basename($_SERVER['PHP_SELF']).'">'."\n";
 
 		$url = $_GET['url'];
 		$type = 'url';
@@ -415,7 +415,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= '</form>'."\n\n";
 
 	} elseif ($step == 'edit') { // Form pour l'édition d'un lien : les champs sont remplis avec le "wiki_content" et il y a les boutons suppr/activer en plus.
-		$form = '<form method="post" onsubmit="return moveTag();" class="bordered-formbloc" id="post-lien" action="'.basename($_SERVER['PHP_SELF']).'?id='.$editlink['bt_id'].'">'."\n";
+		$form = '<form method="post" onsubmit="return moveTag();" id="post-lien" action="'.basename($_SERVER['PHP_SELF']).'?id='.$editlink['bt_id'].'">'."\n";
 		//$form .= "\t".'<fieldset class="pref">'."\n";
 		$form .= "\t".'<input type="text" name="url" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_url']).'" required="" value="'.$editlink['bt_link'].'" size="70" class="text readonly-like" /></label>'."\n";
 		$form .= "\t".'<input type="text" name="title" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_titre']).'" required="" value="'.$editlink['bt_title'].'" size="70" class="text" autofocus /></label>'."\n";
@@ -690,7 +690,7 @@ function afficher_form_rssconf($errors='') {
 	}
 	$out = '';
 	// form add new feed.
-	$out .= '<form id="form-rss-add" method="post" class="bordered-formbloc" action="feed.php?config">'."\n";
+	$out .= '<form id="form-rss-add" method="post" action="feed.php?config">'."\n";
 	$out .= '<fieldset class="pref">'."\n";
 	$out .= '<legend class="legend-link">'.$GLOBALS['lang']['label_feed_ajout'].'</legend>'."\n";
 	$out .= "\t\t\t".'<label for="new-feed">'.$GLOBALS['lang']['label_feed_new'].':</label>'."\n";
@@ -741,8 +741,15 @@ function afficher_form_rssconf($errors='') {
 
 /* FORMULAIRE NORMAL DES PRÉFÉRENCES */
 function afficher_form_prefs($erreurs = '') {
+	$submit_box = '<div class="submit-bttns">'."\n";
+	$submit_box .= hidden_input('_verif_envoi', '1');
+	$submit_box .= hidden_input('token', new_token());
+	$submit_box .= '<button class="submit white-square" type="button" onclick="annuler(\'preferences.php\');" >'.$GLOBALS['lang']['annuler'].'</button>'."\n";
+	$submit_box .= '<input class="submit blue-square" type="submit" name="enregistrer" value="'.$GLOBALS['lang']['enregistrer'].'" />'."\n";
+	$submit_box .= '</div>'."\n";
 
-	echo '<form id="preferences" class="bordered-formbloc" method="post" action="'.basename($_SERVER['PHP_SELF']).'" >' ;
+
+	echo '<form id="preferences" method="post" action="'.basename($_SERVER['PHP_SELF']).'" >' ;
 		echo erreurs($erreurs);
 		$fld_user = '<div role="group" class="pref">'; /* no fieldset because browset can’t style them correctly */
 		$fld_user .= '<div class="form-legend">'.legend($GLOBALS['lang']['prefs_legend_utilisateur'], 'legend-user').'</div>'."\n";
@@ -779,6 +786,8 @@ function afficher_form_prefs($erreurs = '') {
 		$fld_user .= '</p>'."\n";
 		$fld_user .= '</div>'."\n";
 
+		$fld_user .= $submit_box;
+
 		$fld_user .= '</div>';
 	echo $fld_user;
 
@@ -809,6 +818,9 @@ function afficher_form_prefs($erreurs = '') {
 			$fld_securite .= hidden_input('connexion_captcha', '0');
 		}
 		$fld_securite .= '</div>';
+
+		$fld_securite .= $submit_box;
+
 		$fld_securite .= '</div>';
 	echo $fld_securite;
 
@@ -833,14 +845,17 @@ function afficher_form_prefs($erreurs = '') {
 		$fld_apparence .= form_select('nb_list_com', $nbs, $GLOBALS['max_comm_admin'],$GLOBALS['lang']['pref_nb_list_com']);
 		$fld_apparence .= '</p>'."\n";
 
-
 		$fld_apparence .= '<p>'."\n";
 		$fld_apparence .= form_checkbox('aff_onglet_rss', $GLOBALS['onglet_rss'], $GLOBALS['lang']['pref_afficher_rss'] );
 		$fld_apparence .= '</p>'."\n";
+
 		$fld_apparence .= '<p>'."\n";
 		$fld_apparence .= form_checkbox('aff_onglet_liens', $GLOBALS['onglet_liens'], $GLOBALS['lang']['pref_afficher_liens'] );
 		$fld_apparence .= '</p>'."\n";
 		$fld_apparence .= '</div>'."\n";
+
+		$fld_apparence .= $submit_box;
+
 		$fld_apparence .= '</div>';
 	echo $fld_apparence;
 
@@ -864,6 +879,8 @@ function afficher_form_prefs($erreurs = '') {
 		$fld_dateheure .= form_fuseau_horaire($GLOBALS['fuseau_horaire']);
 		$fld_dateheure .= '</p>'."\n";
 		$fld_dateheure .= '</div>'."\n";
+
+		$fld_dateheure .= $submit_box;
 
 		$fld_dateheure .= '</div>';
 	echo $fld_dateheure;
@@ -893,6 +910,8 @@ function afficher_form_prefs($erreurs = '') {
 		$fld_cfg_blog .= '</p>'."\n";
 		$fld_cfg_blog .= '</div>'."\n";
 
+		$fld_cfg_blog .= $submit_box;
+
 		$fld_cfg_blog .= '</div>';
 	echo $fld_cfg_blog;
 
@@ -919,9 +938,11 @@ function afficher_form_prefs($erreurs = '') {
 		$a = explode('/', dirname($_SERVER['PHP_SELF']));
 		$fld_cfg_linx .= '<p>';
 		$fld_cfg_linx .= '<label>'.$GLOBALS['lang']['pref_label_bookmark_lien'].'</label>'."\n";
-		$fld_cfg_linx .= '<a class="dnd-to-favs" onclick="alert(\''.$GLOBALS['lang']['pref_alert_bookmark_link'].'\');return false;" href="javascript:javascript:(function(){window.open(\''.$GLOBALS['racine'].$a[count($a)-1].'/links.php?url=\'+encodeURIComponent(location.href));})();"><b>Save link</b></a>';
+		$fld_cfg_linx .= '<a class="dnd-to-favs" onclick="alert(\''.$GLOBALS['lang']['pref_alert_bookmark_link'].'\');return false;" href="javascript:javascript:(function(){window.open(\''.$GLOBALS['racine'].$a[count($a)-1].'/links.php?url=\'+encodeURIComponent(location.href));})();">Save link</a>';
 		$fld_cfg_linx .= '</p>'."\n";
 		$fld_cfg_linx .= '</div>'."\n";
+
+		$fld_cfg_linx .= $submit_box;
 
 		$fld_cfg_linx .= '</div>';
 	echo $fld_cfg_linx;
@@ -940,6 +961,8 @@ function afficher_form_prefs($erreurs = '') {
 		$fld_maintenance .= "\t".'<a href="maintenance.php">Maintenance</a>'."\n";
 		$fld_maintenance .= '</p>'."\n";
 		$fld_maintenance .= '</div>'."\n";
+
+		$fld_maintenance .= $submit_box;
 
 		$fld_maintenance .= '</div>';
 	echo $fld_maintenance;
@@ -972,12 +995,6 @@ function afficher_form_prefs($erreurs = '') {
 		}
 	}
 
-	echo '<div class="submit-bttns">';
-	echo hidden_input('_verif_envoi', '1');
-	echo hidden_input('token', new_token());
-	echo '<button class="submit white-square" type="button" onclick="annuler(\'preferences.php\');" >'.$GLOBALS['lang']['annuler'].'</button>'."\n";
-	echo '<input class="submit blue-square" type="submit" name="enregistrer" value="'.$GLOBALS['lang']['enregistrer'].'" />'."\n";
-	echo '</div>';
-	echo '</form>';
+	echo '</form>'."\n";
 }
 

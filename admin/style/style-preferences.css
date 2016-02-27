@@ -11,21 +11,8 @@
 	padding: 15px 10px 30px;
 	font-weight: bold;
 	box-sizing: border-box;
+	color: #1e88e5;
 }
-
-#preferences .form-legend legend::before {
-	font-size: 1.4em;
-	padding-right: 10px;
-	font-weight: normal;
-}
-
-#preferences .legend-user::before { content: "\e919"; }
-#preferences .legend-securite::before { content: "\e93d"; }
-#preferences .legend-apparence::before { content: "\e93a"; }
-#preferences .legend-dateheure::before { content: "\e93b"; }
-#preferences .legend-blogcomm::before { content: "\e91b"; }
-#preferences .legend-links::before { content: "\e901"; }
-#preferences .legend-sweep::before { content: "\e93c";}
 
 #preferences p {
 	max-width: 100%;
@@ -139,11 +126,11 @@
 	padding-bottom: 20px;
 	margin-bottom: 20px;
 	margin: 0 auto;
-	max-width: 80%;
 }
 
 #maintenance-form legend {
 	font-weight: bold;
+	color: #1e88e5;
 }
 
 #maintenance-form p {

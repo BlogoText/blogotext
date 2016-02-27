@@ -1,6 +1,14 @@
 @media (max-width: 700px) {
 	#axe {
-		padding: 20px 10px;
+		padding: 20px 0;
+	}
+	#page {
+		padding: 0 0 20px;
+	}
+
+	/* page billets */
+	#billets {
+		width: 98%;
 	}
 
 	/* page écrire */
@@ -101,12 +109,25 @@
 		display: block;
 		margin: 10px auto;
 	}
+
 	#feed-list {
-		display: none;
+		transform: translateX(-100%) translateX(10px);
+		padding-right: 12px;
+		position: absolute;
+		z-index: 1;
+		left: 0;
+		max-width: 80%;
+		overflow: visible;
+		transition: transform .3s ease-in-out .25s;
+		
 	}
+	#feed-list:hover {
+		transform: translateX(0);
+	}
+
 	#rss-list {
 		padding-right: 0%;
-		padding-left: 0%;
+		padding-left: 25px;
 		margin: auto 0;
 	}
 	#post-list > li {

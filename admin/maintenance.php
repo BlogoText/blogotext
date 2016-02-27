@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2015 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -475,15 +475,10 @@ function importer_opml($opml_content) {
 	$GLOBALS['liste_flux'] = array_merge($GLOBALS['array_new'], $GLOBALS['liste_flux']);
 	file_put_contents($GLOBALS['fichier_liste_fluxrss'], '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_flux']))).' */');
 
-
 	return (count($GLOBALS['liste_flux']) - $old_len);
 }
 
-
-
-
-
-// based on Shaarli by Sebsauvage
+// Parse and import HTML bookmarks (netscape/Firefox bookmarks export)
 function parse_html($content) {
 	$out_array = array();
 	// Netscape bookmark file (Firefox).
@@ -533,7 +528,7 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 	$nbs = array('10'=>'10', '20'=>'20', '50'=>'50', '100'=>'100', '200'=>'200', '500'=>'500', '-1' => $GLOBALS['lang']['pref_all']);
 
 	echo '<form action="maintenance.php" method="get" class="bordered-formbloc" id="form_todo">'."\n";
-	echo '<label for="select_todo">Que voulez-vous faire&thinsp;?</label>'."\n";
+	echo '<label for="select_todo">'.$GLOBALS['lang']['maintenance_ask_do_what'].'</label>'."\n";
 	echo '<select id="select_todo" name="select_todo" onchange="switch_form(this.value)">'."\n";
 	echo "\t".'<option selected disabled hidden value=""></option>'."\n";
 	echo "\t".'<option value="form_export">'.$GLOBALS['lang']['maintenance_export'].'</option>'."\n";
