@@ -217,9 +217,9 @@ function afficher_form_commentaire($article_id, $mode, $erreurs='', $comm_id='')
 			$form .= "\t\t".hidden_input('_token', $GLOBALS['captcha']['hash']);
 			$form .= "\t\t".hidden_input('_verif_envoi', '1');
 			$form .= "\t".'</fieldset><!--end info-->'."\n";
-			$form .= "\t".'<fieldset class="cookie"><!--begin cookie asking -->'."\n";
+			$form .= "\t".'<fieldset class="subsc"><!--begin cookie asking -->'."\n";
 
-			$form .= "\t\t".'<input class="check" type="checkbox" id="allowcookie" name="allowcookie"'.$cookie_checked.' />'.label('allowcookie', $GLOBALS['lang']['comment_cookie']).'<br/>'."\n";
+			$form .= "\t\t".'<input class="check" type="checkbox" id="allowcuki" name="allowcuki"'.$cookie_checked.' />'.label('allowcuki', $GLOBALS['lang']['comment_cookie']).'<br/>'."\n";
 
 			$form .= "\t\t".'<input class="check" type="checkbox" id="subscribe" name="subscribe"'.$subscribe_checked.' />'.label('subscribe', $GLOBALS['lang']['comment_subscribe'])."\n";
 

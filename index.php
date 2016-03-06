@@ -29,7 +29,7 @@ error_reporting(-1);
 $GLOBALS['BT_ROOT_PATH'] = '';
 
 session_start();
-if (isset($_POST['allowcookie'])) { // si cookies autorisés, conserve les champs remplis
+if (isset($_POST['allowcuki'])) { // si cookies autorisés, conserve les champs remplis
 	if (isset($_POST['auteur'])) {  setcookie('auteur_c', $_POST['auteur'], time() + 365*24*3600, null, null, false, true); }
 	if (isset($_POST['email'])) {   setcookie('email_c', $_POST['email'], time() + 365*24*3600, null, null, false, true); }
 	if (isset($_POST['webpage'])) { setcookie('webpage_c', $_POST['webpage'], time() + 365*24*3600, null, null, false, true); }
@@ -90,16 +90,12 @@ if (isset($_GET['random'])) {
 }
 
 // unsubscribe from comments-newsletter and redirect on main page
-if ((isset($_GET['unsub']) and $_GET['unsub'] == 1) and (isset($_GET['comment']) and preg_match('#\d{14}#',($_GET['comment']))) and isset($_GET['mail']) ) {
-	if (isset($_GET['all'])) {
-		$res = unsubscribe(htmlspecialchars($_GET['comment']), $_GET['mail'], 1);
-	} else {
-		$res = unsubscribe(htmlspecialchars($_GET['comment']), $_GET['mail'], 0);
-	}
+if ( isset($_GET['unsub'], $_GET['mail'], $_GET['article']) and $_GET['unsub'] == 1 ) {
+	$res = unsubscribe(htmlspecialchars($_GET['mail']), htmlspecialchars($_GET['article']), (isset($_GET['all']) ? 1 : 0));
 	if ($res == TRUE) {
-		header('Location: '.basename($_SERVER['PHP_SELF']).'?unsubsribe=yes');
+		header('Location: '.basename($_SERVER['PHP_SELF']).'?unsubscriben=yes');
 	} else {
-		header('Location: '.basename($_SERVER['PHP_SELF']).'?unsubsribe=no');
+		header('Location: '.basename($_SERVER['PHP_SELF']).'?unsubscriben=no');
 	}
 }
 

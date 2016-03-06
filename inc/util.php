@@ -162,107 +162,77 @@ function remove_url_param($param) {
 }
 
 
-// A partir d'un commentaire posté, détermine les emails
-// à qui envoyer la notification de nouveau commentaire.
+// Having a comment ID, sends emails to the other comments that are subscriben to the same article.
 function send_emails($id_comment) {
-	// disposant de l'email d'un commentaire, on détermine l'article associé, le titre, l’auteur du comm et l’email de l’auteur du com.
-	$article = get_entry($GLOBALS['db_handle'], 'commentaires', 'bt_article_id', $id_comment, 'return');
-	$article_title = get_entry($GLOBALS['db_handle'], 'articles', 'bt_title', $article, 'return');
+	// retreive from DB: article_id, article_title, author_name, author_email
+	$article_id = get_entry($GLOBALS['db_handle'], 'commentaires', 'bt_article_id', $id_comment, 'return');
+	$article_title = get_entry($GLOBALS['db_handle'], 'articles', 'bt_title', $article_id, 'return');
 	$comm_author = get_entry($GLOBALS['db_handle'], 'commentaires', 'bt_author', $id_comment, 'return');
 	$comm_author_email = get_entry($GLOBALS['db_handle'], 'commentaires', 'bt_email', $id_comment, 'return');
 
-	// puis la liste de tous les commentaires de cet article
-	$liste_commentaires = array();
+	// retreiving all subscriben email, except that has just been posted.
+	$liste_comments = array();
 	try {
-		$query = "SELECT bt_email,bt_subscribe,bt_id FROM commentaires WHERE bt_statut=1 AND bt_article_id=? ORDER BY bt_id";
+		$query = "SELECT DISTINCT bt_email FROM commentaires WHERE bt_statut=1 AND bt_article_id=? AND bt_email!=? AND bt_subscribe=1 ORDER BY bt_id";
 		$req = $GLOBALS['db_handle']->prepare($query);
-		$req->execute(array($article));
-		$liste_commentaires = $req->fetchAll(PDO::FETCH_ASSOC);
+		$req->execute(array($article_id, $comm_author_email));
+		$liste_comments = $req->fetchAll(PDO::FETCH_ASSOC);
 	} catch (Exception $e) {
 		die('Erreur : '.$e->getMessage());
 	}
 
-	// Récupérre la liste (sans doublons) des emails des commentateurs, ainsi que leurs souscription à la notification d'email.
-	// si plusieurs comm avec la même email, alors seul le dernier est pris en compte.
-	// si l’auteur même du commentaire est souscrit, il ne recoit pas l’email de son propre commentaire.
-	$emails = array();
-	foreach ($liste_commentaires as $i => $comment) {
-		if (!empty($comment['bt_email']) and ($comm_author_email != $comment['bt_email'])) {
-			$emails[$comment['bt_email']] = $comment['bt_subscribe'].'-'.get_id($comment['bt_id']);
-		}
-	}
-	// ne conserve que la liste des mails dont la souscription est demandée (= 1)
+	// filter empty emails
 	$to_send_mail = array();
-	foreach ($emails as $mail => $is_subscriben) {
-		if ($is_subscriben[0] == '1') { // $is_subscriben is seen as a array of chars here, first char is 0 or 1 for subscription.
-			$to_send_mail[$mail] = substr($is_subscriben, -14);
+	foreach ($liste_comments as $comment) {
+		if (!empty($comment['bt_email'])) {
+			$to_send_mail[] = $comment['bt_email'];
 		}
 	}
+	unset($liste_comments);
+	if (empty($to_send_mail)) {
+		return TRUE;
+	}
+
 	$subject = 'New comment on "'.$article_title.'" - '.$GLOBALS['nom_du_site'];
 	$headers  = 'MIME-Version: 1.0'."\r\n".'Content-type: text/html; charset="UTF-8"'."\r\n";
 	$headers .= 'From: no.reply_'.$GLOBALS['email']."\r\n".'X-Mailer: BlogoText - PHP/'.phpversion();
 
-	// for debug
-	//header('Content-type: text/html; charset=UTF-8');
-	//die(($to. $subject. $message. $headers));
-	//echo '<pre>';print_r($emails);
-	//echo '<pre>';print_r($to_send_mail);
-	//die();
-	// envoi les emails.
-	foreach ($to_send_mail as $mail => $is_subscriben) {
-		$comment = substr($is_subscriben, -14);
-		$unsublink = get_blogpath($article, '').'&amp;unsub=1&amp;comment='.$comment.'&amp;mail='.sha1($mail);
+	// send emails
+	foreach ($to_send_mail as $mail) {
+		$unsublink = get_blogpath($article_id, '').'&amp;unsub=1&amp;mail='.base64_encode($mail).'&amp;article='.$article_id;
 		$message = '<html>';
 		$message .= '<head><title>'.$subject.'</title></head>';
 		$message .= '<body><p>A new comment by <b>'.$comm_author.'</b> has been posted on <b>'.$article_title.'</b> form '.$GLOBALS['nom_du_site'].'.<br/>';
-		$message .= 'You can see it by following <a href="'.get_blogpath($article, '').'#'.article_anchor($id_comment).'">this link</a>.</p>';
-		$message .= '<p>To unsubscribe from the comments on that post, you can follow this link: <a href="'.$unsublink.'">'.$unsublink.'</a>.</p>';
-		$message .= '<p>To unsubscribe from the comments on all the posts, follow this link: <a href="'.$unsublink.'&amp;all=1">'.$unsublink.'&amp;all=1</a>.</p>';
-		$message .= '<p>Also, do not reply to this email, since it is an automatic generated email.</p><p>Regards.</p></body>';
+		$message .= 'You can see it by following <a href="'.get_blogpath($article_id, '').'#'.article_anchor($id_comment).'">this link</a>.</p>';
+		$message .= '<p>To unsubscribe from the comments on that post, you can follow this link:<br/><a href="'.$unsublink.'">'.$unsublink.'</a>.</p>';
+		$message .= '<p>To unsubscribe from the comments on all the posts, follow this link:<br/> <a href="'.$unsublink.'&amp;all=1">'.$unsublink.'&amp;all=1</a>.</p>';
+		$message .= '<p>Also, do not reply to this email, since it is an automatic generated email.</p><p>Regards</p></body>';
 		$message .= '</html>';
 		mail($mail, $subject, $message, $headers);
 	}
 	return TRUE;
 }
 
-// met à 0 la subscription d'un auteur à un article. (met à 0 celui dans le dernier commentaire qu'il a posté sur un article)
-function unsubscribe($file_id, $email_sha, $all) {
-	// récupération de quelques infos sur le commentaire
+// Unsubscribe from comments subscription via email
+function unsubscribe($email_b64, $article_id, $all) {
+	$email = base64_decode($email_b64);
 	try {
-		$query = "SELECT bt_email,bt_subscribe,bt_id FROM commentaires WHERE bt_id=?";
-		$req = $GLOBALS['db_handle']->prepare($query);
-		$req->execute(array($file_id));
-		$result = $req->fetchAll(PDO::FETCH_ASSOC);
-
-	} catch (Exception $e) {
-		die ('Erreur BT #12725 : '. $e->getMessage());
-	}
-	try {
-		if (!empty($result[0])) {
-			$comment = $result[0];
-			// (le test SHA1 sur l'email sert à vérifier que c'est pas un lien forgé pouvant désinscrire une email de force
-			if ( ($email_sha == sha1($comment['bt_email'])) and ($comment['bt_subscribe'] == 1) ) {
-				if ($all == 1) {
-					// mettre à jour de tous les commentaire qui ont la même email.
-					$query = "UPDATE commentaires SET bt_subscribe=0 WHERE bt_email=?";
-					$array = $comment['bt_email'];
-				} else {
-					// mettre à jour le commentaire
-					$query = "UPDATE commentaires SET bt_subscribe=0 WHERE bt_id=?";
-					$array = $comment['bt_id'];
-				}
-				$req = $GLOBALS['db_handle']->prepare($query);
-				$req->execute(array($array));
-				return TRUE;
-			}
-			elseif ($comment['bt_subscribe'] == 0) {
-				return TRUE;
-			}
+		if ($all == 1) {
+			// update all comments having $email
+			$query = "UPDATE commentaires SET bt_subscribe=0 WHERE bt_email=?";
+			$array = array($email);
+		} else {
+			// update all comments having $email on $article
+			$query = "UPDATE commentaires SET bt_subscribe=0 WHERE bt_email=? AND bt_article_id=?";
+			$array = array($email, $article_id);
 		}
+		$req = $GLOBALS['db_handle']->prepare($query);
+		$req->execute($array);
+		return TRUE;
 	} catch (Exception $e) {
 		die('Erreur BT 89867 : '.$e->getMessage());
 	}
-	return FALSE; // si il y avait été TRUE, on serait déjà sorti de la fonction
+	return FALSE;
 }
 
 /* search query parsing (operators, exact matching, etc) */
