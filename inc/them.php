@@ -100,7 +100,6 @@ function conversions_theme($texte, $solo_art, $cnt_mode) {
 		$texte = str_replace($GLOBALS['balises']['article_titre_echape'], urlencode($solo_art['bt_title']), $texte);
 		$texte = str_replace($GLOBALS['balises']['article_lien'], $solo_art['bt_link'], $texte);
 		if ($solo_art['bt_type'] == 'article') {
-			$texte = str_replace($GLOBALS['balises']['blog_description'], '', $texte);
 			$texte = str_replace($GLOBALS['balises']['article_chapo'], str_replace(array("\r", "\n"), ' ', $solo_art['bt_abstract']), $texte);
 			$texte = str_replace($GLOBALS['balises']['blog_motscles'], $solo_art['bt_keywords'], $texte);
 		}
@@ -115,7 +114,7 @@ function conversions_theme($texte, $solo_art, $cnt_mode) {
 	$texte = str_replace($GLOBALS['balises']['blog_motscles'], $GLOBALS['keywords'], $texte);
 	$texte = str_replace($GLOBALS['balises']['article_titre_echape'], '', $texte);
 	$texte = str_replace($GLOBALS['balises']['article_lien'], $GLOBALS['racine'], $texte);
-	$texte = str_replace($GLOBALS['balises']['article_chapo'], '', $texte);
+	$texte = str_replace($GLOBALS['balises']['article_chapo'], $GLOBALS['description'], $texte);
 
 	$texte = str_replace($GLOBALS['balises']['pagination'], lien_pagination(), $texte);
 
