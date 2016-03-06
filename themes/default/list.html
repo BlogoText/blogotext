@@ -7,61 +7,58 @@
 	<meta name="author" content="{blog_auteur}" />
 	<meta name="viewport" content="width=device-width, user-scalable=yes" />
 	<meta name="keywords" content="{keywords}" />
-	<meta name="description" content="{blog_description}{article_chapo}" />
+	<meta name="description" content="{article_chapo}" />
 	<link rel="stylesheet" href="{style}/style.css" />
-	<link type="application/rss+xml" rel="alternate" title="RSS - Articles" href="rss.php" />
-	<link rel="alternate" type="application/atom+xml" title="ATOM - Le blog" href="atom.php" />
+	<link rel="alternate" type="application/rss+xml" title="RSS - Articles" href="rss.php" />
+	<link rel="alternate" type="application/atom+xml" title="ATOM - Articles" href="atom.php" />
 	<link rel="canonical" href="{article_lien}" />
 </head>
 <body>
 
-<div id="top-nav">
-	<div id="top-nav-links">
-		<h1><a href="{racine_du_site}" title="{blog_nom}">{blog_nom}</a></h1>
-		<ul>
-			<li><a href="?liste">Tous les articles</a></li>
-			<li><a href="?random">Article au hasard</a></li>
-			<li><a href="?mode=links">Liens partagés</a></li>
-			<li><a href="?about">À propos</a></li>
-		</ul>
-	</div>
+<div id="top-bar">
+	<button onclick="displayMenu(event);">Menu</button>
+	<h1><a href="{racine_du_site}" title="{blog_nom}">{blog_nom}</a></h1>
 	{recherche}
 </div>
 
-<header>
-	<p>{blog_description}</p>
-</header>
-
-<main id="main">
-	<div id="contenu">
-		{BOUCLE_posts}
-
-			// **** le texte que vous mettez ici (dans la "boucle") ne sera pas éxécuté ni affiché. ****
-
-			// ici il s'affichera les articles, les commentaires, les liens…
-			// les thèmes pour ces choses sont dans le dossier "template"
-			// chaque "objet" (lien, article, …) dispose de son propre formatage. 
-
-		{/BOUCLE_posts}
-	</div>
-
-	{pagination}
-</main>
-
-<footer>
-	<div id="footnav">
-		<nav id="navigate">
+<div id="body-layout">
+	<div id="sidenav">
+		<nav id="links">
+			<p class="nav-title">Liens</p>
+			<ul>
+				<li><a href="?liste">Tous les articles</a></li>
+				<li><a href="?random">Article au hasard</a></li>
+				<li><a href="?mode=links">Liens partagés</a></li>
+				<li><a href="#">À propos</a></li>
+			</ul>
+		</nav>
+		<nav id="calendar">
+			<p class="nav-title">Trouver un article</p>
 			{calendrier}
 		</nav>
 		<nav id="lastcom">
-			<h3>Derniers commentaires</h3>
+			<p class="nav-title">Derniers commentaires</p>
 			{commentaires_encart}
 		</nav>
 	</div>
 
-	<div><a href="/">{blog_auteur}</a> - <span lang="en">Theme by <a href="http://lehollandaisvolant.net/">Timo van Neerden</a></span></div>
-	<div>(<a href="https://www.flickr.com/photos/73767885@N00/13938437179/">crédit image d’entête</a>)</div>
+	<div id="head-main-wrapper">
+		<header>
+			<p>{blog_description}</p>
+		</header>
+		<main id="main">
+			<!--<div id="contenu">-->
+				{BOUCLE_posts}
+					// **** le texte que vous mettez ici (dans la "boucle") ne sera pas éxécuté ni affiché. ****
+				{/BOUCLE_posts}
+			<!--</div>-->
+		{pagination}
+		</main>
+	</div>
+</div>
 
+<footer>
+	<div><a href="/">{blog_auteur}</a> - <span lang="en">Theme by <a href="http://lehollandaisvolant.net/">Timo van Neerden</a></span></div>
 </footer>
 <script>
 /* Tag script found at : http://www.siteduzero.com/tutoriel-3-34703-insertion-de-balises-dans-une-zone-de-texte.html */
@@ -69,24 +66,13 @@ function insertTag(startTag, endTag, tag, tagType) {
 	var field = document.getElementById(tag);
 	var scroll = field.scrollTop;
 	field.focus();
-
-	if (window.ActiveXObject) { // C'est IE
-		var textRange = document.selection.createRange();            
-		var currentSelection = textRange.text;
-
-		textRange.text = startTag + currentSelection + endTag;
-		textRange.moveStart("character", -endTag.length - currentSelection.length);
-		textRange.moveEnd("character", -endTag.length);
-		textRange.select();     
-	} else { // c'est pas IE.
-		var startSelection   = field.value.substring(0, field.selectionStart);
-		var currentSelection = field.value.substring(field.selectionStart, field.selectionEnd);
-		var endSelection     = field.value.substring(field.selectionEnd);
-		if (currentSelection == "") { currentSelection = "TEXTE"; }
-		field.value = startSelection + startTag + currentSelection + endTag + endSelection;
-		field.focus();
-		field.setSelectionRange(startSelection.length + startTag.length, startSelection.length + startTag.length + currentSelection.length);
-	}
+	var startSelection   = field.value.substring(0, field.selectionStart);
+	var currentSelection = field.value.substring(field.selectionStart, field.selectionEnd);
+	var endSelection     = field.value.substring(field.selectionEnd);
+	if (currentSelection == "") { currentSelection = "TEXTE"; }
+	field.value = startSelection + startTag + currentSelection + endTag + endSelection;
+	field.focus();
+	field.setSelectionRange(startSelection.length + startTag.length, startSelection.length + startTag.length + currentSelection.length);
 	field.scrollTop = scroll;
 }
 
@@ -100,6 +86,14 @@ function reply(code) {
 	field.scrollTop = 10000;
 	field.focus();
 }
+
+function displayMenu(e) {
+	var button = e.target;
+	var menu = document.getElementById('sidenav');
+	button.classList.toggle('active');
+	menu.classList.toggle('shown');
+}
+
 </script>
 </body>
 </html>
