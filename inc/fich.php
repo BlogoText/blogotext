@@ -36,7 +36,7 @@ function fichier_user() {
 	if (strlen(trim($_POST['mdp'])) == 0) {
 		$new_mdp = $GLOBALS['mdp_hash']; 
 	} else {
-		$new_mdp = password_hash($_POST['mdp_rep'], PASSWORD_BCRYPT);
+		$new_mdp = password_hash($_POST['mdp'], PASSWORD_BCRYPT);
 	}
 	$user .= "<?php\n";
 	$user .= "\$GLOBALS['identifiant'] = '".addslashes(clean_txt(htmlspecialchars($_POST['identifiant'])))."';\n";
@@ -54,8 +54,16 @@ function fichier_adv_conf() {
 	$conf='';
 	$conf .= '; <?php die(); /*'."\n\n";
 	$conf .= '; This file contains some more advanced configuration features.'."\n\n";
-	$conf .= 'date_premier_message_blog = \''.date('Ym').'\''."\n";
-	$conf .= 'salt = \''.$salt = sha1(uniqid(mt_rand(), true)).'\''."\n";
+	// get first article date
+	try {
+		$result = $GLOBALS['db_handle']->query("SELECT MIN(bt_date) FROM articles")->fetch();
+		$date = decode_id($result[0]);
+		$conf .= 'date_premier_message_blog = \''.$date['annee'].$date['mois'].'\''."\n";
+	} catch (Exception $e) {
+		die('Erreur MIN in Fichier_adv_conf() gen.: '.$e->getMessage());
+	}
+
+	$conf .= 'install_uid = \''.sha1(uniqid(mt_rand(), true)).'\''."\n";
 	$conf .= 'show_errors = -1;'."\n";
 	$conf .= 'gravatar_link = \'themes/default/gravatars/get.php?g=\''."\n";
 	$conf .= 'use_ip_in_session = 0;'."\n\n\n";

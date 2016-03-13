@@ -47,7 +47,6 @@
 
 #install p label,
 #install p input.text {
-//	height: 28px;
 	line-height: 28px;
 	box-sizing: border-box;
 	display: inline-block;
@@ -69,8 +68,34 @@
 	padding: 0;
 }
 
+#install #mdp,
+#install #mysql_password {
+	width: 210px;
+}
+#install .unveilmdp {
+	vertical-align: middle;
+	border: none;
+	width: 30px;
+	display: inline-block;
+	height: 30px;
+	background: none;
+	padding: 0;
+	border-bottom: 1px solid silver;
+}
+
+#install .unveilmdp::before {
+	content: "\e91c";
+	font-size: 2em;
+}
+
+#install input[type="text"]+.unveilmdp::before {
+	color: red;
+}
+
 #auth input.text:focus,
-#install input.text:focus {
+#install input.text:focus,
+#auth input.text:focus+.unveilmdp,
+#install input.text:focus+.unveilmdp {
 	border-bottom-color: #2196F3;
 	box-shadow: 0px -1px 0px #2196F3 inset;
 }
