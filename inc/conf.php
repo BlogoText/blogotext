@@ -19,7 +19,7 @@ if (!empty($GLOBALS['fuseau_horaire'])) {
 }
 
 // BLOGOTEXT VERSION (do not change it)
-$GLOBALS['version'] = '3.2.7';
+$GLOBALS['version'] = '3.2.8';
 $GLOBALS['last-online-file'] = '../config/version.txt';
 
 // MINIMAL REQUIRED PHP VERSION

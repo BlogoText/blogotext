@@ -459,11 +459,13 @@ function afficher_form_billet($article, $erreurs) {
 		return '<button type="button" onclick="insertChar(\''.$char.'\', \'contenu\');"><span>'.$char.'</span></button>';
 	}
 
-	function form_annee($annee_affiche) {
-		for ($annee = date('Y') -7, $annee_max = date('Y') +3; $annee <= $annee_max; $annee++) $annees[$annee] = $annee;
+	function form_annee($year_shown) {
+
+		$yearBegin = min (substr($GLOBALS['date_premier_message_blog'], 0, 4), date('Y') -3);
+		for ($year = $yearBegin, $year_max = date('Y') +3; $year <= $year_max; $year++) $years[$year] = $year;
 		$ret = '<select name="annee">'."\n" ;
-			foreach ($annees as $option => $label) {
-				$ret .= "\t".'<option value="'.htmlentities($option).'"'.(($annee_affiche == $option) ? ' selected="selected"' : '').'>'.htmlentities($label).'</option>'."\n";
+			foreach ($years as $option => $label) {
+				$ret .= "\t".'<option value="'.htmlentities($option).'"'.(($year_shown == $option) ? ' selected="selected"' : '').'>'.htmlentities($label).'</option>'."\n";
 			}
 		$ret .= '</select>'."\n";
 		return $ret;
