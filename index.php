@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2015 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -14,6 +14,18 @@
 /*****************************************************************************
  some misc routines
 ******************************************************************************/
+// anti XSS : /index.php/%22onmouseover=prompt(971741)%3E or /index.php/ redirects all on index.php
+// if there is a slash after the "index.php", the file is considered as a folder, but the code inside it still executed.
+if (basename($_SERVER['SCRIPT_NAME']) === 'index.php' and strpos(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), 'index.php') === FALSE ) {
+	$var_request_URI = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH).'index.php';
+} else {
+	$var_request_URI = $_SERVER['REQUEST_URI'];
+}
+if (parse_url($var_request_URI, PHP_URL_PATH) !== $_SERVER['SCRIPT_NAME']) {
+	header('Location: '.$_SERVER['SCRIPT_NAME']);
+	exit;
+}
+
 // gzip compression
 if (extension_loaded('zlib') and ob_get_length() > 0) {
 	ob_end_clean();
@@ -43,44 +55,25 @@ if ( !file_exists('config/user.php') or !file_exists('config/prefs.php') ) {
 	die;
 }
 
-//$GLOBALS['BT_ROOT_PATH'] = '';
+$GLOBALS['BT_ROOT_PATH'] = './';
+require_once 'inc/inc.php';
 
-require_once 'config/user.php';
-require_once 'config/prefs.php';
-require_once 'inc/lang.php';
-require_once 'inc/conf.php';
-require_once 'inc/them.php';
-require_once 'inc/fich.php';
-require_once 'inc/html.php';
-require_once 'inc/form.php';
-require_once 'inc/comm.php';
-require_once 'inc/conv.php';
-require_once 'inc/util.php';
-require_once 'inc/veri.php';
-require_once 'inc/jasc.php';
-require_once 'inc/sqli.php';
 
 $GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
 /*****************************************************************************
  some misc requests
 ******************************************************************************/
 
-// anti XSS : /index.php/%22onmouseover=prompt(971741)%3E or /index.php/ redirects all on index.php
-// if there is a slash after the "index.php", the file is considered as a folder, but the code inside it still executed…
-if ($_SERVER['PHP_SELF'] !== $_SERVER['SCRIPT_NAME']) {
-	header('Location: '.$_SERVER['SCRIPT_NAME']);
-}
-
 // Random article :-)
 if (isset($_GET['random'])) {
 	try {
 		// getting nb articles, gen random num, then select one article is much faster than "sql(order by rand limit 1)"
-		$result = $GLOBALS['db_handle']->query("SELECT count(ID) FROM articles WHERE bt_statut=1")->fetch();
+		$result = $GLOBALS['db_handle']->query("SELECT count(ID) FROM articles WHERE bt_statut=1 AND bt_date <= ".date('YmdHis'))->fetch();
 		if ($result[0] == 0) {
 			header('Location: '.$_SERVER['SCRIPT_NAME']);
 		}
 		$rand = mt_rand(0, $result[0] - 1);
-		$tableau = liste_elements("SELECT * FROM articles WHERE bt_statut=1 LIMIT $rand, 1", array(), 'articles');
+		$tableau = liste_elements("SELECT * FROM articles WHERE bt_statut=1  AND bt_date <= ".date('YmdHis')." LIMIT $rand, 1", array(), 'articles');
 	} catch (Exception $e) {
 		die('Erreur rand: '.$e->getMessage());
 	}
@@ -93,9 +86,9 @@ if (isset($_GET['random'])) {
 if ( isset($_GET['unsub'], $_GET['mail'], $_GET['article']) and $_GET['unsub'] == 1 ) {
 	$res = unsubscribe(htmlspecialchars($_GET['mail']), htmlspecialchars($_GET['article']), (isset($_GET['all']) ? 1 : 0));
 	if ($res == TRUE) {
-		header('Location: '.basename($_SERVER['PHP_SELF']).'?unsubscriben=yes');
+		header('Location: '.basename($_SERVER['SCRIPT_NAME']).'?unsubscriben=yes');
 	} else {
-		header('Location: '.basename($_SERVER['PHP_SELF']).'?unsubscriben=no');
+		header('Location: '.basename($_SERVER['SCRIPT_NAME']).'?unsubscriben=no');
 	}
 }
 
@@ -126,7 +119,7 @@ if ( isset($_GET['d']) and preg_match('#^\d{4}/\d{2}/\d{2}/\d{2}/\d{2}/\d{2}#', 
 			}
 		} else { unset($_POST['enregistrer']); }
 
-		afficher_form_commentaire($id, 'public', $erreurs_form);
+		afficher_form_commentaire($id, 'public', $erreurs_form, '');
 		if (empty($erreurs_form) and isset($_POST['enregistrer'])) {
 			traiter_form_commentaire($comment, 'public');
 		}

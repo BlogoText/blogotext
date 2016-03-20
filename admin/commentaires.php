@@ -33,24 +33,15 @@ $article_title='';
 $erreurs_form = array();
 if (isset($_POST['_verif_envoi'])) {
 
-	if (isset($_POST['com_supprimer'])) {
-		$erreurs_form = valider_form_commentaire_ajax($_POST['com_supprimer']);
+	if (isset($_POST['com_supprimer']) or isset($_POST['com_activer'])) {
+		$comm_action = (isset($_POST['com_supprimer']) ? $_POST['com_supprimer'] : $_POST['com_activer']);
+		$erreurs_form = valider_form_commentaire_ajax($comm_action);
 		if (empty($erreurs_form)) {
-			traiter_form_commentaire($_POST['com_supprimer'], 'admin');
+			traiter_form_commentaire($comm_action, 'admin');
 		} else {
 			echo implode("\n", $erreurs_form);
 			die();
 		}
-	}
-	elseif (isset($_POST['com_activer'])) {
-		$erreurs_form = valider_form_commentaire_ajax($_POST['com_activer']);
-		if (empty($erreurs_form)) {
-			traiter_form_commentaire($_POST['com_activer'], 'admin');
-		} else {
-			echo implode("\n", $erreurs_form);
-			die();
-		}
-
 	}
 	else {
 		$comment = init_post_comment($_POST['comment_article_id'], 'admin');
@@ -135,7 +126,7 @@ function afficher_commentaire($comment, $with_link) {
 	echo (!empty($comment['bt_email'])) ? "\t\t".'<span class="email"><a href="mailto:'.$comment['bt_email'].'" title="'.$comment['bt_email'].'">'.$comment['bt_email'].'</a></span>'."\n" : '';
 
 	echo "\t".'</div>'."\n";
-	echo "\t".'<span class="date">'.date_formate($comment['bt_id']).'<span>, '.heure_formate($comment['bt_id']).'</span>'.( ($with_link == 1 and !empty($comment['bt_title'])) ? ' '.$GLOBALS['lang']['sur'].' <a href="'.basename($_SERVER['PHP_SELF']).'?post_id='.$comment['bt_article_id'].'">'.$comment['bt_title'].'</a>' : '').'</span>'."\n" ;
+	echo "\t".'<span class="date">'.date_formate($comment['bt_id']).'<span>, '.heure_formate($comment['bt_id']).'</span>'.( ($with_link == 1 and !empty($comment['bt_title'])) ? ' '.$GLOBALS['lang']['sur'].' <a href="'.basename($_SERVER['SCRIPT_NAME']).'?post_id='.$comment['bt_article_id'].'">'.$comment['bt_title'].'</a>' : '').'</span>'."\n" ;
 	echo "\t".'<div class="comm-options">'."\n";
 	echo "\t\t".'<ul>'."\n";
 	echo "\t\t\t".'<li class="cl-edit" onclick="unfold(this);">'.$GLOBALS['lang']['editer'].'</li>'."\n";
@@ -161,7 +152,7 @@ echo '<div id="header">'."\n";
 	echo '<div id="top">'."\n";
 	afficher_msg();
 	echo moteur_recherche();
-	afficher_topnav(basename($_SERVER['PHP_SELF']), $GLOBALS['lang']['titre_commentaires']);
+	afficher_topnav($GLOBALS['lang']['titre_commentaires']);
 	echo '</div>'."\n";
 echo '</div>'."\n";
 
@@ -208,7 +199,7 @@ if (count($commentaires) > 0) {
 
 if ($param_makeup['menu_theme'] == 'for_article') {
 	echo '<div id="post-nv-commentaire">'."\n";
-	afficher_form_commentaire($article_id, 'admin', $erreurs_form);
+	afficher_form_commentaire($article_id, 'admin', $erreurs_form, '');
 	echo '<h2 class="poster-comment">'.$GLOBALS['lang']['comment_ajout'].'</h2>'."\n";
 	echo $GLOBALS['form_commentaire'];
 	echo '</div>'."\n";
@@ -222,5 +213,5 @@ echo js_red_button_event(0);
 echo 'var csrf_token = \''.new_token().'\'';
 echo '</script>';
 
-footer('', $begin);
+footer($begin);
 

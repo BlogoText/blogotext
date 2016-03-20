@@ -36,6 +36,10 @@ html, body {
 	word-wrap: break-word;
 }
 
+* {
+	color: inherit;
+}
+
 html {
 	font-size: 16px;
 }

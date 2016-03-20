@@ -170,7 +170,7 @@ function afficher_form_2($erreurs='') {
 	echo '<p>';
 	echo '<label for="mdp">'.$GLOBALS['lang']['install_mdp'].' </label><input type="password" name="mdp" id="mdp" size="30" value="" class="text" autocomplete="off" placeholder="••••••••••••" required /><button type="button" class="unveilmdp" onclick="return revealpass(\'mdp\');"></button>'."\n";
 	echo '</p>'."\n";
-	$lien = str_replace($GLOBALS['dossier_admin'].'/install.php', '', 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF']);
+	$lien = str_replace($GLOBALS['dossier_admin'].'/install.php', '', 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['SCRIPT_NAME']);
 	echo '<p>';
 	echo '<label for="racine">'.$GLOBALS['lang']['pref_racine'].' </label><input type="text" name="racine" id="racine" size="30" value="'.$lien.'" class="text"  placeholder="'.$lien.'" required />'."\n";
 	echo '</p>'."\n";
@@ -192,7 +192,7 @@ function afficher_form_3($erreurs='') {
 	echo '<h1>'.$GLOBALS['nom_application'].'</h1>'."\n";
 	echo '<h1 id="step">'.$GLOBALS['lang']['install'].'</h1>'."\n";
 	echo erreurs($erreurs);
-	echo '<form method="post" action="'.basename($_SERVER['PHP_SELF']).'?'.$_SERVER['QUERY_STRING'].'">'."\n";
+	echo '<form method="post" action="'.basename($_SERVER['SCRIPT_NAME']).'?'.$_SERVER['QUERY_STRING'].'">'."\n";
 	echo '<div id="install">'."\n";
 	echo '<p><label>'.$GLOBALS['lang']['install_choose_sgdb'].'</label>';
 	echo '<select id="sgdb" name="sgdb" onchange="show_mysql_form()">'."\n";

@@ -68,7 +68,7 @@ function afficher_liste_articles($tableau) {
 			// TITRE + ICONE SELON STATUT
 			$out .= "\t\t".'<span class="'.( ($article['bt_statut'] == '1') ? 'on' : 'off').'">'.'<a href="ecrire.php?post_id='.$article['bt_id'].'" title="'.htmlspecialchars(trim(mb_substr(strip_tags($article['bt_abstract']), 0, 249)), ENT_QUOTES).'">'.$article['bt_title'].'</a>'.'</span>'."\n";
 			// DATE
-			$out .= "\t\t".'<span><a href="'.basename($_SERVER['PHP_SELF']).'?filtre='.substr($article['bt_date'],0,8).'">'.date_formate($article['bt_date']).'</a><span>, '.heure_formate($article['bt_date']).'</span></span>'."\n";
+			$out .= "\t\t".'<span><a href="'.basename($_SERVER['SCRIPT_NAME']).'?filtre='.substr($article['bt_date'],0,8).'">'.date_formate($article['bt_date']).'</a><span>, '.heure_formate($article['bt_date']).'</span></span>'."\n";
 			// NOMBRE COMMENTS
 			$out .= "\t\t".'<span><a href="commentaires.php?post_id='.$article['bt_id'].'">'.$article['bt_nb_comments'].'</a></span>'."\n";
 			// STATUT
@@ -96,7 +96,7 @@ echo '<div id="header">'."\n";
 	echo '<div id="top">'."\n";
 		afficher_msg();
 		echo moteur_recherche();
-		afficher_topnav(basename($_SERVER['PHP_SELF']), $GLOBALS['lang']['mesarticles']);
+		afficher_topnav($GLOBALS['lang']['mesarticles']);
 	echo '</div>'."\n";
 echo '</div>'."\n";
 
@@ -122,5 +122,5 @@ echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."
 	echo 'var scrollPos = 0;'."\n";
 	echo 'window.addEventListener(\'scroll\', function(){ scrollingFabHideShow() });'."\n";
 	echo "\n".'</script>'."\n";
-footer('', $begin);
-?>
+footer($begin);
+

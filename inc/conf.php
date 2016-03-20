@@ -19,7 +19,7 @@ if (!empty($GLOBALS['fuseau_horaire'])) {
 }
 
 // BLOGOTEXT VERSION (do not change it)
-$GLOBALS['version'] = '3.2.8';
+$GLOBALS['version'] = '3.3.0';
 $GLOBALS['last-online-file'] = '../config/version.txt';
 
 // MINIMAL REQUIRED PHP VERSION
@@ -32,6 +32,7 @@ $GLOBALS['date_premier_message_blog'] = '199701'; // this is overwritten by valu
 $GLOBALS['show_errors'] = -1; // this too
 $GLOBALS['use_ip_in_session'] = 1; // this too
 $GLOBALS['gravatar_link'] = 'themes/default/gravatars/get.php?g='; // this too
+$GLOBALS['addons'] = array();
 
 // FOLDERS (change this only if you know what you are doing...)
 $GLOBALS['dossier_admin'] = 'admin';
@@ -42,6 +43,7 @@ $GLOBALS['dossier_themes'] = 'themes';
 $GLOBALS['dossier_cache'] = 'cache';
 $GLOBALS['dossier_db'] = 'databases';
 $GLOBALS['dossier_config'] = 'config';
+$GLOBALS['dossier_addons'] = 'addons';
 
 $GLOBALS['db_location'] = 'database.sqlite';    // data storage file (for sqlite)
 $GLOBALS['fichier_liste_fichiers'] = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_db'].'/'.'files.php'; // files/image info storage.
@@ -141,9 +143,9 @@ function init_list_comments($comment) {
  */
 
 function init_post_article() { //no $mode : it's always admin.
-	$formated_contenu = formatage_wiki(protect_markup(clean_txt($_POST['contenu'])));
+	$formated_contenu = formatage_wiki(clean_txt($_POST['contenu']));
 	if ($GLOBALS['automatic_keywords'] == '0') {
-		$keywords = htmlspecialchars(stripslashes(protect_markup(clean_txt($_POST['mots_cles']))));
+		$keywords = protect($_POST['mots_cles']);
 	} else {
 		$keywords = extraire_mots($_POST['titre'].' '.$formated_contenu);
 	}
@@ -154,11 +156,11 @@ function init_post_article() { //no $mode : it's always admin.
 	$article = array (
 		'bt_id'				=> $id,
 		'bt_date'			=> $date,
-		'bt_title'			=> htmlspecialchars(stripslashes(protect_markup(clean_txt($_POST['titre'])))),
-		'bt_abstract'		=> (empty($_POST['chapo']) ? '' : formatage_wiki(protect_markup(clean_txt($_POST['chapo'])))),
-		'bt_notes'			=> htmlspecialchars(stripslashes(protect_markup(clean_txt($_POST['notes'])))),
+		'bt_title'			=> protect($_POST['titre']),
+		'bt_abstract'		=> (empty($_POST['chapo']) ? '' : formatage_wiki(clean_txt($_POST['chapo']))),
+		'bt_notes'			=> protect($_POST['notes']),
 		'bt_content'		=> $formated_contenu,
-		'bt_wiki_content'	=> stripslashes(protect_markup(clean_txt($_POST['contenu']))),
+		'bt_wiki_content'	=> stripslashes(clean_txt($_POST['contenu'])),
 		'bt_link'			=> '', // this one is not needed yet. Maybe in the futur. I dunno why it is still in the DB…
 		'bt_keywords'		=> $keywords,
 		'bt_categories'	=> (isset($_POST['categories']) ? htmlspecialchars(traiter_tags($_POST['categories'])) : ''), // htmlSpecialChars() nedded to escape the (") since tags are put in a <input/>. (') are escaped in form_categories(), with addslashes – not here because of JS problems :/
@@ -180,9 +182,8 @@ function init_post_article() { //no $mode : it's always admin.
  */
 function init_post_comment($id, $mode) {
 	$comment = array();
-	$edit_msg = '';
 	if ( isset($id) ) {
-		if ( ($mode == 'admin') and (isset($_POST['is_it_edit']) and $_POST['is_it_edit'] == 'yes') ) {
+		if ( ($mode == 'admin') and (isset($_POST['is_it_edit'])) ) {
 			$status = (isset($_POST['activer_comm']) and $_POST['activer_comm'] == 'on' ) ? '0' : '1'; // c'est plus « désactiver comm en fait »
 			$comment_id = $_POST['comment_id'];
 		} elseif ($mode == 'admin' and !isset($_POST['is_it_edit'])) {
@@ -195,16 +196,16 @@ function init_post_comment($id, $mode) {
 
 		// verif url.
 		if (!empty($_POST['webpage'])) {
-			$url = htmlspecialchars(stripslashes(clean_txt(  (strpos($_POST['webpage'], 'http://')===0 or strpos($_POST['webpage'], 'https://')===0)? $_POST['webpage'] : 'http://'.$_POST['webpage'] )));
+			$url = protect(  (strpos($_POST['webpage'], 'http://')===0 or strpos($_POST['webpage'], 'https://')===0)? $_POST['webpage'] : 'http://'.$_POST['webpage'] );
 		} else { $url = $_POST['webpage']; }
 
 		$comment = array (
 			'bt_id'				=> $comment_id,
 			'bt_article_id'		=> $id,
-			'bt_content'		=> formatage_commentaires(htmlspecialchars(clean_txt($_POST['commentaire'].$edit_msg), ENT_NOQUOTES)),
-			'bt_wiki_content'	=> stripslashes(protect_markup(clean_txt($_POST['commentaire']))),
-			'bt_author'			=> htmlspecialchars(stripslashes(clean_txt($_POST['auteur']))),
-			'bt_email'			=> htmlspecialchars(stripslashes(clean_txt($_POST['email']))),
+			'bt_content'		=> formatage_commentaires(htmlspecialchars(clean_txt($_POST['commentaire']), ENT_NOQUOTES)),
+			'bt_wiki_content'	=> stripslashes(clean_txt($_POST['commentaire'])),
+			'bt_author'			=> protect($_POST['auteur']),
+			'bt_email'			=> protect($_POST['email']),
 			'bt_link'			=> '', // this is empty, 'cause bt_link is created on reading of DB, not written in DB (useful if we change server or site name some day).
 			'bt_webpage'		=> $url,
 			'bt_subscribe'		=> (isset($_POST['subscribe']) and $_POST['subscribe'] == 'on') ? '1' : '0',
@@ -220,24 +221,17 @@ function init_post_comment($id, $mode) {
 
 // POST LINK
 function init_post_link2() { // second init : the whole link data needs to be stored
-	$id = htmlspecialchars(stripslashes(protect_markup(clean_txt($_POST['bt_id']))));
-	$author = htmlspecialchars(stripslashes(protect_markup(clean_txt($_POST['bt_author']))));
-	if (empty($_POST['url'])) {
-		$url = $GLOBALS['racine'].'?mode=links&amp;id='.$id;
-	} else {
-		$url = htmlspecialchars(stripslashes(protect_markup(clean_txt($_POST['url']))));
-	}
-	$statut = (isset($_POST['statut'])) ? 0 : 1;
+	$id = protect($_POST['bt_id']);
 	$link = array (
 		'bt_id'				=> $id,
 		'bt_type'			=> htmlspecialchars($_POST['type']),
-		'bt_content'		=> formatage_links(htmlspecialchars(stripslashes(protect_markup(clean_txt($_POST['description']))), ENT_NOQUOTES)), // formatage_wiki() ne parse que les tags BBCode. Le HTML est converti en texte.
-		'bt_wiki_content'	=> htmlspecialchars(stripslashes(protect_markup(clean_txt($_POST['description'])))),
-		'bt_author'			=> $author,
-		'bt_title'			=> htmlspecialchars(stripslashes(protect_markup(clean_txt($_POST['title'])))),
-		'bt_link'			=> $url,
+		'bt_content'		=> formatage_links(htmlspecialchars(stripslashes(clean_txt($_POST['description'])), ENT_NOQUOTES)), // formatage_wiki() ne parse que les tags BBCode. Le HTML est converti en texte.
+		'bt_wiki_content'	=> protect($_POST['description']),
+		'bt_author'			=> protect($_POST['bt_author']),
+		'bt_title'			=> protect($_POST['title']),
+		'bt_link'			=> (empty($_POST['url'])) ? $GLOBALS['racine'].'?mode=links&amp;id='.$id : protect($_POST['url']),
 		'bt_tags'			=> htmlspecialchars(traiter_tags($_POST['categories'])),
-		'bt_statut'			=> $statut
+		'bt_statut'			=> (isset($_POST['statut'])) ? 0 : 1
 	);
 	if ( isset($_POST['ID']) and is_numeric($_POST['ID']) ) { // ID only added on edit.
 		$link['ID'] = $_POST['ID'];

@@ -800,4 +800,4 @@ echo "il.addEventListener('change', function() { document.getElementById('nb-lin
 
 echo '</script>';
 
-footer('', $begin);
+footer($begin);

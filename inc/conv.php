@@ -12,65 +12,44 @@
 # *** LICENSE ***
 
 function extraire_mots($texte) {
-	// supprime les retours à la ligne
-	$texte = str_replace("\r", '', $texte);
-	$texte = str_replace("\n", ' ', $texte);
-	$texte = str_replace("\t", ' ', $texte);
-	$texte = preg_replace('#<[^>]*>#', ' ', $texte); // supprime les balises
-	$texte = preg_replace('#[[:punct:]]#', ' ', $texte); // supprime la pontuation
-	$texte = trim(preg_replace('# {2,}#', ' ', $texte)); // supprime les espaces multiples
-	$tableau = explode(' ', $texte);
-	foreach ($tableau as $i => $mots) {
-		if (strlen(trim($mots)) <= 4) {// supprime les mots trop courts (le, les, à, de…)
-			unset($tableau[$i]);
+	$texte = str_replace(array("\r", "\n", "\t"), array('', ' ', ' '), $texte); // removes \n, \r and tabs
+	$texte = strip_tags($texte); // removes HTML tags
+	$texte = preg_replace('#[!"\#$%&\'()*+,./:;<=>?@\[\]^_`{|}~«»“”…]#', ' ', $texte); // removes punctuation
+	$texte = trim(preg_replace('# {2,}#', ' ', $texte)); // remove consecutive spaces
+
+	$mots = explode(' ', $texte);
+	foreach ($mots as $i => $mot) {
+		// remove short words & words with numbers
+		if (strlen($mot) <= 4 or preg_match('#\d#', $mot)) {
+			unset($mots[$i]);
 		}
-		elseif (preg_match('#\d#', $mots)) {// supprime les mots contenant des chiffres
-			unset($tableau[$i]);
-		}
-		// supprime les caractères unicodes trop complexes
-		elseif ( preg_match('#\?#', utf8_decode(preg_replace('#&(.)(acute|grave|circ|uml|cedil|tilde|ring|slash|caron);#', '$1', $mots))) ) {
-			unset($tableau[$i]);
+		elseif ( preg_match('#\?#', utf8_decode(preg_replace('#&(.)(acute|grave|circ|uml|cedil|tilde|ring|slash|caron);#', '$1', $mot))) ) {
+			unset($mots[$i]);
 		}
 	}
 
-	natsort($tableau);
 	// Ici on a une liste de mots avec doublons.
 	// on recherche les mots trouvés plusieurs fois dans la liste, qui seront les mots clés en priorité
-	$tableau = array_unique($tableau);
+	$mots = array_unique($mots);
 
-	$n = 3; // nb occurrences
 	$liste = array();
-
-	// on recherche les mots trouvés 3 fois. S’il y a plus de 7 mots, on s’arrête
-	// si moins de 7 mots, on cherche les mots présents 2 fois (en plus des mots présents 3 fois), on les ajoute
-	// si toujours moins de 7 mots, on les prends tous.
-	//  Ceci permet de garder en prio les mots présents le plus de fois.
-	while ($n > 0 and count($liste) < 7) {
-		foreach($tableau as $i => $mot) {
-			if (substr_count($texte, $mot) == $n) {
-				$liste[] = $mot;
-			}
+	// only keep words with 3 occurences or more
+	foreach ($mots as $i => $mot) {
+		if (substr_count($texte, $mot) >= 3) {
+			$liste[] = $mot;
 		}
-		$n--;
 	}
+	$liste = array_unique($liste);
 
-	$retour = implode($liste, ', ');
-	return $retour;
+	natsort($liste);
+	$liste = implode($liste, ', ');
+	return $liste;
 }
 
-function titre_url($url) {
-	$url = diacritique($url, 0, 0);
-	$url = trim($url, '-');
-	return $url;
-}
-
-function protect_markup($text) {
-	$patterns = array(
-		'`<bt_(.*?)>`',
-		'`</bt_(.*?)>`'
-	);
-	$result = preg_replace($patterns, '', $text);
-	return $result;
+function titre_url($title) {
+	$title = diacritique($title);
+	$title = trim($title, '-');
+	return $title;
 }
 
 // remove slashes if necessary
@@ -83,27 +62,22 @@ function clean_txt($text) {
 	return $return;
 }
 
-function clean_txt_array($array) {
-	foreach ($array as $i => $key) {
-		$array[$i] = clean_txt($key);
-	}
-	return $array;
+function protect($text) {
+	$return = htmlspecialchars(stripslashes(clean_txt($text)));
+	return $return;
 }
 
-
-function diacritique($texte, $majuscules, $espaces) {
+function diacritique($texte) {
 	$texte = strip_tags($texte);
-	$texte = html_entity_decode($texte, ENT_QUOTES, 'UTF-8'); // &eacute => é ; é => é ; (uniformise)
+	$texte = html_entity_decode($texte, ENT_QUOTES, 'UTF-8'); // &eacute => é ; é => é ; (uniformize)
 	$texte = htmlentities($texte, ENT_QUOTES, 'UTF-8'); // é => &eacute;
 	$texte = preg_replace('#&(.)(acute|grave|circ|uml|cedil|tilde|ring|slash|caron);#', '$1', $texte); // &eacute => e
-	$texte = preg_replace('#(\t|\n|\r)#', ' ' , $texte); // retours à la ligne => espaces
-	$texte = preg_replace('#&([a-z]{2})lig;#i', '$1', $texte); // EX : œ => oe ; æ => ae
-	$texte = preg_replace('#&[\w\#]*;#U', '', $texte); // les autres (&quote; par exemple) sont virés
-	$texte = preg_replace('#[^\w -]#U', '', $texte); // on ne garde que chiffres, lettres _, -, et espaces.
-	if ($majuscules == '0')
-		$texte = strtolower($texte);
-	if ($espaces == '0')
-		$texte = preg_replace('#[ ]+#', '-', $texte); // les espaces deviennent des tirets.
+	$texte = preg_replace('#(\t|\n|\r)#', ' ' , $texte); // \n, \r => spaces
+	$texte = preg_replace('#&([a-z]{2})lig;#i', '$1', $texte); // œ => oe ; æ => ae
+	$texte = preg_replace('#&[\w\#]*;#U', '', $texte); // remove other entities like &quote, &nbsp.
+	$texte = preg_replace('#[^\w -]#U', '', $texte); // keep only ciffers, letters, spaces, hyphens.
+	$texte = strtolower($texte); // to lower case
+	$texte = preg_replace('#[ ]+#', '-', $texte); // spaces => hyphens
 	return $texte;
 }
 
@@ -278,7 +252,7 @@ function formatage_commentaires($texte) {
 		'#\[quote\](.+?)\[/quote\]#s',									// citation } les citation imbriquées marchent pour **deux niveaux** seulement,
 		'#\[quote\](.+?)\[/quote\]#s',									//          } [quote][quote]bla[/quote][quote]bla[/quote][/quote] marchent et donnent le résultat attendu.
 																					//				} !!!! : [quote*][quote**][quote]bla[/quote**][/quote*][/quote] fait que les balises avec *, ** matchent.
-		'#<p>(\r|\n)+#s',										// code
+		'#<p>(\r|\n)+#s',
 		'#\[code\](.+?)\[/code\]#s',										// code
 		'#([^"\[\]|])((http|ftp)s?://([^"\'\[\]<>\s\)\(]+))#i',	// Regex URL
 		'#\[([^[]+)\|([^[]+)\]#',											// a href
@@ -286,29 +260,19 @@ function formatage_commentaires($texte) {
 		'#\[i\](.*?)\[/i\]#s',												// italic
 		'#\[s\](.*?)\[/s\]#s',												// strike
 		'#\[u\](.*?)\[/u\]#s',												// souligne
-		'# »#',																	// close quote
-		'#« #', 																	// open quote
-		'# !#',																	// !
-		'# :#',																	// :
-		'# ;#',																	// ;
 	);
 	$toreplacec = array(
-		'<blockquote>$1</blockquote>',		// citation (</p> and <p> needed for W3C)
-		'<blockquote>$1</blockquote>',		// citation (</p> and <p> needed for W3C)
-		'<p>',																// removes unwanted \n
+		'<blockquote>$1</blockquote>',		// citation
+		'<blockquote>$1</blockquote>',		// citation
+		'<p>',										// removes unwanted \n
 
-		'<code>$1</code>',													// code
-		'$1<a href="$2">$2</a>',												// url
-		'<a href="$2">$1</a>',												// a href
-		'<strong>$1</strong>',												// strong
-		'<em>$1</em>',															// italic
-		'<del>$1</del>',														// barre
-		'<u>$1</u>',															// souligne
-		'&thinsp;»',															// close quote
-		'«&thinsp;',															// open quote
-		'&thinsp;!',															// !
-		'&nbsp;:',																// :
-		'&thinsp;;',															// ;
+		'<code>$1</code>',						// code
+		'$1<a href="$2">$2</a>',				// url
+		'<a href="$2">$1</a>',					// a href
+		'<strong>$1</strong>',					// strong
+		'<em>$1</em>',								// italic
+		'<del>$1</del>',							// barre
+		'<u>$1</u>',								// souligne
 	);
 
 	$toreplaceArrayLength = sizeof($tofindc);
@@ -331,7 +295,6 @@ function formatage_links($texte) {
 		'#\[i\](.*?)\[/i\]#s',												// italic
 		'#\[s\](.*?)\[/s\]#s',												// strike
 		'#\[u\](.*?)\[/u\]#s',												// souligne
-//		'#(.*?)\r#',															// br : retour à la ligne sans saut de ligne
 	);
 	$toreplace = array(
 		'$1<a href="$2">$2</a>',												// url  '$1<a href="$2">$2</a>'
@@ -340,7 +303,6 @@ function formatage_links($texte) {
 		'<em>$1</em>',															// italic
 		'<del>$1</del>',														// barre
 		'<u>$1</u>',															// souligne
-//		'$1<br/>'."\n",														// br : retour à la ligne sans saut de ligne
 	);
 
 	// ceci permet de formater l’ensemble du message, sauf les balises [code],
@@ -360,9 +322,6 @@ function formatage_links($texte) {
 function date_formate($id, $format_force='') {
 	$retour ='';
 	$date= decode_id($id);
-		$time_article = mktime(0, 0, 0, $date['mois'], $date['jour'], $date['annee']);
-		$auj = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
-		$hier = mktime(0, 0, 0, date('m'), date('d')-'1', date('Y'));
 		$jour_l = jour_en_lettres($date['jour'], $date['mois'], $date['annee']);
 		$mois_l = mois_en_lettres($date['mois']);
 			$format = array (
@@ -404,12 +363,13 @@ function date_formate_iso($id) {
 	$date_iso = date('c', $ts);
 	return $date_iso;
 }
-// à partir d’une valeur en octets (par ex 20M) retourne la quantité en octect.
-// le format « 20M » est par exemple retourné avec ini_get("max_upload_size").
+
+// From a filesize (like "20M"), returns a size in bytes.
+// Syntaxe like "20M" is used for example with ini_get("max_upload_size") command
 function return_bytes($val) {
 	$val = trim($val);
-	$last = strtolower($val[strlen($val)-1]);
-	switch($last) {
+	$prefix = strtolower($val[strlen($val)-1]);
+	switch($prefix) {
 		case 'g': $val *= 1024;
 		case 'm': $val *= 1024;
 		case 'k': $val *= 1024;
@@ -423,11 +383,11 @@ function taille_formate($taille) {
 		'0' => $GLOBALS['lang']['byte_symbol'],   // 2^00 o
 		'1' => 'ki'.$GLOBALS['lang']['byte_symbol'], // 2^10 o
 		'2' => 'Mi'.$GLOBALS['lang']['byte_symbol'], // 2^20 o
-		'3' => 'Gi'.$GLOBALS['lang']['byte_symbol'], // ...
-		'4' => 'Ti'.$GLOBALS['lang']['byte_symbol'], // ...
+		'3' => 'Gi'.$GLOBALS['lang']['byte_symbol'],
+		'4' => 'Ti'.$GLOBALS['lang']['byte_symbol'],
 	);
 	$dix = 0;
-	while ($taille / (pow(2, 10*$dix)) > 1024 /*or ($dix >= '40')*/) {
+	while ($taille / (pow(2, 10*$dix)) > 1024) {
 		$dix++;
 	}
 	$taille = $taille / (pow(2, 10*$dix));
@@ -438,69 +398,76 @@ function taille_formate($taille) {
 	return $taille.' '.$prefixe[$dix];
 }
 
+function en_lettres($captchavalue) {
+	switch($captchavalue) {
+		case 0 : return $GLOBALS['lang']['0']; break;
+		case 1 : return $GLOBALS['lang']['1']; break;
+		case 2 : return $GLOBALS['lang']['2']; break;
+		case 3 : return $GLOBALS['lang']['3']; break;
+		case 4 : return $GLOBALS['lang']['4']; break;
+		case 5 : return $GLOBALS['lang']['5']; break;
+		case 6 : return $GLOBALS['lang']['6']; break;
+		case 7 : return $GLOBALS['lang']['7']; break;
+		case 8 : return $GLOBALS['lang']['8']; break;
+		case 9 : return $GLOBALS['lang']['9']; break;
+	}
+}
+
 function jour_en_lettres($jour, $mois, $annee) {
 	$date = date('w', mktime(0, 0, 0, $mois, $jour, $annee));
 	switch($date) {
-		case '0': $nom = $GLOBALS['lang']['dimanche']; break;
-		case '1': $nom = $GLOBALS['lang']['lundi']; break;
-		case '2': $nom = $GLOBALS['lang']['mardi']; break;
-		case '3': $nom = $GLOBALS['lang']['mercredi']; break;
-		case '4': $nom = $GLOBALS['lang']['jeudi']; break;
-		case '5': $nom = $GLOBALS['lang']['vendredi']; break;
-		case '6': $nom = $GLOBALS['lang']['samedi']; break;
-		default: $nom = "(BT_ERROR_DAY)"; break;
+		case 0: return $GLOBALS['lang']['dimanche']; break;
+		case 1: return $GLOBALS['lang']['lundi']; break;
+		case 2: return $GLOBALS['lang']['mardi']; break;
+		case 3: return $GLOBALS['lang']['mercredi']; break;
+		case 4: return $GLOBALS['lang']['jeudi']; break;
+		case 5: return $GLOBALS['lang']['vendredi']; break;
+		case 6: return $GLOBALS['lang']['samedi']; break;
 	}
 	return $nom;
 }
 
-function mois_en_lettres($numero, $abbrv='') {
+function mois_en_lettres($numero, $abbrv=0) {
 	if ($abbrv == 1) {
 		switch($numero) {
-			case '01': $nom = $GLOBALS['lang']['janv.']; break;
-			case '02': $nom = $GLOBALS['lang']['fev.']; break;
-			case '03': $nom = $GLOBALS['lang']['mars.']; break;
-			case '04': $nom = $GLOBALS['lang']['avr.']; break;
-			case '05': $nom = $GLOBALS['lang']['mai.']; break;
-			case '06': $nom = $GLOBALS['lang']['juin.']; break;
-			case '07': $nom = $GLOBALS['lang']['juil.']; break;
-			case '08': $nom = $GLOBALS['lang']['aout.']; break;
-			case '09': $nom = $GLOBALS['lang']['sept.']; break;
-			case '10': $nom = $GLOBALS['lang']['oct.']; break;
-			case '11': $nom = $GLOBALS['lang']['nov.']; break;
-			case '12': $nom = $GLOBALS['lang']['dec.']; break;
-			default: $nom = "(BT_ERROR_MONTH)"; break;
+			case '01': return $GLOBALS['lang']['janv.']; break;
+			case '02': return $GLOBALS['lang']['fev.']; break;
+			case '03': return $GLOBALS['lang']['mars.']; break;
+			case '04': return $GLOBALS['lang']['avr.']; break;
+			case '05': return $GLOBALS['lang']['mai.']; break;
+			case '06': return $GLOBALS['lang']['juin.']; break;
+			case '07': return $GLOBALS['lang']['juil.']; break;
+			case '08': return $GLOBALS['lang']['aout.']; break;
+			case '09': return $GLOBALS['lang']['sept.']; break;
+			case '10': return $GLOBALS['lang']['oct.']; break;
+			case '11': return $GLOBALS['lang']['nov.']; break;
+			case '12': return $GLOBALS['lang']['dec.']; break;
 		}
-		return $nom;
 	}
 	else {
 		switch($numero) {
-			case '01': $nom = $GLOBALS['lang']['janvier']; break;
-			case '02': $nom = $GLOBALS['lang']['fevrier']; break;
-			case '03': $nom = $GLOBALS['lang']['mars']; break;
-			case '04': $nom = $GLOBALS['lang']['avril']; break;
-			case '05': $nom = $GLOBALS['lang']['mai']; break;
-			case '06': $nom = $GLOBALS['lang']['juin']; break;
-			case '07': $nom = $GLOBALS['lang']['juillet']; break;
-			case '08': $nom = $GLOBALS['lang']['aout']; break;
-			case '09': $nom = $GLOBALS['lang']['septembre']; break;
-			case '10': $nom = $GLOBALS['lang']['octobre']; break;
-			case '11': $nom = $GLOBALS['lang']['novembre']; break;
-			case '12': $nom = $GLOBALS['lang']['decembre']; break;
-			default: $nom = "(BT_ERROR_MONTH)"; break;
+			case '01': return $GLOBALS['lang']['janvier']; break;
+			case '02': return $GLOBALS['lang']['fevrier']; break;
+			case '03': return $GLOBALS['lang']['mars']; break;
+			case '04': return $GLOBALS['lang']['avril']; break;
+			case '05': return $GLOBALS['lang']['mai']; break;
+			case '06': return $GLOBALS['lang']['juin']; break;
+			case '07': return $GLOBALS['lang']['juillet']; break;
+			case '08': return $GLOBALS['lang']['aout']; break;
+			case '09': return $GLOBALS['lang']['septembre']; break;
+			case '10': return $GLOBALS['lang']['octobre']; break;
+			case '11': return $GLOBALS['lang']['novembre']; break;
+			case '12': return $GLOBALS['lang']['decembre']; break;
 		}
-		return $nom;
 	}
 }
 
 function nombre_objets($nb, $type) {
-	if ($nb == '0') {
-		$retour = $GLOBALS['lang']['note_no_'.$type];
-	} elseif ($nb == '1') {
-		$retour = $nb.' '.$GLOBALS['lang']['label_'.$type];
-	} elseif ($nb > '1') {
-		$retour = $nb.' '.$GLOBALS['lang']['label_'.$type.'s'];
+	switch ($nb) {
+		case 0 : return $GLOBALS['lang']['note_no_'.$type];
+		case 1 : return $nb.' '.$GLOBALS['lang']['label_'.$type];
+		default: return $nb.' '.$GLOBALS['lang']['label_'.$type.'s'];
 	}
-	return $retour;
 }
 
 function str2($nb) {
@@ -509,5 +476,4 @@ function str2($nb) {
 function str4($nb) {
 	return str_pad($nb, 4, "0", STR_PAD_LEFT);
 }
-
 

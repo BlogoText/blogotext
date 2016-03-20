@@ -13,83 +13,62 @@
 
 
 function afficher_html_head($titre) {
-	if (isset($GLOBALS['lang']['id'])) {
-		$lang_id = $GLOBALS['lang']['id'];
-	} else {
-		$lang_id = 'fr';
-	}
-	$txt = '<!DOCTYPE html>'."\n";
-	$txt .= '<html>'."\n";
-	$txt .= '<head>'."\n";
-	$txt .= "\t".'<meta charset="UTF-8" />'."\n";
-	$txt .= "\t".'<link type="text/css" rel="stylesheet" href="style/style.css.php" />'."\n";
-	$txt .= "\t".'<meta name="viewport" content="initial-scale=1.0, user-scalable=yes" />'."\n";
-	$txt .= "\t".'<title>'.$titre.' | '.$GLOBALS['nom_application'].'</title>'."\n";
-	$txt .= '</head>'."\n";
-	$txt .= '<body id="body">'."\n\n";
-	echo $txt;
+	$html = '<!DOCTYPE html>'."\n";
+	$html .= '<html>'."\n";
+	$html .= '<head>'."\n";
+	$html .= "\t".'<meta charset="UTF-8" />'."\n";
+	$html .= "\t".'<link type="text/css" rel="stylesheet" href="style/style.css.php" />'."\n";
+	$html .= "\t".'<meta name="viewport" content="initial-scale=1.0, user-scalable=yes" />'."\n";
+	$html .= "\t".'<title>'.$titre.' | '.$GLOBALS['nom_application'].'</title>'."\n";
+	$html .= '</head>'."\n";
+	$html .= '<body id="body">'."\n\n";
+	echo $html;
 }
 
-function footer($index='', $begin_time='') {
-	if ($index != '') {
-		$file = '../config/ip.php';
-		if (file_exists($file) and is_readable($file)) {
-			include($file);
-			$new_ip = htmlspecialchars($_SERVER['REMOTE_ADDR']);
-			$last_time = strtolower(date_formate($GLOBALS['old_time'])).', '.heure_formate($GLOBALS['old_time']);
-			if ($new_ip == $GLOBALS['old_ip']) {
-				$msg = '<br/>'.$GLOBALS['lang']['derniere_connexion_le'].' '.$GLOBALS['old_ip'].' ('.$GLOBALS['lang']['cet_ordi'].'), '.$last_time;
-			} else {
-				$msg = '<br/>'.$GLOBALS['lang']['derniere_connexion_le'].' '.$GLOBALS['old_ip'].' '.$last_time;
-			}
-		} else {
-			$msg = '';
-		}
-	} else {
-		$msg = '';
-	}
-	if ($begin_time != ''){
-		$end = microtime(TRUE);
-		$dt = round(($end - $begin_time),6);
-		$msg2 = ' - '.$GLOBALS['lang']['rendered'].' '.$dt.' s '.$GLOBALS['lang']['using'].' '.$GLOBALS['sgdb'];
-	} else {
-		$msg2 = '';
+function footer($begin_time='') {
+	$msg = '';
+	if ($begin_time != '') {
+		$dt = round((microtime(TRUE) - $begin_time),6);
+		$msg = ' - '.$GLOBALS['lang']['rendered'].' '.$dt.' s '.$GLOBALS['lang']['using'].' '.$GLOBALS['sgdb'];
 	}
 
-	echo '</div>'."\n";
-	echo '</div>'."\n";
-	echo '<p id="footer"><a href="'.$GLOBALS['appsite'].'">'.$GLOBALS['nom_application'].' '.$GLOBALS['version'].'</a>'.$msg2.$msg.'</p>'."\n";
-	echo '</body>'."\n";
-	echo '</html>'."\n";
+	$html = '</div>'."\n";
+	$html .= '</div>'."\n";
+	$html .= '<p id="footer"><a href="'.$GLOBALS['appsite'].'">'.$GLOBALS['nom_application'].' '.$GLOBALS['version'].'</a>'.$msg.'</p>'."\n";
+	$html .= '</body>'."\n";
+	$html .= '</html>'."\n";
+	echo $html;
 }
 
 /// menu haut panneau admin /////////
-function afficher_topnav($active, $titre) {
+function afficher_topnav($titre) {
+	$tab = pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME);
 	if (strlen($titre) == 0) $titre = $GLOBALS['nom_application'];
-
-	echo '<div id="nav">'."\n";
-	echo "\t".'<ul>'."\n";
-	echo "\t\t".'<li><a href="index.php" id="lien-index"', ($active == 'index.php') ? ' class="current"' : '', '>'.$GLOBALS['lang']['label_resume'].'</a></li>'."\n";
-	echo "\t\t".'<li><a href="articles.php" id="lien-liste"', ($active == 'articles.php') ? ' class="current"' : '', '>'.$GLOBALS['lang']['mesarticles'].'</a></li>'."\n";
-	echo "\t\t".'<li><a href="ecrire.php" id="lien-nouveau"', ($active == 'ecrire.php') ? ' class="current"' : '', '>'.$GLOBALS['lang']['nouveau'].'</a></li>'."\n";
-	echo "\t\t".'<li><a href="commentaires.php" id="lien-lscom"', ($active == 'commentaires.php') ? ' class="current"' : '', '>'.$GLOBALS['lang']['titre_commentaires'].'</a></li>'."\n";
-	echo "\t\t".'<li><a href="fichiers.php" id="lien-fichiers"', ($active == 'fichiers.php') ? ' class="current"' : '', '>'.ucfirst($GLOBALS['lang']['label_fichiers']).'</a></li>'."\n";
+	$html = '';
+	$html .= '<div id="nav">'."\n";
+	$html .=  "\t".'<ul>'."\n";
+	$html .=  "\t\t".'<li><a href="index.php" id="lien-index"'.(($tab == 'index.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['label_resume'].'</a></li>'."\n";
+	$html .=  "\t\t".'<li><a href="articles.php" id="lien-liste"'.(($tab == 'articles.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['mesarticles'].'</a></li>'."\n";
+	$html .=  "\t\t".'<li><a href="ecrire.php" id="lien-nouveau"'.(($tab == 'ecrire.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['nouveau'].'</a></li>'."\n";
+	$html .=  "\t\t".'<li><a href="commentaires.php" id="lien-lscom"'.(($tab == 'commentaires.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['titre_commentaires'].'</a></li>'."\n";
+	$html .=  "\t\t".'<li><a href="fichiers.php" id="lien-fichiers"'.(($tab == 'fichiers.php') ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_fichiers']).'</a></li>'."\n";
 	if ($GLOBALS['onglet_liens'])
-	echo "\t\t".'<li><a href="links.php" id="lien-links"', ($active == 'links.php') ? ' class="current"' : '', '>'.ucfirst($GLOBALS['lang']['label_links']).'</a></li>'."\n";
+	$html .=  "\t\t".'<li><a href="links.php" id="lien-links"'.(($tab == 'links.php') ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_links']).'</a></li>'."\n";
 	if ($GLOBALS['onglet_rss'])
-	echo "\t\t".'<li><a href="feed.php" id="lien-rss"', ($active == 'feed.php') ? ' class="current"' : '', '>'.ucfirst($GLOBALS['lang']['label_feeds']).'</a></li>'."\n";
-	echo "\t".'</ul>'."\n";
-	echo '</div>'."\n";
+	$html .=  "\t\t".'<li><a href="feed.php" id="lien-rss"'.(($tab == 'feed.php') ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_feeds']).'</a></li>'."\n";
+	$html .=  "\t".'</ul>'."\n";
+	$html .=  '</div>'."\n";
 
-	echo '<h1>'.$titre.'</h1>'."\n";
+	$html .=  '<h1>'.$titre.'</h1>'."\n";
 
-	echo '<div id="nav-acc">'."\n";
-	echo "\t".'<ul>'."\n";
-	echo "\t\t".'<li><a href="preferences.php" id="lien-preferences">'.$GLOBALS['lang']['preferences'].'</a></li>'."\n";
-	echo "\t\t".'<li><a href="'.$GLOBALS['racine'].'" id="lien-site">'.$GLOBALS['lang']['lien_blog'].'</a></li>'."\n";
-	echo "\t\t".'<li><a href="logout.php" id="lien-deconnexion">'.$GLOBALS['lang']['deconnexion'].'</a></li>'."\n";
-	echo "\t".'</ul>'."\n";
-	echo '</div>'."\n";
+	$html .=  '<div id="nav-acc">'."\n";
+	$html .=  "\t".'<ul>'."\n";
+	$html .=  "\t\t".'<li><a href="preferences.php" id="lien-preferences">'.$GLOBALS['lang']['preferences'].'</a></li>'."\n";
+	$html .=  "\t\t".'<li><a href="'.$GLOBALS['racine'].'" id="lien-site">'.$GLOBALS['lang']['lien_blog'].'</a></li>'."\n";
+	$html .=  "\t\t".'<li><a href="logout.php" id="lien-deconnexion">'.$GLOBALS['lang']['deconnexion'].'</a></li>'."\n";
+	$html .=  "\t".'</ul>'."\n";
+	$html .=  '</div>'."\n";
+	echo $html;
 }
 
 function confirmation($message) {
@@ -113,15 +92,14 @@ function info($message) {
 }
 
 function erreurs($erreurs) {
+	$html = '';
 	if ($erreurs) {
-		$texte_erreur = '<div id="erreurs">'.'<strong>'.$GLOBALS['lang']['erreurs'].'</strong> :' ;
-		$texte_erreur .= '<ul><li>';
-		$texte_erreur .= implode('</li><li>', $erreurs);
-		$texte_erreur .= '</li></ul></div>'."\n";
-	} else {
-		$texte_erreur = '';
+		$html .= '<div id="erreurs">'.'<strong>'.$GLOBALS['lang']['erreurs'].'</strong> :' ;
+		$html .= '<ul><li>';
+		$html .= implode('</li><li>', $erreurs);
+		$html .= '</li></ul></div>'."\n";
 	}
-	return $texte_erreur;
+	return $html;
 }
 
 function erreur($message) {
@@ -162,7 +140,7 @@ function moteur_recherche() {
 	if (isset($_GET['q'])) {
 		$requete = htmlspecialchars(stripslashes($_GET['q']));
 	}
-	$return = '<form action="'.basename($_SERVER['PHP_SELF']).'" method="get" id="search">'."\n";
+	$return = '<form action="'.basename($_SERVER['SCRIPT_NAME']).'" method="get" id="search">'."\n";
 	$return .= '<input id="q" name="q" type="search" size="20" value="'.$requete.'" placeholder="'.$GLOBALS['lang']['placeholder_search'].'" accesskey="f" />'."\n";
 	$return .= '<label for="q">'.'</label>'."\n";
 	$return .= '<input class="silver-square" id="input-rechercher" type="submit" value="'.$GLOBALS['lang']['rechercher'].'" />'."\n";
@@ -171,116 +149,6 @@ function moteur_recherche() {
 	}
 	$return .= '</form>'."\n\n";
 	return $return;
-}
-
-// returns HTML <table> calender
-function afficher_calendrier() {
-	// article
-	if ( isset($_GET['d']) and preg_match('#^\d{4}(/\d{2}){5}#', $_GET['d'])) {
-		$id = substr(str_replace('/', '', $_GET['d']), 0, 14);
-		$date = substr(get_entry($GLOBALS['db_handle'], 'articles', 'bt_date', $id, 'return'), 0, 8);
-		$date = (preg_match('#^\d{4}(/\d{2}){5}#', $date) and $date <= date('Y/m/d/H/i/s')) ? $date : date('Ym');
-	} elseif ( isset($_GET['d']) and preg_match('#^\d{4}/\d{2}(/\d{2})?#', $_GET['d']) ) {
-		$date = str_replace('/', '', $_GET['d']);
-		$date = (preg_match('#^\d{6}\d{2}#', $date)) ? substr($date, 0, 8) : substr($date, 0, 6); // avec jour ?
-	} elseif (isset($_GET['id']) and preg_match('#^\d{14}#', $_GET['id']) ) {
-		$date = substr($_GET['id'], 0, 8);
-	} else {
-		$date = date('Ym');
-	}
-
-	$annee = substr($date, 0, 4);
-	$ce_mois = substr($date, 4, 2);
-	$ce_jour = (strlen(substr($date, 6, 2)) == 2) ? substr($date, 6, 2) : '';
-
-	$qstring = (isset($_GET['mode']) and !empty($_GET['mode'])) ? 'mode='.htmlspecialchars($_GET['mode']).'&amp;' : '';
-
-	$jours_semaine = array(
-		$GLOBALS['lang']['lu'],
-		$GLOBALS['lang']['ma'],
-		$GLOBALS['lang']['me'],
-		$GLOBALS['lang']['je'],
-		$GLOBALS['lang']['ve'],
-		$GLOBALS['lang']['sa'],
-		$GLOBALS['lang']['di']
-	);
-	$premier_jour = mktime('0', '0', '0', $ce_mois, '1', $annee);
-	$jours_dans_mois = date('t', $premier_jour);
-	$decalage_jour = date('w', $premier_jour-'1');
-	$prev_mois =      '?'.$qstring.'d='.$annee.'/'.str2($ce_mois-1);
-	if ($prev_mois == '?'.$qstring.'d='.$annee.'/'.'00') {
-		$prev_mois =   '?'.$qstring.'d='.($annee-'1').'/'.'12';
-	}
-	$next_mois =      '?'.$qstring.'d='.$annee.'/'.str2($ce_mois+1);
-	if ($next_mois == '?'.$qstring.'d='.$annee.'/'.'13') {
-		$next_mois =   '?'.$qstring.'d='.($annee+'1').'/'.'01';
-	}
-
-	// On verifie si il y a un ou des articles/liens/commentaire du jour dans le mois courant
-	$tableau = array();
-	$mode = ( !empty($_GET['mode']) ) ? $_GET['mode'] : 'blog';
-	switch($mode) {
-		case 'comments':
-			$where = 'commentaires'; break;
-		case 'links':
-			$where = 'links'; break;
-		case 'blog':
-		default:
-			$where = 'articles'; break;
-	}
-
-	$tableau = table_list_date($annee.$ce_mois, 1, $where);
-
-	$html = '<table id="calendrier">'."\n";
-	$html .= '<caption>';
-	if ( $annee.$ce_mois > $GLOBALS['date_premier_message_blog']) {
-		$html .= '<a href="'.$prev_mois.'">&#171;</a>&nbsp;';
-	}
-
-	// Si on affiche un jour on ajoute le lien sur le mois
-	$html .= '<a href="?'.$qstring.'d='.$annee.'/'.$ce_mois.'">'.mois_en_lettres($ce_mois).' '.$annee.'</a>';
-	// On ne peut pas aller dans le futur
-	if ( ($ce_mois != date('m')) || ($annee != date('Y')) ) {
-		$html .= '&nbsp;<a href="'.$next_mois.'">&#187;</a>';
-	}
-	$html .= '</caption>'."\n".'<tr>'."\n";
-	if ($decalage_jour > 0) {
-		for ($i = 0; $i < $decalage_jour; $i++) {
-			$html .=  '<td></td>';
-		}
-	}
-	// Indique le jour consulte
-	for ($jour = 1; $jour <= $jours_dans_mois; $jour++) {
-		if ($jour == $ce_jour) {
-			$class = ' class="active"';
-		} else {
-			$class = '';
-		}
-		if ( in_array($jour, $tableau) ) {
-			$lien = '<a href="?'.$qstring.'d='.$annee.'/'.$ce_mois.'/'.str2($jour).'">'.$jour.'</a>';
-		} else {
-			$lien = $jour;
-		}
-		$html .= '<td'.$class.'>';
-		$html .= $lien;
-		$html .= '</td>';
-		$decalage_jour++;
-		if ($decalage_jour == 7) {
-			$decalage_jour = 0;
-			$html .=  '</tr>';
-			if ($jour < $jours_dans_mois) {
-				$html .= '<tr>';
-			}
-		}
-	}
-	if ($decalage_jour > 0) {
-		for ($i = $decalage_jour; $i < 7; $i++) {
-			$html .= '<td> </td>';
-		}
-		$html .= '</tr>'."\n";
-	}
-	$html .= '</table>'."\n";
-	return $html;
 }
 
 function encart_commentaires() {
@@ -316,20 +184,15 @@ function encart_categories($mode) {
 
 		// attach non-diacritic versions of tag, so that "é" does not pass after "z" and re-indexes
 		foreach ($liste as $tag => $nb) {
-			$liste[$tag] = array(diacritique(trim($tag), FALSE, FALSE), $nb);
+			$liste[$tag] = array(diacritique(trim($tag)), $nb);
 		}
 		// sort tags according non-diacritics versions of tags
 		$liste = array_reverse(tri_selon_sous_cle($liste, 0));
 		$uliste = '<ul>'."\n";
 
-		// remove diacritics: array is now (arr)liste { (str)tag=> (in)nb }
-		foreach ($liste as $tag => $nb) {
-			$liste[$tag] = $nb[1];
-		}
-
 		// create the <UL> with "tags (nb) "
 		foreach($liste as $tag => $nb) {
-			$uliste .= "\t".'<li><a href="'.basename($_SERVER['PHP_SELF']).'?tag='.urlencode(trim($tag)).$ampmode.'" rel="tag">'.ucfirst($tag).' ('.$nb.')</a></li>'."\n";
+			$uliste .= "\t".'<li><a href="'.basename($_SERVER['SCRIPT_NAME']).'?tag='.urlencode(trim($tag)).$ampmode.'" rel="tag">'.ucfirst($tag).' ('.$nb[1].')</a></li>'."\n";
 		}
 		$uliste .= '</ul>'."\n";
 		return $uliste;
@@ -349,17 +212,17 @@ function lien_pagination() {
 
 	if ($page_courante <=0) {
 		$lien_precede = '';
-		$lien_suivant = '<a href="'.htmlspecialchars(basename($_SERVER['PHP_SELF'])).'?'.$qstring.'&amp;p=1" rel="next">'.$GLOBALS['lang']['label_suivant'].' &#187;</a>';
+		$lien_suivant = '<a href="'.htmlspecialchars(basename($_SERVER['SCRIPT_NAME'])).'?'.$qstring.'&amp;p=1" rel="next">'.$GLOBALS['lang']['label_suivant'].' &#187;</a>';
 		if ($nb < $nb_par_page) { // évite de pouvoir aller dans la passé s’il y a moins de 10 posts
 			$lien_suivant = '';
 		}
 	}
 	elseif ($nb < $nb_par_page) { // évite de pouvoir aller dans l’infini en arrière dans les pages, nottament pour les robots.
-		$lien_precede = '<a href="'.htmlspecialchars(basename($_SERVER['PHP_SELF'])).'?'.$qstring.'&amp;p='.($page_courante-1).'" rel="prev">&#171; '.$GLOBALS['lang']['label_precedent'].'</a>';
+		$lien_precede = '<a href="'.htmlspecialchars(basename($_SERVER['SCRIPT_NAME'])).'?'.$qstring.'&amp;p='.($page_courante-1).'" rel="prev">&#171; '.$GLOBALS['lang']['label_precedent'].'</a>';
 		$lien_suivant = '';
 	} else {
-		$lien_precede = '<a href="'.htmlspecialchars(basename($_SERVER['PHP_SELF'])).'?'.$qstring.'&amp;p='.($page_courante-1).'" rel="prev">&#171; '.$GLOBALS['lang']['label_precedent'].'</a>';
-		$lien_suivant = '<a href="'.htmlspecialchars(basename($_SERVER['PHP_SELF'])).'?'.$qstring.'&amp;p='.($page_courante+1).'" rel="next">'.$GLOBALS['lang']['label_suivant'].' &#187;</a>';
+		$lien_precede = '<a href="'.htmlspecialchars(basename($_SERVER['SCRIPT_NAME'])).'?'.$qstring.'&amp;p='.($page_courante-1).'" rel="prev">&#171; '.$GLOBALS['lang']['label_precedent'].'</a>';
+		$lien_suivant = '<a href="'.htmlspecialchars(basename($_SERVER['SCRIPT_NAME'])).'?'.$qstring.'&amp;p='.($page_courante+1).'" rel="next">'.$GLOBALS['lang']['label_suivant'].' &#187;</a>';
 	}
 
 	$glue = ' – ';
@@ -372,33 +235,23 @@ function lien_pagination() {
 function liste_tags($billet, $html_link) {
 	$tags = ($billet['bt_type'] == 'article') ? $billet['bt_categories'] : $billet['bt_tags'];
 	$mode = ($billet['bt_type'] == 'article') ? '' : '&amp;mode=links';
+	$liste = '';
 	if (!empty($tags)) {
 		$tag_list = explode(', ', $tags);
 		// remove diacritics, so that "ééé" does not passe after "zzz" and re-indexes
 		foreach ($tag_list as $i => $tag) {
-			$tag_list[$i] = array('t' => trim($tag), 'tt' => diacritique(trim($tag), FALSE, FALSE));
+			$tag_list[$i] = array('t' => trim($tag), 'tt' => diacritique(trim($tag)));
 		}
 		$tag_list = array_reverse(tri_selon_sous_cle($tag_list, 'tt'));
 
-		foreach ($tag_list as $i => $tag) {
-			$tag_list[$i] = $tag['t'];
-		}
-
-		$nb_tags = sizeof($tag_list);
-		$liste = '';
-		if ($html_link == 1) {
-			foreach($tag_list as $tag) {
-				$tag = trim($tag);
-				$liste .= '<a href="'.basename($_SERVER['PHP_SELF']).'?tag='.urlencode($tag).$mode.'" rel="tag">'.$tag.'</a>';
-			}
-		} else {
-			foreach($tag_list as $tag) {
-				$tag = trim($tag);
-				$tag = diacritique($tag, 0, 0);
+		foreach($tag_list as $tag) {
+			$tag = trim($tag['t']);
+			if ($html_link == 1) {
+				$liste .= '<a href="'.basename($_SERVER['SCRIPT_NAME']).'?tag='.urlencode($tag).$mode.'" rel="tag">'.$tag.'</a>';
+			} else {
+				$liste .= $tag.' ';
 			}
 		}
-	} else {
-		$liste = '';
 	}
 	return $liste;
 }

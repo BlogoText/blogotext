@@ -60,7 +60,7 @@ afficher_html_head($titre_ecrire);
 echo '<div id="header">'."\n";
 	echo '<div id="top">'."\n";
 	afficher_msg();
-	afficher_topnav(basename($_SERVER['PHP_SELF']), $titre_ecrire_court);
+	afficher_topnav($titre_ecrire_court);
 	echo '</div>'."\n";
 echo '</div>'."\n";
 
@@ -90,5 +90,5 @@ echo js_red_button_event(0);
 echo '</script>';
 
 
-footer('', $begin);
+footer($begin);
 

@@ -81,7 +81,7 @@ echo '<div id="header">'."\n";
 	echo '<div id="top">'."\n";
 	afficher_msg();
 	echo moteur_recherche();
-	afficher_topnav(basename($_SERVER['PHP_SELF']), $GLOBALS['lang']['titre_fichier']);
+	afficher_topnav($GLOBALS['lang']['titre_fichier']);
 	echo '</div>'."\n";
 echo '</div>'."\n";
 
@@ -164,5 +164,5 @@ echo js_red_button_event(0);
 echo "\n".'</script>'."\n";
 
 
-footer('', $begin);
+footer($begin);
 

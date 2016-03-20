@@ -221,7 +221,7 @@ function traiter_form_fichier($fichier) {
 			$new_fichier = bdd_fichier($fichier, 'ajout-nouveau', 'download', $_POST['fichier']);
 		}
 		$fichier = (is_null($new_fichier)) ? $fichier : $new_fichier;
-		redirection(basename($_SERVER['PHP_SELF']).'?file_id='.$fichier['bt_id'].'&msg=confirm_fichier_ajout');
+		redirection(basename($_SERVER['SCRIPT_NAME']).'?file_id='.$fichier['bt_id'].'&msg=confirm_fichier_ajout');
 	}
 	// édition d’une entrée d’un fichier
 	elseif ( isset($_POST['editer']) and !isset($_GET['suppr']) ) {
@@ -232,11 +232,11 @@ function traiter_form_fichier($fichier) {
 	elseif ( (isset($_POST['supprimer']) and preg_match('#^\d{14}$#', $_POST['file_id'])) ) {
 		$response = bdd_fichier($fichier, 'supprimer-existant', '', $_POST['file_id']);
 		if ($response == 'error_suppr_file_suppr_error') {
-			redirection(basename($_SERVER['PHP_SELF']).'?errmsg=error_fichier_suppr&what=file_suppr_error');
+			redirection(basename($_SERVER['SCRIPT_NAME']).'?errmsg=error_fichier_suppr&what=file_suppr_error');
 		} elseif ($response == 'no_such_file_on_disk') {
-			redirection(basename($_SERVER['PHP_SELF']).'?msg=error_fichier_suppr&what=but_no_such_file_on_disk2');
+			redirection(basename($_SERVER['SCRIPT_NAME']).'?msg=error_fichier_suppr&what=but_no_such_file_on_disk2');
 		} elseif ($response == 'success') {
-			redirection(basename($_SERVER['PHP_SELF']).'?msg=confirm_fichier_suppr');
+			redirection(basename($_SERVER['SCRIPT_NAME']).'?msg=confirm_fichier_suppr');
 		}
 	}
 }
@@ -276,7 +276,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var) {
 				if (move_uploaded_file($new_file, $dossier.'/'. $dest) ) {
 					$fichier['bt_checksum'] = sha1_file($dossier.'/'. $dest);
 				} else {
-					redirection(basename($_SERVER['PHP_SELF']).'?errmsg=error_fichier_ajout_2');
+					redirection(basename($_SERVER['SCRIPT_NAME']).'?errmsg=error_fichier_ajout_2');
 					exit;
 				}
 			}
@@ -284,7 +284,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var) {
 			elseif ( $comment == 'download' and copy($sup_var, $dossier.'/'. $dest) ) {
 				$fichier['bt_filesize'] = filesize($dossier.'/'. $dest);
 			} else {
-				redirection(basename($_SERVER['PHP_SELF']).'?errmsg=error_fichier_ajout');
+				redirection(basename($_SERVER['SCRIPT_NAME']).'?errmsg=error_fichier_ajout');
 				exit;
 			}
 
@@ -327,7 +327,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var) {
 					}
 				// error rename ficher
 				} else {
-					redirection(basename($_SERVER['PHP_SELF']).'?file_id='.$fichier['bt_id'].'&errmsg=error_fichier_rename');
+					redirection(basename($_SERVER['SCRIPT_NAME']).'?file_id='.$fichier['bt_id'].'&errmsg=error_fichier_rename');
 				}
 			}
 			list($fichier['bt_dim_w'], $fichier['bt_dim_h']) = getimagesize($dossier.'/'.$new_filename); // reupdate filesize.
@@ -341,7 +341,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var) {
 
 			$GLOBALS['liste_fichiers'] = tri_selon_sous_cle($GLOBALS['liste_fichiers'], 'bt_id');
 			file_put_contents($GLOBALS['fichier_liste_fichiers'], '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_fichiers']))).' */'); // écrit dans le fichier, la liste
-			redirection(basename($_SERVER['PHP_SELF']).'?file_id='.$fichier['bt_id'].'&edit&msg=confirm_fichier_edit');
+			redirection(basename($_SERVER['SCRIPT_NAME']).'?file_id='.$fichier['bt_id'].'&edit&msg=confirm_fichier_edit');
 	}
 
 	// suppression d’un fichier (de la BDD et du disque)
@@ -422,12 +422,12 @@ function init_post_fichier() { //no $mode : it's always admin.
 				$type = detection_type_fichier($ext);
 			} else {
 				// ERROR
-				redirection(basename($_SERVER['PHP_SELF']).'?errmsg=error_image_add');
+				redirection(basename($_SERVER['SCRIPT_NAME']).'?errmsg=error_image_add');
 				return FALSE;
 			}
 		}
 		// nom du fichier : si nom donné, sinon nom du fichier inchangé
-		$filename = diacritique(htmlspecialchars((!empty($_POST['nom_entree'])) ? $_POST['nom_entree'] : $filename), '' , '0').'.'.$ext;
+		$filename = diacritique(htmlspecialchars((!empty($_POST['nom_entree'])) ? $_POST['nom_entree'] : $filename)).'.'.$ext;
 		$statut = (isset($_POST['statut']) and $_POST['statut'] == 'on') ? '0' : '1';
 		$fichier = array (
 			'bt_id' => $file_id,
@@ -435,8 +435,8 @@ function init_post_fichier() { //no $mode : it's always admin.
 			'bt_fileext' => $ext,
 			'bt_filesize' => $size,
 			'bt_filename' => $filename, // le nom du final du fichier peut changer à la fin, si le nom est déjà pris par exemple 
-			'bt_content' => stripslashes(protect_markup(clean_txt($_POST['description']))),
-			'bt_wiki_content' => stripslashes(protect_markup(clean_txt($_POST['description']))),
+			'bt_content' => stripslashes(clean_txt($_POST['description'])),
+			'bt_wiki_content' => stripslashes(clean_txt($_POST['description'])),
 			'bt_checksum' => $checksum,
 			'bt_statut' => $statut,
 			'bt_dossier' => (empty($dossier) ? 'default' : $dossier ), // tags
@@ -455,7 +455,7 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 	if ($erreurs) {
 		echo erreurs($erreurs);
 	}
-	$form = '<form id="form-image" class="bordered-formbloc" enctype="multipart/form-data" method="post" action="'.basename($_SERVER['PHP_SELF']).'" onsubmit="submitdnd(event);">'."\n";
+	$form = '<form id="form-image" class="bordered-formbloc" enctype="multipart/form-data" method="post" action="'.basename($_SERVER['SCRIPT_NAME']).'" onsubmit="submitdnd(event);">'."\n";
 	
 	if (empty($fichiers)) { // si PAS fichier donnée : formulaire nouvel envoi.
 		$form .= '<fieldset class="pref" >'."\n";

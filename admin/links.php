@@ -32,7 +32,7 @@ function afficher_lien($link) {
 	$list .= "\t".'<span class="date">'.date_formate($link['bt_id']).', '.heure_formate($link['bt_id']).'</span>'."\n";
 	$list .= "\t".'<div class="link-options">';
 	$list .= "\t\t".'<ul>'."\n";
-	$list .= "\t\t\t".'<li class="ll-edit"><a href="'.basename($_SERVER['PHP_SELF']).'?id='.$link['bt_id'].'">'.$GLOBALS['lang']['editer'].'</a></li>'."\n";
+	$list .= "\t\t\t".'<li class="ll-edit"><a href="'.basename($_SERVER['SCRIPT_NAME']).'?id='.$link['bt_id'].'">'.$GLOBALS['lang']['editer'].'</a></li>'."\n";
 	$list .= ($link['bt_statut'] == '1') ? "\t\t\t".'<li class="ll-seepost"><a href="'.$GLOBALS['racine'].'?mode=links&amp;id='.$link['bt_id'].'">'.$GLOBALS['lang']['voir_sur_le_blog'].'</a></li>'."\n" : "";
 	//$list .=  "\t\t\t".'<li class="ll-suppr"><a>'.$GLOBALS['lang']['supprimer'].'</a></li>'."\n";
 	$list .= "\t\t".'</ul>'."\n";
@@ -138,7 +138,7 @@ echo '<div id="header">'."\n";
 	echo '<div id="top">'."\n";
 	afficher_msg();
 	echo moteur_recherche();
-	afficher_topnav(basename($_SERVER['PHP_SELF']), $GLOBALS['lang']['mesliens']);
+	afficher_topnav($GLOBALS['lang']['mesliens']);
 	echo '</div>'."\n";
 echo '</div>'."\n";
 
@@ -193,5 +193,5 @@ echo 'var scrollPos = 0;'."\n";
 echo 'window.addEventListener(\'scroll\', function(){ scrollingFabHideShow() });'."\n";
 echo '</script>';
 
-footer('', $begin);
+footer($begin);
 

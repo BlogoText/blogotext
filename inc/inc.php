@@ -11,22 +11,19 @@
 #
 # *** LICENSE ***
 
-require_once '../config/user.php';
-require_once '../config/prefs.php';
-require_once 'lang.php';
-require_once 'conf.php';
-require_once 'them.php' ;
-require_once 'html.php' ;
-require_once 'comm.php';
-require_once 'form.php';
-require_once 'fich.php';
-require_once 'conv.php';
-require_once 'veri.php';
-require_once 'util.php';
-require_once 'imgs.php';
-require_once 'jasc.php';
+require_once $GLOBALS['BT_ROOT_PATH'].'/config/user.php';
+require_once $GLOBALS['BT_ROOT_PATH'].'/config/prefs.php';
+require_once $GLOBALS['BT_ROOT_PATH'].'/inc/lang.php';
+require_once $GLOBALS['BT_ROOT_PATH'].'/inc/conf.php';
+require_once $GLOBALS['BT_ROOT_PATH'].'/inc/them.php' ;
+require_once $GLOBALS['BT_ROOT_PATH'].'/inc/html.php' ;
+require_once $GLOBALS['BT_ROOT_PATH'].'/inc/comm.php';
+require_once $GLOBALS['BT_ROOT_PATH'].'/inc/form.php';
+require_once $GLOBALS['BT_ROOT_PATH'].'/inc/fich.php';
+require_once $GLOBALS['BT_ROOT_PATH'].'/inc/conv.php';
+require_once $GLOBALS['BT_ROOT_PATH'].'/inc/veri.php';
+require_once $GLOBALS['BT_ROOT_PATH'].'/inc/util.php';
+require_once $GLOBALS['BT_ROOT_PATH'].'/inc/imgs.php';
+require_once $GLOBALS['BT_ROOT_PATH'].'/inc/jasc.php';
+require_once $GLOBALS['BT_ROOT_PATH'].'/inc/sqli.php';
 
-require_once 'sqli.php';
-
-
-?>

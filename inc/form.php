@@ -86,11 +86,7 @@ function form_format_date($defaut) {
 	return $form;
 }
 
- // this test with version compare allows PHP 5.1.2 to run BT. The function timezone_…() is only present in 5.2.0+
- // we could make BT require 5.2.0 to run, but the function in the only one that uses PHP 5.2.
 function form_fuseau_horaire($defaut) {
-	if (version_compare(PHP_VERSION, '5.2.0', '>=')) {
-
 	$all_timezones = timezone_identifiers_list();
 	$liste_fuseau = array();
 	$cities = array();
@@ -120,7 +116,6 @@ function form_fuseau_horaire($defaut) {
 	}
 	$form .= '</select>'."\n";
 	return $form;
-	}
 }
 
 function form_format_heure($defaut) {
@@ -177,7 +172,7 @@ function liste_themes($chemin) {
 // formulaires ARTICLES //////////
 
 function afficher_form_filtre($type, $filtre) {
-	$ret = '<form method="get" action="'.basename($_SERVER['PHP_SELF']).'" onchange="this.submit();">'."\n";
+	$ret = '<form method="get" action="'.basename($_SERVER['SCRIPT_NAME']).'" onchange="this.submit();">'."\n";
 	$ret .= '<div id="form-filtre">'."\n";
 	$ret .= filtre($type, $filtre);
 	$ret .= '</div>'."\n";
@@ -311,7 +306,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 	}
 	$form = '';
 	if ($step == 1) { // postage de l'URL : un champ affiché en GET
-		$form .= '<form method="get" id="post-new-lien" action="'.basename($_SERVER['PHP_SELF']).'">'."\n";
+		$form .= '<form method="get" id="post-new-lien" action="'.basename($_SERVER['SCRIPT_NAME']).'">'."\n";
 		$form .= '<fieldset>'."\n";
 		$form .= "\t".'<div class="contain-input">'."\n";
 		$form .= "\t\t".'<label for="url">'.$GLOBALS['lang']['label_nouv_lien'].'</label>'."\n";
@@ -322,7 +317,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= '</form>'."\n\n";
 
 	} elseif ($step == 2) { // Form de l'URL, avec titre, description, en POST cette fois, et qu'il faut vérifier avant de stoquer dans la BDD.
-		$form .= '<form method="post" onsubmit="return moveTag();" id="post-lien" action="'.basename($_SERVER['PHP_SELF']).'">'."\n";
+		$form .= '<form method="post" onsubmit="return moveTag();" id="post-lien" action="'.basename($_SERVER['SCRIPT_NAME']).'">'."\n";
 
 		$url = $_GET['url'];
 		$type = 'url';
@@ -415,8 +410,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= '</form>'."\n\n";
 
 	} elseif ($step == 'edit') { // Form pour l'édition d'un lien : les champs sont remplis avec le "wiki_content" et il y a les boutons suppr/activer en plus.
-		$form = '<form method="post" onsubmit="return moveTag();" id="post-lien" action="'.basename($_SERVER['PHP_SELF']).'?id='.$editlink['bt_id'].'">'."\n";
-		//$form .= "\t".'<fieldset class="pref">'."\n";
+		$form = '<form method="post" onsubmit="return moveTag();" id="post-lien" action="'.basename($_SERVER['SCRIPT_NAME']).'?id='.$editlink['bt_id'].'">'."\n";
 		$form .= "\t".'<input type="text" name="url" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_url']).'" required="" value="'.$editlink['bt_link'].'" size="70" class="text readonly-like" /></label>'."\n";
 		$form .= "\t".'<input type="text" name="title" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_titre']).'" required="" value="'.$editlink['bt_title'].'" size="70" class="text" autofocus /></label>'."\n";
 		$form .= "\t".'<div id="description-box">'."\n";
@@ -440,7 +434,6 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= hidden_input('is_it_edit', 'yes');
 		$form .= hidden_input('token', new_token());
 		$form .= hidden_input('type', $editlink['bt_type']);
-		//$form .= "\t".'</fieldset>'."\n";
 		$form .= '</form>'."\n\n";
 	}
 	return $form;
@@ -449,16 +442,6 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 
 /// formulaires BILLET //////////
 function afficher_form_billet($article, $erreurs) {
-	function s_color($color) {
-		return '<button type="button" onclick="insertTag(\'[color='.$color.']\',\'[/color]\',\'contenu\');"><span style="background:'.$color.';"></span></button>';
-	}
-	function s_size($size) {
-		return '<button type="button" onclick="insertTag(\'[size='.$size.']\',\'[/size]\',\'contenu\');"><span style="font-size:'.$size.'pt;">'.$size.'. Ipsum</span></button>';
-	}
-	function s_u($char) {
-		return '<button type="button" onclick="insertChar(\''.$char.'\', \'contenu\');"><span>'.$char.'</span></button>';
-	}
-
 	function form_annee($year_shown) {
 
 		$yearBegin = min (substr($GLOBALS['date_premier_message_blog'], 0, 4), date('Y') -3);
@@ -542,9 +525,9 @@ function afficher_form_billet($article, $erreurs) {
 		echo erreurs($erreurs);
 	}
 	if (isset($article['bt_id'])) {
-		echo '<form id="form-ecrire" method="post" onsubmit="return moveTag();" action="'.basename($_SERVER['PHP_SELF']).'?post_id='.$article['bt_id'].'" >'."\n";
+		echo '<form id="form-ecrire" method="post" onsubmit="return moveTag();" action="'.basename($_SERVER['SCRIPT_NAME']).'?post_id='.$article['bt_id'].'" >'."\n";
 	} else {
-		echo '<form id="form-ecrire" method="post" onsubmit="return moveTag();" action="'.basename($_SERVER['PHP_SELF']).'" >'."\n";
+		echo '<form id="form-ecrire" method="post" onsubmit="return moveTag();" action="'.basename($_SERVER['SCRIPT_NAME']).'" >'."\n";
 	}
 		echo '<input id="titre" name="titre" type="text" size="50" value="'.$titredefaut.'" required="" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_titre']).'" tabindex="30" class="text" spellcheck="true" />'."\n" ;
 	echo '<div id="chapo_note">'."\n";
@@ -552,52 +535,7 @@ function afficher_form_billet($article, $erreurs) {
 	echo '<textarea id="notes" name="notes" rows="5" cols="20" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_notes']).'" tabindex="40" class="text" >'.$notesdefaut.'</textarea>'."\n" ;
 	echo '</div>'."\n";
 
-	echo '<p class="formatbut">'."\n";
-	echo "\t".'<button id="button01" class="but" type="button" title="'.$GLOBALS['lang']['bouton-gras'].'" onclick="insertTag(\'[b]\',\'[/b]\',\'contenu\');"><span></span></button>'."\n";
-	echo "\t".'<button id="button02" class="but" type="button" title="'.$GLOBALS['lang']['bouton-ital'].'" onclick="insertTag(\'[i]\',\'[/i]\',\'contenu\');"><span></span></button>'."\n";
-	echo "\t".'<button id="button03" class="but" type="button" title="'.$GLOBALS['lang']['bouton-soul'].'" onclick="insertTag(\'[u]\',\'[/u]\',\'contenu\');"><span></span></button>'."\n";
-	echo "\t".'<button id="button04" class="but" type="button" title="'.$GLOBALS['lang']['bouton-barr'].'" onclick="insertTag(\'[s]\',\'[/s]\',\'contenu\');"><span></span></button>'."\n";
-
-	echo "\t".'<span class="spacer"></span>'."\n";
-	// bouton des couleurs
-	echo "\t".'<span id="button13" class="but but-dropdown" title=""><span></span><span class="list list-color">'
-			.s_color('black').s_color('gray').s_color('silver').s_color('white')
-			.s_color('blue').s_color('green').s_color('red').s_color('yellow')
-			.s_color('fuchsia').s_color('lime').s_color('aqua').s_color('maroon')
-			.s_color('purple').s_color('navy').s_color('teal').s_color('olive')
-			.s_color('#ff7000').s_color('#ff9aff').s_color('#a0f7ff').s_color('#ffd700')
-			.'</span></span>'."\n";
-
-	// boutons de la taille de caractère
-	echo "\t".'<span id="button14" class="but but-dropdown" title=""><span></span><span class="list list-size">'
-			.s_size('9').s_size('12').s_size('16').s_size('20')
-			.'</span></span>'."\n";
-
-	// quelques caractères unicode
-	echo "\t".'<span id="button15" class="but but-dropdown" title=""><span></span><span class="list list-spechr">'
-			.s_u('æ').s_u('Æ').s_u('œ').s_u('Œ').s_u('é').s_u('É').s_u('è').s_u('È').s_u('ç').s_u('Ç').s_u('ù').s_u('Ù').s_u('à').s_u('À').s_u('ö').s_u('Ö')
-			.s_u('…').s_u('«').s_u('»').s_u('±').s_u('≠').s_u('×').s_u('÷').s_u('ß').s_u('®').s_u('©').s_u('↓').s_u('↑').s_u('←').s_u('→').s_u('ø').s_u('Ø')
-			.s_u('☠').s_u('☣').s_u('☢').s_u('☮').s_u('★').s_u('☯').s_u('☑').s_u('☒').s_u('☐').s_u('♫').s_u('♬').s_u('♪').s_u('♣').s_u('♠').s_u('♦').s_u('❤')
-			.s_u('♂').s_u('♀').s_u('☹').s_u('☺').s_u('☻').s_u('♲').s_u('⚐').s_u('⚠').s_u('☂').s_u('√').s_u('∑').s_u('λ').s_u('π').s_u('Ω').s_u('№').s_u('∞')
-			.'</span></span>'."\n";
-
-	echo "\t".'<span class="spacer"></span>'."\n";
-	echo "\t".'<button id="button05" class="but" type="button" title="'.$GLOBALS['lang']['bouton-left'].'" onclick="insertTag(\'[left]\',\'[/left]\',\'contenu\');"><span></span></button>'."\n";
-	echo "\t".'<button id="button06" class="but" type="button" title="'.$GLOBALS['lang']['bouton-center'].'" onclick="insertTag(\'[center]\',\'[/center]\',\'contenu\');"><span></span></button>'."\n";
-	echo "\t".'<button id="button07" class="but" type="button" title="'.$GLOBALS['lang']['bouton-right'].'" onclick="insertTag(\'[right]\',\'[/right]\',\'contenu\');"><span></span></button>'."\n";
-	echo "\t".'<button id="button08" class="but" type="button" title="'.$GLOBALS['lang']['bouton-justify'].'" onclick="insertTag(\'[justify]\',\'[/justify]\',\'contenu\');"><span></span></button>'."\n";
-
-	echo "\t".'<span class="spacer"></span>'."\n";
-	echo "\t".'<button id="button09" class="but" type="button" title="'.$GLOBALS['lang']['bouton-lien'].'" onclick="insertTag(\'[\',\'|http://]\',\'contenu\');"><span></span></button>'."\n";
-	echo "\t".'<button id="button10" class="but" type="button" title="'.$GLOBALS['lang']['bouton-cita'].'" onclick="insertTag(\'[quote]\',\'[/quote]\',\'contenu\');"><span></span></button>'."\n";
-	echo "\t".'<button id="button11" class="but" type="button" title="'.$GLOBALS['lang']['bouton-imag'].'" onclick="insertTag(\'[img]\',\'|alt[/img]\',\'contenu\');"><span></span></button>'."\n";
-	echo "\t".'<button id="button12" class="but" type="button" title="'.$GLOBALS['lang']['bouton-code'].'" onclick="insertTag(\'[code]\',\'[/code]\',\'contenu\');"><span></span></button>'."\n";
-
-	echo "\t".'<span class="spacer"></span>'."\n";
-	echo "\t".'<button id="button16" class="but" type="button" title="'.$GLOBALS['lang']['bouton-liul'].'" onclick="insertChar(\'\n\n** element 1\n** element 2\n\',\'contenu\');"><span></span></button>'."\n";
-	echo "\t".'<button id="button17" class="but" type="button" title="'.$GLOBALS['lang']['bouton-liol'].'" onclick="insertChar(\'\n\n## element 1\n## element 2\n\',\'contenu\');"><span></span></button>'."\n";
-
-	echo '</p>';
+	echo form_formatting_toolbar(TRUE);
 
 	echo '<textarea id="contenu" name="contenu" rows="20" cols="60" required="" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_contenu']).'" tabindex="55" class="text">'.$contenudefaut.'</textarea>'."\n" ;
 
@@ -654,6 +592,72 @@ function afficher_form_billet($article, $erreurs) {
 }
 // FIN AFFICHER_FORM_BILLET
 
+
+function s_color($color) {
+	return '<button type="button" onclick="insertTag(\'[color='.$color.']\',\'[/color]\',\'contenu\');"><span style="background:'.$color.';"></span></button>';
+}
+function s_size($size) {
+	return '<button type="button" onclick="insertTag(\'[size='.$size.']\',\'[/size]\',\'contenu\');"><span style="font-size:'.$size.'pt;">'.$size.'. Ipsum</span></button>';
+}
+function s_u($char) {
+	return '<button type="button" onclick="insertChar(\''.$char.'\', \'contenu\');"><span>'.$char.'</span></button>';
+}
+function form_formatting_toolbar($extended=FALSE) {
+	$html = '';
+
+	$html .= '<p class="formatbut">'."\n";
+	$html .= "\t".'<button id="button01" class="but" type="button" title="'.$GLOBALS['lang']['bouton-gras'].'" onclick="insertTag(\'[b]\',\'[/b]\',\'contenu\');"><span></span></button>'."\n";
+	$html .= "\t".'<button id="button02" class="but" type="button" title="'.$GLOBALS['lang']['bouton-ital'].'" onclick="insertTag(\'[i]\',\'[/i]\',\'contenu\');"><span></span></button>'."\n";
+	$html .= "\t".'<button id="button03" class="but" type="button" title="'.$GLOBALS['lang']['bouton-soul'].'" onclick="insertTag(\'[u]\',\'[/u]\',\'contenu\');"><span></span></button>'."\n";
+	$html .= "\t".'<button id="button04" class="but" type="button" title="'.$GLOBALS['lang']['bouton-barr'].'" onclick="insertTag(\'[s]\',\'[/s]\',\'contenu\');"><span></span></button>'."\n";
+
+	if ($extended) {
+		$html .= "\t".'<span class="spacer"></span>'."\n";
+		// bouton des couleurs
+		$html .= "\t".'<span id="button13" class="but but-dropdown" title=""><span></span><span class="list list-color">'
+				.s_color('black').s_color('gray').s_color('silver').s_color('white')
+				.s_color('blue').s_color('green').s_color('red').s_color('yellow')
+				.s_color('fuchsia').s_color('lime').s_color('aqua').s_color('maroon')
+				.s_color('purple').s_color('navy').s_color('teal').s_color('olive')
+				.s_color('#ff7000').s_color('#ff9aff').s_color('#a0f7ff').s_color('#ffd700')
+				.'</span></span>'."\n";
+
+		// boutons de la taille de caractère
+		$html .= "\t".'<span id="button14" class="but but-dropdown" title=""><span></span><span class="list list-size">'
+				.s_size('9').s_size('12').s_size('16').s_size('20')
+				.'</span></span>'."\n";
+
+		// quelques caractères unicode
+		$html .= "\t".'<span id="button15" class="but but-dropdown" title=""><span></span><span class="list list-spechr">'
+				.s_u('æ').s_u('Æ').s_u('œ').s_u('Œ').s_u('é').s_u('É').s_u('è').s_u('È').s_u('ç').s_u('Ç').s_u('ù').s_u('Ù').s_u('à').s_u('À').s_u('ö').s_u('Ö')
+				.s_u('…').s_u('«').s_u('»').s_u('±').s_u('≠').s_u('×').s_u('÷').s_u('ß').s_u('®').s_u('©').s_u('↓').s_u('↑').s_u('←').s_u('→').s_u('ø').s_u('Ø')
+				.s_u('☠').s_u('☣').s_u('☢').s_u('☮').s_u('★').s_u('☯').s_u('☑').s_u('☒').s_u('☐').s_u('♫').s_u('♬').s_u('♪').s_u('♣').s_u('♠').s_u('♦').s_u('❤')
+				.s_u('♂').s_u('♀').s_u('☹').s_u('☺').s_u('☻').s_u('♲').s_u('⚐').s_u('⚠').s_u('☂').s_u('√').s_u('∑').s_u('λ').s_u('π').s_u('Ω').s_u('№').s_u('∞')
+				.'</span></span>'."\n";
+
+		$html .= "\t".'<span class="spacer"></span>'."\n";
+		$html .= "\t".'<button id="button05" class="but" type="button" title="'.$GLOBALS['lang']['bouton-left'].'" onclick="insertTag(\'[left]\',\'[/left]\',\'contenu\');"><span></span></button>'."\n";
+		$html .= "\t".'<button id="button06" class="but" type="button" title="'.$GLOBALS['lang']['bouton-center'].'" onclick="insertTag(\'[center]\',\'[/center]\',\'contenu\');"><span></span></button>'."\n";
+		$html .= "\t".'<button id="button07" class="but" type="button" title="'.$GLOBALS['lang']['bouton-right'].'" onclick="insertTag(\'[right]\',\'[/right]\',\'contenu\');"><span></span></button>'."\n";
+		$html .= "\t".'<button id="button08" class="but" type="button" title="'.$GLOBALS['lang']['bouton-justify'].'" onclick="insertTag(\'[justify]\',\'[/justify]\',\'contenu\');"><span></span></button>'."\n";
+
+		$html .= "\t".'<span class="spacer"></span>'."\n";
+		$html .= "\t".'<button id="button11" class="but" type="button" title="'.$GLOBALS['lang']['bouton-imag'].'" onclick="insertTag(\'[img]\',\'|alt[/img]\',\'contenu\');"><span></span></button>'."\n";
+		$html .= "\t".'<button id="button16" class="but" type="button" title="'.$GLOBALS['lang']['bouton-liul'].'" onclick="insertChar(\'\n\n** element 1\n** element 2\n\',\'contenu\');"><span></span></button>'."\n";
+		$html .= "\t".'<button id="button17" class="but" type="button" title="'.$GLOBALS['lang']['bouton-liol'].'" onclick="insertChar(\'\n\n## element 1\n## element 2\n\',\'contenu\');"><span></span></button>'."\n";
+
+	}
+
+	$html .= "\t".'<span class="spacer"></span>'."\n";
+	$html .= "\t".'<button id="button09" class="but" type="button" title="'.$GLOBALS['lang']['bouton-lien'].'" onclick="insertTag(\'[\',\'|http://]\',\'contenu\');"><span></span></button>'."\n";
+	$html .= "\t".'<button id="button10" class="but" type="button" title="'.$GLOBALS['lang']['bouton-cita'].'" onclick="insertTag(\'[quote]\',\'[/quote]\',\'contenu\');"><span></span></button>'."\n";
+	$html .= "\t".'<button id="button12" class="but" type="button" title="'.$GLOBALS['lang']['bouton-code'].'" onclick="insertTag(\'[code]\',\'[/code]\',\'contenu\');"><span></span></button>'."\n";
+
+	$html .= '</p>';
+
+	return $html;
+}
+
 function form_categories_links($where, $tags_post) {
 	$tags = list_all_tags($where, FALSE);
 	$html = '';
@@ -666,19 +670,15 @@ function form_categories_links($where, $tags_post) {
 	$list_tags = explode(',', $tags_post);
 
 
-	// remove diacritics, so that "ééé" does not passe after "zzz" and reindexes
+	// remove diacritics and reindexes so that "ééé" does not passe after "zzz"
 	foreach ($list_tags as $i => $tag) {
-		$list_tags[$i] = array('t' => trim($tag), 'tt' => diacritique(trim($tag), FALSE, FALSE));
+		$list_tags[$i] = array('t' => trim($tag), 'tt' => diacritique(trim($tag)));
 	}
 	$list_tags = array_reverse(tri_selon_sous_cle($list_tags, 'tt'));
 
 	foreach ($list_tags as $i => $tag) {
-		$list_tags[$i] = $tag['t'];
-	}
-
-	foreach ($list_tags as $mytag => $mtag) {
-		if (!empty($mtag)) {
-			$html .= "\t".'<li><span>'.trim($mtag).'</span><a href="javascript:void(0)" onclick="removeTag(this.parentNode)">×</a></li>'."\n";
+		if (!empty($tag['t'])) {
+			$html .= "\t".'<li><span>'.trim($tag['t']).'</span><a href="javascript:void(0)" onclick="removeTag(this.parentNode)">×</a></li>'."\n";
 		}
 	}
 	$html .= '</ul>'."\n";
@@ -751,7 +751,7 @@ function afficher_form_prefs($erreurs = '') {
 	$submit_box .= '</div>'."\n";
 
 
-	echo '<form id="preferences" method="post" action="'.basename($_SERVER['PHP_SELF']).'" >' ;
+	echo '<form id="preferences" method="post" action="'.basename($_SERVER['SCRIPT_NAME']).'" >' ;
 		echo erreurs($erreurs);
 		$fld_user = '<div role="group" class="pref">'; /* no fieldset because browset can’t style them correctly */
 		$fld_user .= '<div class="form-legend">'.legend($GLOBALS['lang']['prefs_legend_utilisateur'], 'legend-user').'</div>'."\n";
@@ -937,7 +937,7 @@ function afficher_form_prefs($erreurs = '') {
 		$fld_cfg_linx .= '</p>'."\n";
 
 		// lien à glisser sur la barre des favoris
-		$a = explode('/', dirname($_SERVER['PHP_SELF']));
+		$a = explode('/', dirname($_SERVER['SCRIPT_NAME']));
 		$fld_cfg_linx .= '<p>';
 		$fld_cfg_linx .= '<label>'.$GLOBALS['lang']['pref_label_bookmark_lien'].'</label>'."\n";
 		$fld_cfg_linx .= '<a class="dnd-to-favs" onclick="alert(\''.$GLOBALS['lang']['pref_alert_bookmark_link'].'\');return false;" href="javascript:javascript:(function(){window.open(\''.$GLOBALS['racine'].$a[count($a)-1].'/links.php?url=\'+encodeURIComponent(location.href));})();">Save link</a>';

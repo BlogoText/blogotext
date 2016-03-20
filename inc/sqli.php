@@ -214,11 +214,11 @@ function get_entry($base_handle, $table, $entry, $id, $retour_mode) {
 function traiter_form_billet($billet) {
 	if ( isset($_POST['enregistrer']) and !isset($billet['ID']) ) {
 		$result = bdd_article($billet, 'enregistrer-nouveau');
-		$redir = basename($_SERVER['PHP_SELF']).'?post_id='.$billet['bt_id'].'&msg=confirm_article_maj';
+		$redir = basename($_SERVER['SCRIPT_NAME']).'?post_id='.$billet['bt_id'].'&msg=confirm_article_maj';
 	}
 	elseif ( isset($_POST['enregistrer']) and isset($billet['ID']) ) {
 		$result = bdd_article($billet, 'modifier-existant');
-		$redir = basename($_SERVER['PHP_SELF']).'?post_id='.$billet['bt_id'].'&msg=confirm_article_ajout';
+		$redir = basename($_SERVER['SCRIPT_NAME']).'?post_id='.$billet['bt_id'].'&msg=confirm_article_ajout';
 	}
 	elseif ( isset($_POST['supprimer']) and isset($_POST['ID']) and is_numeric($_POST['ID']) ) {
 		$result = bdd_article($billet, 'supprimer-existant');
@@ -335,17 +335,17 @@ function traiter_form_link($link) {
 	$query_string = str_replace(((isset($_GET['msg'])) ? '&msg='.$_GET['msg'] : ''), '', $_SERVER['QUERY_STRING']);
 	if ( isset($_POST['enregistrer'])) {
 		$result = bdd_lien($link, 'enregistrer-nouveau');
-		$redir = basename($_SERVER['PHP_SELF']).'?msg=confirm_link_ajout';
+		$redir = basename($_SERVER['SCRIPT_NAME']).'?msg=confirm_link_ajout';
 	}
 
 	elseif (isset($_POST['editer'])) {
 		$result = bdd_lien($link, 'modifier-existant');
-		$redir = basename($_SERVER['PHP_SELF']).'?msg=confirm_link_edit';
+		$redir = basename($_SERVER['SCRIPT_NAME']).'?msg=confirm_link_edit';
 	}
 
 	elseif ( isset($_POST['supprimer'])) {
 		$result = bdd_lien($link, 'supprimer-existant');
-		$redir = basename($_SERVER['PHP_SELF']).'?msg=confirm_link_suppr';
+		$redir = basename($_SERVER['SCRIPT_NAME']).'?msg=confirm_link_suppr';
 	}
 
 	if ($result === TRUE) {
@@ -440,49 +440,39 @@ function traiter_form_commentaire($commentaire, $admin) {
 			if ($GLOBALS['comm_defaut_status'] == 1) { // send subscribe emails only if comments are not hidden
 				send_emails($commentaire['bt_id']);
 			}
-			$redir = basename($_SERVER['PHP_SELF']).'?'.$query_string.'&msg=confirm_comment_ajout';
+			$redir = basename($_SERVER['SCRIPT_NAME']).'?'.$query_string.'&msg=confirm_comment_ajout';
 		}
 		else { die($result); }
 	}
-	// edit existing comment (admin)
-	elseif (	isset($_POST['enregistrer']) and $admin == 'admin'
-	  and isset($_POST['is_it_edit']) and $_POST['is_it_edit'] == 'yes'
-	  and isset($commentaire['ID']) ) {
-		$result = bdd_commentaire($commentaire, 'editer-existant');
-		$redir = basename($_SERVER['PHP_SELF']).'?'.$query_string.'&msg=confirm_comment_edit';
-	}
-	// remove existing comment (admin) #ajax call
-	elseif (isset($_POST['com_supprimer']) and $admin == 'admin' ) {
-		$comm = array('ID' => htmlspecialchars($_POST['com_supprimer']), 'bt_article_id' => htmlspecialchars($_POST['com_article_id']));
-		$result = bdd_commentaire($comm, 'supprimer-existant');
-		// Ajax response
-		if ($result === TRUE) {
-			rafraichir_cache();
-			//echo var_dump($comm);
-			echo 'Success'.new_token();
+	// admin operations
+	elseif ($admin = 'admin') {
+		// edit
+		if (isset($_POST['enregistrer']) and isset($_POST['is_it_edit']) ) {
+			$result = bdd_commentaire($commentaire, 'editer-existant');
+			$redir = basename($_SERVER['SCRIPT_NAME']).'?'.$query_string.'&msg=confirm_comment_edit';
 		}
-		else { echo 'Error'.new_token(); }
-		exit;
-	}
-	// change status of comm (admin) #ajax call
-	elseif (isset($_POST['com_activer']) and $admin == 'admin' ) {
-		$comm = array('ID' => htmlspecialchars($_POST['com_activer']), 'bt_article_id' => htmlspecialchars($_POST['com_article_id']));
-		$result = bdd_commentaire($comm, 'activer-existant');
-		// Ajax response
-		if ($result === TRUE) {
-			if ($GLOBALS['comm_defaut_status'] == 0) { // send subscribe emails if comments just got activated
-				send_emails(htmlspecialchars($_POST['com_bt_id']));
-			}
-			rafraichir_cache();
-			echo 'Success'.new_token();
+		// remove OR change status (ajax call)
+		elseif (isset($_POST['com_supprimer']) or isset($_POST['com_activer']) ) {
+			$ID = (isset($_POST['com_supprimer']) ? htmlspecialchars($_POST['com_supprimer']) : htmlspecialchars($_POST['com_activer']));
+			$action = (isset($_POST['com_supprimer']) ? 'supprimer-existant' : 'activer-existant');
+				$comm = array('ID' => $ID, 'bt_article_id' => htmlspecialchars($_POST['com_article_id']));
+				$result = bdd_commentaire($comm, $action);
+				// Ajax response
+				if ($result === TRUE) {
+					if (isset($_POST['com_activer']) and $GLOBALS['comm_defaut_status'] == 0) { // send subscribe emails if comments just got activated
+						send_emails(htmlspecialchars($_POST['com_bt_id']));
+					}
+					rafraichir_cache();
+					echo 'Success'.new_token();
+				}
+				else { echo 'Error'.new_token(); }
+				exit;
 		}
-		else { echo 'Error'.new_token(); }
-		exit;
 	}
 
 	// do nothing & die (admin + public)
 	else {
-		redirection(basename($_SERVER['PHP_SELF']).'?'.$query_string.'&msg=nothing_happend_oO');
+		redirection(basename($_SERVER['SCRIPT_NAME']).'?'.$query_string.'&msg=nothing_happend_oO');
 	}
 
 	if ($result === TRUE) {
@@ -787,7 +777,7 @@ function traiter_form_rssconf() {
 	$GLOBALS['liste_flux'] = array_reverse(tri_selon_sous_cle($GLOBALS['liste_flux'], 'title'));
 	file_put_contents($GLOBALS['fichier_liste_fluxrss'], '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_flux']))).' */');
 
-	$redir = basename($_SERVER['PHP_SELF']).'?'.$query_string.'&msg=confirm_feeds_edit';
+	$redir = basename($_SERVER['SCRIPT_NAME']).'?'.$query_string.'&msg=confirm_feeds_edit';
 	redirection($redir);
 
 }

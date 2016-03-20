@@ -22,7 +22,7 @@ afficher_html_head($GLOBALS['lang']['preferences']);
 	echo '<div id="header">'."\n";
 		echo '<div id="top">'."\n";
 		afficher_msg();
-		afficher_topnav(basename($_SERVER['PHP_SELF']), $GLOBALS['lang']['preferences']);
+		afficher_topnav($GLOBALS['lang']['preferences']);
 		echo '</div>'."\n";
 	echo '</div>'."\n";
 echo '<div id="axe">'."\n";
@@ -33,7 +33,7 @@ if (isset($_POST['_verif_envoi'])) {
 		afficher_form_prefs($erreurs_form);
 	} else {
 		if ( (fichier_user() === TRUE) and (fichier_prefs() === TRUE) ) {
-		redirection(basename($_SERVER['PHP_SELF']).'?msg=confirm_prefs_maj');
+		redirection(basename($_SERVER['SCRIPT_NAME']).'?msg=confirm_prefs_maj');
 		exit();
 		}
 	}
@@ -58,7 +58,7 @@ function afficher_form_captcha() {
 	} else {
 		$word_ok = FALSE;
 	}
-	echo '<form id="preferences-captcha" action="'.basename($_SERVER['PHP_SELF']).'?test_captcha" method="post" class="bordered-formbloc" >'."\n";
+	echo '<form id="preferences-captcha" action="'.basename($_SERVER['SCRIPT_NAME']).'?test_captcha" method="post" class="bordered-formbloc" >'."\n";
 	echo '<div role="group" class="pref">';
 	echo '<div class="form-legend">'.legend('Captcha', 'legend-config').'</div>'."\n";
 	echo '<p>';
@@ -80,5 +80,5 @@ function afficher_form_captcha() {
 }
 
 
-footer('', $begin);
+footer($begin);
 

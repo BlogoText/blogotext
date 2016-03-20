@@ -40,6 +40,10 @@
 			<p class="nav-title">Derniers commentaires</p>
 			{commentaires_encart}
 		</nav>
+		<nav id="lastcom">
+			<p class="nav-title">Liste de tags</p>
+			{categories_encart}
+		</nav>
 	</div>
 
 	<div id="head-main-wrapper">
@@ -75,7 +79,6 @@ function insertTag(startTag, endTag, tag, tagType) {
 	field.setSelectionRange(startSelection.length + startTag.length, startSelection.length + startTag.length + currentSelection.length);
 	field.scrollTop = scroll;
 }
-
 function reply(code) {
 	var field = document.getElementById('form-commentaire').getElementsByTagName('textarea')[0];
 	field.focus();
@@ -86,14 +89,12 @@ function reply(code) {
 	field.scrollTop = 10000;
 	field.focus();
 }
-
 function displayMenu(e) {
 	var button = e.target;
 	var menu = document.getElementById('sidenav');
 	button.classList.toggle('active');
 	menu.classList.toggle('shown');
 }
-
 </script>
 </body>
 </html>

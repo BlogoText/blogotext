@@ -39,7 +39,6 @@ $GLOBALS['balises'] = array(
 	'blog_motscles' => '{keywords}',
 	// Formulaires
 	'form_recherche' => '{recherche}',
-	'form_calendrier' => '{calendrier}',
 	'form_commentaire' => '{formulaire_commentaire}',
 	// Encarts
 	'comm_encart' => '{commentaires_encart}',
@@ -121,15 +120,15 @@ function conversions_theme($texte, $solo_art, $cnt_mode) {
 	if (strpos($texte, $GLOBALS['balises']['form_recherche']) !== FALSE) {
 		$texte = str_replace($GLOBALS['balises']['form_recherche'], moteur_recherche(''), $texte) ;
 	}
-	if (strpos($texte, $GLOBALS['balises']['form_calendrier']) !== FALSE) {
-		$texte = str_replace($GLOBALS['balises']['form_calendrier'], afficher_calendrier(), $texte) ;
-	}
 
 	// Formulaires
 	$texte = str_replace($GLOBALS['balises']['rss'], $GLOBALS['rss'], $texte);
 	$texte = str_replace($GLOBALS['balises']['comm_encart'], encart_commentaires(), $texte);
 	$texte = str_replace($GLOBALS['balises']['cat_encart'], encart_categories((isset($_GET['mode']))?$_GET['mode']:''), $texte);
 	if (isset($GLOBALS['rss_comments'])) { $texte = str_replace($GLOBALS['balises']['rss_comments'], $GLOBALS['rss_comments'], $texte);}
+
+	// addons 
+	$texte = conversion_theme_addons($texte);
 
 	return $texte;
 }
@@ -314,3 +313,25 @@ function afficher_liste($tableau) {
 	echo $HTML;
 }
 
+
+// Include Addons and converts {tags} to HTML (specified in addons)
+function conversion_theme_addons($texte) {
+	if (!is_dir($GLOBALS['dossier_addons'])) return $texte;
+
+	// get the list of installed addons
+	$addons_list = rm_dots_dir(scandir($GLOBALS['dossier_addons']));
+
+	// include the addons
+	foreach ($addons_list as $addon) {
+		include($GLOBALS['dossier_addons'].'/'.$addon);
+	}
+	
+	// parse the $texte and replace {tags} with html generated in addon.
+	foreach ($GLOBALS['addons'] as $addon) {
+		if (strpos($texte, $addon['tag']) !== FALSE) {
+			$texte = str_replace($addon['tag'], call_user_func($addon['callback_function']), $texte);
+		}
+	}
+
+	return $texte;
+}
