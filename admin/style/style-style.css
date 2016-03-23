@@ -41,11 +41,11 @@ html, body {
 }
 
 html {
-	font-size: 16px;
+	font-size: 15px;
 }
 
 body {
-	font-size: .875em; /* 14px */
+	font-size: 1em; /* 15px */
 	position: relative;
 }
 
@@ -289,7 +289,7 @@ q, blockquote {
 	box-sizing: border-box;
 	height: 40px;
 	max-width: 700px;
-	width: 98%;
+	width: 96%;
 	background-color: rgba(255, 255, 255, .3);
 	color: inherit;
 }
@@ -406,7 +406,7 @@ q, blockquote {
 	background: #fefefe;
 	display: flex;
 	padding: 10px;
-	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25);
+	box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
 	border-radius: 2px;
 }
 
@@ -688,7 +688,7 @@ fieldset {
 #mainpage,
 #post-new-lien,
 .linkbloc,
-#billets > li,
+#billets,
 #auth, #install,
 #form-image, #image-section, #files-section,
 #preferences > div,
@@ -697,11 +697,13 @@ fieldset {
 #post-nv-commentaire,
 .commentbloc,
 #form-rss-config,
-#form-rss-add
+#form-rss-add,
+#feed-list,
+#post-list
  {
 	padding: 15px;
 	background: #fefefe;
-	box-shadow: 0px 1px 2px rgba(0, 0, 0, .25);
+	box-shadow: 0px 1px 4px rgba(0, 0, 0, .25);
 	border-radius: 2px;
 }
 

@@ -365,9 +365,12 @@ q, blockquote {
 .article,
 .lien {
 	background: white;
-	box-shadow: 0px 1px 2px rgba(0, 0, 0, .25);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, .25);
 	border-radius: 3px;
-	margin-bottom: 30px;
+	margin: 30px auto;
+}
+.lien {
+	margin: 20px auto;
 }
 
 .article img {
@@ -379,7 +382,7 @@ q, blockquote {
 	padding: 15px;
 }
 .post-title > h1 {
-	font-size: 1.1em;
+	font-size: 1em;
 	margin: 0;
 }
 .post-title > h1 > a {
@@ -387,7 +390,7 @@ q, blockquote {
 }
 .post-title .date,
 .post-title .author {
-	font-size: .9em;
+	font-size: .8em;
 	color: rgba(42, 42, 42, .5);
 }
 
@@ -464,7 +467,7 @@ q, blockquote {
 /* list of comments */
 #commentaires {
 	background: white;
-	box-shadow: 0px 1px 2px rgba(0, 0, 0, .25);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, .25);
 	border-radius: 3px;
 	margin: 30px 10px;
 	padding: 15px;
@@ -534,9 +537,8 @@ padding-bottom: 15px;
 /* spécifique pour liste des liens */
 .lien-permalien {
 	color: #aaa;
-	font-size: .8em;
+	font-size: .75em;
 	padding: 5px 0;
-	font-style: italic;
 }
 
 
@@ -545,7 +547,7 @@ padding-bottom: 15px;
 #postcom {
 	padding: 15px;
 	background: white;
-	box-shadow: 0px 1px 2px rgba(0, 0, 0, .25);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, .25);
 	border-radius: 3px;
 	margin: 30px 10px;
 }
@@ -669,8 +671,8 @@ p.formatbut {
 #liste-all-articles {
 	padding: 20px 50px;
 	background: white;
-	box-shadow: 0px 1px 2px rgba(0, 0, 0, .25);
-	border-radius: 3px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, .25);
+	border-radius: 2px;
 	list-style-type: none;
 }
 
@@ -691,12 +693,10 @@ p.formatbut {
 
 /* Liens de navigation */
 .pagination {
-	padding: 15px;
-	background: white;
-	box-shadow: 0px 1px 2px rgba(0, 0, 0, .25);
-	border-radius: 3px;
 	text-align: center;
-	margin: 0 1% 30px;
+	margin: 50px auto 70px;
+	font-size: 1.1em;
+	color: rgba(0, 0, 0, .5);
 }
 
 /* PAGE FOOTER 
@@ -705,7 +705,7 @@ body > footer {
 	padding: 15px 0 30px;
 	text-align: center;
 	font-size: .8em;
-	color: rgba(42, 42, 42, .7);
+	color: rgba(0, 0, 0, .4);
 }
 
 body > footer a {

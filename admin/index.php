@@ -41,7 +41,7 @@ echo '<div id="header">'."\n";
 echo '<div id="top">'."\n";
 afficher_msg();
 echo moteur_recherche();
-afficher_topnav(pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME), ucfirst($GLOBALS['lang']['label_resume']));
+afficher_topnav($GLOBALS['lang']['label_resume']);
 echo '</div>'."\n";
 echo '</div>'."\n";
 $total_artic = liste_elements_count("SELECT count(ID) AS nbr FROM articles", array());

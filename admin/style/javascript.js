@@ -52,8 +52,16 @@ function new_freecap() {
 	On article or comment writing: insert a BBCode Tag or a Unicode char.
 */
 
-function insertTag(startTag, endTag, tag) {
-	var field = document.getElementById(tag);
+function insertTag(e, startTag, endTag) {
+	var seekField = e;
+	while (!seekField.classList.contains('formatbut')) {
+		seekField = seekField.parentNode;
+	}
+	while (!seekField.tagName || seekField.tagName != 'TEXTAREA') {
+		seekField = seekField.nextSibling;
+	}
+
+	var field = seekField;
 	var scroll = field.scrollTop;
 	field.focus();
 	var startSelection   = field.value.substring(0, field.selectionStart);
@@ -66,8 +74,17 @@ function insertTag(startTag, endTag, tag) {
 	field.scrollTop = scroll;
 }
 
-function insertChar(ch, tag) {
-	var field = document.getElementById(tag);
+function insertChar(e, ch) {
+	var seekField = e;
+	while (!seekField.classList.contains('formatbut')) {
+		seekField = seekField.parentNode;
+	}
+	while (!seekField.tagName || seekField.tagName != 'TEXTAREA') {
+		seekField = seekField.nextSibling;
+	}
+
+	var field = seekField;
+
 	var scroll = field.scrollTop;
 	field.focus();
 
