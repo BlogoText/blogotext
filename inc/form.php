@@ -917,37 +917,71 @@ function afficher_form_prefs($erreurs = '') {
 		$fld_cfg_blog .= '</div>';
 	echo $fld_cfg_blog;
 
+		if ($GLOBALS['onglet_liens']) {
+			$fld_cfg_linx = '<div role="group" class="pref">';
+			$fld_cfg_linx .= '<div class="form-legend">'.legend($GLOBALS['lang']['prefs_legend_configlinx'], 'legend-links').'</div>'."\n";
 
-		$fld_cfg_linx = '<div role="group" class="pref">';
-		$fld_cfg_linx .= '<div class="form-legend">'.legend($GLOBALS['lang']['prefs_legend_configlinx'], 'legend-links').'</div>'."\n";
+			$fld_cfg_linx .= '<div class="form-lines">'."\n";
+			// nb liens côté admin
+			$nbs = array('50'=>'50', '100'=>'100', '200'=>'200', '300'=>'300', '500'=>'500', '-1' => $GLOBALS['lang']['pref_all']);
 
-		$fld_cfg_linx .= '<div class="form-lines">'."\n";
-		// nb liens côté admin
-		$nbs = array('50'=>'50', '100'=>'100', '200'=>'200', '300'=>'300', '500'=>'500', '-1' => $GLOBALS['lang']['pref_all']);
+			$fld_cfg_linx .= '<p>'."\n";
+			$fld_cfg_linx .= form_select('nb_list_linx', $nbs, $GLOBALS['max_linx_admin'], $GLOBALS['lang']['pref_nb_list_linx']);
+			$fld_cfg_linx .= '</p>'."\n";
 
-		$fld_cfg_linx .= '<p>'."\n";
-		$fld_cfg_linx .= form_select('nb_list_linx', $nbs, $GLOBALS['max_linx_admin'], $GLOBALS['lang']['pref_nb_list_linx']);
-		$fld_cfg_linx .= '</p>'."\n";
+			// partage de fichiers !pages : télécharger dans fichiers automatiquement ?
+			$nbs = array('0'=> $GLOBALS['lang']['non'], '1'=> $GLOBALS['lang']['oui'], '2' => $GLOBALS['lang']['pref_ask_everytime']);
 
-		// partage de fichiers !pages : télécharger dans fichiers automatiquement ?
-		$nbs = array('0'=> $GLOBALS['lang']['non'], '1'=> $GLOBALS['lang']['oui'], '2' => $GLOBALS['lang']['pref_ask_everytime']);
+			$fld_cfg_linx .= '<p>'."\n";
+			$fld_cfg_linx .= form_select('dl_link_to_files', $nbs, $GLOBALS['dl_link_to_files'], $GLOBALS['lang']['pref_linx_dl_auto']);
+			$fld_cfg_linx .= '</p>'."\n";
 
-		$fld_cfg_linx .= '<p>'."\n";
-		$fld_cfg_linx .= form_select('dl_link_to_files', $nbs, $GLOBALS['dl_link_to_files'], $GLOBALS['lang']['pref_linx_dl_auto']);
-		$fld_cfg_linx .= '</p>'."\n";
+			// lien à glisser sur la barre des favoris
+			$a = explode('/', dirname($_SERVER['SCRIPT_NAME']));
+			$fld_cfg_linx .= '<p>';
+			$fld_cfg_linx .= '<label>'.$GLOBALS['lang']['pref_label_bookmark_lien'].'</label>'."\n";
+			$fld_cfg_linx .= '<a class="dnd-to-favs" onclick="alert(\''.$GLOBALS['lang']['pref_label_bookmark_lien'].'\');return false;" href="javascript:javascript:(function(){window.open(\''.$GLOBALS['racine'].$a[count($a)-1].'/links.php?url=\'+encodeURIComponent(location.href));})();">Save link</a>';
+			$fld_cfg_linx .= '</p>'."\n";
+			$fld_cfg_linx .= '</div>'."\n";
 
-		// lien à glisser sur la barre des favoris
-		$a = explode('/', dirname($_SERVER['SCRIPT_NAME']));
-		$fld_cfg_linx .= '<p>';
-		$fld_cfg_linx .= '<label>'.$GLOBALS['lang']['pref_label_bookmark_lien'].'</label>'."\n";
-		$fld_cfg_linx .= '<a class="dnd-to-favs" onclick="alert(\''.$GLOBALS['lang']['pref_alert_bookmark_link'].'\');return false;" href="javascript:javascript:(function(){window.open(\''.$GLOBALS['racine'].$a[count($a)-1].'/links.php?url=\'+encodeURIComponent(location.href));})();">Save link</a>';
-		$fld_cfg_linx .= '</p>'."\n";
-		$fld_cfg_linx .= '</div>'."\n";
+			$fld_cfg_linx .= $submit_box;
 
-		$fld_cfg_linx .= $submit_box;
+			$fld_cfg_linx .= '</div>';
+		echo $fld_cfg_linx;
+		}
 
-		$fld_cfg_linx .= '</div>';
-	echo $fld_cfg_linx;
+
+		if ($GLOBALS['onglet_rss']) {
+			/* TODO
+			- Open=read ? + button to mark as read in HTML
+			- Export OPML
+			*/
+			$fld_cfg_rss = '<div role="group" class="pref">';
+			$fld_cfg_rss .= '<div class="form-legend">'.legend($GLOBALS['lang']['prefs_legend_configrss'], 'legend-rss').'</div>'."\n";
+
+			$fld_cfg_rss .= '<div class="form-lines">'."\n";
+
+			$fld_cfg_rss .= '<p>'."\n";
+			$a = explode('/', dirname($_SERVER['SCRIPT_NAME']));
+			$fld_cfg_rss .= '<label>'.$GLOBALS['lang']['pref_label_bookmark_lien'].'</label>'."\n";
+			$fld_cfg_rss .= '<a onclick="prompt(\''.$GLOBALS['lang']['pref_alert_crontab_rss'].'\', \'0 *  *   *   *   wget --spider -qO- '.$GLOBALS['racine'].$a[count($a)-1].'/_rss.ajax.php?guid='.$GLOBALS['install_uid'].'&refresh_all'.'\');return false;" href="#">Afficher ligne Cron</a>';
+			$fld_cfg_rss .= '</p>'."\n";
+
+			$fld_cfg_rss .= '<p>'."\n";
+			$fld_cfg_rss .= "\t".'<label>'.$GLOBALS['lang']['pref_rss_go_to_imp-export'].'</label>'."\n";
+			$fld_cfg_rss .= "\t".'<a href="maintenance.php">'.$GLOBALS['lang']['label_import-export'].'</a>'."\n";
+			$fld_cfg_rss .= '</p>'."\n";
+
+			$fld_cfg_rss .= '<p>'."\n";
+			$fld_cfg_rss .= '</p>'."\n";
+
+			$fld_cfg_rss .= '</div>'."\n";
+
+			$fld_cfg_rss .= $submit_box;
+			$fld_cfg_rss .= '</div>';
+		echo $fld_cfg_rss;
+		}
+
 
 		$fld_maintenance = '<div role="group" class="pref">';
 		$fld_maintenance .= '<div class="form-legend">'.legend($GLOBALS['lang']['titre_maintenance'], 'legend-sweep').'</div>'."\n";

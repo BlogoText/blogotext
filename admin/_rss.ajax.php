@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2014 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -15,8 +15,22 @@ $GLOBALS['BT_ROOT_PATH'] = '../';
 require_once '../inc/inc.php';
 error_reporting($GLOBALS['show_errors']);
 
+// Update all RSS feeds using GET (for cron jobs).
+	// only test here is on install UID. 
+if (isset($_GET['refresh_all'], $_GET['guid']) and ($_GET['guid'] == $GLOBALS['install_uid'])) {
+	if ($_GET['guid'] == $GLOBALS['install_uid']) {
+		$GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
+		$GLOBALS['liste_flux'] = open_serialzd_file($GLOBALS['fichier_liste_fluxrss']);
+
+		refresh_rss($GLOBALS['liste_flux']);
+		die('Success');
+	} else {
+		die('Error');
+	}
+}
+
+
 operate_session();
-$begin = microtime(TRUE);
 
 $GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
 $GLOBALS['liste_flux'] = open_serialzd_file($GLOBALS['fichier_liste_fluxrss']);
@@ -26,7 +40,21 @@ $GLOBALS['liste_flux'] = open_serialzd_file($GLOBALS['fichier_liste_fluxrss']);
 	It is not intended to be called directly in your browser.
 */
 
-// retreive all RSS feeds from the source, and save them in DB.
+// Update all RSS feeds using GET (for cron jobs).
+if (isset($_GET['refresh_all'])) {
+	$erreurs = valider_form_rss();
+	if (!empty($erreurs)) {
+		echo erreurs($erreurs);
+		die;
+	}
+
+	$nb_new = refresh_rss($GLOBALS['liste_flux']);
+	echo 'Success';
+	echo new_token();
+	echo $nb_new;
+}
+
+// retreive all RSS feeds from the sources, and save them in DB.
 if (isset($_POST['refresh_all'])) {
 	$erreurs = valider_form_rss();
 	if (!empty($erreurs)) {
