@@ -112,7 +112,7 @@ if (!isset($_GET['url']) and !isset($_GET['ajout'])) {
 			$query = "SELECT * FROM links WHERE bt_author=? ORDER BY bt_id DESC";
 			$tableau = liste_elements($query, array($search), 'links');
 		} else {
-			$query = "SELECT * FROM links ORDER BY bt_id DESC LIMIT 0, ".$GLOBALS['max_linx_admin'];
+			$query = "SELECT * FROM links ORDER BY bt_id DESC LIMIT ".$GLOBALS['max_linx_admin'];
 			$tableau = liste_elements($query, array(), 'links');
 		}
 	} elseif (!empty($_GET['q'])) { // mot clé
@@ -124,7 +124,7 @@ if (!isset($_GET['url']) and !isset($_GET['ajout'])) {
 		$query = "SELECT * FROM links WHERE bt_id=?";
 		$tableau = liste_elements($query, array($_GET['id']), 'links');
 	} else { // aucun filtre : affiche TOUT
-		$query = "SELECT * FROM links ORDER BY bt_id DESC LIMIT 0, ".$GLOBALS['max_linx_admin'];
+		$query = "SELECT * FROM links ORDER BY bt_id DESC LIMIT ".$GLOBALS['max_linx_admin'];
 		$tableau = liste_elements($query, array(), 'links');
 	}
 }

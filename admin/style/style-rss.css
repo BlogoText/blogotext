@@ -100,19 +100,14 @@
 	display: flex;
 	position: relative;
 	border-bottom: 1px solid #eee;
+	align-items: center;
 }
 
-#feed-list > li > span,
-#feed-list > li > ul > li > span {
-	padding: 10px 25px 10px 0
-}
-
-#feed-list > li.all-feeds > button:last-of-type {
+#feed-list > li.all-feeds {
 	text-align: center;
-	padding: 20px;
 }
 
-#feed-list > li.all-feeds button::before {
+#feed-list > li.all-feeds a::before {
 	display: inline-block;
 	vertical-align: middle;
 	content: "\e901";
@@ -122,35 +117,41 @@
 	color: rgba(0, 0, 0, .6);
 }
 
-#feed-list > li.feed-folder {
-	padding-left: 0;
-	padding-right: 0;
-}
 
 #feed-list > li.feed-folder {
 	display: block;
-	padding-top: 0;
-	padding-bottom: 0;
+}
+
+#feed-list > li > span,
+#feed-list > li > ul > li > span {
+	padding: 10px 25px 10px 0
+}
+
+#feed-list li a {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	text-decoration: none;
+	color: inherit;
+	flex: 1;
+	padding: 15px 20px;
+	display: block;
+	align-items: center;
+}
+
+#feed-list > li > a > span:last-of-type,
+#feed-list > li li > a > span:last-of-type {
+	flex: 1;
+	text-align: right;
 }
 
 #feed-list > li.feed-folder > .feed-folder-title {
 	display: flex;
 	padding: 0;
-}
-
-#feed-list > li.feed-folder > .feed-folder-title button {
-	background: none;
-	border: 0;
-	margin: 0;
-	padding: 6px 20px 6px 25px;
-	flex: 1 0 0px;
-	text-align: left;
-	font-weight: inherit;
+	align-items: center;
 }
 
 #feed-list > li.feed-folder > .feed-folder-title span {
-	flex: 1 1 0%;
-	line-height: 24px;
 	padding-left: 5px;
 }
 
@@ -171,37 +172,15 @@
 	background-position: -158px -170px;
 }
 
-#feed-list li button:last-of-type {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	text-decoration: none;
-	color: inherit;
-	flex: 1;
-	border: 0;
-	background: none;
-	text-align: left;
-	font-weight: inherit;
-	padding: 10px 0px 10px 25px;
-	vertical-align: middle;
-}
-
-#feed-list li button,
-#feed-list li button::-moz-focus-inner {
-   outline:none;
-   border-color: transparent;
-}
-
-
-#feed-list li.feed-folder button.unfold {
-	flex: 0 0 40px;
+#feed-list li.feed-folder a.unfold {
+	flex: 0;
 	padding: 0 0 0 40px;
 	margin-right: 10px;
 	overflow: hidden;
 	transition: transform ease .2s;
 }
 
-#feed-list li.feed-folder button.unfold::before {
+#feed-list li.feed-folder a.unfold::before {
 	content: "\e92d";
 	position: relative;
 	left: -35px;
@@ -209,11 +188,11 @@
 	color: rgba(0, 0, 0, .6);
 }
 
-#feed-list li.feed-folder.open button.unfold {
+#feed-list li.feed-folder.open a.unfold {
 	transform: rotate(90deg);
 }
 
-#feed-list li button.feed-error {
+#feed-list li a.feed-error {
 	color: red;
 }
 
