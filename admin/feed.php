@@ -11,22 +11,22 @@
 #
 # *** LICENSE ***
 
-$GLOBALS['BT_ROOT_PATH'] = '../';
+define('BT_ROOT', '../');
+
 require_once '../inc/inc.php';
-error_reporting($GLOBALS['show_errors']);
 
 operate_session();
 $begin = microtime(TRUE);
 
-$GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
-$GLOBALS['liste_flux'] = open_serialzd_file($GLOBALS['fichier_liste_fluxrss']);
+$GLOBALS['db_handle'] = open_base();
+$GLOBALS['liste_flux'] = open_serialzd_file(FEEDS_DB);
 
 //foreach ($GLOBALS['liste_flux'] as $url => $arr) {
 //	$GLOBALS['liste_flux'][$url]['time'] -= 80000;
 //	$GLOBALS['liste_flux'][$url]['checksum'] = '42';
 //	$GLOBALS['liste_flux'][$url]['iserror'] = 1;
 //}
-//file_put_contents($GLOBALS['fichier_liste_fluxrss'], '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_flux']))).' */');
+//file_put_contents(FEEDS_DB, '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_flux']))).' */');
 //debug($GLOBALS['liste_flux']);
 
 // TRAITEMENT

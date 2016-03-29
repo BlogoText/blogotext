@@ -16,12 +16,12 @@
     if file does exists, tables are checked and created if not exists
 */
 function create_tables() {
-	if (file_exists($GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_config'].'/'.'mysql.php')) {
-		include($GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_config'].'/'.'mysql.php');
+	if (file_exists(BT_ROOT.DIR_CONFIG.'/'.'mysql.php')) {
+		include(BT_ROOT.DIR_CONFIG.'/'.'mysql.php');
 	}
-	$auto_increment = ($GLOBALS['sgdb'] == 'mysql') ? 'AUTO_INCREMENT' : ''; // SQLite does'nt need this, but MySQL does.
+	$auto_increment = (DBMS == 'mysql') ? 'AUTO_INCREMENT' : ''; // SQLite doesn't need this, but MySQL does.
 
-	$GLOBALS['dbase_structure']['links'] = "CREATE TABLE IF NOT EXISTS links
+	$dbase_structure['links'] = "CREATE TABLE IF NOT EXISTS links
 		(
 			ID INTEGER PRIMARY KEY $auto_increment,
 			bt_type CHAR(20),
@@ -35,7 +35,7 @@ function create_tables() {
 			bt_statut TINYINT
 		); CREATE INDEX dateL ON links ( bt_id );";
 
-	$GLOBALS['dbase_structure']['commentaires'] = "CREATE TABLE IF NOT EXISTS commentaires
+	$dbase_structure['commentaires'] = "CREATE TABLE IF NOT EXISTS commentaires
 		(
 			ID INTEGER PRIMARY KEY $auto_increment,
 			bt_type CHAR(20),
@@ -52,7 +52,7 @@ function create_tables() {
 		); CREATE INDEX dateC ON commentaires ( bt_id );";
 
 
-	$GLOBALS['dbase_structure']['articles'] = "CREATE TABLE IF NOT EXISTS articles
+	$dbase_structure['articles'] = "CREATE TABLE IF NOT EXISTS articles
 		(
 			ID INTEGER PRIMARY KEY $auto_increment,
 			bt_type CHAR(20),
@@ -72,7 +72,7 @@ function create_tables() {
 		); CREATE INDEX dateidA ON articles (bt_date, bt_id );";
 
 	/* here bt_ID is a GUID, from the feed, not only a 'YmdHis' date string.*/
-	$GLOBALS['dbase_structure']['rss'] = "CREATE TABLE IF NOT EXISTS rss
+	$dbase_structure['rss'] = "CREATE TABLE IF NOT EXISTS rss
 		(
 			ID INTEGER PRIMARY KEY $auto_increment,
 			bt_id TEXT,
@@ -89,13 +89,14 @@ function create_tables() {
 	* SQLite
 	*
 	*/
-	switch ($GLOBALS['sgdb']) {
+	switch (DBMS) {
 		case 'sqlite':
-
-				if (!creer_dossier($GLOBALS['BT_ROOT_PATH'].''.$GLOBALS['dossier_db'])) {
-					die('Impossible de creer le dossier databases (chmod?)');
+				if (!is_file(BT_ROOT.DIR_DATABASES.'/database.sqlite')) {
+					if (!creer_dossier(BT_ROOT.DIR_DATABASES)) {
+						die('Impossible de creer le dossier databases (chmod?)');
+					}
 				}
-				$file = $GLOBALS['BT_ROOT_PATH'].''.$GLOBALS['dossier_db'].'/'.$GLOBALS['db_location'];
+				$file = BT_ROOT.DIR_DATABASES.'/database.sqlite';
 				// open tables
 				try {
 					$db_handle = new PDO('sqlite:'.$file);
@@ -104,7 +105,7 @@ function create_tables() {
 
 					$wanted_tables = array('commentaires', 'articles', 'links', 'rss');
 					foreach ($wanted_tables as $i => $name) {
-						$results = $db_handle->query($GLOBALS['dbase_structure'][$name]);
+						$results = $db_handle->query($dbase_structure[$name]);
 					}
 				} catch (Exception $e) {
 					die('Erreur 1: '.$e->getMessage());
@@ -123,7 +124,7 @@ function create_tables() {
 					// check each wanted table
 					$wanted_tables = array('commentaires', 'articles', 'links', 'rss');
 					foreach ($wanted_tables as $i => $name) {
-							$results = $db_handle->query($GLOBALS['dbase_structure'][$name]."DEFAULT CHARSET=utf8");
+							$results = $db_handle->query($dbase_structure[$name]."DEFAULT CHARSET=utf8");
 							$results->closeCursor();
 					}
 				} catch (Exception $e) {
@@ -775,7 +776,7 @@ function traiter_form_rssconf() {
 
 	// sort list with title
 	$GLOBALS['liste_flux'] = array_reverse(tri_selon_sous_cle($GLOBALS['liste_flux'], 'title'));
-	file_put_contents($GLOBALS['fichier_liste_fluxrss'], '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_flux']))).' */');
+	file_put_contents(FEEDS_DB, '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_flux']))).' */');
 
 	$redir = basename($_SERVER['SCRIPT_NAME']).'?'.$query_string.'&msg=confirm_feeds_edit';
 	redirection($redir);

@@ -14,11 +14,10 @@
 header('Content-Type: application/atom+xml; charset=UTF-8');
 echo '<?xml version="1.0" encoding="UTF-8"?>'."\n";
 
-$GLOBALS['BT_ROOT_PATH'] = '';
+define('BT_ROOT', './');
+
 error_reporting(-1);
 $begin = microtime(TRUE);
-
-$GLOBALS['dossier_cache'] = 'cache';
 
 require_once 'config/user.php';
 require_once 'config/prefs.php';
@@ -44,7 +43,7 @@ echo '<link rel="self" href="'.$GLOBALS['racine'].'atom.php'.((!empty($_SERVER['
 /* si y'a un ID en paramètre : flux sur fil commentaires de l'article "ID" */
 if (isset($_GET['id']) and preg_match('#^[0-9]{14}$#', $_GET['id'])) {
 	require_all();
-	$GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
+	$GLOBALS['db_handle'] = open_base();
 	$article_id = htmlspecialchars($_GET['id']);
 
 	$liste = liste_elements("SELECT * FROM commentaires WHERE bt_article_id=? AND bt_statut=1 ORDER BY bt_id DESC", array($article_id), 'commentaires');
@@ -90,11 +89,11 @@ else {
 	}
 
 
-	$fcache = $GLOBALS['dossier_cache'].'/'.'cache_rss_array.dat';
+	$fcache = 'cache/cache_rss_array.dat';
 	$liste = array();
 	if (!file_exists($fcache)) {
 		require_all();
-		$GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
+		$GLOBALS['db_handle'] = open_base();
 		rafraichir_cache();
 	}
 	// this function exists in SQLI.PHP. It is replaced here, because including sqli.php and the other files takes 10x more cpu load than this

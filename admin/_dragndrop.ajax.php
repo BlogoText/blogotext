@@ -17,14 +17,14 @@
 
 */
 
-$GLOBALS['BT_ROOT_PATH'] = '../';
+define('BT_ROOT', '../');
+
 require_once '../inc/inc.php';
-error_reporting($GLOBALS['show_errors']);
 
 operate_session();
 $begin = microtime(TRUE);
 $liste_fileid = array();
-$GLOBALS['liste_fichiers'] = open_serialzd_file($GLOBALS['fichier_liste_fichiers']);
+$GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);
 
 foreach ($GLOBALS['liste_fichiers'] as $key => $file) {
 	$liste_fileid[] = $file['bt_id'];

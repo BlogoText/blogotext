@@ -55,8 +55,8 @@ function chemin_thb_img_test($filepath) {
 	Le JSON est parsé en JS du côté navigateur pour former le mur d’images.
 */
 function afficher_liste_images($images) {
-	$dossier = $GLOBALS['racine'].$GLOBALS['dossier_images'];
-	$dossier_relatif = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_images'];
+	$dossier = $GLOBALS['racine'].DIR_IMAGES;
+	$dossier_relatif = BT_ROOT.DIR_IMAGES;
 	$out = ''; $i = 0;
 	if (!empty($images)) {
 		// liste les différents albums " logiques " des images.
@@ -245,9 +245,9 @@ function traiter_form_fichier($fichier) {
 // Retourne le $fichier de l’entrée (après avoir possiblement changé des trucs, par ex si le fichier existait déjà, l’id retourné change)
 function bdd_fichier($fichier, $quoi, $comment, $sup_var) {
 	if ($fichier['bt_type'] == 'image') {
-		$dossier = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_images'].$fichier['bt_path'];
+		$dossier = BT_ROOT.DIR_IMAGES.$fichier['bt_path'];
 	} else {
-		$dossier = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_fichiers'];
+		$dossier = BT_ROOT.DIR_DOCUMENTS;
 		$rand_dir = '';
 	}
 	if (FALSE === creer_dossier($dossier, 0)) {
@@ -300,7 +300,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var) {
 			// ajout à la base.
 			$GLOBALS['liste_fichiers'][] = $fichier;
 			$GLOBALS['liste_fichiers'] = tri_selon_sous_cle($GLOBALS['liste_fichiers'], 'bt_id');
-			file_put_contents($GLOBALS['fichier_liste_fichiers'], '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_fichiers']))).' */');
+			file_put_contents(FILES_DB, '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_fichiers']))).' */');
 	}
 
 	// modification d’un fichier déjà existant
@@ -340,7 +340,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var) {
 			}
 
 			$GLOBALS['liste_fichiers'] = tri_selon_sous_cle($GLOBALS['liste_fichiers'], 'bt_id');
-			file_put_contents($GLOBALS['fichier_liste_fichiers'], '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_fichiers']))).' */'); // écrit dans le fichier, la liste
+			file_put_contents(FILES_DB, '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_fichiers']))).' */'); // écrit dans le fichier, la liste
 			redirection(basename($_SERVER['SCRIPT_NAME']).'?file_id='.$fichier['bt_id'].'&edit&msg=confirm_fichier_edit');
 	}
 
@@ -363,7 +363,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var) {
 					}
 					unset($GLOBALS['liste_fichiers'][$tbl_id]); // efface le fichier dans la liste des fichiers.
 					$GLOBALS['liste_fichiers'] = tri_selon_sous_cle($GLOBALS['liste_fichiers'], 'bt_id');
-					file_put_contents($GLOBALS['fichier_liste_fichiers'], '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_fichiers']))).' */'); // enregistre la liste
+					file_put_contents(FILES_DB, '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_fichiers']))).' */'); // enregistre la liste
 					return 'success';
 
 				} else { // erreur effacement fichier physique
@@ -376,7 +376,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var) {
 				unset($GLOBALS['liste_fichiers'][$tbl_id]); // remove entry from files-list.
 			}
 			$GLOBALS['liste_fichiers'] = tri_selon_sous_cle($GLOBALS['liste_fichiers'], 'bt_id');
-			file_put_contents($GLOBALS['fichier_liste_fichiers'], '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_fichiers']))).' */'); // enregistre la liste
+			file_put_contents(FILES_DB, '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_fichiers']))).' */'); // enregistre la liste
 			return 'no_such_file_on_disk';
 	}
 }
@@ -490,9 +490,9 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 	// si ID dans l’URL, il s’agit également du seul fichier dans le tableau fichiers, d’où le [0]
 	elseif (!empty($fichiers) and isset($_GET['file_id']) and preg_match('/\d{14}/',($_GET['file_id']))) {
 		$myfile = $fichiers[0];
-		$absolute_URI = $GLOBALS['racine'].$GLOBALS['dossier_'.(($myfile['bt_type'] == 'image') ? 'images' : 'fichiers')].'/'.$myfile['bt_filename'];
-		$relative_path = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_'.(($myfile['bt_type'] == 'image') ? 'images' : 'fichiers')].$myfile['bt_path'].'/'.$myfile['bt_filename'];
-		$absolute_path = $GLOBALS['dossier_'.(($myfile['bt_type'] == 'image') ? 'images' : 'fichiers')].$myfile['bt_path'].'/'.$myfile['bt_filename'];
+		$absolute_URI = $GLOBALS['racine'].(($myfile['bt_type'] == 'image') ? DIR_IMAGES : DIR_DOCUMENTS).'/'.$myfile['bt_filename'];
+		$relative_path = BT_ROOT.(($myfile['bt_type'] == 'image') ? DIR_IMAGES : DIR_DOCUMENTS).$myfile['bt_path'].'/'.$myfile['bt_filename'];
+		$absolute_path = (($myfile['bt_type'] == 'image') ? DIR_IMAGES : DIR_DOCUMENTS).$myfile['bt_path'].'/'.$myfile['bt_filename'];
 
 
 		$form .= '<div class="edit-fichier">'."\n";
@@ -573,8 +573,8 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 
 // affichage de la liste des fichiers
 function afficher_liste_fichiers($tableau) {
-	$dossier = $GLOBALS['racine'].$GLOBALS['dossier_fichiers'];
-	$dossier_relatif = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_fichiers'];
+	$dossier = $GLOBALS['racine'].DIR_DOCUMENTS;
+	$dossier_relatif = BT_ROOT.DIR_DOCUMENTS;
 	$out = '';
 	if (!empty($tableau)) {
 		// affichage sous la forme d’icônes, comme les images.

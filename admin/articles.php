@@ -12,13 +12,13 @@
 # *** LICENSE ***
 
 $begin = microtime(TRUE);
-$GLOBALS['BT_ROOT_PATH'] = '../';
+define('BT_ROOT', '../');
+
 require_once '../inc/inc.php';
-error_reporting($GLOBALS['show_errors']);
 
 operate_session();
 
-$GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
+$GLOBALS['db_handle'] = open_base();
 
 $tableau = array();
 if (!empty($_GET['q'])) {

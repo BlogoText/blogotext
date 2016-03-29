@@ -19,7 +19,7 @@ function afficher_html_head($titre) {
 	$html .= "\t".'<meta charset="UTF-8" />'."\n";
 	$html .= "\t".'<link type="text/css" rel="stylesheet" href="style/style.css.php" />'."\n";
 	$html .= "\t".'<meta name="viewport" content="initial-scale=1.0, user-scalable=yes" />'."\n";
-	$html .= "\t".'<title>'.$titre.' | '.$GLOBALS['nom_application'].'</title>'."\n";
+	$html .= "\t".'<title>'.$titre.' | '.BLOGOTEXT_NAME.'</title>'."\n";
 	$html .= '</head>'."\n";
 	$html .= '<body id="body">'."\n\n";
 	echo $html;
@@ -29,12 +29,12 @@ function footer($begin_time='') {
 	$msg = '';
 	if ($begin_time != '') {
 		$dt = round((microtime(TRUE) - $begin_time),6);
-		$msg = ' - '.$GLOBALS['lang']['rendered'].' '.$dt.' s '.$GLOBALS['lang']['using'].' '.$GLOBALS['sgdb'];
+		$msg = ' - '.$GLOBALS['lang']['rendered'].' '.$dt.' s '.$GLOBALS['lang']['using'].' '.DBMS;
 	}
 
 	$html = '</div>'."\n";
 	$html .= '</div>'."\n";
-	$html .= '<p id="footer"><a href="'.$GLOBALS['appsite'].'">'.$GLOBALS['nom_application'].' '.$GLOBALS['version'].'</a>'.$msg.'</p>'."\n";
+	$html .= '<p id="footer"><a href="'.BLOGOTEXT_SITE.'">'.BLOGOTEXT_NAME.' '.BLOGOTEXT_VERSION.'</a>'.$msg.'</p>'."\n";
 	$html .= '</body>'."\n";
 	$html .= '</html>'."\n";
 	echo $html;
@@ -43,7 +43,7 @@ function footer($begin_time='') {
 /// menu haut panneau admin /////////
 function afficher_topnav($titre) {
 	$tab = pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME);
-	if (strlen($titre) == 0) $titre = $GLOBALS['nom_application'];
+	if (strlen($titre) == 0) $titre = BLOGOTEXT_NAME;
 	$html = '';
 	$html .= '<div id="nav">'."\n";
 	$html .=  "\t".'<ul>'."\n";

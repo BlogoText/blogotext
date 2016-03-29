@@ -75,7 +75,7 @@ function addon_calendrier() {
 
 	$html = '<table id="calendrier">'."\n";
 	$html .= '<caption>';
-	if ( $annee.$ce_mois > $GLOBALS['date_premier_message_blog']) {
+	if ( $annee.$ce_mois > DATE_PREMIER_MESSAGE_BLOG) {
 		$html .= '<a href="'.$prev_mois.'">&#171;</a>&nbsp;';
 	}
 

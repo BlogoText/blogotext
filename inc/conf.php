@@ -11,60 +11,44 @@
 #
 # *** LICENSE ***
 
-// Sets timezone
-if (!empty($GLOBALS['fuseau_horaire'])) {
-	date_default_timezone_set($GLOBALS['fuseau_horaire']);
-} else {
-	date_default_timezone_set('UTC');
-}
-
-// BLOGOTEXT VERSION (do not change it)
-$GLOBALS['version'] = '3.3.1';
-$GLOBALS['last-online-file'] = '../config/version.txt';
-
-// MINIMAL REQUIRED PHP VERSION
-$GLOBALS['minimal_php_version'] = '5.5';
+/*
+ * Some hard coded constants
+ * Don’t change unless you know what you’re doing.
+*/
 
 // GENERAL
-$GLOBALS['nom_application']= 'BlogoText';
-$GLOBALS['appsite']= 'http://lehollandaisvolant.net/blogotext/';
-$GLOBALS['date_premier_message_blog'] = '199701'; // this is overwritten by value /config/config-advanced.ini if exists
-$GLOBALS['show_errors'] = -1; // this too
-$GLOBALS['use_ip_in_session'] = 1; // this too
-$GLOBALS['gravatar_link'] = 'themes/default/gravatars/get.php?g='; // this too
-$GLOBALS['addons'] = array();
+define('BLOGOTEXT_NAME', 'BlogoText');
+define('BLOGOTEXT_SITE', 'http://lehollandaisvolant.net/blogotext/');
+define('BLOGOTEXT_VERSION', '3.3.2.1');
+define('MINIMAL_PHP_REQUIRED_VERSION', '5.5');
 
 // FOLDERS (change this only if you know what you are doing...)
-$GLOBALS['dossier_admin'] = 'admin';
-$GLOBALS['dossier_backup'] = 'bt_backup';
-$GLOBALS['dossier_images'] = 'img';
-$GLOBALS['dossier_fichiers'] = 'files';
-$GLOBALS['dossier_themes'] = 'themes';
-$GLOBALS['dossier_cache'] = 'cache';
-$GLOBALS['dossier_db'] = 'databases';
-$GLOBALS['dossier_config'] = 'config';
-$GLOBALS['dossier_addons'] = 'addons';
+define('DIR_ADMIN', 'admin');
+define('DIR_BACKUP', 'bt_backup');
+define('DIR_IMAGES', 'img');
+define('DIR_DOCUMENTS', 'files');
+define('DIR_THEMES', 'themes');
+define('DIR_CACHE', 'cache');
+define('DIR_DATABASES', 'databases');
+define('DIR_CONFIG', 'config');
+define('DIR_ADDONS', 'addons');
+// DB FILES
+define('FILES_DB', BT_ROOT.DIR_DATABASES.'/'.'files.php'); // files/image DB storage.
+define('FEEDS_DB', BT_ROOT.DIR_DATABASES.'/'.'rss.php'); // RSS-feeds list info storage.
 
-$GLOBALS['db_location'] = 'database.sqlite';    // data storage file (for sqlite)
-$GLOBALS['fichier_liste_fichiers'] = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_db'].'/'.'files.php'; // files/image info storage.
-$GLOBALS['fichier_liste_fluxrss'] = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_db'].'/'.'rss.php'; // RSS-feeds list info storage.
+// TIMEZONES
+date_default_timezone_set($GLOBALS['fuseau_horaire']);
+
+
+// INIT SOME VARS
+$GLOBALS['addons'] = array();
 
 // ADVANCED CONFIG OPTIONS. This function replaces some of the above values.
-$adv_config_file = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_config'].'/'.'config-advanced.ini';
-if (is_file($adv_config_file) and is_readable($adv_config_file)) {
-	$adv_options = parse_ini_file($adv_config_file);
-	foreach ($adv_options as $option => $value) {
-		$GLOBALS[$option] = $value;
-	}
-}
+import_ini_file(BT_ROOT.DIR_CONFIG.'/'.'config-advanced.ini');
+error_reporting(DISPLAY_PHP_ERRORS); // Error reporting
 
-// DATABASE 'sqlite' or 'mysql' are supported yet.
-$mysql_file = $GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_config'].'/'.'mysql.php';
-if (is_file($mysql_file) and is_readable($mysql_file) and file_get_contents($mysql_file) != '') {
-	include($mysql_file);
-} else {
-	$GLOBALS['sgdb'] = 'sqlite';
-}
+// DATABASE OPTIONS + MySQL DB PARAMS
+import_ini_file(BT_ROOT.DIR_CONFIG.'/'.'mysql.ini');
 
 // regenerate captcha (always)
 if (!isset($GLOBALS['captcha'])) {
@@ -80,7 +64,7 @@ if (!isset($GLOBALS['captcha'])) {
  */
 
 if ( isset($GLOBALS['theme_choisi']) ) {
-	$GLOBALS['theme_style'] = $GLOBALS['dossier_themes'].'/'.$GLOBALS['theme_choisi'];
+	$GLOBALS['theme_style'] = DIR_THEMES.'/'.$GLOBALS['theme_choisi'];
 	$GLOBALS['theme_liste'] = $GLOBALS['theme_style'].'/list.html';
 	$GLOBALS['theme_post_artc'] = $GLOBALS['theme_style'].'/template/article.html';
 	$GLOBALS['theme_post_comm'] = $GLOBALS['theme_style'].'/template/commentaire.html';
@@ -239,4 +223,6 @@ function init_post_link2() { // second init : the whole link data needs to be st
 
 	return $link;
 }
+
+
 

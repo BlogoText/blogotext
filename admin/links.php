@@ -11,14 +11,14 @@
 #
 # *** LICENSE ***
 
-$GLOBALS['BT_ROOT_PATH'] = '../';
+define('BT_ROOT', '../');
+
 require_once '../inc/inc.php';
-error_reporting($GLOBALS['show_errors']);
 
 operate_session();
 $begin = microtime(TRUE);
 
-$GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
+$GLOBALS['db_handle'] = open_base();
 $step = 0;
 
 // modèle d'affichage d'un div pour un lien (avec un formaulaire d'édition par lien).
@@ -82,7 +82,7 @@ if (isset($_POST['_verif_envoi'])) {
 				$fichier = init_post_fichier();
 				$erreurs = valider_form_fichier($fichier);
 
-				$GLOBALS['liste_fichiers'] = open_serialzd_file($GLOBALS['fichier_liste_fichiers']);
+				$GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);
 				bdd_fichier($fichier, 'ajout-nouveau', 'download', $link['bt_link']);
 			}
 		}

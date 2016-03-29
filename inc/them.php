@@ -85,8 +85,8 @@ $GLOBALS['balises'] = array(
 );
 
 function conversions_theme($texte, $solo_art, $cnt_mode) {
-	$texte = str_replace($GLOBALS['balises']['version'], $GLOBALS['version'], $texte);
-	$texte = str_replace($GLOBALS['balises']['app_name'], $GLOBALS['nom_application'], $texte);
+	$texte = str_replace($GLOBALS['balises']['version'], BLOGOTEXT_VERSION, $texte);
+	$texte = str_replace($GLOBALS['balises']['app_name'], BLOGOTEXT_NAME, $texte);
 	$texte = str_replace($GLOBALS['balises']['style'], $GLOBALS['theme_style'], $texte);
 	$texte = str_replace($GLOBALS['balises']['racine_du_site'], $GLOBALS['racine'], $texte);
 	$texte = str_replace($GLOBALS['balises']['blog_auteur'], $GLOBALS['auteur'], $texte);
@@ -141,7 +141,7 @@ function conversions_theme_commentaire($texte, $commentaire) {
 	$texte = str_replace($GLOBALS['balises']['commentaire_date_iso'], date_formate_iso($commentaire['bt_id']), $texte);
 	$texte = str_replace($GLOBALS['balises']['commentaire_heure'], heure_formate($commentaire['bt_id']), $texte);
 	$texte = str_replace($GLOBALS['balises']['commentaire_email'], $commentaire['bt_email'], $texte);
-	$texte = str_replace($GLOBALS['balises']['commentaire_gravatar'], $GLOBALS['gravatar_link'].md5($commentaire['bt_email']), $texte);
+	$texte = str_replace($GLOBALS['balises']['commentaire_gravatar'], GRAVATAR_LINK.md5($commentaire['bt_email']), $texte);
 	$texte = str_replace($GLOBALS['balises']['commentaire_auteur_lien'], $commentaire['auteur_lien'], $texte);
 	$texte = str_replace($GLOBALS['balises']['commentaire_auteur'], str_replace("'", "\\'", $commentaire['bt_author']), $texte);
 	$texte = str_replace($GLOBALS['balises']['commentaire_webpage'], $commentaire['bt_webpage'], $texte);
@@ -316,14 +316,14 @@ function afficher_liste($tableau) {
 
 // Include Addons and converts {tags} to HTML (specified in addons)
 function conversion_theme_addons($texte) {
-	if (!is_dir($GLOBALS['dossier_addons'])) return $texte;
+	if (!is_dir(DIR_ADDONS)) return $texte;
 
 	// get the list of installed addons
-	$addons_list = rm_dots_dir(scandir($GLOBALS['dossier_addons']));
+	$addons_list = rm_dots_dir(scandir(DIR_ADDONS));
 
 	// include the addons
 	foreach ($addons_list as $addon) {
-		include($GLOBALS['dossier_addons'].'/'.$addon);
+		include(DIR_ADDONS.'/'.$addon);
 	}
 	
 	// parse the $texte and replace {tags} with html generated in addon.

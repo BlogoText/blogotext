@@ -11,15 +11,15 @@
 #
 # *** LICENSE ***
 
-$GLOBALS['BT_ROOT_PATH'] = '../';
+define('BT_ROOT', '../');
+
 require_once '../inc/inc.php';
-error_reporting($GLOBALS['show_errors']);
 
 operate_session();
 $begin = microtime(TRUE);
 
 $fichier = array();
-$GLOBALS['liste_fichiers'] = open_serialzd_file($GLOBALS['fichier_liste_fichiers']);
+$GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);
 
 // recherche / tri
 if ( !empty($_GET['filtre']) ) {
@@ -103,8 +103,8 @@ echo '<div id="page">'."\n";
 $real_fichiers = array();
 if (!empty($fichiers)) {
 	foreach ($fichiers as $i => $file) {
-		$dossier = ($file['bt_type'] == 'image') ? $GLOBALS['dossier_images'].$file['bt_path'] : $GLOBALS['dossier_fichiers'];
-		if (is_file($GLOBALS['BT_ROOT_PATH'].'/'.$dossier.'/'.$file['bt_filename']) and ($file['bt_filename'] != 'index.html') ) {
+		$folder = ($file['bt_type'] == 'image') ? DIR_IMAGES.$file['bt_path'] : DIR_DOCUMENTS;
+		if (is_file(BT_ROOT.'/'.$folder.'/'.$file['bt_filename']) and ($file['bt_filename'] != 'index.html') ) {
 			$real_fichiers[] = $file;
 		}
 	}

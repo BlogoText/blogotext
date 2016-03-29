@@ -72,7 +72,7 @@ function get_ip() {
 
 
 function check_session() {
-	if ($GLOBALS['use_ip_in_session'] == 1) {
+	if (USE_IP_IN_SESSION == 1) {
 		$ip = get_ip();
 	} else {
 		$ip = date('m');

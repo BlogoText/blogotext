@@ -11,16 +11,15 @@
 #
 # *** LICENSE ***
 
-$GLOBALS['BT_ROOT_PATH'] = '../';
+define('BT_ROOT', '../');
 require_once '../inc/inc.php';
-error_reporting($GLOBALS['show_errors']);
 
 // Update all RSS feeds using GET (for cron jobs).
 	// only test here is on install UID. 
-if (isset($_GET['refresh_all'], $_GET['guid']) and ($_GET['guid'] == $GLOBALS['install_uid'])) {
-	if ($_GET['guid'] == $GLOBALS['install_uid']) {
-		$GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
-		$GLOBALS['liste_flux'] = open_serialzd_file($GLOBALS['fichier_liste_fluxrss']);
+if (isset($_GET['refresh_all'], $_GET['guid']) and ($_GET['guid'] == BLOG_UID)) {
+	if ($_GET['guid'] == BLOG_UID) {
+		$GLOBALS['db_handle'] = open_base();
+		$GLOBALS['liste_flux'] = open_serialzd_file(FEEDS_DB);
 
 		refresh_rss($GLOBALS['liste_flux']);
 		die('Success');
@@ -32,8 +31,8 @@ if (isset($_GET['refresh_all'], $_GET['guid']) and ($_GET['guid'] == $GLOBALS['i
 
 operate_session();
 
-$GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
-$GLOBALS['liste_flux'] = open_serialzd_file($GLOBALS['fichier_liste_fluxrss']);
+$GLOBALS['db_handle'] = open_base();
+$GLOBALS['liste_flux'] = open_serialzd_file(FEEDS_DB);
 
 /*
 	This file is called by the other files. It is an underground working script,
@@ -120,7 +119,7 @@ if (isset($_POST['add-feed'])) {
 	// sort list with title
 	$GLOBALS['liste_flux'] = array_reverse(tri_selon_sous_cle($GLOBALS['liste_flux'], 'title'));
 	// save to file
-	file_put_contents($GLOBALS['fichier_liste_fluxrss'], '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_flux']))).' */');
+	file_put_contents(FEEDS_DB, '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_flux']))).' */');
 
 	// Update DB
 	refresh_rss(array($new_feed => $GLOBALS['liste_flux'][$new_feed]));

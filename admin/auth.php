@@ -16,9 +16,9 @@ if ( !file_exists('../config/user.php') || !file_exists('../config/prefs.php') )
 	exit;
 }
 
-$GLOBALS['BT_ROOT_PATH'] = '../';
+define('BT_ROOT', '../');
+
 require_once '../inc/inc.php';
-error_reporting($GLOBALS['show_errors']);
 
 $max_attemps = 10; // max attempts before blocking login page
 $wait_time = 30;   // time to wait before unblocking login page, in minutes
@@ -31,7 +31,7 @@ if (isset($_POST['nom_utilisateur'])) {
 	$ip .= (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) ? '_'.htmlspecialchars($_SERVER['HTTP_X_FORWARDED_FOR']) : '';
 	$curent_time = date('r'); // heure : Wed, 18 Jan 2012 20:42:12 +0100
 	$data = '<?php die(\'no.\'); // '.$curent_time.' - '.$ip.' - '.((check_session()===TRUE) ? 'login succes' : 'login fail') ."?> \n";
-	file_put_contents($GLOBALS['BT_ROOT_PATH'].$GLOBALS['dossier_config'].'/'.'xauthlog.php', $data, FILE_APPEND);
+	file_put_contents(BT_ROOT.DIR_CONFIG.'/'.'xauthlog.php', $data, FILE_APPEND);
 }
 
 
@@ -42,7 +42,7 @@ if (check_session() === TRUE) { // return to index if session is already open.
 
 // Auth checking :
 if (isset($_POST['_verif_envoi']) and valider_form() === TRUE) { // OK : getting in.
-	if ($GLOBALS['use_ip_in_session'] == 1) {
+	if (USE_IP_IN_SESSION == 1) {
 		$ip = get_ip();
 	} else {
 		$ip = date('m'); // make session expire at least once a month, disregarding IP changes.
@@ -79,7 +79,7 @@ if (isset($_POST['_verif_envoi']) and valider_form() === TRUE) { // OK : getting
 		afficher_html_head('Identification');
 		echo '<div id="axe">'."\n";
 		echo '<div id="pageauth">'."\n";
-		echo '<h1>'.$GLOBALS['nom_application'].'</h1>'."\n";
+		echo '<h1>'.BLOGOTEXT_NAME.'</h1>'."\n";
 		echo '<form method="post" action="auth.php">'."\n";
 		echo '<div id="auth">'."\n";
 		echo '<p><label for="user">'.ucfirst($GLOBALS['lang']['label_dp_identifiant']).'</label><input class="text" type="text"  autocomplete="off" id="user" name="nom_utilisateur" placeholder="John Doe" value="" /></p>'."\n";

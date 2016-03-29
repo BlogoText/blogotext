@@ -38,7 +38,6 @@ header('Content-Type: text/html; charset=UTF-8');
 
 $begin = microtime(TRUE);
 error_reporting(-1);
-$GLOBALS['BT_ROOT_PATH'] = '';
 
 session_start();
 if (isset($_POST['allowcuki'])) { // si cookies autorisés, conserve les champs remplis
@@ -51,15 +50,16 @@ if (isset($_POST['allowcuki'])) { // si cookies autorisés, conserve les champs 
 
 if ( !file_exists('config/user.php') or !file_exists('config/prefs.php') ) {
 	require_once 'inc/conf.php';
-	header('Location: '.$GLOBALS['dossier_admin'].'/install.php');
+	header('Location: '.DIR_ADMIN.'/install.php');
 	die;
 }
 
-$GLOBALS['BT_ROOT_PATH'] = './';
+define('BT_ROOT', './');
+
 require_once 'inc/inc.php';
 
 
-$GLOBALS['db_handle'] = open_base($GLOBALS['db_location']);
+$GLOBALS['db_handle'] = open_base();
 /*****************************************************************************
  some misc requests
 ******************************************************************************/
@@ -269,8 +269,8 @@ else {
 	// paramètre de page "p"
 	if (isset($_GET['p']) and is_numeric($_GET['p']) and $_GET['p'] >= 1) {
 		$sql_p = 'LIMIT '.$GLOBALS['max_bill_acceuil'] * $_GET['p'].', '.$GLOBALS['max_bill_acceuil'];
-	} elseif (empty($_GET['d']) ) {
-		$sql_p = 'LIMIT '.$GLOBALS['max_bill_acceuil'];
+	} elseif (empty($sql_date) ) {
+		$sql_p = 'LIMIT '.$GLOBALS['max_bill_acceuil']; // no limit for $date param, is param is valid
 	} else {
 		$sql_p = '';
 	}

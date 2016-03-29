@@ -16,14 +16,14 @@
 	It is not intended to be called directly in your browser.
 */
 
-$GLOBALS['BT_ROOT_PATH'] = '../';
+define('BT_ROOT', '../');
+
 require_once '../inc/inc.php';
-error_reporting($GLOBALS['show_errors']);
 
 operate_session();
 $begin = microtime(TRUE);
 
-$GLOBALS['liste_fichiers'] = open_serialzd_file($GLOBALS['fichier_liste_fichiers']);
+$GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);
 
 
 if (isset($_POST['file_id']) and preg_match('#\d{14}#',($_POST['file_id'])) and isset($_POST['supprimer']) ) {

@@ -11,17 +11,24 @@
 #
 # *** LICENSE ***
 
-if ( file_exists('../config/mysql.php') and file_get_contents('../config/mysql.php') == '' ) {
+// install or reinstall with same config ?
+if ( file_exists('../config/mysql.ini') and file_get_contents('../config/mysql.ini') == '' ) {
 	$step3 = TRUE;
 } else {
 	$step3 = FALSE;
 }
 
+// install is already done
 if ( (file_exists('../config/user.php')) and (file_exists('../config/prefs.php')) and $step3 === FALSE) {
 	header('Location: auth.php');
 	exit;
 }
-$GLOBALS['BT_ROOT_PATH'] = '../';
+
+// some constants definition
+define('BT_ROOT', '../');
+define('DISPLAY_PHP_ERRORS', '-1');
+$GLOBALS['fuseau_horaire'] = 'UTC';
+
 if (file_exists('../config/user.php')) { include('../config/user.php'); }
 if (file_exists('../config/prefs.php')) { include('../config/prefs.php'); }
 
@@ -37,7 +44,6 @@ if (isset($_GET['l'])) {
 }
 
 require_once '../inc/conf.php';
-error_reporting($GLOBALS['show_errors']); // MUST be after including "conf.php"...
 require_once '../inc/lang.php';
 require_once '../inc/html.php';
 require_once '../inc/form.php';
@@ -76,9 +82,9 @@ elseif ($GLOBALS['step'] == '2') {
 		} else {
 			$config_dir = '../config';
 			creer_dossier($config_dir, 1);
-			creer_dossier('../'.$GLOBALS['dossier_images'], 0);
-			creer_dossier('../'.$GLOBALS['dossier_fichiers'], 0);
-			creer_dossier('../'.$GLOBALS['dossier_db'], 1);
+			creer_dossier('../'.DIR_IMAGES, 0);
+			creer_dossier('../'.DIR_DOCUMENTS, 0);
+			creer_dossier('../'.DIR_DATABASES, 1);
 			fichier_user();
 			include_once($config_dir.'/user.php');
 
@@ -117,14 +123,14 @@ function afficher_form_1($erreurs='') {
 	afficher_html_head('Install');
 	echo '<div id="axe">'."\n";
 	echo '<div id="pageauth">'."\n";
-	echo '<h1>'.$GLOBALS['nom_application'].'</h1>'."\n";
+	echo '<h1>'.BLOGOTEXT_NAME.'</h1>'."\n";
 	echo '<h1 id="step">Bienvenue / Welcome</h1>'."\n";
 	echo erreurs($erreurs);
 
 	$conferrors = array();
 	// check PHP version
-	if (version_compare(PHP_VERSION, $GLOBALS['minimal_php_version'], '<')) {
-		$conferrors[] = "\t".'<li>Your PHP Version is '.PHP_VERSION.'. BlogoText requires '.$GLOBALS['minimal_php_version'].'.</li>'."\n";
+	if (version_compare(PHP_VERSION, MINIMAL_PHP_REQUIRED_VERSION, '<')) {
+		$conferrors[] = "\t".'<li>Your PHP Version is '.PHP_VERSION.'. BlogoText requires '.MINIMAL_PHP_REQUIRED_VERSION.'.</li>'."\n";
 	}
 	// pdo_sqlite and pdo_mysql (minimum one is required) 
 	if (!extension_loaded('pdo_sqlite') and !extension_loaded('pdo_mysql') ) {
@@ -159,7 +165,7 @@ function afficher_form_2($erreurs='') {
 	afficher_html_head('Install');
 	echo '<div id="axe">'."\n";
 	echo '<div id="pageauth">'."\n";
-	echo '<h1>'.$GLOBALS['nom_application'].'</h1>'."\n";
+	echo '<h1>'.BLOGOTEXT_NAME.'</h1>'."\n";
 	echo '<h1 id="step">'.$GLOBALS['lang']['install'].'</h1>'."\n";
 	echo erreurs($erreurs);
 	echo '<form method="post" action="install.php?s='.$GLOBALS['step'].'&amp;l='.$GLOBALS['lang']['id'].'" onsubmit="return verifForm2(this)">'."\n".'<div id="erreurs_js" class="erreurs"></div>'."\n";
@@ -170,7 +176,7 @@ function afficher_form_2($erreurs='') {
 	echo '<p>';
 	echo '<label for="mdp">'.$GLOBALS['lang']['install_mdp'].' </label><input type="password" name="mdp" id="mdp" size="30" value="" class="text" autocomplete="off" placeholder="••••••••••••" required /><button type="button" class="unveilmdp" onclick="return revealpass(\'mdp\');"></button>'."\n";
 	echo '</p>'."\n";
-	$lien = str_replace($GLOBALS['dossier_admin'].'/install.php', '', 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['SCRIPT_NAME']);
+	$lien = str_replace(DIR_ADMIN.'/install.php', '', 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['SCRIPT_NAME']);
 	echo '<p>';
 	echo '<label for="racine">'.$GLOBALS['lang']['pref_racine'].' </label><input type="text" name="racine" id="racine" size="30" value="'.$lien.'" class="text"  placeholder="'.$lien.'" required />'."\n";
 	echo '</p>'."\n";
@@ -189,7 +195,7 @@ function afficher_form_3($erreurs='') {
 	afficher_html_head('Install');
 	echo '<div id="axe">'."\n";
 	echo '<div id="pageauth">'."\n";
-	echo '<h1>'.$GLOBALS['nom_application'].'</h1>'."\n";
+	echo '<h1>'.BLOGOTEXT_NAME.'</h1>'."\n";
 	echo '<h1 id="step">'.$GLOBALS['lang']['install'].'</h1>'."\n";
 	echo erreurs($erreurs);
 	echo '<form method="post" action="'.basename($_SERVER['SCRIPT_NAME']).'?'.$_SERVER['QUERY_STRING'].'">'."\n";
@@ -237,6 +243,7 @@ function traiter_install_2() {
 }
 
 function traiter_install_3() {
+	import_ini_file(BT_ROOT.DIR_CONFIG.'/'.'mysql.ini');
 	$GLOBALS['db_handle'] = open_base();
 	$total_articles = liste_elements_count("SELECT count(ID) AS nbr FROM articles", array());
 	if ($total_articles != 0) return;
