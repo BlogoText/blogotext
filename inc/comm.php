@@ -82,9 +82,9 @@ function afficher_form_commentaire($article_id, $mode, $erreurs, $edit_comm) {
 	}
 
 	// comm sent without errors and will be saved to DB
- 	elseif (isset($_POST['_verif_envoi'])) {
-		header('Location: ?'.$_SERVER['QUERY_STRING'].'#top'); // redirection anti repostage;
-	}
+/* 	elseif (isset($_POST['_verif_envoi'])) {
+		header('Location: ?'.$_SERVER['QUERY_STRING'].'#erreurs'); // redirection anti repostage;
+	}*/
 
 	// prelim vars for Generation of comment Form
 	$required = ($GLOBALS['require_email'] == 1) ? 'required=""' : '';
@@ -144,7 +144,7 @@ function afficher_form_commentaire($article_id, $mode, $erreurs, $edit_comm) {
 		// ALLOW COMMENTS : ON
 		else {
 			// Formulaire commun
-			$form .= '<form id="form-commentaire" class="form-commentaire" method="post" action="'.'?'.$_SERVER['QUERY_STRING'].'#erreurs" >'."\n";
+			$form .= '<form id="form-commentaire" class="form-commentaire" method="post" action="'.'?'.$_SERVER['QUERY_STRING'].'" >'."\n";
 			$form .= "\t".'<fieldset class="field">'."\n";
 				$form .= form_formatting_toolbar(FALSE);
 				$form .= "\t\t".'<textarea class="commentaire" name="commentaire" required="" placeholder="'.$GLOBALS['lang']['label_commentaire'].'" id="commentaire" cols="50" rows="10">'.$form_cont['comment'].'</textarea>'."\n";

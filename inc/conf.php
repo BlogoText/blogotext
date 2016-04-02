@@ -42,12 +42,30 @@ date_default_timezone_set($GLOBALS['fuseau_horaire']);
 // INIT SOME VARS
 $GLOBALS['addons'] = array();
 
-// ADVANCED CONFIG OPTIONS. This function replaces some of the above values.
+// IMPORT SEVERAL .ini CONFIG FILES
+// with this function
+function import_ini_file($file_path) {
+	if (is_file($file_path) and is_readable($file_path)) {
+		$options = parse_ini_file($file_path);
+		foreach ($options as $option => $value) {
+			if (!defined($option)) define($option, $value);
+		}
+		return TRUE;
+	}
+	return FALSE;
+}
+
+// ADVANCED CONFIG OPTIONS
 import_ini_file(BT_ROOT.DIR_CONFIG.'/'.'config-advanced.ini');
-error_reporting(DISPLAY_PHP_ERRORS); // Error reporting
+	error_reporting(DISPLAY_PHP_ERRORS); // Error reporting
 
 // DATABASE OPTIONS + MySQL DB PARAMS
 import_ini_file(BT_ROOT.DIR_CONFIG.'/'.'mysql.ini');
+
+
+
+
+
 
 // regenerate captcha (always)
 if (!isset($GLOBALS['captcha'])) {
@@ -57,11 +75,7 @@ if (!isset($GLOBALS['captcha'])) {
 	$GLOBALS['captcha']['hash'] = sha1($ua.($GLOBALS['captcha']['x']+$GLOBALS['captcha']['y']));
 }
 
-// THEMES
-/*
- * the files that will be used.
- */
-
+// THEMES FILES and PATHS
 if ( isset($GLOBALS['theme_choisi']) ) {
 	$GLOBALS['theme_style'] = DIR_THEMES.'/'.$GLOBALS['theme_choisi'];
 	$GLOBALS['theme_liste'] = $GLOBALS['theme_style'].'/list.html';
@@ -75,153 +89,19 @@ if ( isset($GLOBALS['theme_choisi']) ) {
 
 // table of recognized filetypes, for file-upload script.
 $GLOBALS['files_ext'] = array(
-	'archive'		=> array('zip', '7z', 'rar', 'tar', 'gz', 'bz', 'bz2', 'xz', 'lzma'), // more ?
-	'executable'	=> array('exe', 'e', 'bin'),
+	'archive'		=> array('zip', '7z', 'rar', 'tar', 'gz', 'bz', 'bz2', 'xz', 'lzma'),
+	'executable'	=> array('exe', 'e', 'bin', 'run'),
 	'android-apk'	=> array('apk'),
-	'html-xml'		=> array('html', 'htm', 'xml', 'mht'), // more ?
+	'html-xml'		=> array('html', 'htm', 'xml', 'mht'),
 	'image'			=> array('png', 'gif', 'bmp', 'jpg', 'jpeg', 'ico', 'svg', 'tif', 'tiff'),
-	'music'			=> array('mp3', 'wave', 'wav', 'ogg', 'wma', 'flac', 'aac', 'mid', 'midi', 'm4a'), // more ?
+	'music'			=> array('mp3', 'wave', 'wav', 'ogg', 'wma', 'flac', 'aac', 'mid', 'midi', 'm4a'),
 	'presentation'	=> array('ppt', 'pptx', 'pps', 'ppsx', 'odp'),
-	'pdf'			=> array('pdf', 'ps', 'psd'),
+	'pdf'				=> array('pdf', 'ps', 'psd'),
 	'spreadsheet'	=> array('xls', 'xlsx', 'xlt', 'xltx', 'ods', 'ots', 'csv'),
-	'text_document'	=> array('doc', 'docx', 'rtf', 'odt', 'ott'),
-	'text-code'		=> array('txt', 'css', 'py', 'c', 'cpp', 'dat', 'ini', 'inf', 'text', 'conf', 'sh'), // more ?
-	'video'			=> array('mp4', 'ogv', 'avi', 'mpeg', 'mpg', 'flv', 'webm', 'mov', 'divx', 'rm', 'rmvb', 'wmv'), // more ?
+	'text_document'=> array('doc', 'docx', 'rtf', 'odt', 'ott'),
+	'text-code'		=> array('txt', 'css', 'py', 'c', 'cpp', 'dat', 'ini', 'inf', 'text', 'conf', 'sh'),
+	'video'			=> array('mp4', 'ogv', 'avi', 'mpeg', 'mpg', 'flv', 'webm', 'mov', 'divx', 'rm', 'rmvb', 'wmv'),
 	'other'			=> array(''), // par défaut
 );
-
-
-// from an array given by SQLite's requests, this function adds some more stuf to data stored by DB.
-function init_list_articles($article) {
-	if (!empty($article)) {
-		// pour ne plus rendre obligatoire le chapô : s'il est vide, on le recrée à partir du début du bt_content
-		if (isset($article['bt_abstract']) and empty($article['bt_abstract'])) {
-			mb_internal_encoding('UTF-8');
-			$abstract = mb_substr(strip_tags($article['bt_content']), 0, 249);
-			$article['bt_abstract'] = $abstract."…";
-		}
-		$dec_id = decode_id($article['bt_id']);
-		$article = array_merge($article, decode_id($article['bt_date']));
-		$article['bt_link'] = $GLOBALS['racine'].'?d='.$dec_id['annee'].'/'.$dec_id['mois'].'/'.$dec_id['jour'].'/'.$dec_id['heure'].'/'.$dec_id['minutes'].'/'.$dec_id['secondes'].'-'.titre_url($article['bt_title']);
-	}
-	return $article;
-}
-
-function init_list_comments($comment) {
-		$comment['auteur_lien'] = (!empty($comment['bt_webpage'])) ? '<a href="'.$comment['bt_webpage'].'" class="webpage">'.$comment['bt_author'].'</a>' : $comment['bt_author'] ;
-		$comment['anchor'] = article_anchor($comment['bt_id']);
-		$comment['article_title'] = get_entry($GLOBALS['db_handle'], 'articles', 'bt_title', $comment['bt_article_id'], 'return');
-		$comment['bt_link'] = get_blogpath($comment['bt_article_id'], $comment['article_title']).'#'.$comment['anchor'];
-		$comment = array_merge($comment, decode_id($comment['bt_id']));
-	return $comment;
-}
-
-
-// POST ARTICLE
-/*
- * On post of an article (always on admin sides)
- * gets posted informations and turn them into
- * an array
- *
- */
-
-function init_post_article() { //no $mode : it's always admin.
-	$formated_contenu = formatage_wiki(clean_txt($_POST['contenu']));
-	if ($GLOBALS['automatic_keywords'] == '0') {
-		$keywords = protect($_POST['mots_cles']);
-	} else {
-		$keywords = extraire_mots($_POST['titre'].' '.$formated_contenu);
-	}
-
-	$date = str4($_POST['annee']).str2($_POST['mois']).str2($_POST['jour']).str2($_POST['heure']).str2($_POST['minutes']).str2($_POST['secondes']);
-	$id = (isset($_POST['article_id']) and preg_match('#\d{14}#', $_POST['article_id'])) ? $_POST['article_id'] : $date;
-
-	$article = array (
-		'bt_id'				=> $id,
-		'bt_date'			=> $date,
-		'bt_title'			=> protect($_POST['titre']),
-		'bt_abstract'		=> (empty($_POST['chapo']) ? '' : formatage_wiki(clean_txt($_POST['chapo']))),
-		'bt_notes'			=> protect($_POST['notes']),
-		'bt_content'		=> $formated_contenu,
-		'bt_wiki_content'	=> stripslashes(clean_txt($_POST['contenu'])),
-		'bt_link'			=> '', // this one is not needed yet. Maybe in the futur. I dunno why it is still in the DB…
-		'bt_keywords'		=> $keywords,
-		'bt_categories'	=> (isset($_POST['categories']) ? htmlspecialchars(traiter_tags($_POST['categories'])) : ''), // htmlSpecialChars() nedded to escape the (") since tags are put in a <input/>. (') are escaped in form_categories(), with addslashes – not here because of JS problems :/
-		'bt_statut'			=> $_POST['statut'],
-		'bt_allow_comments'	=> $_POST['allowcomment'],
-	);
-
-	if ( isset($_POST['ID']) and is_numeric($_POST['ID']) ) { // ID only added on edit.
-		$article['ID'] = $_POST['ID'];
-	}
-	return $article;
-}
-
-// POST COMMENT
-/*
- * Same as init_post_article()
- * but, this one can be used on admin side and on public side.
- *
- */
-function init_post_comment($id, $mode) {
-	$comment = array();
-	if ( isset($id) ) {
-		if ( ($mode == 'admin') and (isset($_POST['is_it_edit'])) ) {
-			$status = (isset($_POST['activer_comm']) and $_POST['activer_comm'] == 'on' ) ? '0' : '1'; // c'est plus « désactiver comm en fait »
-			$comment_id = $_POST['comment_id'];
-		} elseif ($mode == 'admin' and !isset($_POST['is_it_edit'])) {
-			$status = '1';
-			$comment_id = date('YmdHis');
-		} else {
-			$status = $GLOBALS['comm_defaut_status'];
-			$comment_id = date('YmdHis');
-		}
-
-		// verif url.
-		if (!empty($_POST['webpage'])) {
-			$url = protect(  (strpos($_POST['webpage'], 'http://')===0 or strpos($_POST['webpage'], 'https://')===0)? $_POST['webpage'] : 'http://'.$_POST['webpage'] );
-		} else { $url = $_POST['webpage']; }
-
-		$comment = array (
-			'bt_id'				=> $comment_id,
-			'bt_article_id'		=> $id,
-			'bt_content'		=> formatage_commentaires(htmlspecialchars(clean_txt($_POST['commentaire']), ENT_NOQUOTES)),
-			'bt_wiki_content'	=> stripslashes(clean_txt($_POST['commentaire'])),
-			'bt_author'			=> protect($_POST['auteur']),
-			'bt_email'			=> protect($_POST['email']),
-			'bt_link'			=> '', // this is empty, 'cause bt_link is created on reading of DB, not written in DB (useful if we change server or site name some day).
-			'bt_webpage'		=> $url,
-			'bt_subscribe'		=> (isset($_POST['subscribe']) and $_POST['subscribe'] == 'on') ? '1' : '0',
-			'bt_statut'			=> $status,
-		);
-	}
-	if ( isset($_POST['ID']) and is_numeric($_POST['ID']) ) { // ID only added on edit.
-		$comment['ID'] = $_POST['ID'];
-	}
-
-	return $comment;
-}
-
-// POST LINK
-function init_post_link2() { // second init : the whole link data needs to be stored
-	$id = protect($_POST['bt_id']);
-	$link = array (
-		'bt_id'				=> $id,
-		'bt_type'			=> htmlspecialchars($_POST['type']),
-		'bt_content'		=> formatage_links(htmlspecialchars(stripslashes(clean_txt($_POST['description'])), ENT_NOQUOTES)), // formatage_wiki() ne parse que les tags BBCode. Le HTML est converti en texte.
-		'bt_wiki_content'	=> protect($_POST['description']),
-		'bt_author'			=> protect($_POST['bt_author']),
-		'bt_title'			=> protect($_POST['title']),
-		'bt_link'			=> (empty($_POST['url'])) ? $GLOBALS['racine'].'?mode=links&amp;id='.$id : protect($_POST['url']),
-		'bt_tags'			=> htmlspecialchars(traiter_tags($_POST['categories'])),
-		'bt_statut'			=> (isset($_POST['statut'])) ? 0 : 1
-	);
-	if ( isset($_POST['ID']) and is_numeric($_POST['ID']) ) { // ID only added on edit.
-		$link['ID'] = $_POST['ID'];
-	}
-
-	return $link;
-}
-
 
 

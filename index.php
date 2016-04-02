@@ -22,44 +22,37 @@ if (strpos($_SERVER['REQUEST_URI'], $_SERVER['SCRIPT_NAME'].'/') === 0) {
 	exit;
 }
 
-// gzip compression
-if (extension_loaded('zlib') and ob_get_length() > 0) {
-	ob_end_clean();
-	ob_start("ob_gzhandler");
-}
-else {
-	ob_start("ob_gzhandler");
-}
-header('Content-Type: text/html; charset=UTF-8');
-
-$begin = microtime(TRUE);
-error_reporting(-1);
-
-session_start();
-if (isset($_POST['allowcuki'])) { // si cookies autorisés, conserve les champs remplis
-	if (isset($_POST['auteur'])) {  setcookie('auteur_c', $_POST['auteur'], time() + 365*24*3600, null, null, false, true); }
-	if (isset($_POST['email'])) {   setcookie('email_c', $_POST['email'], time() + 365*24*3600, null, null, false, true); }
-	if (isset($_POST['webpage'])) { setcookie('webpage_c', $_POST['webpage'], time() + 365*24*3600, null, null, false, true); }
-	setcookie('subscribe_c', (isset($_POST['subscribe']) and $_POST['subscribe'] == 'on' ) ? 1 : 0, time() + 365*24*3600, null, null, false, true);
-	setcookie('cookie_c', 1, time() + 365*24*3600, null, null, false, true);
-}
-
-define('BT_ROOT', './');
-
+// If no config: go to install process.
 if ( !file_exists('config/user.php') or !file_exists('config/prefs.php') ) {
 	header('Location: admin/install.php');
 	die;
 }
 
+// gzip compression
+if (extension_loaded('zlib')) {
+	if (ob_get_length() > 0) {
+		ob_end_clean();
+	}
+	ob_start("ob_gzhandler");
+}
+
+header('Content-Type: text/html; charset=UTF-8');
+define('BT_ROOT', './');
+
+$begin = microtime(TRUE);
+error_reporting(-1);
+
+session_start();
+
 require_once 'inc/inc.php';
-
-
 $GLOBALS['db_handle'] = open_base();
+
+
 /*****************************************************************************
  some misc requests
 ******************************************************************************/
 
-// Random article :-)
+// Random article
 if (isset($_GET['random'])) {
 	try {
 		// getting nb articles, gen random num, then select one article is much faster than "sql(order by rand limit 1)"
@@ -77,7 +70,7 @@ if (isset($_GET['random'])) {
 	exit;
 }
 
-// unsubscribe from comments-newsletter and redirect on main page
+// unsubscribe request from comments-newsletter and redirect on main page
 if ( isset($_GET['unsub'], $_GET['mail'], $_GET['article']) and $_GET['unsub'] == 1 ) {
 	$res = unsubscribe(htmlspecialchars($_GET['mail']), htmlspecialchars($_GET['article']), (isset($_GET['all']) ? 1 : 0));
 	if ($res == TRUE) {
@@ -107,6 +100,15 @@ if ( isset($_GET['d']) and preg_match('#^\d{4}/\d{2}/\d{2}/\d{2}/\d{2}/\d{2}#', 
 		// TRAITEMENT new commentaire
 		$erreurs_form = array();
 		if (isset($_POST['_verif_envoi'], $_POST['commentaire'], $_POST['captcha'], $_POST['_token'], $_POST['auteur'], $_POST['email'], $_POST['webpage']) and ($billets[0]['bt_allow_comments'] == '1' )) {
+			// COOKIES
+			if (isset($_POST['allowcuki'])) { // si cookies autorisés, conserve les champs remplis
+				if (isset($_POST['auteur'])) {  setcookie('auteur_c', $_POST['auteur'], time() + 365*24*3600, null, null, false, true); }
+				if (isset($_POST['email'])) {   setcookie('email_c', $_POST['email'], time() + 365*24*3600, null, null, false, true); }
+				if (isset($_POST['webpage'])) { setcookie('webpage_c', $_POST['webpage'], time() + 365*24*3600, null, null, false, true); }
+				setcookie('subscribe_c', (isset($_POST['subscribe']) and $_POST['subscribe'] == 'on' ) ? 1 : 0, time() + 365*24*3600, null, null, false, true);
+				setcookie('cookie_c', 1, time() + 365*24*3600, null, null, false, true);
+			}
+
 			// COMMENT POST INIT
 			$comment = init_post_comment($id, 'public');
 			if (isset($_POST['enregistrer'])) {

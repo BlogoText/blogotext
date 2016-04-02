@@ -250,20 +250,6 @@ function fichier_ip() {
 	}
 }
 
-function import_ini_file($file_path) {
-	if (is_file($file_path) and is_readable($file_path)) {
-		$options = parse_ini_file($file_path);
-		foreach ($options as $option => $value) {
-			if (!defined($option)) {
-				define($option, $value);
-			}
-		}
-	} else {
-		return FALSE;
-	}
-}
-
-
 function get_literal_chmod($file) {
 	$perms = fileperms($file);
 	if (($perms & 0xC000) == 0xC000) {

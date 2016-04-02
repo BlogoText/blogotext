@@ -45,7 +45,7 @@
 
 #install p label,
 #install p input.text {
-	height: 30px;
+	min-height: 30px;
 	box-sizing: border-box;
 	display: inline-block;
 	vertical-align: middle;
