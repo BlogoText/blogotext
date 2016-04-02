@@ -44,13 +44,12 @@ if (isset($_POST['allowcuki'])) { // si cookies autorisés, conserve les champs 
 	setcookie('cookie_c', 1, time() + 365*24*3600, null, null, false, true);
 }
 
+define('BT_ROOT', './');
+
 if ( !file_exists('config/user.php') or !file_exists('config/prefs.php') ) {
-	require_once 'inc/conf.php';
-	header('Location: '.DIR_ADMIN.'/install.php');
+	header('Location: admin/install.php');
 	die;
 }
-
-define('BT_ROOT', './');
 
 require_once 'inc/inc.php';
 

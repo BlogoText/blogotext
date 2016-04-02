@@ -39,7 +39,6 @@ define('FEEDS_DB', BT_ROOT.DIR_DATABASES.'/'.'rss.php'); // RSS-feeds list info 
 // TIMEZONES
 date_default_timezone_set($GLOBALS['fuseau_horaire']);
 
-
 // INIT SOME VARS
 $GLOBALS['addons'] = array();
 

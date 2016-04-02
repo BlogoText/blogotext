@@ -43,14 +43,14 @@ if (isset($_GET['l'])) {
 
 }
 
+require_once '../inc/util.php';
+require_once '../inc/fich.php';
 require_once '../inc/conf.php';
 require_once '../inc/lang.php';
 require_once '../inc/html.php';
 require_once '../inc/form.php';
 require_once '../inc/conv.php';
-require_once '../inc/fich.php';
 require_once '../inc/veri.php';
-require_once '../inc/util.php';
 require_once '../inc/jasc.php';
 require_once '../inc/sqli.php';
 
