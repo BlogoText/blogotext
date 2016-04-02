@@ -25,13 +25,13 @@ date_default_timezone_set($GLOBALS['fuseau_horaire']);
 
 function require_all() {
 	require_once 'inc/lang.php';
-	require_once 'inc/conf.php';
 	require_once 'inc/fich.php';
+	require_once 'inc/util.php';
+	require_once 'inc/conf.php';
 	require_once 'inc/html.php';
 	require_once 'inc/form.php';
 	require_once 'inc/comm.php';
 	require_once 'inc/conv.php';
-	require_once 'inc/util.php';
 	require_once 'inc/veri.php';
 	require_once 'inc/sqli.php';
 }

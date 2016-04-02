@@ -134,7 +134,9 @@
 	text-decoration: none;
 	color: inherit;
 	flex: 1;
-	padding: 15px 20px;
+	padding: 15px 20px 15px 35px;
+	background-repeat: no-repeat;
+	background-position: 15px center;
 	display: block;
 	align-items: center;
 }
@@ -143,6 +145,18 @@
 #feed-list > li li > a > span:last-of-type {
 	flex: 1;
 	text-align: right;
+}
+
+#feed-list > li.feed-folder > .feed-folder-title > a {
+	padding-left: 15px;
+}
+
+#feed-list > li.feed-folder > .feed-folder-title > a:first-of-type::before {
+	content: "\e93e";
+	font-size: 1.2em;
+	width: 20px;
+	display: inline-block;
+	color: rgba(0, 0, 0, .4);
 }
 
 #feed-list > li.feed-folder > .feed-folder-title {
@@ -166,6 +180,11 @@
 #feed-list > li.feed-folder.open > ul {
 	height: auto;
 	overflow: visible;
+}
+
+#feed-list > li.feed-folder > ul > li > a {
+	padding-left: 55px;
+	background-position: 35px center;
 }
 
 #feed-list > li:first-of-type::before {

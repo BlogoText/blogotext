@@ -16,12 +16,8 @@
 ******************************************************************************/
 // anti XSS : /index.php/%22onmouseover=prompt(971741)%3E or /index.php/ redirects all on index.php
 // if there is a slash after the "index.php", the file is considered as a folder, but the code inside it still executed.
-if (basename($_SERVER['SCRIPT_NAME']) === 'index.php' and strpos(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), 'index.php') === FALSE ) {
-	$var_request_URI = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH).'index.php';
-} else {
-	$var_request_URI = $_SERVER['REQUEST_URI'];
-}
-if (parse_url($var_request_URI, PHP_URL_PATH) !== $_SERVER['SCRIPT_NAME']) {
+
+if (strpos($_SERVER['REQUEST_URI'], $_SERVER['SCRIPT_NAME'].'/') === 0) {
 	header('Location: '.$_SERVER['SCRIPT_NAME']);
 	exit;
 }

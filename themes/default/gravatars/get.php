@@ -40,8 +40,14 @@ if (isset($_GET['g'])) {
 			rename($newfile.'2', $newfile);
 		}
 	}
-	// and finally let's redirect to the cached gravatar.
-	header('Location: '.$newfile.'');
+	// and finally send the cached image.
+	header('Content-Type: image/png');
+	header('Last-Modified: '.gmdate('D, d M Y H:i:s', filemtime($newfile)).' GMT');
+   header('Content-Length: ' . filesize($newfile));
+   header('Cache-Control: public, max-age=86400');
+   readfile($newfile);
+	exit;
+
 }
 
 // g not given, return error.

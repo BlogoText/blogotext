@@ -290,7 +290,7 @@ function feed_list_html() {
 		foreach ($folder as $j => $feed) {
 			$js = 'onclick="document.getElementById(\'markasread\').onclick=function(){sendMarkReadRequest(\'site\', \''.$feed['link'].'\', true);}; sortSite(this);"';
 				$li_html .= "\t\t".'<li class="" data-nbrun="'.$feed['nbrun'].'" data-feedurl="'.$feed['link'].'" title="'.$feed['link'].'">';
-				$li_html .= '<a href="#" '.(($feed['iserror'] > 2) ? 'class="feed-error" ': ' ' ).$js.'>'.$feed['title'].'</a>';
+				$li_html .= '<a href="#" '.(($feed['iserror'] > 2) ? 'class="feed-error" ': ' ' ).$js.' data-feed-domain="'.parse_url($feed['link'], PHP_URL_HOST).'">'.$feed['title'].'</a>';
 				$li_html .= '<span>('.$feed['nbrun'].')</span>';
 				$li_html .= '</li>'."\n";
 				$folder_count += $feed['nbrun'];

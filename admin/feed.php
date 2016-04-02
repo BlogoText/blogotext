@@ -149,14 +149,17 @@ else {
 				sendMarkReadRequest(\'postlist\', JSON.stringify(readQueue.urlList), false);
 				readQueue.urlList = [];
 				readQueue.count = 0;
-//				(e || window.event).returnValue = \'Sync?\' || \'\';
-//				return \'Sync?\';
 			}
 			else { return true; }
 		});'."\n";
 
 	echo 'var scrollPos = 0;'."\n";
 	echo 'window.addEventListener(\'scroll\', function(){ scrollingFabHideShow() });'."\n";
+
+	echo 'var list = document.querySelectorAll("a[data-feed-domain]");'."\n";
+	echo 'for (var i = 0, len=list.length; i < len; i++) {'."\n";
+	echo '	list[i].style.backgroundImage="url(\'" + "cache/get.php?g="+ list[i].getAttribute(\'data-feed-domain\') + "\')";'."\n";
+	echo '}'."\n";
 
 	echo ''."\n";
 	echo js_rss_add_feed(0);
