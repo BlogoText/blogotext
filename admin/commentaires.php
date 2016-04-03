@@ -117,29 +117,43 @@ else {
 function afficher_commentaire($comment, $with_link) {
 	afficher_form_commentaire($comment['bt_article_id'], 'admin', '', $comment);
 	echo '<div class="commentbloc'.(!$comment['bt_statut'] ? ' privatebloc' : '').'" id="'.article_anchor($comment['bt_id']).'">'."\n";
+	echo '<div class="comm-side-icon">'."\n";
+		echo "\t".'<div class="comm-title">'."\n";
+		echo "\t\t".'<img class="author-icon" src="cache/gravatar/get.php?g='.md5($comment['bt_email']).'&amp;s=48&amp;d=monsterid"/>'."\n";
+		echo "\t\t".'<span class="date">'.date_formate($comment['bt_id']).'<span>'.heure_formate($comment['bt_id']).'</span></span>'."\n" ;
 
-	echo '<div class="comm-header">'."\n";
-	echo "\t".'<div class="comm-title">'."\n";
-	echo "\t\t".'<span class="author"><a href="?filtre=auteur.'.$comment['bt_author'].'" title="'.$GLOBALS['lang']['label_all_comm_by_author'].'">'.$comment['bt_author'].'</a></span>'."\n";
-	echo "\t\t".'<span class="reply" onclick="reply(\'[b]@['.str_replace('\'', '\\\'', $comment['bt_author']).'|#'.article_anchor($comment['bt_id']).'] :[/b] \'); ">Reply</span> ';
-	echo (!empty($comment['bt_webpage'])) ? "\t\t".'<span class="webpage"><a href="'.$comment['bt_webpage'].'" title="'.$comment['bt_webpage'].'">'.$comment['bt_webpage'].'</a></span>'."\n" : '';
-	echo (!empty($comment['bt_email'])) ? "\t\t".'<span class="email"><a href="mailto:'.$comment['bt_email'].'" title="'.$comment['bt_email'].'">'.$comment['bt_email'].'</a></span>'."\n" : '';
-
-	echo "\t".'</div>'."\n";
-	echo "\t".'<span class="date">'.date_formate($comment['bt_id']).'<span>, '.heure_formate($comment['bt_id']).'</span>'.( ($with_link == 1 and !empty($comment['bt_title'])) ? ' '.$GLOBALS['lang']['sur'].' <a href="'.basename($_SERVER['SCRIPT_NAME']).'?post_id='.$comment['bt_article_id'].'">'.$comment['bt_title'].'</a>' : '').'</span>'."\n" ;
-	echo "\t".'<div class="comm-options">'."\n";
-	echo "\t\t".'<ul>'."\n";
-	echo "\t\t\t".'<li class="cl-edit" onclick="unfold(this);">'.$GLOBALS['lang']['editer'].'</li>'."\n";
-	echo "\t\t\t".'<li class="cl-activ" onclick="activate_comm(this);" data-comm-id="'.$comment['ID'].'" data-comm-btid="'.$comment['bt_id'].'" data-comm-art-id="'.$comment['bt_article_id'].'">'.$GLOBALS['lang'][(!$comment['bt_statut'] ? '' : 'des').'activer'].'</li>'."\n";
-	echo "\t\t\t".'<li class="cl-suppr" onclick="suppr_comm(this);" data-comm-id="'.$comment['ID'].'" data-comm-art-id="'.$comment['bt_article_id'].'">'.$GLOBALS['lang']['supprimer'].'</li>'."\n";
-	echo "\t\t".'</ul>'."\n";
-	echo "\t".'</div>'."\n";
+		echo "\t\t".'<span class="reply" onclick="reply(\'[b]@['.str_replace('\'', '\\\'', $comment['bt_author']).'|#'.article_anchor($comment['bt_id']).'] :[/b] \'); ">Reply</span> ';
+		echo (!empty($comment['bt_webpage'])) ? "\t\t".'<span class="webpage"><a href="'.$comment['bt_webpage'].'" title="'.$comment['bt_webpage'].'">'.$comment['bt_webpage'].'</a></span>'."\n" : '';
+		echo (!empty($comment['bt_email'])) ? "\t\t".'<span class="email"><a href="mailto:'.$comment['bt_email'].'" title="'.$comment['bt_email'].'">'.$comment['bt_email'].'</a></span>'."\n" : '';
+		echo "\t".'</div>'."\n";
 	echo '</div>'."\n";
+	
+	echo '<div class="comm-main-frame">'."\n";
 
-	echo '<div class="comm-content">'."\n";
+	echo "\t".'<div class="comm-header">'."\n";
+
+	echo "\t\t".'<div class="comm-title">'."\n";
+	echo "\t\t\t".'<span class="author"><a href="?filtre=auteur.'.$comment['bt_author'].'" title="'.$GLOBALS['lang']['label_all_comm_by_author'].'">'.$comment['bt_author'].'</a> :</span>'."\n";
+	echo "\t\t".'</div>'."\n";
+
+	echo ($with_link == 1 and !empty($comment['bt_title'])) ? "\t\t".'<span class="link-article"> '.$GLOBALS['lang']['sur'].' <a href="'.basename($_SERVER['SCRIPT_NAME']).'?post_id='.$comment['bt_article_id'].'">'.$comment['bt_title'].'</a></span>'."\n" : '';
+
+	echo "\t\t".'<div class="comm-options">'."\n";
+	echo "\t\t\t".'<ul>'."\n";
+	echo "\t\t\t\t".'<li class="cl-edit" onclick="unfold(this);">'.$GLOBALS['lang']['editer'].'</li>'."\n";
+	echo "\t\t\t\t".'<li class="cl-activ" onclick="activate_comm(this);" data-comm-id="'.$comment['ID'].'" data-comm-btid="'.$comment['bt_id'].'" data-comm-art-id="'.$comment['bt_article_id'].'">'.$GLOBALS['lang'][(!$comment['bt_statut'] ? '' : 'des').'activer'].'</li>'."\n";
+	echo "\t\t\t\t".'<li class="cl-suppr" onclick="suppr_comm(this);" data-comm-id="'.$comment['ID'].'" data-comm-art-id="'.$comment['bt_article_id'].'">'.$GLOBALS['lang']['supprimer'].'</li>'."\n";
+	echo "\t\t\t".'</ul>'."\n";
+	echo "\t\t".'</div>'."\n";
+
+	echo "\t".'</div>'."\n";
+
+	echo "\t".'<div class="comm-content">'."\n";
 	echo $comment['bt_content'];
-	echo '</div>'."\n";
+	echo "\t".'</div>'."\n";
 	echo $GLOBALS['form_commentaire'];
+
+	echo "\t".'</div>'."\n\n";
 	echo '</div>'."\n\n";
 }
 

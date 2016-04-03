@@ -235,7 +235,7 @@ $sc = '
 function suppr_comm(button) {
 	var notifDiv = document.createElement(\'div\');
 	var reponse = window.confirm(\''.$GLOBALS['lang']['question_suppr_comment'].'\');
-	var div_bloc = document.getElementById(button.parentNode.parentNode.parentNode.parentNode.id);
+	var div_bloc = button.parentNode.parentNode.parentNode.parentNode.parentNode;
 
 	if (reponse == true) {
 		div_bloc.classList.add(\'ajaxloading\');
@@ -301,7 +301,7 @@ $sc = '
 
 function activate_comm(button) {
 	var notifDiv = document.createElement(\'div\');
-	var div_bloc = document.getElementById(button.parentNode.parentNode.parentNode.parentNode.id);
+	var div_bloc = button.parentNode.parentNode.parentNode.parentNode.parentNode;
 	div_bloc.classList.toggle(\'ajaxloading\');
 
 	var xhr = new XMLHttpRequest();

@@ -3,12 +3,10 @@
 		padding: 20px 0;
 	}
 	#page {
-		padding: 0 0 20px;
 	}
 
 	/* page billets */
 	#billets {
-		width: 98%;
 	}
 
 	/* page écrire */
@@ -40,6 +38,18 @@
 	}
 	.commentbloc .comm-header {
 		display: block;
+	}
+	.commentbloc .comm-side-icon {
+		flex: 0 0 75px;
+	}
+	.commentbloc .comm-side-icon .date {
+		font-size: .6em;
+	}
+	.commentbloc:not(:last-of-type) .comm-side-icon::after {
+		left: 35px;
+	}
+	.commentbloc.foreground .comm-side-icon {
+		display: none;
 	}
 	.commentbloc .comm-content blockquote {
 		padding: 5px;

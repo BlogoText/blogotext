@@ -107,7 +107,7 @@ function unfold(button) {
 		elemOnForground[i].classList.remove('foreground');
 	}
 
-	var elemToForground = button.parentNode.parentNode.parentNode.parentNode;
+	var elemToForground = button.parentNode.parentNode.parentNode.parentNode.parentNode;
 	elemToForground.classList.toggle('foreground');
 
 	elemToForground.getElementsByTagName('textarea')[0].focus();

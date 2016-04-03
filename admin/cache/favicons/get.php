@@ -11,13 +11,9 @@
 
 */
 $expire = time() -60*60*24*7*365 ;  // default: 1 year
-$folder = 'icons';
 
 // domain name given? YES.
 if ( isset($_GET['g']) and !empty($_GET['g']) ) {
-	// does storage dir exists?
-	if (!is_dir($folder)) { mkdir($folder, 0744); }
-
 	// full URL given?
 	$domain = parse_url($_GET['g'], PHP_URL_HOST);
 
@@ -27,7 +23,7 @@ if ( isset($_GET['g']) and !empty($_GET['g']) ) {
 	if ($domain === NULL) { header("HTTP/1.0 404 Not Found"); exit; }
 
 	// target file
-	$newfile = $folder.'/'.md5($domain).'.png';
+	$newfile = md5($domain).'.png';
 
 	// new file URL
 	$file = 'http://www.google.com/s2/favicons?domain='.$domain;
