@@ -243,6 +243,7 @@ q, blockquote {
 	transition: transform .5s cubic-bezier(0.50, 0, 0, 1), opacity 0s;
 	transform: translateX(0);
 	opacity: 1;
+	z-index: +1;
 }
 
 #sidenav nav {
@@ -443,7 +444,7 @@ q, blockquote {
 .post-footer {
 	display: flex;
 	padding: 15px;
-	background: rgba(0, 0, 0, .05);
+	//background: rgba(0, 0, 0, .05);
 	align-items: center;
 }
 .post-footer > .post-tags {
@@ -466,60 +467,90 @@ q, blockquote {
 
 /* list of comments */
 #commentaires {
-	background: white;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, .25);
-	border-radius: 3px;
-	margin: 30px 10px;
+	margin: 30px auto;
 	padding: 15px;
+	max-width: 900px;
 }
 
 #commentaires .nbcom {
-	margin: 15px;
-	text-align: center;
+	margin: 10px 0 40px;
 	font-size: 1.3em;
 }
 
 /* 1 comment */
 .comment {
-	padding: 15px;
-	border-top: 1px solid #eee;
-}
-
-.comment:target {
-	box-shadow: 0 8px 16px rgba(0, 0, 0, .25);
-}
-
-.com-head {
+	margin-bottom: 24px;
 	display: flex;
-align-items: baseline;
-padding-bottom: 15px;
 }
-.com-head .com-gravatar {
-	margin-right: 15px;
+
+.comment:not(:last-of-type) .comm-icon-side::after {
+	content: "";
+	background-color: rgba(0, 0, 0, .05);
+	display: block;
+	width: 6px;
+	height: 60%;
+	height: calc(100% - 70px);
+	position: relative;
+	left: 57px;
+	top: 10px;
 }
-.com-head .com-author {
-	font-weight: bold;
+
+.comment .comm-icon-side {
+	flex: 0 0 120px;
+	text-align: center;
+}
+.comment .comm-icon-side time {
+	font-size: .8em;
+	color: rgba(0, 0, 0, .4);
+}
+.comment .comm-icon-side .com-gravatar {
+	border-radius: 48px;
+	box-shadow: 0 0 2px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.24);
+	width: 48px;
+	display: block;
+	margin: 5px auto;
+}
+
+.comment .comm-main-frame {
 	flex: 1;
-	font-size: 1.2em;
+	padding: 20px 24px;
+	background-color: white;
+	border-bottom: 1px solid #d9d9d9;
+	box-shadow: 0 0 2px rgba(0,0,0,0.12),0 2px 4px rgba(0,0,0,0.24);
 }
-.com-head > .com-author > a {
-	color: inherit;
+
+.comment:target .comm-main-frame {
+	box-shadow: 0 8px 16px rgba(0, 0, 0, .6);
 }
-.com-head > .com-date-time {
+
+.comment .com-head {
+	padding: 0 0 15px;
+	color: rgba(0, 0, 0, .5);
 	font-size: .9em;
-	font-style: italic;
-	color: rgba(42, 42, 42, .6);
 }
-.com-content {
-	padding-left: 63px; /* width gravatar + 15px margin of gravatar */
+
+.comment .com-head .author {
+	font-size: 1.25em;
+	font-weight: bold;
+	color: rgba(0, 0, 0, .8);
 }
+
 .com-footer {
 	text-align: right;	
+	padding: 15px 0 0
 }
 
 .com-footer a {
+	padding: 5px;
+	margin-left: 5px;
+	border: 1px solid silver;
+	border-radius: 4px;
 	color: #aaa;
 	font-style: italic;
+}
+.com-footer a:hover {
+	text-decoration: none;
+	box-shadow: 0 0 2px rgba(0,0,0,0.12),0 2px 4px rgba(0,0,0,0.24);
 }
 
 /* links */
@@ -797,13 +828,17 @@ footer #lastcom ul li a {
 	}
 	#commentaires,
 	#postcom {
-		margin-left: 5px;
-		margin-right: 5px;
+		margin-left: 0px;
+		margin-right: 0px;
 		padding: 5px;
 		padding: 5px;
 	}
-
-
+	.comment .comm-icon-side {
+		flex: 0 0 70px;
+	}
+	.comment:not(:last-of-type) .comm-icon-side::after {
+		left: 32px;
+	}
 	.form-commentaire > .infos label {
 		text-align: left;
 	}
