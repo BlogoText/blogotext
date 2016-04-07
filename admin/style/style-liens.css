@@ -1,6 +1,11 @@
 /* MES LIENS 
 --------------------------------------------------------------------------- */
 
+.linkbloc.privatebloc {
+    border-left: 10px #555 solid;
+    background: rgba(0, 0, 0, .02);
+}
+
 /* LINKS : Post new link
 ------------------------------------------------------*/
 #post-new-lien {

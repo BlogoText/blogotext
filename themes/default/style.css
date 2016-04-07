@@ -487,16 +487,16 @@ q, blockquote {
 	content: "";
 	background-color: rgba(0, 0, 0, .05);
 	display: block;
-	width: 6px;
+	width: 5px;
 	height: 60%;
 	height: calc(100% - 70px);
 	position: relative;
-	left: 57px;
+	margin: 0 auto;
 	top: 10px;
 }
 
 .comment .comm-icon-side {
-	flex: 0 0 120px;
+	flex: 0 0 140px;
 	text-align: center;
 }
 .comment .comm-icon-side time {

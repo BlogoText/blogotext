@@ -387,7 +387,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 
 		$form .= "\t".'<div id="tag_bloc">'."\n";
 		$form .= form_categories_links('links', '');
-		$form .= "\t".'<input list="htmlListTags" autocomplete="off" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'"/>'."\n";
+		$form .= "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'"/>'."\n";
 		$form .= "\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
 		$form .= "\t".'</div>'."\n";
 
@@ -418,7 +418,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= "\t".'</div>'."\n";
 		$form .= "\t".'<div id="tag_bloc">'."\n";
 		$form .= form_categories_links('links', $editlink['bt_tags']);
-		$form .= "\t\t".'<input list="htmlListTags" autocomplete="off" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'"/>'."\n";
+		$form .= "\t\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'"/>'."\n";
 		$form .= "\t\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
 		$form .= "\t".'</div>'."\n";
 		$form .= "\t".'<label class="forcheckbox">'.$GLOBALS['lang']['label_lien_priv'].'<input type="checkbox" name="statut" '.(($editlink['bt_statut'] == 0) ? 'checked ' : '').'/>'.'</label>'."\n";
@@ -542,7 +542,7 @@ function afficher_form_billet($article, $erreurs) {
 	if ($GLOBALS['activer_categories'] == '1') {
 		echo "\t".'<div id="tag_bloc">'."\n";
 		echo form_categories_links('articles', $categoriesdefaut);
-		echo "\t\t".'<input list="htmlListTags" autocomplete="off" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'" tabindex="65"/>'."\n";
+		echo "\t\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'" tabindex="65"/>'."\n";
 		echo "\t\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
 		echo "\t".'</div>'."\n";
 	}
@@ -963,7 +963,7 @@ function afficher_form_prefs($erreurs = '') {
 
 			$fld_cfg_rss .= '<p>'."\n";
 			$a = explode('/', dirname($_SERVER['SCRIPT_NAME']));
-			$fld_cfg_rss .= '<label>'.$GLOBALS['lang']['pref_label_bookmark_lien'].'</label>'."\n";
+			$fld_cfg_rss .= '<label>'.$GLOBALS['lang']['pref_label_crontab_rss'].'</label>'."\n";
 			$fld_cfg_rss .= '<a onclick="prompt(\''.$GLOBALS['lang']['pref_alert_crontab_rss'].'\', \'0 *  *   *   *   wget --spider -qO- '.$GLOBALS['racine'].$a[count($a)-1].'/_rss.ajax.php?guid='.BLOG_UID.'&refresh_all'.'\');return false;" href="#">Afficher ligne Cron</a>';
 			$fld_cfg_rss .= '</p>'."\n";
 
