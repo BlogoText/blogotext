@@ -2,8 +2,36 @@
 	#axe {
 		padding: 20px 0;
 	}
-	#page {
+
+	#subnav form select {
+		max-width: 35px;
+		padding-right: 30px;
+		margin-right: 0;
+		position: relative;
+		background: transparent;
+		box-shadow: none;
 	}
+
+	#subnav form {
+		flex: 0 0 50px;
+	}
+
+	#subnav #form-filtre {
+		display: inline-block;
+		background: #fafafa;
+		margin-right: 5px;
+		box-shadow: 0px 0px 2px rgba(0, 0, 0, .2);
+	}
+
+	#subnav #form-filtre::before {
+		content: "\e93f";
+		position: relative;
+		font-size: 2em;
+		display: inline-block;
+		width: 0;
+		left: 5px;
+	}
+
 
 	/* page billets */
 	#billets {

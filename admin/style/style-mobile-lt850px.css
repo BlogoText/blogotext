@@ -2,11 +2,7 @@
 	#axe {
 		padding: 20px 15px;
 	}
-	#subnav {
-		display: block;
-	}
 	#subnav .nombre-elem {
-		margin: 15px auto 10px;
 	}
 	select {
 		max-width: 100%;

@@ -19,7 +19,7 @@
 // GENERAL
 define('BLOGOTEXT_NAME', 'BlogoText');
 define('BLOGOTEXT_SITE', 'http://lehollandaisvolant.net/blogotext/');
-define('BLOGOTEXT_VERSION', '3.3.2-6');
+define('BLOGOTEXT_VERSION', '3.3.2-7');
 define('MINIMAL_PHP_REQUIRED_VERSION', '5.5');
 
 // FOLDERS (change this only if you know what you are doing...)

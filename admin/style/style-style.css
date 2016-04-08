@@ -23,7 +23,7 @@
 
 @font-face {
   font-family: "icon";
-  src: url("icon.woff?11") format("woff");
+  src: url("icon.woff?12") format("woff");
 }
 
 /* GENERAL PAGE LAYOUT
@@ -402,25 +402,23 @@ q, blockquote {
 
 #subnav {
 	margin: 0 1% 30px;
-	padding: 10px 20px;
-	background: #fefefe;
 	display: flex;
-	padding: 10px;
-	box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
-	border-radius: 2px;
+	align-items: center;
+	padding: 10px 0;
 }
+
 
 #subnav .nombre-elem {
 	font-weight: bold;
 	color: #333;
 	text-align: center;
-	margin: auto auto;
-	width: 100%;
-	box-sizing: border-box;
+	margin: auto 0 auto auto ;
 }
+
 #subnav .nombre-elem ul { /* list on link-hover on comm-page */
 	display: inline-block;
 	list-style: none;
+	text-align: center;
 	margin: 0;
 	padding: 0;
 	position: relative;
@@ -430,7 +428,6 @@ q, blockquote {
 #subnav .nombre-elem li {
 	margin: 0;
 	box-sizing: border-box;
-	background: #fefefe;
 	transition: box-shadow ease 0s, opacity ease .1s;
 }
 
@@ -443,6 +440,7 @@ q, blockquote {
 }
 
 #subnav .nombre-elem ul:hover li {
+	background: #fefefe;
 	box-shadow: 0 15px 20px rgba(0, 0, 0, .2);
 	transition: box-shadow ease .1s, opacity ease 0s;
 }
