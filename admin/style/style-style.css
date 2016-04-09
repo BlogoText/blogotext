@@ -26,6 +26,60 @@
   src: url("icon.woff?12") format("woff");
 }
 
+/* ANIMATIONS
+------------------------------------------------------------*/
+/* rotating loading spinner */
+@keyframes spinnerLoading {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(359deg);
+  }
+}
+
+/* bottom left popup in/out sliding */
+@keyframes popup-disapear{  
+	10% {
+		bottom: 30px;
+	}
+	80% {
+		bottom: 30px;
+	}
+	90% {
+		bottom: -100px;
+		opacity: 1;
+	}
+	100% {
+		height: 0;
+		opacity: 0;
+		bottom: -999px;
+	}
+}
+
+/* makes a box disapearing */
+@-webkit-keyframes disapear{
+	100% { height: 0; opacity: 0; }
+}
+
+@keyframes disapear {
+	99%  { height: 0; opacity: 0; left: 10px; }
+	100% { height: 0; opacity: 0; left: -1000px; }
+}
+
+/* elements slide smothlyto right / left */
+@keyframes slideright {
+	  0% { left: 50%; opacity: 1; }
+	100% { left: 60%; opacity: 0; }
+}
+@keyframes slideleft {
+	  0% { left: 50%; opacity: 1; }
+	100% { left: 40%; opacity: 0; }
+}
+
+
+
+
 /* GENERAL PAGE LAYOUT
 ------------------------------------------------------------ */
 html, body {
@@ -165,24 +219,6 @@ q, blockquote {
 	border: 1px solid #333;
 	border-radius: 3px;
 	background: #444;
-}
-
-@keyframes popup-disapear{  
-	10% {
-		bottom: 30px;
-	}
-	80% {
-		bottom: 30px;
-	}
-	90% {
-		bottom: -100px;
-		opacity: 1;
-	}
-	100% {
-		height: 0;
-		opacity: 0;
-		bottom: -999px;
-	}
 }
 
 .no_confirmation {

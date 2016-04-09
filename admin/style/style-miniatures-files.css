@@ -85,10 +85,17 @@
 
 #count {
 	text-align: center;
-	padding-top: 40px;
+	padding: 20px 0;
 }
-#count.showed {
-	background: url(loading.gif) center top no-repeat;
+#count.spinning::before {
+	content: "";
+	display: inline-block;
+	height: 20px;
+	width: 20px;
+	border: 4px solid rgba(0, 174, 239, 0.4);
+	border-top-color: rgba(0, 174, 239, 1);
+	border-radius: 50%;
+	animation: spinnerLoading 0.6s infinite linear;
 }
 
 
@@ -166,7 +173,6 @@
 	box-sizing: border-box;
 }
 
-
 #interg-codes {
 	margin: 30px 6%;
 }
@@ -179,7 +185,6 @@
 	min-width: 0;
 	max-width: 99%;
 	box-sizing: border-box;
-
 }
 
 #interg-codes input.text { /* show old image form */
@@ -226,9 +231,7 @@
 	white-space: nowrap;
 }
 #result .fileinfostatus .uploadstatus {
-//	flex: 0 1 auto;
 	font-weight: bold;
-//	text-align: right;
 }
 
 #result .success {
@@ -242,8 +245,6 @@
 #result .pending {
 	background-color: #e8eaf6;
 }
-
-
 
 /* IMAGES : Liste des images : sous la forme d’un mur d’images */
 
@@ -466,7 +467,6 @@
 	box-shadow: 0 0 0 8px rgba(160, 160, 160, .5);
 }
 
-
 #slider button::before {
 	font-size: 2.3em;
 }
@@ -477,9 +477,6 @@
 #slider-nav-bar #slider-nav-infos::before { content: "\e937"; }
 #slider-nav-bar #slider-nav-edit::before  { content: "\e903"; }
 #slider-nav-bar #slider-nav-suppr::before { content: "\e90f"; }
-
-
-
 
 
 /* IMAGES : slider : img display
@@ -494,15 +491,6 @@
 	animation: .1s ease-in 0s forwards slideright;
 }
 
-@keyframes slideright {
-	  0% { left: 50%; opacity: 1; }
-	100% { left: 60%; opacity: 0; }
-}
-@keyframes slideleft {
-	  0% { left: 50%; opacity: 1; }
-	100% { left: 40%; opacity: 0; }
-}
-
 #slider-display {
 	display: inline-block;
 	position: relative;
@@ -512,7 +500,19 @@
 	box-sizing: border-box;
 	min-height: 40px;
 	min-width: 40px;
-	background: url(loading.gif) center center no-repeat;
+}
+
+#slider-display::before {
+	content: "";
+	height: 30px;
+	width: 30px;
+	animation: spinnerLoading 0.6s infinite linear;
+	border: 4px solid rgba(0, 174, 239, 0.4);
+	border-top-color: rgba(0, 174, 239, 1);
+	border-radius: 50%;
+	position: absolute;
+	left: 50%;
+	top: 50%;
 }
 
 #slider-display img {
@@ -530,7 +530,6 @@
 #slider-display img.loading {
 	background: transparent;
 }
-
 
 #slider-box-buttons {
 	position: absolute;

@@ -497,7 +497,6 @@ function triggerClick(el) {
 // create and send form
 function request_delete_form(id) {
 	// prepare XMLHttpRequest
-	document.getElementById('slider-img').src = 'style/loading.gif';
 	document.getElementById('slider-img').classList.add('loading');
 
 	var xhr = new XMLHttpRequest();
@@ -707,7 +706,7 @@ function uploadFile(file) {
 	RSS PAGE HANDLING
 **************************************************************************************************************************************/
 
-// gif loading (also used in images wall/slideshow)
+// animation loading (also used in images wall/slideshow)
 function loading_animation(onoff) {
 	var notifNode = document.getElementById('counter');
 	if (onoff == 'on') {

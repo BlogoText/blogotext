@@ -26,7 +26,7 @@ function js_drag_n_drop_handle($a) {
 // upload next file
 function uploadNext() {
 	if (list.length) {
-		document.getElementById(\'count\').classList.add(\'showed\');
+		document.getElementById(\'count\').classList.add(\'spinning\');
 		var nextFile = list.shift();
 		if (nextFile.size >= '.$max_file_size.') {
 			var respdiv = document.getElementById(nextFile.locId);
@@ -40,7 +40,7 @@ function uploadNext() {
 			uploadFile(nextFile);
 		}
 	} else {
-		document.getElementById(\'count\').classList.remove(\'showed\');
+		document.getElementById(\'count\').classList.remove(\'spinning\');
 		nbDraged = false;
 		// reactivate the "required" attribute of file input
 		document.getElementById(\'fichier\').required = true;
