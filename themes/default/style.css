@@ -131,14 +131,16 @@ q, blockquote {
 	height: 60px;
 	width: 60px;
 	overflow: hidden;
-	border: 15px solid #263238;
+	border: 12px solid #263238;
 	padding: 0;
-	background: #263238 url(sprites.png) no-repeat -188px -129px / 640px 400px;
+	background: #263238 url(sprites.png) no-repeat -186px -126px / 640px 400px;
 	color: transparent;
 	box-sizing: border-box;
+	box-shadow: 0 0 1px silver inset;
+	border-radius: 17px;
 }
 #top-bar > button.active {
-	background-position: -558px -91px;
+	background-position: -555px -89px;
 }
 
 #top-bar > h1 {

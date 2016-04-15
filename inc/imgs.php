@@ -490,7 +490,7 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 	// si ID dans l’URL, il s’agit également du seul fichier dans le tableau fichiers, d’où le [0]
 	elseif (!empty($fichiers) and isset($_GET['file_id']) and preg_match('/\d{14}/',($_GET['file_id']))) {
 		$myfile = $fichiers[0];
-		$absolute_URI = $GLOBALS['racine'].(($myfile['bt_type'] == 'image') ? DIR_IMAGES : DIR_DOCUMENTS).'/'.$myfile['bt_filename'];
+		$absolute_URI = $GLOBALS['racine'].(($myfile['bt_type'] == 'image') ? DIR_IMAGES : DIR_DOCUMENTS).$myfile['bt_path'].'/'.$myfile['bt_filename'];
 		$relative_path = BT_ROOT.(($myfile['bt_type'] == 'image') ? DIR_IMAGES : DIR_DOCUMENTS).$myfile['bt_path'].'/'.$myfile['bt_filename'];
 		$absolute_path = (($myfile['bt_type'] == 'image') ? DIR_IMAGES : DIR_DOCUMENTS).$myfile['bt_path'].'/'.$myfile['bt_filename'];
 
