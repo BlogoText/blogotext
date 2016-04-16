@@ -11,7 +11,7 @@
 #
 # *** LICENSE ***
 
-if ( !file_exists('../config/user.php') || !file_exists('../config/prefs.php') ) {
+if ( !file_exists('../config/user.ini') || !file_exists('../config/prefs.php') ) {
 	header('Location: install.php');
 	exit;
 }
@@ -51,15 +51,13 @@ if (isset($_POST['_verif_envoi']) and valider_form() === TRUE) { // OK : getting
 	usleep(100000); // 100ms sleep to avoid bruteforce
 
 	if (!empty($_POST['stay_logged'])) { // if user wants to stay logged
-		$user_id = hash('sha256', $GLOBALS['mdp_hash'].$GLOBALS['identifiant'].md5($_SERVER['HTTP_USER_AGENT'].$ip));
+		$user_id = hash('sha256', USER_PWHASH.USER_LOGIN.md5($_SERVER['HTTP_USER_AGENT'].$ip));
 		setcookie('BT-admin-stay-logged', $user_id, time()+365*24*60*60, null, null, false, true);
 		session_set_cookie_params(365*24*60*60); // set expiration time to the browser
 	} else {
 		$_SESSION['stay_logged_mode'] = 0;
 		session_regenerate_id(true);
 	}
-
-	fichier_ip();
 
 	// Handle saved data/URL redirect if POST request made
 	$location = 'index.php';
@@ -97,7 +95,7 @@ if (isset($_POST['_verif_envoi']) and valider_form() === TRUE) { // OK : getting
 
 function valider_form() {
 	// first test password
-	if (!password_verify($_POST['mot_de_passe'], $GLOBALS['mdp_hash'])) {
+	if (!password_verify($_POST['mot_de_passe'], USER_PWHASH)) {
 		return FALSE;
 	}
 	// then test captcha

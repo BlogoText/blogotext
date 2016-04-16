@@ -759,7 +759,7 @@ function afficher_form_prefs($erreurs = '') {
 		$fld_user .= '<div class="form-lines">'."\n";
 		$fld_user .= '<p>'."\n";
 		$fld_user .= "\t".'<label for="auteur">'.$GLOBALS['lang']['pref_auteur'].'</label>'."\n";
-		$fld_user .= "\t".'<input type="text" id="auteur" name="auteur" size="30" value="'.(empty($GLOBALS['auteur']) ? $GLOBALS['identifiant'] : $GLOBALS['auteur']).'" class="text" />'."\n";
+		$fld_user .= "\t".'<input type="text" id="auteur" name="auteur" size="30" value="'.(empty($GLOBALS['auteur']) ? htmlspecialchars(USER_LOGIN) : $GLOBALS['auteur']).'" class="text" />'."\n";
 		$fld_user .= '</p>'."\n";
 
 		$fld_user .= '<p>'."\n";
@@ -799,7 +799,7 @@ function afficher_form_prefs($erreurs = '') {
 		$fld_securite .= '<div class="form-lines">'."\n";
 		$fld_securite .= '<p>'."\n";
 		$fld_securite .= "\t".'<label for="identifiant">'.$GLOBALS['lang']['pref_identifiant'].'</label>'."\n";
-		$fld_securite .= "\t".'<input type="text" id="identifiant" name="identifiant" size="30" value="'.$GLOBALS['identifiant'].'" class="text" />'."\n";
+		$fld_securite .= "\t".'<input type="text" id="identifiant" name="identifiant" size="30" value="'.htmlspecialchars(USER_LOGIN).'" class="text" />'."\n";
 		$fld_securite .= '</p>'."\n";
 
 		$fld_securite .= '<p>'."\n";

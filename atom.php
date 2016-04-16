@@ -19,7 +19,6 @@ define('BT_ROOT', './');
 error_reporting(-1);
 $begin = microtime(TRUE);
 
-require_once 'config/user.php';
 require_once 'config/prefs.php';
 date_default_timezone_set($GLOBALS['fuseau_horaire']);
 

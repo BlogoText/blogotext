@@ -81,7 +81,7 @@ function check_session() {
 	ini_set('session.cookie_httponly', TRUE);
 
 	// generate hash for cookie
-	$newUID = hash('sha256', $GLOBALS['mdp_hash'].$GLOBALS['identifiant'].md5($_SERVER['HTTP_USER_AGENT'].$ip));
+	$newUID = hash('sha256', USER_PWHASH.USER_LOGIN.md5($_SERVER['HTTP_USER_AGENT'].$ip));
 
 	// check old cookie  with newUID
 	if (isset($_COOKIE['BT-admin-stay-logged']) and $_COOKIE['BT-admin-stay-logged'] == $newUID) {
@@ -95,7 +95,7 @@ function check_session() {
 	}
 
 	// no "stay-logged" cookie : check session.
-	if ( (!isset($_SESSION['user_id'])) or ($_SESSION['user_id'] != $GLOBALS['identifiant'].hash('sha256', $GLOBALS['mdp_hash'].$_SERVER['HTTP_USER_AGENT'].$ip)) ) {
+	if ( (!isset($_SESSION['user_id'])) or ($_SESSION['user_id'] != USER_LOGIN.hash('sha256', USER_PWHASH.$_SERVER['HTTP_USER_AGENT'].$ip)) ) {
 		return FALSE;
 	} else {
 		return TRUE;

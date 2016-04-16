@@ -23,7 +23,7 @@ if (strpos($_SERVER['REQUEST_URI'], $_SERVER['SCRIPT_NAME'].'/') === 0) {
 }
 
 // If no config: go to install process.
-if ( !file_exists('config/user.php') or !file_exists('config/prefs.php') ) {
+if ( !file_exists('config/user.ini') or !file_exists('config/prefs.php') ) {
 	header('Location: admin/install.php');
 	die;
 }

@@ -31,18 +31,20 @@ function creer_dossier($dossier, $make_htaccess='') {
 
 
 function fichier_user() {
-	$fichier_user = '../'.DIR_CONFIG.'/user.php';
-	$user='';
+	$fichier_user = '../'.DIR_CONFIG.'/user.ini';
+	$content = '';
 	if (strlen(trim($_POST['mdp'])) == 0) {
-		$new_mdp = $GLOBALS['mdp_hash']; 
+		$new_mdp = USER_PWHASH; 
 	} else {
 		$new_mdp = password_hash($_POST['mdp'], PASSWORD_BCRYPT);
 	}
-	$user .= "<?php\n";
-	$user .= "\$GLOBALS['identifiant'] = '".addslashes(clean_txt(htmlspecialchars($_POST['identifiant'])))."';\n";
-	$user .= "\$GLOBALS['mdp_hash'] = '".$new_mdp."';\n";
-	$user .= "?>";
-	if (file_put_contents($fichier_user, $user) === FALSE) {
+	$content .= '; <?php die(); /*'."\n\n";
+	$content .= '; This file contains user login + password hash.'."\n\n";
+
+	$content .= 'USER_LOGIN = \''.addslashes(clean_txt(htmlspecialchars($_POST['identifiant']))).'\''."\n";
+	$content .= 'USER_PWHASH = \''.$new_mdp.'\''."\n";
+
+	if (file_put_contents($fichier_user, $content) === FALSE) {
 		return FALSE;
 	} else {
 		return TRUE;
@@ -110,7 +112,7 @@ function fichier_prefs() {
 		$nombre_liens_admin = htmlspecialchars($_POST['nb_list_linx']);
 	} else {
 		$lang = (isset($_POST['langue']) and preg_match('#^[a-z]{2}$#', $_POST['langue'])) ? $_POST['langue'] : 'fr';
-		$auteur = clean_txt($GLOBALS['identifiant']);
+		$auteur = clean_txt(htmlspecialchars(USER_LOGIN));
 		$email = 'mail@example.com';
 		$nomsite = 'Blogotext';
 		$description = clean_txt($GLOBALS['lang']['go_to_pref']);
@@ -217,7 +219,6 @@ function fichier_index($dossier) {
 	}
 }
 
-
 function fichier_htaccess($dossier) {
 	$content = '<Files *>'."\n";
 	$content .= 'Order allow,deny'."\n";
@@ -230,59 +231,6 @@ function fichier_htaccess($dossier) {
 	} else {
 		return TRUE;
 	}
-}
-
-
-// dans le panel, l'IP de dernière connexion est affichée. Il est stoqué avec cette fonction.
-function fichier_ip() {
-	$new_ip = htmlspecialchars($_SERVER['REMOTE_ADDR']);
-	$new_time = date('YmdHis');
-	$content = "<?php\n";
-	$content .= "\$GLOBALS['old_ip'] = '".$new_ip."';\n";	
-	$content .= "\$GLOBALS['old_time'] = '".$new_time."';\n";	
-	$content .= "?>";
-	$fichier = '../config/ip.php';
-
-	if (file_put_contents($fichier, $content) === FALSE) {
-		return FALSE;
-	} else {
-		return TRUE;
-	}
-}
-
-function get_literal_chmod($file) {
-	$perms = fileperms($file);
-	if (($perms & 0xC000) == 0xC000) {
-		$info = 's'; // Socket
-	} elseif (($perms & 0xA000) == 0xA000) {
-		$info = 'l'; // Lien symbolique
-	} elseif (($perms & 0x8000) == 0x8000) {
-		$info = '-'; // Régulier
-	} elseif (($perms & 0x6000) == 0x6000) {
-		$info = 'b'; // Block special
-	} elseif (($perms & 0x4000) == 0x4000) {
-		$info = 'd'; // Dossier
-	} elseif (($perms & 0x2000) == 0x2000) {
-		$info = 'c'; // Caractère spécial
-	} elseif (($perms & 0x1000) == 0x1000) {
-		$info = 'p'; // pipe FIFO
-	} else {
-		$info = 'u'; // Inconnu
-	}
-	// Autres
-	$info .= (($perms & 0x0100) ? 'r' : '-');
-	$info .= (($perms & 0x0080) ? 'w' : '-');
-	$info .= (($perms & 0x0040) ? (($perms & 0x0800) ? 's' : 'x' ) : (($perms & 0x0800) ? 'S' : '-'));
-	// Groupe
-	$info .= (($perms & 0x0020) ? 'r' : '-');
-	$info .= (($perms & 0x0010) ? 'w' : '-');
-	$info .= (($perms & 0x0008) ? (($perms & 0x0400) ? 's' : 'x' ) : (($perms & 0x0400) ? 'S' : '-'));
-	// Tout le monde
-	$info .= (($perms & 0x0004) ? 'r' : '-');
-	$info .= (($perms & 0x0002) ? 'w' : '-');
-	$info .= (($perms & 0x0001) ? (($perms & 0x0200) ? 't' : 'x' ) : (($perms & 0x0200) ? 'T' : '-'));
-
-	return $info;
 }
 
 

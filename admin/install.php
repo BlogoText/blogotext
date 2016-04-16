@@ -19,9 +19,21 @@ if ( file_exists('../config/mysql.ini') and file_get_contents('../config/mysql.i
 }
 
 // install is already done
-if ( (file_exists('../config/user.php')) and (file_exists('../config/prefs.php')) and $step3 === FALSE) {
+if ( (file_exists('../config/user.ini')) and (file_exists('../config/prefs.php')) and $step3 === FALSE) {
 	header('Location: auth.php');
 	exit;
+}
+
+// IMPORT SEVERAL .ini DIRECTIVES
+function import_ini_file($file_path) {
+	if (is_file($file_path) and is_readable($file_path)) {
+		$options = parse_ini_file($file_path);
+		foreach ($options as $option => $value) {
+			if (!defined($option)) define($option, $value);
+		}
+		return TRUE;
+	}
+	return FALSE;
 }
 
 // some constants definition
@@ -29,7 +41,7 @@ define('BT_ROOT', '../');
 define('DISPLAY_PHP_ERRORS', '-1');
 $GLOBALS['fuseau_horaire'] = 'UTC';
 
-if (file_exists('../config/user.php')) { include('../config/user.php'); }
+if (file_exists('../config/user.ini')) { import_ini_file('../config/user.ini'); }
 if (file_exists('../config/prefs.php')) { include('../config/prefs.php'); }
 
 
@@ -86,7 +98,7 @@ elseif ($GLOBALS['step'] == '2') {
 			creer_dossier('../'.DIR_DOCUMENTS, 0);
 			creer_dossier('../'.DIR_DATABASES, 1);
 			fichier_user();
-			include_once($config_dir.'/user.php');
+			import_ini_file($config_dir.'/user.ini');
 
 			traiter_install_2();
 			redirection('install.php?s=3&l='.$_POST['langue']);

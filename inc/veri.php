@@ -110,10 +110,10 @@ function valider_form_preferences() {
 	if (!strlen(trim($_POST['identifiant']))) {
 		$erreurs[] = $GLOBALS['lang']['err_prefs_identifiant'];
 	}
-	if ( ($_POST['identifiant']) !=$GLOBALS['identifiant'] and (!strlen($_POST['mdp'])) ) {
+	if ( ($_POST['identifiant']) != USER_LOGIN and (!strlen($_POST['mdp'])) ) {
 		$erreurs[] = $GLOBALS['lang']['err_prefs_id_mdp'];
 	}
-	if ( (!empty($_POST['mdp'])) and (!password_verify($_POST['mdp'], $GLOBALS['mdp_hash'])) ) {
+	if ( (!empty($_POST['mdp'])) and (!password_verify($_POST['mdp'], USER_PWHASH)) ) {
 		$erreurs[] = $GLOBALS['lang']['err_prefs_oldmdp'];
 	}
 	if ( (!empty($_POST['mdp'])) and (strlen($_POST['mdp_rep']) < '6') ) {

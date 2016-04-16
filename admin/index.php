@@ -11,7 +11,7 @@
 #
 # *** LICENSE ***
 
-if ( !file_exists('../config/user.php') || !file_exists('../config/prefs.php') ) {
+if ( !file_exists('../config/user.ini') || !file_exists('../config/prefs.php') ) {
 	header('Location: install.php');
 	exit;
 }
