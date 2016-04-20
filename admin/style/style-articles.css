@@ -18,11 +18,11 @@
 	min-height: 50px;
 	display: flex;
 	align-items: center;
-	transition: box-shadow 0.5s ease 0s;
 	border-bottom: 1px solid rgba(0, 0, 0, .1);
 }
 
 #billets > li:hover {
+	transition: box-shadow 0.5s ease 0s;
 	position: relative;
 	box-shadow: 0px 6px 20px 0px rgba(0, 0, 0, 0.19), 0px 8px 17px 0px rgba(0, 0, 0, 0.2);
 }

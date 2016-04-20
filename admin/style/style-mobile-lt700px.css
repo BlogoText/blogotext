@@ -73,9 +73,6 @@
 	.commentbloc .comm-side-icon .date {
 		font-size: .6em;
 	}
-	.commentbloc:not(:last-of-type) .comm-side-icon::after {
-		left: 35px;
-	}
 	.commentbloc.foreground .comm-side-icon {
 		display: none;
 	}

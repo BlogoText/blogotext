@@ -24,25 +24,10 @@ if ( (file_exists('../config/user.ini')) and (file_exists('../config/prefs.php')
 	exit;
 }
 
-// IMPORT SEVERAL .ini DIRECTIVES
-function import_ini_file($file_path) {
-	if (is_file($file_path) and is_readable($file_path)) {
-		$options = parse_ini_file($file_path);
-		foreach ($options as $option => $value) {
-			if (!defined($option)) define($option, $value);
-		}
-		return TRUE;
-	}
-	return FALSE;
-}
-
 // some constants definition
 define('BT_ROOT', '../');
 define('DISPLAY_PHP_ERRORS', '-1');
 $GLOBALS['fuseau_horaire'] = 'UTC';
-
-if (file_exists('../config/user.ini')) { import_ini_file('../config/user.ini'); }
-if (file_exists('../config/prefs.php')) { include('../config/prefs.php'); }
 
 
 if (isset($_GET['l'])) {
@@ -55,17 +40,7 @@ if (isset($_GET['l'])) {
 
 }
 
-require_once '../inc/util.php';
-require_once '../inc/fich.php';
-require_once '../inc/conf.php';
-require_once '../inc/lang.php';
-require_once '../inc/html.php';
-require_once '../inc/form.php';
-require_once '../inc/conv.php';
-require_once '../inc/veri.php';
-require_once '../inc/jasc.php';
-require_once '../inc/sqli.php';
-
+require_once BT_ROOT.'/inc/inc.php';
 
 if (isset($_GET['s']) and is_numeric($_GET['s'])) {
 	$GLOBALS['step'] = $_GET['s'];
