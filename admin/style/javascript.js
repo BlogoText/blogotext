@@ -178,16 +178,6 @@ function insertCatTag(inputId, tag) {
 }
 
 /* Adds a tag to the list when we hit "enter" */
-/* detects keyhit */
-function chkHit(e) {
-	var unicode = (e.keyCode) ? e.keyCode : e.charCode;
-	if (unicode == 13) {
-		moveTag;
-		return false;
-	}
-	return true;
-}
-
 /* validates the tag and move it to the list */
 function moveTag() {
 	var iField = document.getElementById('type_tags');
@@ -216,6 +206,10 @@ function removeTag(tag) {
 	tag.parentNode.removeChild(tag);
 	return false;
 }
+
+
+
+
 
 /* for links : hide the FAB button when focus on link field (more conveniant for mobile UX) */
 function hideFAB() {
