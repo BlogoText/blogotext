@@ -602,19 +602,27 @@ function afficher_liste_fichiers($tableau) {
 				}
 				$out .= '</div>'."\n";
 			}
-			$out .= '<div id="files-wall">'."\n";
+
 			// the files
+			$out .= '<table id="file-list">'."\n";
+			$out .= "\t".'<thead>'."\n";
+				$out .= "\t\t".'<tr><th></th><th>'.$GLOBALS['lang']['label_dp_nom'].'</th><th>'.$GLOBALS['lang']['label_dp_poids'].'</th><th>'.$GLOBALS['lang']['label_dp_date'].'</th><th></th><th></th></tr>'."\n";
+			$out .= "\t".'</thead>'."\n";
+			$out .= "\t".'<tbody>'."\n";
+
 			foreach ($tableau as $file) {
-				$out .= '<div class="file_bloc"  id="bloc_'.$file['bt_id'].'" data-type="'.$file['bt_type'].'">'."\n";
-					$description = (empty($file['bt_content'])) ? '' : ' ('.$file['bt_content'].')';
-					$out .= "\t".'<span class="spantop black">';
-					$out .= '<a class="lien lien-edit" href="fichiers.php?file_id='.$file['bt_id'].'&amp;edit"></a>';
-					$out .= '<a class="lien lien-supr" href="#" onclick="request_delete_form(\''.$file['bt_id'].'\'); return false;" ></a>';
-					$out .= '</span>'."\n";
-					$out .= "\t".'<a class="lien" href="'.$dossier_relatif.'/'.$file['bt_filename'].'" download><img src="style/filetypes/'.$file['bt_type'].'.png" id="'.$file['bt_id'].'" alt="'.$file['bt_filename'].'" /></a><br/><span class="description">'.$file['bt_filename']."</span>\n";
-				$out .= '</div>'."\n\n";
+				$out .= "\t".'<tr id="bloc_'.$file['bt_id'].'" data-type="'.$file['bt_type'].'">'."\n";
+					$out .= "\t\t".'<td><img src="style/filetypes/'.$file['bt_type'].'.png" id="'.$file['bt_id'].'" alt="'.$file['bt_filename'].'" /></td>'."\n";
+					$out .= "\t\t".'<td><a href="fichiers.php?file_id='.$file['bt_id'].'&amp;edit">'.$file['bt_filename'].'</a></td>'."\n";
+					$out .= "\t\t".'<td>'.taille_formate($file['bt_filesize']).'</td>'."\n";
+					$out .= "\t\t".'<td>'.date_formate($file['bt_id']).'</td>'."\n";
+					$out .= "\t\t".'<td><a href="'.$dossier_relatif.'/'.$file['bt_filename'].'" download>DL</a></td>'."\n";
+					$out .= "\t\t".'<td><a href="#" onclick="request_delete_form(\''.$file['bt_id'].'\'); return false;" >DEL</a></td>'."\n";
+				$out .= "\t".'</tr>'."\n";
 			}
-			$out .= '</div>'."\n";
+			$out .= "\t".'</tbody>'."\n";
+			$out .= '</table>'."\n";
+
 		$out .= '</div>'."\n";
 
 	}

@@ -162,8 +162,6 @@ function hide_forms(blocs) {
 
 
 
-
-
 /**************************************************************************************************************************************
 	LINKS AND ARTICLE FORMS : TAGS HANDLING
 **************************************************************************************************************************************/
@@ -322,11 +320,11 @@ function folder_sort(folder, button) {
 
 function type_sort(type, button) {
 	// finds the matching files
-	var wall = document.getElementsByClassName('file_bloc');
-	for (var i=0, sz = wall.length; i<sz; i++) {
-		var file = wall[i];
+	var files = document.querySelectorAll('#file-list tbody tr');
+	for (var i=0, sz = files.length; i<sz; i++) {
+		var file = files[i];
 		if ((file.getAttribute('data-type') != null) && file.getAttribute('data-type').search(type) != -1) {
-			file.style.display = 'inline-block';
+			file.style.display = '';
 		} else {
 			file.style.display = 'none';
 		}
@@ -490,6 +488,9 @@ function triggerClick(el) {
 
 // create and send form
 function request_delete_form(id) {
+	if (!window.confirm('Ce fichier sera supprimé définitivement')) {
+		return false;
+	}
 	// prepare XMLHttpRequest
 	document.getElementById('slider-img').classList.add('loading');
 
