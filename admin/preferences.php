@@ -18,6 +18,20 @@ require_once '../inc/inc.php';
 
 operate_session();
 
+$erreurs_form = array();
+
+if (isset($_POST['_verif_envoi'])) {
+	$erreurs_form = valider_form_preferences();
+	if (empty($erreurs_form)) {
+		if ( (fichier_user() === TRUE) and (fichier_prefs() === TRUE) ) {
+			redirection(basename($_SERVER['SCRIPT_NAME']).'?msg=confirm_prefs_maj');
+			exit();
+		}
+	}
+}
+
+
+
 afficher_html_head($GLOBALS['lang']['preferences']);
 	echo '<div id="header">'."\n";
 		echo '<div id="top">'."\n";
@@ -28,19 +42,10 @@ afficher_html_head($GLOBALS['lang']['preferences']);
 echo '<div id="axe">'."\n";
 echo '<div id="page">'."\n";
 
-if (isset($_POST['_verif_envoi'])) {
-	if ($erreurs_form = valider_form_preferences()) {
-		afficher_form_prefs($erreurs_form);
-	} else {
-		if ( (fichier_user() === TRUE) and (fichier_prefs() === TRUE) ) {
-		redirection(basename($_SERVER['SCRIPT_NAME']).'?msg=confirm_prefs_maj');
-		exit();
-		}
-	}
-} elseif (isset($_GET['test_captcha'])) {
+if (isset($_GET['test_captcha'])) {
 	afficher_form_captcha();
 } else {
-	afficher_form_prefs();
+	afficher_form_prefs($erreurs_form);
 }
 
 
