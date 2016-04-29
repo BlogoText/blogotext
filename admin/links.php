@@ -181,7 +181,7 @@ else { // aucun lien à ajouter ou éditer : champ nouveau lien + listage des li
 
 echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
 echo '<script type="text/javascript">'."\n";
-echo js_red_button_event(0);
+echo php_lang_to_js(0);
 echo 'document.getElementById(\'url\').addEventListener(\'focus\', hideFAB, false);'."\n";
 echo 'document.getElementById(\'url\').addEventListener(\'blur\', unHideFAB, false);'."\n";
 

@@ -13,21 +13,6 @@
 "use strict";
 
 /*
-	on comment : reply link « @ » quotes le name.
-*/
-
-function reply(code) {
-	var field = document.querySelector('#form-commentaire textarea');
-	field.focus();
-	if (field.value !== '') {
-		field.value += '\n';
-	}
-	field.value += code;
-	field.scrollTop = 10000;
-	field.focus();
-}
-
-/*
 	cancel button on forms.
 */
 
@@ -98,22 +83,6 @@ function insertChar(e, ch) {
 
 
 /*
-	unfold comment edition bloc.
-*/
-
-function unfold(button) {
-	var elemOnForground = document.querySelectorAll('.commentbloc.foreground');
-	for (var i=0, len=elemOnForground.length ; i<len ; i++) {
-		elemOnForground[i].classList.remove('foreground');
-	}
-
-	var elemToForground = button.parentNode.parentNode.parentNode.parentNode.parentNode;
-	elemToForground.classList.toggle('foreground');
-
-	elemToForground.getElementsByTagName('textarea')[0].focus();
-}
-
-/*
 	Used in file upload: converts bytes to kB, MB, GB…
 */
 function humanFileSize(bytes) {
@@ -160,6 +129,166 @@ function hide_forms(blocs) {
 }
 
 
+function rmArticle(button) {
+	if (window.confirm(BTlang.questionSupprArticle)) {
+		button.type= 'submit';
+		return true;
+	}
+	return false;
+}
+
+function rmFichier(button) {
+	if (window.confirm(BTlang.questionSupprFichier)) {
+		button.type='submit';
+		return true;
+	}
+	return false;
+}
+
+function annuler(pagecible) {
+	window.location = pagecible;
+}
+
+
+/**************************************************************************************************************************************
+	COMM MANAGEMENT
+**************************************************************************************************************************************/
+
+/*
+	on comment : reply link « @ » quotes le name.
+*/
+
+function reply(code) {
+	var field = document.querySelector('#form-commentaire textarea');
+	field.focus();
+	if (field.value !== '') {
+		field.value += '\n';
+	}
+	field.value += code;
+	field.scrollTop = 10000;
+	field.focus();
+}
+
+
+/*
+	unfold comment edition bloc.
+*/
+
+function unfold(button) {
+	var elemOnForground = document.querySelectorAll('.commentbloc.foreground');
+	for (var i=0, len=elemOnForground.length ; i<len ; i++) {
+		elemOnForground[i].classList.remove('foreground');
+	}
+
+	var elemToForground = button.parentNode.parentNode.parentNode.parentNode.parentNode;
+	elemToForground.classList.toggle('foreground');
+
+	elemToForground.getElementsByTagName('textarea')[0].focus();
+}
+
+
+// deleting a comment
+function suppr_comm(button) {
+	var notifDiv = document.createElement('div');
+	var reponse = window.confirm(BTlang.questionSupprComment);
+	var div_bloc = button.parentNode.parentNode.parentNode.parentNode.parentNode;
+
+	if (reponse == true) {
+		div_bloc.classList.add('ajaxloading');
+		var xhr = new XMLHttpRequest();
+		xhr.open('POST', 'commentaires.php', true);
+
+		xhr.onprogress = function() {
+			div_bloc.classList.add('ajaxloading');
+		}
+
+		xhr.onload = function() {
+			var resp = this.responseText;
+			if (resp.indexOf("Success") == 0) {
+				csrf_token = resp.substr(7, 40);
+				div_bloc.classList.add('deleteFadeOut');
+				div_bloc.style.height = div_bloc.offsetHeight+'px';
+				div_bloc.addEventListener('animationend', function(event){event.target.parentNode.removeChild(event.target);}, false);
+				div_bloc.addEventListener('webkitAnimationEnd', function(event){event.target.parentNode.removeChild(event.target);}, false);
+				// adding notif
+				notifDiv.textContent = BTlang.confirmCommentSuppr;
+				notifDiv.classList.add('confirmation');
+				document.getElementById('top').appendChild(notifDiv);
+			} else {
+				// adding notif
+				notifDiv.textContent = this.responseText;
+				notifDiv.classList.add('no_confirmation');
+				document.getElementById('top').appendChild(notifDiv);
+			}
+			div_bloc.classList.remove('ajaxloading');
+		};
+		xhr.onerror = function(e) {
+			notifDiv.textContent = BTlang.errorCommentSuppr + e.target.status;
+			notifDiv.classList.add('no_confirmation');
+			document.getElementById('top').appendChild(notifDiv);
+			div_bloc.classList.remove('ajaxloading');
+		};
+
+		// prepare and send FormData
+		var formData = new FormData();
+		formData.append('token', csrf_token);
+		formData.append('_verif_envoi', 1);
+		formData.append('com_supprimer', button.dataset.commId);
+		formData.append('com_article_id', button.dataset.commArtId);
+
+		xhr.send(formData);
+
+	}
+	return reponse;
+}
+
+
+// hide/unhide a comm
+function activate_comm(button) {
+	var notifDiv = document.createElement('div');
+	var div_bloc = button.parentNode.parentNode.parentNode.parentNode.parentNode;
+	div_bloc.classList.toggle('ajaxloading');
+
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', 'commentaires.php', true);
+
+	xhr.onprogress = function() {
+		div_bloc.classList.add('ajaxloading');
+	}
+
+	xhr.onload = function() {
+		var resp = this.responseText;
+		if (resp.indexOf("Success") == 0) {
+			csrf_token = resp.substr(7, 40);
+			button.textContent = ((button.textContent === BTlang.activer) ? BTlang.desactiver : BTlang.activer );
+			div_bloc.classList.toggle('privatebloc');
+
+		} else {
+			notifDiv.textContent = BTlang.errorCommentValid + ' ' + resp;
+			notifDiv.classList.add('no_confirmation');
+			document.getElementById('top').appendChild(notifDiv);
+		}
+		div_bloc.classList.remove('ajaxloading');
+	};
+	xhr.onerror = function(e) {
+		notifDiv.textContent = BTlang.errorCommentSuppr + ' ' + e.target.status + ' (#com-activ-H28)';
+		notifDiv.classList.add('no_confirmation');
+		document.getElementById('top').appendChild(notifDiv);
+		div_bloc.classList.remove('ajaxloading');
+	};
+
+	// prepare and send FormData
+	var formData = new FormData();
+	formData.append('token', csrf_token);
+	formData.append('_verif_envoi', 1);
+
+	formData.append('com_activer', button.dataset.commId);
+	formData.append('com_bt_id', button.dataset.commBtid);
+	formData.append('com_article_id', button.dataset.commArtId);
+
+	xhr.send(formData);
+
+}
 
 
 /**************************************************************************************************************************************
@@ -209,7 +338,7 @@ function removeTag(tag) {
 
 
 
-/* for links : hide the FAB button when focus on link field (more conveniant for mobile UX) */
+/* for links : hide the FAB button when focus on link field (more conveniant for mobile UX) */
 function hideFAB() {
 	if (document.getElementById('fab')) {
 		document.getElementById('fab').classList.add('hidden');
@@ -695,6 +824,30 @@ function uploadFile(file) {
 	xhr.send(formData);
 }
 
+
+// upload next file
+function uploadNext() {
+	if (list.length) {
+		document.getElementById('count').classList.add('spinning');
+		var nextFile = list.shift();
+		if (nextFile.size >= BTlang.maxFilesSize) {
+			var respdiv = document.getElementById(nextFile.locId);
+			respdiv.querySelector('.uploadstatus').appendChild(document.createTextNode('File too big'));
+			respdiv.classList.remove('pending');
+			respdiv.classList.add('failure');
+			uploadNext();
+		} else {
+			var respdiv = document.getElementById(nextFile.locId);
+			respdiv.querySelector('.uploadstatus').textContent = 'Uploading';
+			uploadFile(nextFile);
+		}
+	} else {
+		document.getElementById('count').classList.remove('spinning');
+		nbDraged = false;
+		// reactivate the "required" attribute of file input
+		document.getElementById('fichier').required = true;
+	}
+}
 
 
 /**************************************************************************************************************************************
@@ -1266,7 +1419,110 @@ function keyboardNextPrevious(e) {
 	return true;
 }
 
+// show form for new rss feed
+function addNewFeed() {
+	var newLink = window.prompt(BTlang.rssJsAlertNewLink, '');
+	// empty string : stops here
+	if (!newLink) return false;
 
+	var newFolder = window.prompt(BTlang.rssJsAlertNewLinkFolder, '');
+	var notifDiv = document.createElement('div');
+
+	// otherwise continu.
+	var notifNode = document.getElementById('message-return');
+	loading_animation('on');
+
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', '_rss.ajax.php');
+	xhr.onload = function() {
+
+		var resp = this.responseText;
+		// en cas d’erreur, arrête ; le message d’erreur est mis dans le #NotifNode
+		if (resp.indexOf("Success") == -1) {
+			loading_animation('off');
+			notifNode.innerHTML = resp;
+			return false;
+		}
+
+		// recharge la page en cas de succès
+		loading_animation('off');
+		notifNode.textContent = 'Success: please reload page.';
+		window.location.href = window.location.href.split("?")[0]+'?msg=confirm_feed_ajout';
+		return false;
+
+	};
+	xhr.onerror = function(e) {
+		loading_animation('off');
+		// adding notif
+		notifDiv.textContent = 'Une erreur PHP/Ajax s’est produite :'+e.target.status;
+		notifDiv.classList.add('no_confirmation');
+		document.getElementById('top').appendChild(notifDiv);
+	};
+	// prepare and send FormData
+	var formData = new FormData();
+	formData.append('token', token);
+	formData.append('add-feed', newLink);
+	formData.append('add-feed-folder', newFolder);
+	xhr.send(formData);
+
+	return false;
+
+}
+
+// demande confirmation pour supprimer les vieux articles.
+function cleanList() {
+	var notifDiv = document.createElement('div');
+	var reponse = window.confirm(BTlang.questionCleanRss);
+	if (!reponse) return false;
+
+	loading_animation('on');
+
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', '_rss.ajax.php', true);
+	xhr.onload = function() {
+		var resp = this.responseText;
+		token = resp.substr(7, 40);
+		if (resp.indexOf("Success") == 0) {
+			// rebuilt array with only unread items
+			var list = new Array();
+			for (var i = 0, len = Rss.length ; i < len ; i++) {
+				var item = Rss[i];
+				if (!item.statut == 0) {
+					list.push(item);
+				}
+			}
+			Rss = list;
+			rss_feedlist(Rss);
+
+			// adding notif
+			notifDiv.textContent = BTlang.confirmFeedClean;
+			notifDiv.classList.add('confirmation');
+			document.getElementById('top').appendChild(notifDiv);
+
+		} else {
+			notifDiv.textContent = 'Error: '+resp;
+			notifDiv.classList.add('no_confirmation');
+			document.getElementById('top').appendChild(notifDiv);
+		}
+
+
+		loading_animation('off');
+	};
+	xhr.onerror = function(e) {
+		loading_animation('off');
+		// adding notif
+		notifDiv.textContent = BTlang.errorPhpAjax + e.target.status;
+		notifDiv.classList.add('confirmation');
+		document.getElementById('top').appendChild(notifDiv);
+	};
+
+	// prepare and send FormData
+	var formData = new FormData();
+	formData.append('token', token);
+	formData.append('delete_old', 1);
+	xhr.send(formData);
+	return false;
+}
 
 /**************************************************************************************************************************************
 	TOUCH EVENTS HANDLING (various pages)

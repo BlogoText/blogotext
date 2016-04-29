@@ -159,8 +159,7 @@ echo 'document.body.addEventListener(\'dragover\', handleDragOver, true);'."\n";
 echo 'document.body.addEventListener(\'dragleave\', handleDragLeave, false);'."\n";
 echo 'document.body.addEventListener(\'dragend\', handleDragEnd, false);'."\n";
 
-echo js_drag_n_drop_handle(0);
-echo js_red_button_event(0);
+echo php_lang_to_js(0);
 echo "\n".'</script>'."\n";
 
 
