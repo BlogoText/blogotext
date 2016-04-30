@@ -974,9 +974,17 @@ function rss_feedlist(RssPosts) {
 		li.onclick = function(){ return openItem(this); };
 		if (item.statut == 0) { li.classList.add('read'); }
 
-		// new line with the title
+		// li-head: title-block
 		var title = document.createElement("div");
 		title.classList.add('post-title');
+
+		// site name
+		var site = document.createElement("div");
+		site.classList.add('site');
+		site.appendChild(document.createTextNode(item.sitename));
+		title.appendChild(site);
+		
+		// post title 
 		var titleLink = document.createElement("a");
 		titleLink.href = item.link;
 		titleLink.title = item.title;
@@ -984,33 +992,25 @@ function rss_feedlist(RssPosts) {
 		titleLink.appendChild(document.createTextNode(item.title));
 		title.appendChild(titleLink);
 		
-		// bloc with date + site name + share-link
+		// post date
 		var date = document.createElement("div");
 		date.classList.add('date');
-		date.appendChild(document.createTextNode(' — '+item.date));
+		date.appendChild(document.createTextNode(item.date));
 		var time = document.createElement("span");
 		time.appendChild(document.createTextNode(', '+item.time));
 		date.appendChild(time);
+		title.appendChild(date);
 
-		var site = document.createElement("div");
-		site.classList.add('site');
-		site.appendChild(document.createTextNode(item.sitename));
-
+		// post share link
 		var share = document.createElement("div");
 		share.classList.add('share');
-		//share.innerHTML = '<a class="lien-share" target="_blank" href="links.php?url='+item.link+'">&nbsp;</a>';
-
 		var shareLink = document.createElement("a");
 		shareLink.href = 'links.php?url='+item.link;
 		shareLink.target = "_blank";
 		shareLink.classList.add("lien-share");
 		share.appendChild(shareLink);
+		title.appendChild(share);
 
-		var datesite = document.createElement("div");
-		datesite.classList.add('datesite');
-		datesite.appendChild(site);
-		datesite.appendChild(date);
-		datesite.appendChild(share);
 
 		// bloc with main content of feed in a comment (it’s uncomment when open, to defer media loading).
 		var content = document.createElement("div");
@@ -1021,7 +1021,6 @@ function rss_feedlist(RssPosts) {
 		var hr = document.createElement("hr");
 		hr.classList.add('clearboth');
 
-		title.appendChild(datesite);
 		li.appendChild(title);
 		li.appendChild(content);
 		li.appendChild(hr);

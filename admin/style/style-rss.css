@@ -320,32 +320,26 @@
 	text-decoration: none;
 }
 
-#post-list > li .post-title a:hover+.datesite {
-	flex: 0 10 auto;
+#post-list > li .post-title .site {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	flex: 0 0 125px;
+	padding-right: 10px;
+	color: rgba(0, 0, 0, .5);
+	font-size: .9em;
 }
 
-#post-list > li div.datesite {
+#post-list > li .post-title .date {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 	display: flex;
 	align-items: center;
 	flex: 0 0 auto;
 	min-width: 0;
 	font-size: .9em;
-}
-
-
-
-#post-list > li div.datesite .site,
-#post-list > li div.datesite .date {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-
-#post-list > li div.datesite .site {
-	max-width: 200px;
-}
-#post-list > li div.datesite .site:hover {
-	max-width: 100%;
+	color: rgba(0, 0, 0, .5);
 }
 
 #post-list > li .rss-item-content {
@@ -385,11 +379,11 @@
 	margin-top: 15px;
 }
 
-#post-list > li .datesite .lien-share {
+#post-list > li .post-title .lien-share {
 	margin-left: 5px;
 	text-decoration: none;
 }
-#post-list > li .datesite .lien-share::before {
+#post-list > li .post-title .lien-share::before {
 	content: "\e91f";
 	font-size: 1.3em;
 	color: rgba(0, 0, 0, .4);

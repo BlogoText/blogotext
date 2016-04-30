@@ -274,6 +274,22 @@
 	#post-list > li .date > span {
 		display: none;
 	}
+	#post-list > li .post-title {
+		flex-wrap: wrap;
+	}
+	#post-list > li .post-title .site {
+		display: none;
+	}
+	#post-list > li .post-title .date {
+		flex: 1 0 auto;
+	}
+
+	#post-list > li .post-title > a {
+		flex: 1 0 100%;
+	}
+	#post-list > li .post-title > a:hover {
+		flex: 1 0 100%;
+	}
 }
 
 
