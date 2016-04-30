@@ -155,7 +155,7 @@ function afficher_form_2($erreurs='') {
 	echo '<h1>'.BLOGOTEXT_NAME.'</h1>'."\n";
 	echo '<h1 id="step">'.$GLOBALS['lang']['install'].'</h1>'."\n";
 	echo erreurs($erreurs);
-	echo '<form method="post" action="install.php?s='.$GLOBALS['step'].'&amp;l='.$GLOBALS['lang']['id'].'" onsubmit="return verifForm2(this)">'."\n".'<div id="erreurs_js" class="erreurs"></div>'."\n";
+	echo '<form method="post" action="install.php?s='.$GLOBALS['step'].'&amp;l='.$GLOBALS['lang']['id'].'">'."\n".'<div id="erreurs_js" class="erreurs"></div>'."\n";
 	echo '<div id="install">'."\n";
 	echo '<p>';
 	echo '<label for="identifiant">'.$GLOBALS['lang']['install_id'].' </label><input type="text" name="identifiant" id="identifiant" size="30" value="" class="text" placeholder="John Doe" required />'."\n";
@@ -378,18 +378,22 @@ function test_connection_mysql() {
 echo '<script type="text/javascript">
 function getSelectSgdb() {
 	var selectElmt = document.getElementById("sgdb");
+	if (!selectElmt) return false;
 	return selectElmt.options[selectElmt.selectedIndex].value;
 }
 function show_mysql_form() {
 	var selected = getSelectSgdb();
-	if (selected == "mysql") {
-		document.getElementById("mysql_vars").style.display = "block";
-		document.getElementById("sqlite_vars").style.display = "none";
-	} else {
-		document.getElementById("mysql_vars").style.display = "none";
-		document.getElementById("sqlite_vars").style.display = "block";
+	if (selected) {
+		if (selected == "mysql") {
+			document.getElementById("mysql_vars").style.display = "block";
+			document.getElementById("sqlite_vars").style.display = "none";
+		} else {
+			document.getElementById("mysql_vars").style.display = "none";
+			document.getElementById("sqlite_vars").style.display = "block";
+		}
 	}
 }
+show_mysql_form(); // needed if MySQL is only option.
 
 function revealpass(fieldId) {
 	var field = document.getElementById(fieldId);
