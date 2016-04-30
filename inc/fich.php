@@ -317,7 +317,7 @@ function request_external_files($feeds, $timeout, $echo_progress=false) {
 }
 
 
-function rafraichir_cache() {
+function rafraichir_cache_lv1() {
 	creer_dossier(BT_ROOT.DIR_CACHE, 1);
 	$arr_a = liste_elements("SELECT * FROM articles WHERE bt_statut = 1 ORDER BY bt_date DESC LIMIT 0, 20", array(), 'articles');
 	$arr_c = liste_elements("SELECT * FROM commentaires WHERE bt_statut = 1 ORDER BY bt_id DESC LIMIT 0, 20", array(), 'commentaires');

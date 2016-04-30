@@ -12,7 +12,22 @@
 # *** LICENSE ***
 
 header('Content-Type: application/atom+xml; charset=UTF-8');
-echo '<?xml version="1.0" encoding="UTF-8"?>'."\n";
+
+// second level caching file.
+$lv2_cache_file = 'cache/c_atom_'.substr(md5($_SERVER['QUERY_STRING']), 0, 8).'.dat';
+
+// if cache file exists
+if (file_exists($lv2_cache_file)) {
+	// if cache not too old
+	if (@filemtime($lv2_cache_file) > time()-(3600) ) {
+		readfile($lv2_cache_file);
+		die;
+	}
+	// file too old: delete it and go on (and create new file)
+	unlink($lv2_cache_file);
+}
+
+$xml = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
 
 define('BT_ROOT', './');
 
@@ -35,9 +50,10 @@ function require_all() {
 	require_once 'inc/sqli.php';
 }
 
-echo '<feed xmlns="http://www.w3.org/2005/Atom">'."\n";
-echo '<author><name>'.$GLOBALS['auteur'].'</name></author>'."\n";
-echo '<link rel="self" href="'.$GLOBALS['racine'].'atom.php'.((!empty($_SERVER['QUERY_STRING'])) ? '?'.(htmlspecialchars($_SERVER['QUERY_STRING'])) : '').'" />'."\n";
+$xml .= '<feed xmlns="http://www.w3.org/2005/Atom">'."\n";
+$xml .= '<author><name>'.$GLOBALS['auteur'].'</name></author>'."\n";
+$xml .= '<link rel="self" href="'.$GLOBALS['racine'].'atom.php'.((!empty($_SERVER['QUERY_STRING'])) ? '?'.(htmlspecialchars($_SERVER['QUERY_STRING'])) : '').'" />'."\n";
+
 // ATOM DU BLOG
 /* si y'a un ID en paramètre : flux sur fil commentaires de l'article "ID" */
 if (isset($_GET['id']) and preg_match('#^[0-9]{14}$#', $_GET['id'])) {
@@ -50,29 +66,29 @@ if (isset($_GET['id']) and preg_match('#^[0-9]{14}$#', $_GET['id'])) {
 	if (!empty($liste)) {
 		$query = "SELECT * FROM articles WHERE bt_id=? AND bt_date<=".date('YmdHis')." AND bt_statut=1";
 		$billet = liste_elements($query, array($article_id), 'articles');
-		echo '<title>Commentaires sur '.$billet[0]['bt_title'].' - '.$GLOBALS['nom_du_site'].'</title>'."\n";
-		echo '<link href="'.$billet[0]['bt_link'].'" />'."\n";
-		echo '<id>'.$billet[0]['bt_link'].'</id>';
+		$xml .= '<title>Commentaires sur '.$billet[0]['bt_title'].' - '.$GLOBALS['nom_du_site'].'</title>'."\n";
+		$xml .= '<link href="'.$billet[0]['bt_link'].'" />'."\n";
+		$xml .= '<id>'.$billet[0]['bt_link'].'</id>';
 
 		foreach ($liste as $comment) {
 			$dec = decode_id($comment['bt_id']);
 			$tag = 'tag:'.parse_url($GLOBALS['racine'], PHP_URL_HOST).''.$dec['annee'].'-'.$dec['mois'].'-'.$dec['jour'].':'.$comment['bt_id'];
-			echo '<entry>'."\n";
-				echo '<title>'.$comment['bt_author'].'</title>'."\n";
-				echo '<link href="'.$comment['bt_link'].'"/>'."\n";
-				echo '<id>'.$tag.'</id>'."\n";
-				echo '<updated>'.date('c', mktime($dec['heure'], $dec['minutes'], $dec['secondes'], $dec['mois'], $dec['jour'], $dec['annee'])).'</updated>'."\n";
-				echo '<content type="html">'.htmlspecialchars($comment['bt_content']).'</content>'."\n";
-			echo '</entry>'."\n";
+			$xml .= '<entry>'."\n";
+				$xml .= '<title>'.$comment['bt_author'].'</title>'."\n";
+				$xml .= '<link href="'.$comment['bt_link'].'"/>'."\n";
+				$xml .= '<id>'.$tag.'</id>'."\n";
+				$xml .= '<updated>'.date('c', mktime($dec['heure'], $dec['minutes'], $dec['secondes'], $dec['mois'], $dec['jour'], $dec['annee'])).'</updated>'."\n";
+				$xml .= '<content type="html">'.htmlspecialchars($comment['bt_content']).'</content>'."\n";
+			$xml .= '</entry>'."\n";
 		}
 	} else {
-		echo '<entry>'."\n";
-			echo '<title>'.$GLOBALS['lang']['note_no_commentaire'].'</title>'."\n";
-			echo '<id>'.$GLOBALS['racine'].'</id>'."\n";
-			echo '<link href="'.$GLOBALS['racine'].'" />'."\n";
-			echo '<updated>'.date('r').'</updated>'."\n";
-			echo '<content type="html">'.$GLOBALS['lang']['no_comments'].'</content>'."\n";
-		echo '</entry>'."\n";
+		$xml .= '<entry>'."\n";
+			$xml .= '<title>'.$GLOBALS['lang']['note_no_commentaire'].'</title>'."\n";
+			$xml .= '<id>'.$GLOBALS['racine'].'</id>'."\n";
+			$xml .= '<link href="'.$GLOBALS['racine'].'" />'."\n";
+			$xml .= '<updated>'.date('r').'</updated>'."\n";
+			$xml .= '<content type="html">'.$GLOBALS['lang']['no_comments'].'</content>'."\n";
+		$xml .= '</entry>'."\n";
 	}
 }
 /* sinon, fil rss sur les articles (par défaut) */
@@ -93,7 +109,7 @@ else {
 	if (!file_exists($fcache)) {
 		require_all();
 		$GLOBALS['db_handle'] = open_base();
-		rafraichir_cache();
+		rafraichir_cache_lv1();
 	}
 	// this function exists in SQLI.PHP. It is replaced here, because including sqli.php and the other files takes 10x more cpu load than this
 	if (file_exists($fcache)) {
@@ -148,7 +164,7 @@ else {
 	array_multisort($bt_id, SORT_DESC, $liste_rss);
 	$liste_rss = array_slice($liste_rss, 0, 20);
 	$invert = (isset($_GET['invertlinks'])) ? TRUE : FALSE;
-	$xml = '<title>'.$GLOBALS['nom_du_site'].'</title>'."\n";
+	$xml .= '<title>'.$GLOBALS['nom_du_site'].'</title>'."\n";
 	$xml .= '<link href="'.$GLOBALS['racine'].'?mode='.(trim($modes_url, '-')).'"/>'."\n";
 	$xml .= '<id>'.$GLOBALS['racine'].'?mode='.$modes_url.'</id>'."\n";
 	$main_updated = 0;
@@ -184,10 +200,15 @@ else {
 	$xml .= '<updated>'.date_create_from_format('YmdHis', $main_updated)->format('c').'</updated>'."\n";
 	$xml .= $xml_post;
 
-	echo $xml;
 }
 
+
 $end = microtime(TRUE);
-echo '<!-- generated in '.round(($end - $begin),6).' seconds -->'."\n";
-echo '</feed>';
+$xml .= '<!-- cached file generated on '.date("r").' -->'."\n";
+$xml .= '<!-- generated in '.round(($end - $begin),6).' seconds -->'."\n";
+$xml .= '</feed>';
+
+file_put_contents($lv2_cache_file, $xml);
+echo $xml;
+
 ?>

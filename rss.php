@@ -12,7 +12,22 @@
 # *** LICENSE ***
 
 header('Content-Type: application/rss+xml; charset=UTF-8');
-$xml = "<?".'xml version="1.0" encoding="UTF-8"'."?>"."\n";
+
+// second level caching file.
+$lv2_cache_file = 'cache/c_rss_'.substr(md5($_SERVER['QUERY_STRING']), 0, 8).'.dat';
+
+// if cache file exists
+if (file_exists($lv2_cache_file)) {
+	// if cache not too old
+	if (@filemtime($lv2_cache_file) > time()-(3600) ) {
+		readfile($lv2_cache_file);
+		die;
+	}
+	// file too old: delete it and go on (and create new file)
+	unlink($lv2_cache_file);
+}
+
+$xml = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
 
 define('BT_ROOT', './');
 
@@ -96,7 +111,7 @@ else {
 	if ( !file_exists($fcache) or !is_array($liste = @unserialize(base64_decode(substr(file_get_contents($fcache), strlen('<?php /* '), -strlen(' */'))))) ) {
 		require_all();
 		$GLOBALS['db_handle'] = open_base();
-		rafraichir_cache();
+		rafraichir_cache_lv1();
 		if (file_exists($fcache)) { // file exists but reading it does not give an array: try again
 			$liste = unserialize(base64_decode(substr(file_get_contents($fcache), strlen('<?php /* '), -strlen(' */'))));
 		}
@@ -185,9 +200,12 @@ else {
 }
 
 $end = microtime(TRUE);
+$xml .= '<!-- cached file generated on '.date("r").' -->'."\n";
 $xml .= '<!-- generated in '.round(($end - $begin),6).' seconds -->'."\n";
 $xml .= '</channel>'."\n";
 $xml .= '</rss>';
 
+file_put_contents($lv2_cache_file, $xml);
 echo $xml;
+
 ?>

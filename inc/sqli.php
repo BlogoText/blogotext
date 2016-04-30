@@ -368,7 +368,7 @@ function traiter_form_billet($billet) {
 		$redir = 'articles.php?msg=confirm_article_suppr';
 	}
 	if ($result === TRUE) {
-		rafraichir_cache();
+		rafraichir_cache_lv1();
 		redirection($redir);
 	}
 	else { die($result); }
@@ -485,7 +485,7 @@ function traiter_form_link($link) {
 	}
 
 	if ($result === TRUE) {
-		rafraichir_cache();
+		rafraichir_cache_lv1();
 		redirection($redir);
 	} else { die($result); }
 
@@ -599,7 +599,7 @@ function traiter_form_commentaire($commentaire, $admin) {
 					if (isset($_POST['com_activer']) and $GLOBALS['comm_defaut_status'] == 0) { // send subscribe emails if comments just got activated
 						send_emails(htmlspecialchars($_POST['com_bt_id']));
 					}
-					rafraichir_cache();
+					rafraichir_cache_lv1();
 					echo 'Success'.new_token();
 				}
 				else { echo 'Error'.new_token(); }
@@ -613,7 +613,7 @@ function traiter_form_commentaire($commentaire, $admin) {
 	}
 
 	if ($result === TRUE) {
-		rafraichir_cache();
+		rafraichir_cache_lv1();
 		redirection($redir);
 	}
 	else { die($result); }
