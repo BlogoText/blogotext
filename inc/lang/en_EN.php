@@ -66,6 +66,7 @@ $GLOBALS['lang'] = array(
 'secondes'							=> 'seconds',
 'du'									=> 'on',
 'et'									=> 'and',
+'ou'									=> 'or',
 'par'									=> 'by',
 'ajoute'								=> 'addded',
 'trouve'								=> 'found',

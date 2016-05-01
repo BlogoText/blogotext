@@ -31,7 +31,6 @@ if (isset($_POST['_verif_envoi'])) {
 }
 
 
-
 afficher_html_head($GLOBALS['lang']['preferences']);
 	echo '<div id="header">'."\n";
 		echo '<div id="top">'."\n";
@@ -78,11 +77,13 @@ function afficher_form_captcha() {
 	echo '<p><img src="../inc/freecap/freecap.php" id="freecap" alt="freecap"/></p>'."\n";
 	echo '<p>If you can\'t read the word, <a href="#" onclick="new_freecap();return false;">click here to change image</a></p>'."\n";
 	echo '<p>word above : <input type="text" class="text" name="word" /></p>'."\n";
-	echo '<input class="submit blue-square" type="submit" name="valider" value="'.$GLOBALS['lang']['envoyer'].'" />'."\n";
+	echo '<button class="submit button-submit" type="submit" name="valider">'.$GLOBALS['lang']['envoyer'].'</button>'."\n";
 	echo '</div>';
 	echo '</form>'."\n";
 
 }
+
+echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
 
 
 footer($begin);

@@ -143,7 +143,7 @@ function moteur_recherche() {
 	$return = '<form action="'.basename($_SERVER['SCRIPT_NAME']).'" method="get" id="search">'."\n";
 	$return .= '<input id="q" name="q" type="search" size="20" value="'.$requete.'" placeholder="'.$GLOBALS['lang']['placeholder_search'].'" accesskey="f" />'."\n";
 	$return .= '<label for="q">'.'</label>'."\n";
-	$return .= '<input class="silver-square" id="input-rechercher" type="submit" value="'.$GLOBALS['lang']['rechercher'].'" />'."\n";
+	$return .= '<input id="input-rechercher" type="submit" value="'.$GLOBALS['lang']['rechercher'].'" />'."\n";
 	if (isset($_GET['mode'])) {
 		$return .= '<input id="mode" name="mode" type="hidden" value="'.htmlspecialchars(stripslashes($_GET['mode'])).'"/>'."\n";
 	}
@@ -331,7 +331,7 @@ function php_lang_to_js($a) {
 	$frontend_str['questionCleanRss'] = $GLOBALS['lang']['question_clean_rss'];
 	$frontend_str['questionSupprComment'] = $GLOBALS['lang']['question_suppr_comment'];
 	$frontend_str['questionSupprArticle'] = $GLOBALS['lang']['question_suppr_article'];
-	$frontend_str['questionSupprSichier'] = $GLOBALS['lang']['question_suppr_fichier'];
+	$frontend_str['questionSupprFichier'] = $GLOBALS['lang']['question_suppr_fichier'];
 
 	$sc = 'var BTlang = '.json_encode($frontend_str).';';
 

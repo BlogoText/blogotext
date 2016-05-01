@@ -466,8 +466,9 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 			$form .= "\t\t".$GLOBALS['lang']['img_drop_files_here']."\n";
 			$form .= "\t\t".'<div class="upload-info">('.$GLOBALS['lang']['label_jusqua'].$max_file_size.$GLOBALS['lang']['label_parfichier'].')</div>'."\n";
 			$form .= "\t".'</div>'."\n";
-			$form .= "\t".'<div id="file-input-wrapper"><input name="fichier" id="fichier" type="file" required="" /></div>'."\n";
-			$form .= "\t".'<button type="button" class="specify-link white-square" id="click-change-form" onclick="return switchUploadForm();" data-lang-url="'.$GLOBALS['lang']['img_specifier_url'].'" data-lang-file="'.$GLOBALS['lang']['img_upload_un_fichier'].'">'.$GLOBALS['lang']['img_specifier_url'].'</button>'."\n";
+			$form .= "\t".'<p>'.$GLOBALS['lang']['ou'].'</p>';
+			$form .= "\t".'<div id="file-input-wrapper"><input name="fichier" id="fichier" class="text" type="file" required="" /><label for="fichier"></label></div>'."\n";
+			$form .= "\t".'<button type="button" class="specify-link button-cancel" id="click-change-form" onclick="return switchUploadForm();" data-lang-url="'.$GLOBALS['lang']['img_specifier_url'].'" data-lang-file="'.$GLOBALS['lang']['img_upload_un_fichier'].'">'.$GLOBALS['lang']['img_specifier_url'].'</button>'."\n";
 			$form .= '</div>'."\n";
 			$form .= '<div id="count"></div>'."\n";
 			$form .= '<div id="result"></div>'."\n";
@@ -482,7 +483,7 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 		$form .= hidden_input('token', new_token(), 'id');
 		$form .= hidden_input('_verif_envoi', '1');
 
-		$form .= "\t".'<p class="submit-bttns"><input class="submit blue-square" type="submit" name="upload" value="'.$GLOBALS['lang']['img_upload'].'" /></p>'."\n";
+		$form .= "\t".'<p class="submit-bttns"><button class="submit button-submit" type="submit" name="upload">'.$GLOBALS['lang']['img_upload'].'</button></p>'."\n";
 		$form .= '</div>'."\n";
 
 		$form .= '</fieldset>'."\n";
@@ -549,9 +550,9 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 		$checked = ($myfile['bt_statut'] == 0) ? 'checked ' : '';
 		$form .= "\t".'<p><label for="statut">'.$GLOBALS['lang']['label_file_priv'].'<input type="checkbox" id="statut" name="statut" '.$checked.'/></label></p>';
 		$form .= "\t".'<p class="submit-bttns">'."\n";
-		$form .= "\t\t".'<input class="submit red-square" type="button" name="supprimer" value="'.$GLOBALS['lang']['supprimer'].'" onclick="rmFichier(this)" />'."\n";
-		$form .= "\t\t".'<button class="submit white-square" type="button" onclick="annuler(\'fichiers.php\');">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
-		$form .= "\t\t".'<input class="submit blue-square" type="submit" name="editer" value="'.$GLOBALS['lang']['envoyer'].'" />'."\n";
+		$form .= "\t\t".'<button class="submit button-delete" type="button" name="supprimer" onclick="rmFichier(this)">'.$GLOBALS['lang']['supprimer'].'</button>'."\n";
+		$form .= "\t\t".'<button class="submit button-cancel" type="button" onclick="annuler(\'fichiers.php\');">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
+		$form .= "\t\t".'<button class="submit button-submit" type="submit" name="editer">'.$GLOBALS['lang']['envoyer'].'</button>'."\n";
 		$form .= "\t".'</p>'."\n";
 		$form .= '</div>'."\n";
 

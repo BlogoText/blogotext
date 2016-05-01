@@ -573,8 +573,8 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 		echo "\t".'<p>'.select_yes_no('incl-theme', 0, $GLOBALS['lang']['bak_incl_theme']).'</p>'."\n";
 		echo '</fieldset>'."\n";
 		echo '<p class="submit-bttns">'."\n";
-		echo "\t".'<button class="submit white-square" type="button" onclick="annuler(\'maintenance.php\');">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
-		echo "\t".'<button class="submit blue-square" type="submit" name="do" value="export">'.$GLOBALS['lang']['valider'].'</button>'."\n";
+		echo "\t".'<button class="submit button-cancel" type="button" onclick="annuler(\'maintenance.php\');">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
+		echo "\t".'<button class="submit button-submit" type="submit" name="do" value="export">'.$GLOBALS['lang']['valider'].'</button>'."\n";
 		echo '</p>'."\n";
 		echo hidden_input('token', $token);
 	echo '</form>'."\n";
@@ -592,8 +592,8 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 		echo '<input type="file" name="file" id="file" class="text" /></p>'."\n";
 		echo '</fieldset>'."\n";
 		echo '<p class="submit-bttns">'."\n";
-		echo "\t".'<button class="submit white-square" type="button" onclick="annuler(\'maintenance.php\');">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
-		echo "\t".'<input class="submit blue-square" type="submit" name="valider" value="'.$GLOBALS['lang']['valider'].'" />'."\n";
+		echo "\t".'<button class="submit button-cancel" type="button" onclick="annuler(\'maintenance.php\');">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
+		echo "\t".'<button class="submit button-submit" type="submit" name="valider">'.$GLOBALS['lang']['valider'].'</button>'."\n";
 		echo '</p>'."\n";
 
 		echo hidden_input('token', $token);
@@ -616,8 +616,8 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 
 		echo '</fieldset>'."\n";
 		echo '<p class="submit-bttns">'."\n";
-		echo "\t".'<button class="submit white-square" type="button" onclick="annuler(\'maintenance.php\');">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
-		echo "\t".'<button class="submit blue-square" type="submit" name="do" value="optim">'.$GLOBALS['lang']['valider'].'</button>'."\n";
+		echo "\t".'<button class="submit button-cancel" type="button" onclick="annuler(\'maintenance.php\');">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
+		echo "\t".'<button class="submit button-submit" type="submit" name="do" value="optim">'.$GLOBALS['lang']['valider'].'</button>'."\n";
 		echo '</p>'."\n";
 		echo hidden_input('token', $token);
 	echo '</form>'."\n";
@@ -631,7 +631,7 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 		echo '<fieldset class="pref valid-center">'."\n";
 		echo legend($GLOBALS['lang']['bak_restor_done'], 'legend-backup');
 		echo erreurs($erreurs_form);
-		echo '<p class="submit-bttns"><button class="submit blue-square" type="button" onclick="annuler(\'maintenance.php\')">'.$GLOBALS['lang']['valider'].'</button></p>'."\n";
+		echo '<p class="submit-bttns"><button class="submit button-submit" type="button" onclick="annuler(\'maintenance.php\')">'.$GLOBALS['lang']['valider'].'</button></p>'."\n";
 		echo '</fieldset>'."\n";
 		echo '</div>'."\n";
 
@@ -704,7 +704,7 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 					echo '<fieldset class="pref valid-center">';
 					echo legend($GLOBALS['lang']['bak_succes_save'], 'legend-backup');
 					echo '<p><a href="'.$file_archive.'" download>'.$GLOBALS['lang']['bak_dl_fichier'].'</a></p>'."\n";
-					echo '<p class="submit-bttns"><button class="submit blue-square" type="submit">'.$GLOBALS['lang']['valider'].'</button></p>'."\n";
+					echo '<p class="submit-bttns"><button class="submit button-submit" type="submit">'.$GLOBALS['lang']['valider'].'</button></p>'."\n";
 					echo '</fieldset>'."\n";
 					echo '</form>'."\n";
 				}
@@ -739,7 +739,7 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 					echo '<form action="maintenance.php" method="get" class="bordered-formbloc">'."\n";
 					echo '<fieldset class="pref valid-center">';
 					echo legend($GLOBALS['lang']['bak_optim_done'], 'legend-backup');
-					echo '<p class="submit-bttns"><button class="submit blue-square" type="submit">'.$GLOBALS['lang']['valider'].'</button></p>'."\n";
+					echo '<p class="submit-bttns"><button class="submit button-submit" type="submit">'.$GLOBALS['lang']['valider'].'</button></p>'."\n";
 					echo '</fieldset>'."\n";
 					echo '</form>'."\n";
 
@@ -776,7 +776,7 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 					echo '<ul>';
 					foreach ($message as $type => $nb) echo '<li>'.$GLOBALS['lang']['label_'.$type].' : '.$nb.'</li>'."\n";
 					echo '</ul>';
-					echo '<p class="submit-bttns"><button class="submit blue-square" type="submit">'.$GLOBALS['lang']['valider'].'</button></p>'."\n";
+					echo '<p class="submit-bttns"><button class="submit button-submit" type="submit">'.$GLOBALS['lang']['valider'].'</button></p>'."\n";
 					echo '</fieldset>'."\n";
 					echo '</form>'."\n";
 				}

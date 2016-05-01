@@ -36,37 +36,29 @@
 	resize: vertical;
 }
 
-#titre,
-#chapo,
-#notes,
-#contenu,
-#type_tags,
-#mots_cles {
+#form-ecrire .main-form .text {
 	width: 100%;
 	margin: 0;
 	border: 0;
 	border-bottom: 1px solid silver;
 	padding: 10px 5px;
+
+	transition: background-size 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
+	background: linear-gradient(to bottom, #2196F3, #2196F3) no-repeat 0% 100% / 0 2px;
 }
 
-#titre:invalid:focus,
-#chapo:invalid:focus,
-#notes:invalid:focus,
-#contenu:invalid:focus,
-#type_tags:invalid:focus,
-#mots_cles:invalid:focus {
-    border-bottom-color: #F44336;
-    box-shadow: 0px -1px 0px #F44336 inset;
+
+#form-ecrire .main-form .text:invalid {
+	box-shadow: none;
+	background: linear-gradient(to bottom, #F44336, #F44336) no-repeat 0% 100% / 0 2px;
 }
 
-#titre:focus,
-#chapo:focus,
-#notes:focus,
-#contenu:focus,
-#type_tags:focus,
-#mots_cles:focus {
-	border-bottom-color: #2196F3;
-	box-shadow: 0px -1px 0px #2196F3 inset;
+#form-ecrire .main-form .text:invalid:focus {
+
+}
+
+#form-ecrire .main-form .text:focus {
+	background-size: 100% 2px;
 }
 
 #titre {
@@ -79,16 +71,16 @@
 /*	overflow: hidden;*/
 }
 
-#chapo {
+#form-ecrire #chapo {
 	flex: 2 2 auto;
 	width: auto;
 }
-#notes {
+#form-ecrire #notes {
 	flex: 1 1 auto;
 	width: auto;
 }
 
-#chapo {
+#form-ecrire #chapo {
 	border-right: 1px solid silver;
 }
 
@@ -102,8 +94,6 @@ p.formatbut {
 	line-height: 28px;
 	margin: 0; padding: 0px 5px 2px;
 	background: #f5f5f5;
-/*	box-sizing: border-box;
-	position: relative;*/
 }
 
 .formatbut .but {
@@ -329,7 +319,7 @@ p.formatbut {
 	flex: 1 1 auto;
 }
 
-#formheure .text {
+#formheure input {
 	background: #FAFAFA;
 	padding: 11px 5px;
 	box-shadow: 0 0 2px rgba(0, 0, 0, .2);
