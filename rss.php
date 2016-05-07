@@ -24,7 +24,7 @@ if (file_exists($lv2_cache_file)) {
 		die;
 	}
 	// file too old: delete it and go on (and create new file)
-	unlink($lv2_cache_file);
+	@unlink($lv2_cache_file);
 }
 
 $xml = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
