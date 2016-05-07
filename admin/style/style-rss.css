@@ -62,7 +62,7 @@
 }
 
 .rss-menu-buttons button::before {
-	font-size: 2em;
+	font-size: 1.6em;
 }
 
 .rss-menu-buttons li > button:focus,
@@ -320,32 +320,26 @@
 	text-decoration: none;
 }
 
-#post-list > li .post-title a:hover+.datesite {
-	flex: 0 10 auto;
+#post-list > li .post-title .site {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	flex: 0 0 125px;
+	padding-right: 10px;
+	color: rgba(0, 0, 0, .5);
+	font-size: .9em;
 }
 
-#post-list > li div.datesite {
+#post-list > li .post-title .date {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 	display: flex;
 	align-items: center;
 	flex: 0 0 auto;
 	min-width: 0;
 	font-size: .9em;
-}
-
-
-
-#post-list > li div.datesite .site,
-#post-list > li div.datesite .date {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-
-#post-list > li div.datesite .site {
-	max-width: 200px;
-}
-#post-list > li div.datesite .site:hover {
-	max-width: 100%;
+	color: rgba(0, 0, 0, .5);
 }
 
 #post-list > li .rss-item-content {
@@ -385,11 +379,11 @@
 	margin-top: 15px;
 }
 
-#post-list > li .datesite .lien-share {
+#post-list > li .post-title .lien-share {
 	margin-left: 5px;
 	text-decoration: none;
 }
-#post-list > li .datesite .lien-share::before {
+#post-list > li .post-title .lien-share::before {
 	content: "\e91f";
 	font-size: 1.3em;
 	color: rgba(0, 0, 0, .4);
@@ -446,7 +440,7 @@
 	flex: 0 0 auto;
 }
 
-#form-rss-config li .white-square {
+#form-rss-config li .button-cancel {
 	display: none;
 }
 
@@ -478,10 +472,6 @@
 #form-rss-config li input.text,
 #form-rss-add input.text {
 	text-align: left;
-	margin: 0px 5px;
-	border: 0;
-	border-bottom: 1px solid #DADADA;
-	padding: 0;
 	width: 60%;
 }
 
@@ -490,13 +480,7 @@
 	border-bottom-color: transparent;
 }
 
-#form-rss-add input.text:focus,
-#form-rss-config li .text:focus {
-	border-bottom-color: #2196F3;
-	box-shadow: 0px -1px 0px #2196F3 inset;
-}
-
-#form-rss-config li button.red-square {
+#form-rss-config li button.button-delete {
 	margin-left: 10px;
 	margin-top: 0;
 	vertical-align: middle;
@@ -504,11 +488,11 @@
 	color: #f44336;
 	box-shadow: none;
 }
-#form-rss-config li button.red-square:hover {
+#form-rss-config li button.button-delete:hover {
 	border: 1px solid #ddd;
 	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
-#form-rss-config li button.red-square:active {
+#form-rss-config li button.button-delete:active {
 	box-shadow: none;
 }
 
@@ -516,13 +500,13 @@
 	text-decoration: line-through;
 }
 
-#form-rss-config li.to-remove .white-square {
+#form-rss-config li.to-remove .button-cancel {
 	display: inline;
 }
 
 #form-rss-config li.to-remove label,
 #form-rss-config li.to-remove input,
-#form-rss-config li.to-remove .red-square {
+#form-rss-config li.to-remove .button-delete {
 	opacity: .2;
 	
 }

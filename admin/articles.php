@@ -122,5 +122,6 @@ echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."
 	echo 'var scrollPos = 0;'."\n";
 	echo 'window.addEventListener(\'scroll\', function(){ scrollingFabHideShow() });'."\n";
 	echo "\n".'</script>'."\n";
+
 footer($begin);
 

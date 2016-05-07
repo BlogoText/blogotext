@@ -120,7 +120,7 @@ function create_tables() {
 				try {
 
 					$options_pdo[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
-					$db_handle = new PDO('mysql:host='.$GLOBALS['mysql_host'].';dbname='.$GLOBALS['mysql_db'].";charset=utf8;sql_mode=PIPES_AS_CONCAT;", $GLOBALS['mysql_login'], $GLOBALS['mysql_passwd'], $options_pdo);
+					$db_handle = new PDO('mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DB.";charset=utf8;sql_mode=PIPES_AS_CONCAT;", MYSQL_LOGIN, MYSQL_PASS, $options_pdo);
 					// check each wanted table
 					$wanted_tables = array('commentaires', 'articles', 'links', 'rss');
 					foreach ($wanted_tables as $i => $name) {
@@ -368,7 +368,7 @@ function traiter_form_billet($billet) {
 		$redir = 'articles.php?msg=confirm_article_suppr';
 	}
 	if ($result === TRUE) {
-		rafraichir_cache();
+		rafraichir_cache_lv1();
 		redirection($redir);
 	}
 	else { die($result); }
@@ -485,7 +485,7 @@ function traiter_form_link($link) {
 	}
 
 	if ($result === TRUE) {
-		rafraichir_cache();
+		rafraichir_cache_lv1();
 		redirection($redir);
 	} else { die($result); }
 
@@ -599,7 +599,7 @@ function traiter_form_commentaire($commentaire, $admin) {
 					if (isset($_POST['com_activer']) and $GLOBALS['comm_defaut_status'] == 0) { // send subscribe emails if comments just got activated
 						send_emails(htmlspecialchars($_POST['com_bt_id']));
 					}
-					rafraichir_cache();
+					rafraichir_cache_lv1();
 					echo 'Success'.new_token();
 				}
 				else { echo 'Error'.new_token(); }
@@ -613,7 +613,7 @@ function traiter_form_commentaire($commentaire, $admin) {
 	}
 
 	if ($result === TRUE) {
-		rafraichir_cache();
+		rafraichir_cache_lv1();
 		redirection($redir);
 	}
 	else { die($result); }

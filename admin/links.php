@@ -181,14 +181,16 @@ else { // aucun lien à ajouter ou éditer : champ nouveau lien + listage des li
 
 echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
 echo '<script type="text/javascript">'."\n";
-echo js_red_button_event(0);
-echo 'document.getElementById(\'url\').addEventListener(\'focus\', hideFAB, false);'."\n";
-echo 'document.getElementById(\'url\').addEventListener(\'blur\', unHideFAB, false);'."\n";
+echo php_lang_to_js(0)."\n";
 
-echo 'if (window.getComputedStyle(document.querySelector(\'#nav > ul\')).position != \'absolute\') {'."\n";
-echo '	document.getElementById(\'url\').focus();'."\n";
-echo '}'."\n";
+if ($step == 1) {
+	echo 'document.getElementById(\'url\').addEventListener(\'focus\', hideFAB, false);'."\n";
+	echo 'document.getElementById(\'url\').addEventListener(\'blur\', unHideFAB, false);'."\n";
 
+	echo 'if (window.getComputedStyle(document.querySelector(\'#nav > ul\')).position != \'absolute\') {'."\n";
+	echo '	document.getElementById(\'url\').focus();'."\n";
+	echo '}'."\n";
+}
 echo 'var scrollPos = 0;'."\n";
 echo 'window.addEventListener(\'scroll\', function(){ scrollingFabHideShow() });'."\n";
 echo '</script>';

@@ -312,7 +312,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= "\t\t".'<label for="url">'.$GLOBALS['lang']['label_nouv_lien'].'</label>'."\n";
 		$form .= "\t\t".'<input type="text" name="url" id="url" value="" size="70" placeholder="http://www.example.com/" class="text" autocomplete="off" />'."\n";
 		$form .= "\t".'</div>'."\n";
-		$form .= "\t".'<p class="submit-bttns"><input type="submit" value="'.$GLOBALS['lang']['envoyer'].'" class="submit blue-square" /></p>'."\n";
+		$form .= "\t".'<p class="submit-bttns"><button type="submit" class="submit button-submit">'.$GLOBALS['lang']['envoyer'].'</button></p>'."\n";
 		$form .= '</fieldset>'."\n";
 		$form .= '</form>'."\n\n";
 
@@ -387,7 +387,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 
 		$form .= "\t".'<div id="tag_bloc">'."\n";
 		$form .= form_categories_links('links', '');
-		$form .= "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'"/>'."\n";
+		$form .= "\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'"/>'."\n";
 		$form .= "\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
 		$form .= "\t".'</div>'."\n";
 
@@ -399,8 +399,8 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 			$form .= ($GLOBALS['dl_link_to_files'] == 1) ? hidden_input('add_to_files', 'on') : '';
 		}
 		$form .= "\t".'<p class="submit-bttns">'."\n";
-		$form .= "\t\t".'<button class="submit white-square" type="button" onclick="annuler(\'links.php\');">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
-		$form .= "\t\t".'<input class="submit blue-square" type="submit" name="enregistrer" id="valid-link" value="'.$GLOBALS['lang']['envoyer'].'" />'."\n";
+		$form .= "\t\t".'<button class="submit button-cancel" type="button" onclick="annuler(\'links.php\');">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
+		$form .= "\t\t".'<button class="submit button-submit" type="submit" name="enregistrer" id="valid-link">'.$GLOBALS['lang']['envoyer'].'</button>'."\n";
 		$form .= "\t".'</p>'."\n";
 		$form .= hidden_input('_verif_envoi', '1');
 		$form .= hidden_input('bt_id', $new_id);
@@ -418,14 +418,14 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= "\t".'</div>'."\n";
 		$form .= "\t".'<div id="tag_bloc">'."\n";
 		$form .= form_categories_links('links', $editlink['bt_tags']);
-		$form .= "\t\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'"/>'."\n";
+		$form .= "\t\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'"/>'."\n";
 		$form .= "\t\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
 		$form .= "\t".'</div>'."\n";
 		$form .= "\t".'<label class="forcheckbox">'.$GLOBALS['lang']['label_lien_priv'].'<input type="checkbox" name="statut" '.(($editlink['bt_statut'] == 0) ? 'checked ' : '').'/>'.'</label>'."\n";
 		$form .= "\t".'<p class="submit-bttns">'."\n";
-		$form .= "\t\t".'<input class="submit red-square" type="button" name="supprimer" value="'.$GLOBALS['lang']['supprimer'].'" onclick="rmArticle(this)" />'."\n";
-		$form .= "\t\t".'<button class="submit white-square" type="button" onclick="annuler(\'links.php\');">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
-		$form .= "\t\t".'<input class="submit blue-square" type="submit" name="editer" value="'.$GLOBALS['lang']['envoyer'].'" />'."\n";
+		$form .= "\t\t".'<button class="submit button-delete" type="button" name="supprimer" onclick="rmArticle(this)">'.$GLOBALS['lang']['supprimer'].'</button>'."\n";
+		$form .= "\t\t".'<button class="submit button-cancel" type="button" onclick="annuler(\'links.php\');">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
+		$form .= "\t\t".'<button class="submit button-submit" type="submit" name="editer">'.$GLOBALS['lang']['envoyer'].'</button>'."\n";
 		$form .= "\t".'</p>'."\n";
 		$form .= hidden_input('ID', $editlink['ID']);
 		$form .= hidden_input('bt_id', $editlink['bt_id']);
@@ -442,8 +442,8 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 
 /// formulaires BILLET //////////
 function afficher_form_billet($article, $erreurs) {
-	function form_annee($year_shown) {
 
+	function form_annee($year_shown) {
 		$yearBegin = min (substr(DATE_PREMIER_MESSAGE_BLOG, 0, 4), date('Y') -3);
 		for ($year = $yearBegin, $year_max = date('Y') +3; $year <= $year_max; $year++) $years[$year] = $year;
 		$ret = '<select name="annee">'."\n" ;
@@ -529,7 +529,8 @@ function afficher_form_billet($article, $erreurs) {
 	} else {
 		echo '<form id="form-ecrire" method="post" onsubmit="return moveTag();" action="'.basename($_SERVER['SCRIPT_NAME']).'" >'."\n";
 	}
-		echo '<input id="titre" name="titre" type="text" size="50" value="'.$titredefaut.'" required="" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_titre']).'" tabindex="30" class="text" spellcheck="true" />'."\n" ;
+	echo '<div class="main-form">';
+	echo '<input id="titre" name="titre" type="text" size="50" value="'.$titredefaut.'" required="" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_titre']).'" tabindex="30" class="text" spellcheck="true" />'."\n" ;
 	echo '<div id="chapo_note">'."\n";
 	echo '<textarea id="chapo" name="chapo" rows="5" cols="20" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_chapo']).'" tabindex="35" class="text" >'.$chapodefaut.'</textarea>'."\n" ;
 	echo '<textarea id="notes" name="notes" rows="5" cols="20" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_notes']).'" tabindex="40" class="text" >'.$notesdefaut.'</textarea>'."\n" ;
@@ -542,7 +543,7 @@ function afficher_form_billet($article, $erreurs) {
 	if ($GLOBALS['activer_categories'] == '1') {
 		echo "\t".'<div id="tag_bloc">'."\n";
 		echo form_categories_links('articles', $categoriesdefaut);
-		echo "\t\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" onkeydown="chkHit(event);" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'" tabindex="65"/>'."\n";
+		echo "\t\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'" tabindex="65"/>'."\n";
 		echo "\t\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
 		echo "\t".'</div>'."\n";
 	}
@@ -550,6 +551,7 @@ function afficher_form_billet($article, $erreurs) {
 	if ($GLOBALS['automatic_keywords'] == '0') {
 		echo '<input id="mots_cles" name="mots_cles" type="text" size="50" value="'.$motsclesdefaut.'" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_motscle']).'" tabindex="67" class="text" />'."\n";
 	}
+	echo '</div>';
 
 	echo '<div id="date-and-opts">'."\n";
 	echo '<div id="date">'."\n";
@@ -559,9 +561,9 @@ function afficher_form_billet($article, $erreurs) {
 			echo form_jour($defaut_jour);
 		echo '</span>'."\n\n";
 		echo '<span id="formheure">';
-			echo '<input name="heure" type="text" size="2" maxlength="2" value="'.$defaut_heure.'" required="" class="text" /> : ';
-			echo '<input name="minutes" type="text" size="2" maxlength="2" value="'.$defaut_minutes.'" required="" class="text" /> : ';
-			echo '<input name="secondes" type="text" size="2" maxlength="2" value="'.$defaut_secondes.'" required="" class="text" />';
+			echo '<input name="heure" type="text" size="2" maxlength="2" value="'.$defaut_heure.'" required="" /> : ';
+			echo '<input name="minutes" type="text" size="2" maxlength="2" value="'.$defaut_minutes.'" required="" /> : ';
+			echo '<input name="secondes" type="text" size="2" maxlength="2" value="'.$defaut_secondes.'" required="" />';
 		echo '</span>'."\n";
 		echo '</div>'."\n";
 		echo '<div id="opts">'."\n";
@@ -580,10 +582,10 @@ function afficher_form_billet($article, $erreurs) {
 		echo hidden_input('article_id', $article['bt_id']);
 		echo hidden_input('article_date', $article['bt_date']);
 		echo hidden_input('ID', $article['ID']);
-		echo "\t".'<input class="submit red-square" type="button" name="supprimer" value="'.$GLOBALS['lang']['supprimer'].'" onclick="contenuLoad = document.getElementById(\'contenu\').value; rmArticle(this)" />'."\n";
+		echo "\t".'<button class="submit button-delete" type="button" name="supprimer" onclick="contenuLoad = document.getElementById(\'contenu\').value; rmArticle(this)" />'.$GLOBALS['lang']['supprimer'].'</button>'."\n";
 	}
-	echo "\t".'<button class="submit white-square" type="button" onclick="annuler(\'articles.php\');">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
-	echo "\t".'<input class="submit blue-square" type="submit" name="enregistrer" onclick="contenuLoad=document.getElementById(\'contenu\').value" value="'.$GLOBALS['lang']['envoyer'].'" tabindex="70" />'."\n";
+	echo "\t".'<button class="submit button-cancel" type="button" onclick="annuler(\'articles.php\');">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
+	echo "\t".'<button class="submit button-submit" type="submit" name="enregistrer" onclick="contenuLoad=document.getElementById(\'contenu\').value" tabindex="70">'.$GLOBALS['lang']['envoyer'].'</button>'."\n";
 	echo '</p>'."\n";
 	echo hidden_input('_verif_envoi', '1');
 	echo hidden_input('token', new_token());
@@ -698,7 +700,7 @@ function afficher_form_rssconf($errors='') {
 	$out .= "\t\t\t".'<label for="new-feed">'.$GLOBALS['lang']['label_feed_new'].':</label>'."\n";
 	$out .= "\t\t\t".'<input id="new-feed" name="new-feed" type="text" class="text" value="" placeholder="http://www.example.org/rss">'."\n";
 	$out .= '<p class="submit-bttns">'."\n";
-	$out .= "\t".'<input class="submit blue-square" type="submit" name="send" value="'.$GLOBALS['lang']['envoyer'].'" />'."\n";
+	$out .= "\t".'<button class="submit button-submit" type="submit" name="send">'.$GLOBALS['lang']['envoyer'].'</button>'."\n";
 	$out .= '</p>'."\n";
 	$out .= hidden_input('token', new_token());
 	$out .= hidden_input('verif_envoi', 1);
@@ -710,7 +712,7 @@ function afficher_form_rssconf($errors='') {
 	$out .= '<ul>'."\n";
 	foreach($GLOBALS['liste_flux'] as $i => $flux) {
 		$out .= "\t".'<li>'."\n";
-		$out .= "\t\t".'<span'.( ($flux['iserror'] > 2) ? ' class="feed-error" title="'.$flux['iserror'].' last requests were errors.)" ' : ''  ).'>'."\n";
+		$out .= "\t\t".'<span'.( ($flux['iserror'] > 2) ? ' class="feed-error" title="('.$flux['iserror'].' last requests were errors.)" ' : ''  ).'>'."\n";
 		$out .= "\t\t\t".'<label for="i_'.$flux['checksum'].'">'.$GLOBALS['lang']['rss_label_titre_flux'].'</label>'."\n";
 		$out .= "\t\t\t".'<input id="i_'.$flux['checksum'].'" name="i_'.$flux['checksum'].'" type="text" class="text" value="'.htmlspecialchars($flux['title']).'">'."\n";
 		$out .= "\t\t".'</span>'."\n";
@@ -724,14 +726,14 @@ function afficher_form_rssconf($errors='') {
 		$out .= "\t\t\t".'<input class="remove-feed" name="k_'.$flux['checksum'].'" type="hidden" value="1">'."\n";
 		$out .= "\t\t".'</span>'."\n";
 		$out .= "\t\t".'<span>'."\n";
-		$out .= "\t\t\t".'<button type="button" class="white-square" onclick="unMarkAsRemove(this)">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
-		$out .= "\t\t\t".'<button type="button" class="red-square" onclick="markAsRemove(this)">'.$GLOBALS['lang']['supprimer'].'</button>'."\n";
+		$out .= "\t\t\t".'<button type="button" class="submit button-cancel" onclick="unMarkAsRemove(this)">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
+		$out .= "\t\t\t".'<button type="button" class="submit button-delete" onclick="markAsRemove(this)">'.$GLOBALS['lang']['supprimer'].'</button>'."\n";
 		$out .= "\t\t".'</span>';
 		$out .= "\t".'</li>'."\n";
 	}
 	$out .= '</ul>'."\n";
 	$out .= '<p class="submit-bttns">'."\n";
-	$out .= "\t".'<input class="submit blue-square" type="submit" name="send" value="'.$GLOBALS['lang']['envoyer'].'" />'."\n";
+	$out .= "\t".'<button class="submit button-submit" type="submit" name="send">'.$GLOBALS['lang']['envoyer'].'</button>'."\n";
 	$out .= '</p>'."\n";
 	$out .= hidden_input('token', new_token());
 	$out .= hidden_input('verif_envoi', 1);
@@ -746,8 +748,8 @@ function afficher_form_prefs($erreurs = '') {
 	$submit_box = '<div class="submit-bttns">'."\n";
 	$submit_box .= hidden_input('_verif_envoi', '1');
 	$submit_box .= hidden_input('token', new_token());
-	$submit_box .= '<button class="submit white-square" type="button" onclick="annuler(\'preferences.php\');" >'.$GLOBALS['lang']['annuler'].'</button>'."\n";
-	$submit_box .= '<input class="submit blue-square" type="submit" name="enregistrer" value="'.$GLOBALS['lang']['enregistrer'].'" />'."\n";
+	$submit_box .= '<button class="submit button-cancel" type="button" onclick="annuler(\'preferences.php\');" >'.$GLOBALS['lang']['annuler'].'</button>'."\n";
+	$submit_box .= '<button class="submit button-submit" type="submit" name="enregistrer">'.$GLOBALS['lang']['enregistrer'].'</button>'."\n";
 	$submit_box .= '</div>'."\n";
 
 

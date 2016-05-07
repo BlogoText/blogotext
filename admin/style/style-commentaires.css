@@ -263,6 +263,10 @@
 	height: auto;
 }
 
+.form-commentaire .formatbut {
+	border: 1px solid silver;
+}
+
 .commentbloc.foreground .cl-edit { /* hide edit button if already on edit */
 	display: none;
 }
@@ -270,12 +274,14 @@
 /* textarea field in comments */
 .form-commentaire .field {
 	margin-top: 30px;
-	border: 1px solid rgba(0, 0, 0, 0.3);
 }
 
-.form-commentaire .field textarea,
-.form-commentaire .field .formatbut {
-	border: 0;
+.form-commentaire textarea.text {
+	border-left: 1px solid silver;
+	border-right: 1px solid silver;
+}
+.form-commentaire textarea.text:not(:invalid) {
+	border-bottom: 1px solid silver;
 }
 
 .form-commentaire .infos {
@@ -291,22 +297,7 @@
 
 .form-commentaire span > input.text {
 	flex: 1;
-	border: 1px solid #dadada;
-	border-width: 0 0 1px 0;
 	padding: 0 0 0 1px;
-	margin: 0 0 0 2px;
-	box-shadow: none;
-	border-radius: 0;
-}
-
-.form-commentaire input.text:focus {
-	border-bottom-color: #2196F3;
-	box-shadow: 0px -1px 0px #2196F3 inset;
-}
-
-.form-commentaire input.text:invalid {
-	border-bottom-color: #f44336;
-	box-shadow: 0px -1px 0px #f44336 inset;
 }
 
 .form-commentaire label:not(.activercomm) {

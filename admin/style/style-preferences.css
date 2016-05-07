@@ -29,21 +29,7 @@
 }
 
 #preferences .text {
-	border: 0px solid #dadada;
-	border-bottom-width: 1px;
-	padding-left: 1px;
-	box-shadow: none;
-	border-radius: 0;
-}
-
-#preferences .text:focus {
-	border-bottom-color: #2196F3;
-	box-shadow: 0px -1px 0px #2196F3 inset;
-}
-
-#preferences .text:invalid {
-	border-bottom-color: #f44336;
-	box-shadow: 0px -1px 0px #f44336 inset;
+	padding: 5px 5px 5px 1px;
 }
 
 #preferences textarea.text {

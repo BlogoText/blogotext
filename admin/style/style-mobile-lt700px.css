@@ -52,7 +52,7 @@
 	.submit-bttns {
 		padding: 0;
 	}
-	.red-square, .blue-square, .white-square {
+	.button-delete, .button-submit, .button-cancel {
 		min-width: 0;
 		padding: 5px;
 	}
@@ -159,7 +159,6 @@
 	#feed-list:hover {
 		transform: translateX(0);
 	}
-
 	#rss-list {
 		padding-right: 0%;
 		padding-left: 25px;
@@ -169,12 +168,10 @@
 		padding: 10px;
 	}
 
-	#post-list > li .post-title {
-		display: block;
-	}
-	#post-list > li div.datesite {
-		font-size: 0.8em;
-		justify-content: flex-end;
+	/* page fichiers */
+	#file-list td:nth-of-type(3),
+	#file-list th:nth-of-type(3) {
+		display: none;
 	}
 }
 

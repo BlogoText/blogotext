@@ -85,8 +85,16 @@ afficher_form_billet($post, $erreurs_form);
 
 echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
 echo '<script type="text/javascript">';
-echo js_alert_before_quit(0);
-echo js_red_button_event(0);
+echo php_lang_to_js(0);
+echo 'var contenuLoad = document.getElementById("contenu").value;
+window.addEventListener("beforeunload", function (e) {
+	// From https://developer.mozilla.org/en-US/docs/Web/Reference/Events/beforeunload
+	var confirmationMessage = BTlang.questionQuitPage;
+	if(document.getElementById("contenu").value == contenuLoad) { return true; };
+	(e || window.event).returnValue = confirmationMessage || \'\' ;	//Gecko + IE
+	return confirmationMessage;													// Webkit : ignore this.
+});';
+
 echo '</script>';
 
 

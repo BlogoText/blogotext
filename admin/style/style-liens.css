@@ -35,11 +35,12 @@
 #post-new-lien .contain-input {
 	margin-top: 5px;
 	display: flex;
-	height: 24px;
+	align-items: center;
 }
 
 #post-new-lien label[for="url"] {
 	width: 24px;
+	height: 24px;
 	overflow: hidden;
 }
 
@@ -51,16 +52,8 @@
 }
 
 #post-new-lien #url {
-	flex: 1;
-	border: 1px solid #dadada;
-	border-width: 0 0 1px 0;
 	width: 100%;
 	min-width: 0;
-}
-
-#post-new-lien #url:focus {
-	border-bottom-color: #2196F3;
-	box-shadow: 0px -1px 0px #2196F3 inset;
 }
 
 #post-new-lien .submit {
@@ -92,8 +85,6 @@
 }
 
 #post-lien .text {
-	border: 1px solid #dadada;
-	border-width: 0 0 1px 0;
 	padding: 14px 7px 2px 1px;
 	margin: 5px 0 0 0;
 	max-width: 100%;
@@ -128,13 +119,6 @@
 	min-height: 130px;
 	resize: none;
 }
-
-
-#post-lien .text:focus {
-	border-bottom-color: #2196F3;
-	box-shadow: 0px -1px 0px #2196F3 inset;
-}
-
 
 /* LINKS : tags */
 /* see also #tag_bloc+ in style-ecrire.css */

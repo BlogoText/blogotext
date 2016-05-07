@@ -466,8 +466,9 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 			$form .= "\t\t".$GLOBALS['lang']['img_drop_files_here']."\n";
 			$form .= "\t\t".'<div class="upload-info">('.$GLOBALS['lang']['label_jusqua'].$max_file_size.$GLOBALS['lang']['label_parfichier'].')</div>'."\n";
 			$form .= "\t".'</div>'."\n";
-			$form .= "\t".'<div id="file-input-wrapper"><input name="fichier" id="fichier" type="file" required="" /></div>'."\n";
-			$form .= "\t".'<button type="button" class="specify-link white-square" id="click-change-form" onclick="return switchUploadForm();" data-lang-url="'.$GLOBALS['lang']['img_specifier_url'].'" data-lang-file="'.$GLOBALS['lang']['img_upload_un_fichier'].'">'.$GLOBALS['lang']['img_specifier_url'].'</button>'."\n";
+			$form .= "\t".'<p>'.$GLOBALS['lang']['ou'].'</p>';
+			$form .= "\t".'<div id="file-input-wrapper"><input name="fichier" id="fichier" class="text" type="file" required="" /><label for="fichier"></label></div>'."\n";
+			$form .= "\t".'<button type="button" class="specify-link button-cancel" id="click-change-form" onclick="return switchUploadForm();" data-lang-url="'.$GLOBALS['lang']['img_specifier_url'].'" data-lang-file="'.$GLOBALS['lang']['img_upload_un_fichier'].'">'.$GLOBALS['lang']['img_specifier_url'].'</button>'."\n";
 			$form .= '</div>'."\n";
 			$form .= '<div id="count"></div>'."\n";
 			$form .= '<div id="result"></div>'."\n";
@@ -482,7 +483,7 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 		$form .= hidden_input('token', new_token(), 'id');
 		$form .= hidden_input('_verif_envoi', '1');
 
-		$form .= "\t".'<p class="submit-bttns"><input class="submit blue-square" type="submit" name="upload" value="'.$GLOBALS['lang']['img_upload'].'" /></p>'."\n";
+		$form .= "\t".'<p class="submit-bttns"><button class="submit button-submit" type="submit" name="upload">'.$GLOBALS['lang']['img_upload'].'</button></p>'."\n";
 		$form .= '</div>'."\n";
 
 		$form .= '</fieldset>'."\n";
@@ -549,9 +550,9 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 		$checked = ($myfile['bt_statut'] == 0) ? 'checked ' : '';
 		$form .= "\t".'<p><label for="statut">'.$GLOBALS['lang']['label_file_priv'].'<input type="checkbox" id="statut" name="statut" '.$checked.'/></label></p>';
 		$form .= "\t".'<p class="submit-bttns">'."\n";
-		$form .= "\t\t".'<input class="submit red-square" type="button" name="supprimer" value="'.$GLOBALS['lang']['supprimer'].'" onclick="rmFichier(this)" />'."\n";
-		$form .= "\t\t".'<button class="submit white-square" type="button" onclick="annuler(\'fichiers.php\');">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
-		$form .= "\t\t".'<input class="submit blue-square" type="submit" name="editer" value="'.$GLOBALS['lang']['envoyer'].'" />'."\n";
+		$form .= "\t\t".'<button class="submit button-delete" type="button" name="supprimer" onclick="rmFichier(this)">'.$GLOBALS['lang']['supprimer'].'</button>'."\n";
+		$form .= "\t\t".'<button class="submit button-cancel" type="button" onclick="annuler(\'fichiers.php\');">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
+		$form .= "\t\t".'<button class="submit button-submit" type="submit" name="editer">'.$GLOBALS['lang']['envoyer'].'</button>'."\n";
 		$form .= "\t".'</p>'."\n";
 		$form .= '</div>'."\n";
 
@@ -602,19 +603,27 @@ function afficher_liste_fichiers($tableau) {
 				}
 				$out .= '</div>'."\n";
 			}
-			$out .= '<div id="files-wall">'."\n";
+
 			// the files
+			$out .= '<table id="file-list">'."\n";
+			$out .= "\t".'<thead>'."\n";
+				$out .= "\t\t".'<tr><th></th><th>'.$GLOBALS['lang']['label_dp_nom'].'</th><th>'.$GLOBALS['lang']['label_dp_poids'].'</th><th>'.$GLOBALS['lang']['label_dp_date'].'</th><th></th><th></th></tr>'."\n";
+			$out .= "\t".'</thead>'."\n";
+			$out .= "\t".'<tbody>'."\n";
+
 			foreach ($tableau as $file) {
-				$out .= '<div class="file_bloc"  id="bloc_'.$file['bt_id'].'" data-type="'.$file['bt_type'].'">'."\n";
-					$description = (empty($file['bt_content'])) ? '' : ' ('.$file['bt_content'].')';
-					$out .= "\t".'<span class="spantop black">';
-					$out .= '<a class="lien lien-edit" href="fichiers.php?file_id='.$file['bt_id'].'&amp;edit"></a>';
-					$out .= '<a class="lien lien-supr" href="#" onclick="request_delete_form(\''.$file['bt_id'].'\'); return false;" ></a>';
-					$out .= '</span>'."\n";
-					$out .= "\t".'<a class="lien" href="'.$dossier_relatif.'/'.$file['bt_filename'].'" download><img src="style/filetypes/'.$file['bt_type'].'.png" id="'.$file['bt_id'].'" alt="'.$file['bt_filename'].'" /></a><br/><span class="description">'.$file['bt_filename']."</span>\n";
-				$out .= '</div>'."\n\n";
+				$out .= "\t".'<tr id="bloc_'.$file['bt_id'].'" data-type="'.$file['bt_type'].'">'."\n";
+					$out .= "\t\t".'<td><img src="style/filetypes/'.$file['bt_type'].'.png" id="'.$file['bt_id'].'" alt="'.$file['bt_filename'].'" /></td>'."\n";
+					$out .= "\t\t".'<td><a href="fichiers.php?file_id='.$file['bt_id'].'&amp;edit">'.$file['bt_filename'].'</a></td>'."\n";
+					$out .= "\t\t".'<td>'.taille_formate($file['bt_filesize']).'</td>'."\n";
+					$out .= "\t\t".'<td>'.date_formate($file['bt_id']).'</td>'."\n";
+					$out .= "\t\t".'<td><a href="'.$dossier_relatif.'/'.$file['bt_filename'].'" download>DL</a></td>'."\n";
+					$out .= "\t\t".'<td><a href="#" onclick="request_delete_form(\''.$file['bt_id'].'\'); return false;" >DEL</a></td>'."\n";
+				$out .= "\t".'</tr>'."\n";
 			}
-			$out .= '</div>'."\n";
+			$out .= "\t".'</tbody>'."\n";
+			$out .= '</table>'."\n";
+
 		$out .= '</div>'."\n";
 
 	}

@@ -39,7 +39,7 @@
 }
 
 /* bottom left popup in/out sliding */
-@keyframes popup-disapear{  
+@keyframes popup-disapear {  
 	10% {
 		bottom: 30px;
 	}
@@ -77,6 +77,21 @@
 	100% { left: 40%; opacity: 0; }
 }
 
+/* material design button-click "ripple" effect */
+@keyframes md-ripple {
+  0% {
+    transform: scale(0, 0);
+    opacity: 1;
+  }
+  20% {
+    transform: scale(1, 4);
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.2, 4);
+  }
+}
 
 
 
@@ -174,7 +189,7 @@ textarea {
 	box-sizing: border-box;
 }
 
-textarea, input {
+textarea, input, button {
 	font-family: inherit;
 	font-size: inherit;
 	font-weight: 300;
@@ -581,8 +596,27 @@ form {
 }
 
 .text {
-	background: white;
+	border: 1px solid transparent;
+	border-radius: 0;
+	border-bottom-color: silver;
+	padding: 10px 5px;
+	margin: 0;
+	transition: background-size 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
+	background: white linear-gradient(to bottom, #2196F3, #2196F3) no-repeat 0% 100% / 0 2px;
 }
+.text:invalid {
+	box-shadow: none;
+	outline: none;
+	background: white linear-gradient(to bottom, #F44336, #F44336) no-repeat 0% 100% / 0 2px;
+	border-bottom-color: #F44336;
+}
+.text:invalid:focus {
+
+}
+.text:focus {
+	background-size: 100% 2px;
+}
+
 
 /* <Select> + <option> + <optgroup> */
 select {
@@ -614,57 +648,83 @@ select optgroup::before {
 /*input buttons */
 .submit-bttns {
 	text-align: right;
-	margin: 15px auto 0;
+	margin: 20px auto 5px;
 	box-sizing: border-box;
 	width: 100%;
 	max-width: 700px;
 	padding: 0 20px;
 }
 
-.submit-bttns .red-square {
+.submit-bttns .button-delete {
 	float: left;
 }
 
-
-.red-square,
-.blue-square,
-.white-square {
+.submit {
 	color: white;
 	font-weight: bold;
 	vertical-align: middle;
 	padding: 6px 12px;
-	margin: 7px 0 0;
 	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 	border-radius: 2px;
-	border: 1px solid transparent;
+	border: 0px solid transparent;
 	min-width: 100px;
 	text-transform: uppercase;
 }
-.white-square:hover {
-	border: 1px solid #ddd;
+.button-cancel:hover {
 	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 	border-radius: 2px;
 }
-.red-square:active,
-.blue-square:active,
-.white-square:active {
+.submit:active {
 	box-shadow: none;
 }
 
-.blue-square {
+.button-submit {
 	min-width: 140px;
 	background: #2196f3;
 }
 
-.red-square {
+.button-delete {
 	background: #f44336;
 }
 
-.white-square {
+.button-cancel {
 	box-shadow: none;
 	background: white;
 	color: #333;
 	margin-right: 5px;
+}
+
+
+
+
+.submit {
+  position: relative;
+  overflow: hidden;
+}
+
+.submit:after {
+  content: '';
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, .5);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(0, 0);
+}
+
+/* for mouse focus */
+.submit:focus:hover::after {
+  animation: md-ripple 1s ease-out;
+}
+/* for keyboard focus */
+.submit:focus:not(:hover)::after {
+	background: rgba(255, 255, 255, .2);
+	transform: scale(1, 1);
+	border-radius: 0;
+	opacity: 1;
 }
 
 legend {

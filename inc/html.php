@@ -143,7 +143,7 @@ function moteur_recherche() {
 	$return = '<form action="'.basename($_SERVER['SCRIPT_NAME']).'" method="get" id="search">'."\n";
 	$return .= '<input id="q" name="q" type="search" size="20" value="'.$requete.'" placeholder="'.$GLOBALS['lang']['placeholder_search'].'" accesskey="f" />'."\n";
 	$return .= '<label for="q">'.'</label>'."\n";
-	$return .= '<input class="silver-square" id="input-rechercher" type="submit" value="'.$GLOBALS['lang']['rechercher'].'" />'."\n";
+	$return .= '<input id="input-rechercher" type="submit" value="'.$GLOBALS['lang']['rechercher'].'" />'."\n";
 	if (isset($_GET['mode'])) {
 		$return .= '<input id="mode" name="mode" type="hidden" value="'.htmlspecialchars(stripslashes($_GET['mode'])).'"/>'."\n";
 	}
@@ -312,5 +312,32 @@ function feed_list_html() {
 
 	}
 	return $html;
+}
+
+
+function php_lang_to_js($a) {
+	$frontend_str = array();
+	$frontend_str['maxFilesSize'] = min(return_bytes(ini_get('upload_max_filesize')), return_bytes(ini_get('post_max_size')));
+	$frontend_str['rssJsAlertNewLink'] = $GLOBALS['lang']['rss_jsalert_new_link'];
+	$frontend_str['rssJsAlertNewLinkFolder'] = $GLOBALS['lang']['rss_jsalert_new_link_folder'];
+	$frontend_str['confirmFeedClean'] = $GLOBALS['lang']['confirm_feed_clean'];
+	$frontend_str['confirmCommentSuppr'] = $GLOBALS['lang']['confirm_comment_suppr'];
+	$frontend_str['activer'] = $GLOBALS['lang']['activer'];
+	$frontend_str['desactiver'] = $GLOBALS['lang']['desactiver'];
+	$frontend_str['errorPhpAjax'] = $GLOBALS['lang']['error_phpajax'];
+	$frontend_str['errorCommentSuppr'] = $GLOBALS['lang']['error_comment_suppr'];
+	$frontend_str['errorCommentValid'] = $GLOBALS['lang']['error_comment_valid'];
+	$frontend_str['questionQuitPage'] = $GLOBALS['lang']['question_quit_page'];
+	$frontend_str['questionCleanRss'] = $GLOBALS['lang']['question_clean_rss'];
+	$frontend_str['questionSupprComment'] = $GLOBALS['lang']['question_suppr_comment'];
+	$frontend_str['questionSupprArticle'] = $GLOBALS['lang']['question_suppr_article'];
+	$frontend_str['questionSupprFichier'] = $GLOBALS['lang']['question_suppr_fichier'];
+
+	$sc = 'var BTlang = '.json_encode($frontend_str).';';
+
+	if ($a == 1) {
+		$sc = "\n".'<script type="text/javascript">'."\n".$sc."\n".'</script>'."\n";
+	}
+	return $sc;
 }
 

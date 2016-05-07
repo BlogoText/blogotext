@@ -23,6 +23,5 @@ require_once BT_ROOT.'/inc/form.php';
 require_once BT_ROOT.'/inc/conv.php';
 require_once BT_ROOT.'/inc/veri.php';
 require_once BT_ROOT.'/inc/imgs.php';
-require_once BT_ROOT.'/inc/jasc.php';
 require_once BT_ROOT.'/inc/sqli.php';
 
