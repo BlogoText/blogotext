@@ -320,60 +320,63 @@ q, blockquote {
 	padding: 0;
 	text-align: right;
 	max-width: 700px;
+	display: flex;
+	align-items: center;
 }
 
-#top #search label {
+#top #input-rechercher {
 	border: 0;
-	display: inline-block;
-	width: 0;
-	vertical-align: baseline;
+	height: 40px;
+	overflow: hidden;
+	border-radius: 0 2px 2px 0;
+	padding: 0 0 0 40px;
+	box-sizing: border-box;
+	flex: 0 0 40px;
+	background-color: rgba(255, 255, 255, .3);
 }
 
-#top > #search input[type='submit'] {
-	display: none;
-}
-
-#top > #search input[type='search'] { /* normal */
-	padding: 0 40px 0 10px;
+#top > #search #q { /* normal */
+	padding: 0 10px;
 	border: 1px solid transparent;
-	border-radius: 2px;
+	border-radius: 2px 0 0 2px;
 	box-sizing: border-box;
 	height: 40px;
 	max-width: 700px;
-	width: 96%;
+	flex: 1 1 auto;
 	background-color: rgba(255, 255, 255, .3);
 	color: inherit;
+	min-width: 0;
 }
 
 
-#top > #search input[type='search']::-webkit-input-placeholder { color: inherit; }
-#top > #search input[type='search']::-moz-placeholder { color: inherit; }
-#top > #search input[type='search']:-ms-input-placeholder { color: inherit; }
-#top > #search input[type='search']:placeholder-shown { color: inherit; }
+#top > #search #q::-webkit-input-placeholder { color: inherit; }
+#top > #search #q::-moz-placeholder { color: inherit; }
+#top > #search #q:-ms-input-placeholder { color: inherit; }
+#top > #search #q:placeholder-shown { color: inherit; }
 
 
-#top > #search label::before {
+#top > #search #input-rechercher::before {
 	content: "\e925";
 	position: relative;
-	left: -33px;
+	left: -40px;
 	font-size: 1.9em;
+	display: block;
+	width: 40px;
+	line-height: 40px;
 }
 
-#top > #search input[value=""]:focus+label::before,
-#top > #search input:not([value=""])+label::before {
-	color: rgba(0, 0, 0, 1);
-}
 
-
-#top > #search input:hover { /* hover */
+#top > #search #q:hover { /* hover */
 	cursor: text;
 }
 
-#top > #search input[value=""]:focus,
-#top > #search input:not([value=""]) { /* not empty : focus */
+#top > #search #q[value=""]:focus,
+#top > #search #q[value=""]:focus+#input-rechercher,
+#top > #search #q:not([value=""]),
+#top > #search #q:not([value=""])+#input-rechercher { /* not empty : focus */
 	z-index: 20;
 	color: rgba(0, 0, 0, 1);
-	background: rgba(255, 255, 255, .8);
+	background: rgba(255, 255, 255, 1);
 }
 
 /* TOP > Right nav bar

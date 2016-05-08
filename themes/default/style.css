@@ -165,7 +165,7 @@ q, blockquote {
 	color: inherit;
 }
 
-#search input[type='submit'] {
+#search button[type='submit'] {
 	display: none;
 }
 

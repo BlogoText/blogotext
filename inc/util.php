@@ -156,9 +156,10 @@ function check_token($token) {
 
 
 function remove_url_param($param) {
-	$msg_param_to_trim = (isset($_GET[$param])) ? '&'.$param.'='.$_GET[$param] : '';
-	$query_string = str_replace($msg_param_to_trim, '', $_SERVER['QUERY_STRING']);
-	return $query_string;
+	if (isset($_GET[$param])) {
+		return str_replace('&'.$param.'='.$_GET[$param], '', $_SERVER['QUERY_STRING']);
+	}
+	return '';
 }
 
 
