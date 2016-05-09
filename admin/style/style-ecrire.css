@@ -267,7 +267,7 @@ p.formatbut {
 
 #tag_bloc {
 	flex: 0;
-	margin: 0px 0 0;
+	margin: 0;
 	display: flex;
 }
 

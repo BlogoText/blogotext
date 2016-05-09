@@ -338,6 +338,8 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 			$response = request_external_files(array($url), 15, false);
 			$ext_file = $response[$url];
 			$rep_hdr = $ext_file['headers'];
+			// some servers return "content-type" instead of "Content-Type"
+			if (!isset($rep_hdr['Content-Type']) and isset($rep_hdr['content-type'])) $rep_hdr['Content-Type'] = $rep_hdr['content-type'];
 			$cnt_type = (isset($rep_hdr['Content-Type'])) ? (is_array($rep_hdr['Content-Type']) ? $rep_hdr['Content-Type'][count($rep_hdr['Content-Type'])-1] : $rep_hdr['Content-Type']) : 'text/';
 			$cnt_type = (is_array($cnt_type)) ? $cnt_type[0] : $cnt_type;
 
@@ -361,7 +363,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 			// a textual document: parse it for any <title> element (+charset for title decoding ; fallback=UTF-8) ; fallback=$url
 			elseif (!empty($ext_file['body'])) {
 				// Search for charset in the headers
-				if (preg_match('#charset=(.*);?#', $ext_file['headers']['Content-Type'], $hdr_charset) and !empty($hdr_charset[1])) {
+				if (preg_match('#charset=(.*);?#', $cnt_type, $hdr_charset) and !empty($hdr_charset[1])) {
 					$charset = $hdr_charset[1];
 				}
 				// If not found, search it in HTML
