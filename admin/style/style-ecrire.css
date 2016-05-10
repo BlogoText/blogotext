@@ -38,27 +38,6 @@
 
 #form-ecrire .main-form .text {
 	width: 100%;
-	margin: 0;
-	border: 0;
-	border-bottom: 1px solid silver;
-	padding: 10px 5px;
-
-	transition: background-size 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
-	background: linear-gradient(to bottom, #2196F3, #2196F3) no-repeat 0% 100% / 0 2px;
-}
-
-
-#form-ecrire .main-form .text:invalid {
-	box-shadow: none;
-	background: linear-gradient(to bottom, #F44336, #F44336) no-repeat 0% 100% / 0 2px;
-}
-
-#form-ecrire .main-form .text:invalid:focus {
-
-}
-
-#form-ecrire .main-form .text:focus {
-	background-size: 100% 2px;
 }
 
 #titre {
