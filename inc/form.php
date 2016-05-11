@@ -338,9 +338,7 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 			$response = request_external_files(array($url), 15, false);
 			$ext_file = $response[$url];
 			$rep_hdr = $ext_file['headers'];
-			// some servers return "content-type" instead of "Content-Type"
-			if (!isset($rep_hdr['Content-Type']) and isset($rep_hdr['content-type'])) $rep_hdr['Content-Type'] = $rep_hdr['content-type'];
-			$cnt_type = (isset($rep_hdr['Content-Type'])) ? (is_array($rep_hdr['Content-Type']) ? $rep_hdr['Content-Type'][count($rep_hdr['Content-Type'])-1] : $rep_hdr['Content-Type']) : 'text/';
+			$cnt_type = (isset($rep_hdr['content-type'])) ? (is_array($rep_hdr['content-type']) ? $rep_hdr['content-type'][count($rep_hdr['content-type'])-1] : $rep_hdr['content-type']) : 'text/';
 			$cnt_type = (is_array($cnt_type)) ? $cnt_type[0] : $cnt_type;
 
 			// Image

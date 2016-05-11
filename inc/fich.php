@@ -307,7 +307,7 @@ function request_external_files($feeds, $timeout, $echo_progress=false) {
 		foreach ($chunk as $i => $url) {
 			$response = curl_multi_getcontent($curl_arr[$url]);
 			$header_size = curl_getinfo($curl_arr[$url], CURLINFO_HEADER_SIZE);
-			$results[$url]['headers'] = http_parse_headers(substr($response, 0, $header_size));
+			$results[$url]['headers'] = http_parse_headers(mb_strtolower(substr($response, 0, $header_size)));
 			$results[$url]['body'] = substr($response, $header_size);
 		}
 		// Ferme les gestionnaires
