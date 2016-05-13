@@ -391,6 +391,7 @@ $GLOBALS['lang'] = array(
 //Formulaire Images
 'label_jusqua'						=> 'Up to',
 'label_parfichier'				=> ' per file',
+'label_codes'			    	=> 'Integration codes:',
 'img_upload'						=> 'Sens',
 'img_specifier_url'				=> 'From URL',
 'img_upload_un_fichier'			=> 'Upload one file',
@@ -471,5 +472,3 @@ $GLOBALS['lang'] = array(
 'derniere_connexion_le'			=> 'Last connection from',
 'cet_ordi'							=> 'this computer',
 );
-
-

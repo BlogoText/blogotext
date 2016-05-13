@@ -19,7 +19,7 @@
  *  qu’utiliser un fichier txt normal.
  * Pour le stockage, j’utilise un tableau PHP que j’enregistre directement dans un fichier :
  *  base64_encode(serialize($tableau)) # pompée sur Shaarli, by Sebsauvage.
- * 
+ *
  */
 
 
@@ -334,7 +334,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var) {
 
 			// modifie le fichier dans la BDD des fichiers.
 			foreach ($GLOBALS['liste_fichiers'] as $key => $entry) {
-				if ($entry['bt_id'] == $fichier['bt_id']) { 
+				if ($entry['bt_id'] == $fichier['bt_id']) {
 					$GLOBALS['liste_fichiers'][$key] = $fichier; // trouve la bonne entrée dans la base.
 				}
 			}
@@ -434,7 +434,7 @@ function init_post_fichier() { //no $mode : it's always admin.
 			'bt_type' => $type,
 			'bt_fileext' => $ext,
 			'bt_filesize' => $size,
-			'bt_filename' => $filename, // le nom du final du fichier peut changer à la fin, si le nom est déjà pris par exemple 
+			'bt_filename' => $filename, // le nom du final du fichier peut changer à la fin, si le nom est déjà pris par exemple
 			'bt_content' => stripslashes(clean_txt($_POST['description'])),
 			'bt_wiki_content' => stripslashes(clean_txt($_POST['description'])),
 			'bt_checksum' => $checksum,
@@ -456,7 +456,7 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 		echo erreurs($erreurs);
 	}
 	$form = '<form id="form-image" class="bordered-formbloc" enctype="multipart/form-data" method="post" action="'.basename($_SERVER['SCRIPT_NAME']).'" onsubmit="submitdnd(event);">'."\n";
-	
+
 	if (empty($fichiers)) { // si PAS fichier donnée : formulaire nouvel envoi.
 		$form .= '<fieldset class="pref" >'."\n";
 
@@ -473,7 +473,7 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 			$form .= '<div id="count"></div>'."\n";
 			$form .= '<div id="result"></div>'."\n";
 		$form .= '</div>'."\n";
-	
+
 		$form .= '<div id="img-others-infos">'."\n";
 
 		$form .= "\t".'<p><label for="nom_entree">'.$GLOBALS['lang']['label_dp_nom'].'</label><input type="text" id="nom_entree" name="nom_entree" placeholder="'.$GLOBALS['lang']['placeholder_nom_fichier'].'" value="" size="60" class="text" /></p>'."\n";
@@ -527,7 +527,7 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 
 		// la partie des codes d’intégration (bbcode, etc.)
 		$form .= '<div id="interg-codes">'."\n";
-		$form .= '<p><strong>'.ucfirst('codes d’intégration :').'</strong></p>'."\n";
+		$form .= '<p><strong>'.$GLOBALS['lang']['label_codes'].'</strong></p>'."\n";
 		$form .= '<input onfocus="this.select()" class="text" type="text" value=\''.$absolute_URI.'\' />'."\n";
 		if ($myfile['bt_type'] == 'image') { // si le fichier est une image, on ajout BBCode pour [IMG] et le code en <img/>
 			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'<img src="'.$absolute_URI.'" alt="i" width="'.$myfile['bt_dim_w'].'" height="'.$myfile['bt_dim_h'].'" style="max-width: 100%; height: auto;" />\' />'."\n";
@@ -689,4 +689,3 @@ function liste_base_files($tri_selon, $motif, $nombre) {
 
 	return $tableau_sortie;
 }
-
