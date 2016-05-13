@@ -1,13 +1,18 @@
-<article class="comment" id="{commentaire_ancre}">
-	<header class="com-head">
-		<img class="com-gravatar" src="{commentaire_gravatar_link}&amp;s=48&amp;d=monsterid" class="gravatar-icon" alt="gravatar" />
-		<span class="com-author">{commentaire_auteur_lien}</span>
-		<time class="com-date-time" datetime="{commentaire_date_iso}">{commentaire_date} à {commentaire_heure}</time>
-	</header>
-	<div class="com-content">
-		{commentaire_contenu}
-	</div>
-	<footer class="com-footer">
-		<span class="com-reply"><a href="#form-commentaire" onclick="reply('[b]@[{commentaire_auteur}|#{commentaire_ancre}] :[/b] ');">@répondre</a> <a href="#{commentaire_ancre}">#lien</a></span>
-	</footer>
-</article>
+	<article class="comment" id="{commentaire_ancre}">
+		<div class="comm-icon-side">
+			<img class="com-gravatar" src="{commentaire_gravatar_link}&amp;s=48&amp;d=monsterid" class="gravatar-icon" alt="gravatar" />
+			<time class="com-date-time" datetime="{commentaire_date_iso}">{commentaire_date}</time>
+		</div>
+		<div class="comm-main-frame">
+			<header class="com-head">
+				<span class="com-author"><span class="author">{commentaire_auteur_lien}</span> a dit :</span>
+			</header>
+			<div class="com-content">
+				{commentaire_contenu}
+			</div>
+			<footer class="com-footer">
+				<span class="com-reply"><a href="#form-commentaire" onclick="reply('[b]@[{commentaire_auteur}|#{commentaire_ancre}] :[/b] ');">@répondre</a> <a href="#{commentaire_ancre}">#lien</a></span>
+			</footer>
+		</div>
+	</article>
+

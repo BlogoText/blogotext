@@ -140,7 +140,7 @@ function moteur_recherche() {
 	if (isset($_GET['q'])) {
 		$requete = htmlspecialchars(stripslashes($_GET['q']));
 	}
-	$return = '<form action="'.basename($_SERVER['SCRIPT_NAME']).'" method="get" id="search">'."\n";
+	$return = '<form action="?" method="get" id="search">'."\n";
 	$return .= '<input id="q" name="q" type="search" size="20" value="'.$requete.'" placeholder="'.$GLOBALS['lang']['placeholder_search'].'" accesskey="f" />'."\n";
 //	$return .= '<label for="q">'.'</label>'."\n";
 	$return .= '<button id="input-rechercher" type="submit">'.$GLOBALS['lang']['rechercher'].'</button>'."\n";
@@ -192,7 +192,7 @@ function encart_categories($mode) {
 
 		// create the <UL> with "tags (nb) "
 		foreach($liste as $tag => $nb) {
-			$uliste .= "\t".'<li><a href="'.basename($_SERVER['SCRIPT_NAME']).'?tag='.urlencode(trim($tag)).$ampmode.'" rel="tag">'.ucfirst($tag).' ('.$nb[1].')</a></li>'."\n";
+			$uliste .= "\t".'<li><a href="?tag='.urlencode(trim($tag)).$ampmode.'" rel="tag">'.ucfirst($tag).' ('.$nb[1].')</a></li>'."\n";
 		}
 		$uliste .= '</ul>'."\n";
 		return $uliste;
@@ -213,17 +213,17 @@ function lien_pagination() {
 
 	if ($page_courante <=0) {
 		$lien_precede = '';
-		$lien_suivant = '<a href="'.htmlspecialchars(basename($_SERVER['SCRIPT_NAME'])).'?'.$qstring.'&amp;p=1" rel="next">'.$GLOBALS['lang']['label_suivant'].' &#187;</a>';
+		$lien_suivant = '<a href="?'.$qstring.'&amp;p=1" rel="next">'.$GLOBALS['lang']['label_suivant'].' &#187;</a>';
 		if ($nb < $nb_par_page) { // évite de pouvoir aller dans la passé s’il y a moins de 10 posts
 			$lien_suivant = '';
 		}
 	}
 	elseif ($nb < $nb_par_page) { // évite de pouvoir aller dans l’infini en arrière dans les pages, nottament pour les robots.
-		$lien_precede = '<a href="'.htmlspecialchars(basename($_SERVER['SCRIPT_NAME'])).'?'.$qstring.'&amp;p='.($page_courante-1).'" rel="prev">&#171; '.$GLOBALS['lang']['label_precedent'].'</a>';
+		$lien_precede = '<a href="?'.$qstring.'&amp;p='.($page_courante-1).'" rel="prev">&#171; '.$GLOBALS['lang']['label_precedent'].'</a>';
 		$lien_suivant = '';
 	} else {
-		$lien_precede = '<a href="'.htmlspecialchars(basename($_SERVER['SCRIPT_NAME'])).'?'.$qstring.'&amp;p='.($page_courante-1).'" rel="prev">&#171; '.$GLOBALS['lang']['label_precedent'].'</a>';
-		$lien_suivant = '<a href="'.htmlspecialchars(basename($_SERVER['SCRIPT_NAME'])).'?'.$qstring.'&amp;p='.($page_courante+1).'" rel="next">'.$GLOBALS['lang']['label_suivant'].' &#187;</a>';
+		$lien_precede = '<a href="?'.$qstring.'&amp;p='.($page_courante-1).'" rel="prev">&#171; '.$GLOBALS['lang']['label_precedent'].'</a>';
+		$lien_suivant = '<a href="?'.$qstring.'&amp;p='.($page_courante+1).'" rel="next">'.$GLOBALS['lang']['label_suivant'].' &#187;</a>';
 	}
 
 	$glue = ' – ';
@@ -248,7 +248,7 @@ function liste_tags($billet, $html_link) {
 		foreach($tag_list as $tag) {
 			$tag = trim($tag['t']);
 			if ($html_link == 1) {
-				$liste .= '<a href="'.basename($_SERVER['SCRIPT_NAME']).'?tag='.urlencode($tag).$mode.'" rel="tag">'.$tag.'</a>';
+				$liste .= '<a href="?tag='.urlencode($tag).$mode.'" rel="tag">'.$tag.'</a>';
 			} else {
 				$liste .= $tag.' ';
 			}
