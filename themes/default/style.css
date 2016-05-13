@@ -440,8 +440,20 @@ q, blockquote {
 	border-left-color: #2CABE3;
 }
 
+.article table {
+	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+	margin: 2em auto;
+	text-align: center;
+	border-collapse: collapse;
+}
 
+.article table tr {
+}
 
+.article table td {
+	border: 1px solid #ddd;
+	padding: 7px 12px;
+}
 
 .post-footer {
 	display: flex;

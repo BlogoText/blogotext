@@ -209,6 +209,7 @@ function lien_pagination() {
 	}
 	$page_courante = (isset($_GET['p']) and is_numeric($_GET['p'])) ? $_GET['p'] : 0;
 	$qstring = remove_url_param('p');
+//	debug($qstring);
 
 	if ($page_courante <=0) {
 		$lien_precede = '';
