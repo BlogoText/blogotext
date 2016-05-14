@@ -153,7 +153,7 @@ function moteur_recherche() {
 
 function encart_commentaires() {
 	mb_internal_encoding('UTF-8');
-	$query = "SELECT c.bt_author, c.bt_id, c.bt_article_id, c.bt_content FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id WHERE c.bt_statut=1 AND a.bt_statut=1 ORDER BY c.bt_id DESC LIMIT 5";
+	$query = "SELECT a.bt_title, c.bt_author, c.bt_id, c.bt_article_id, c.bt_content FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id WHERE c.bt_statut=1 AND a.bt_statut=1 ORDER BY c.bt_id DESC LIMIT 5";
 	$tableau = liste_elements($query, array(), 'commentaires');
 	if (isset($tableau)) {
 		$listeLastComments = '<ul class="encart_lastcom">'."\n";
@@ -166,7 +166,8 @@ function encart_commentaires() {
 			if (strlen($comment['bt_author']) >= 30) {
 				$comment['bt_author'] = mb_substr($comment['bt_author'], 0, 29).'…';
 			}
-			$listeLastComments .= '<li title="'.date_formate($comment['bt_id']).'"><b>'.$comment['bt_author'].'</b> '.$GLOBALS['lang']['sur'].' <b>'.$comment['article_title'].'</b><br/><a href="'.$comment['bt_link'].'">'.$comment['contenu_abbr'].'</a>'.'</li>'."\n";
+//			$listeLastComments .= '<li title="'.date_formate($comment['bt_id']).'"><b>'.$comment['bt_author'].'</b> '.$GLOBALS['lang']['sur'].' <b>'.$comment['article_title'].'</b><br/><a href="'.$comment['bt_link'].'">'.$comment['contenu_abbr'].'</a>'.'</li>'."\n";
+			$listeLastComments .= '<li title="'.date_formate($comment['bt_id']).'"><b>'.$comment['bt_author'].'</b><br/><a href="'.$comment['bt_link'].'">'.$comment['contenu_abbr'].'</a>'.'</li>'."\n";
 		}
 		$listeLastComments .= '</ul>'."\n";
 		return $listeLastComments;

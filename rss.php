@@ -62,13 +62,11 @@ if (isset($_GET['id']) and preg_match('#^[0-9]{14}$#', $_GET['id'])) {
 	$GLOBALS['db_handle'] = open_base();
 	$article_id = htmlspecialchars($_GET['id']);
 
-	$liste = liste_elements("SELECT * FROM commentaires WHERE bt_article_id=? AND bt_statut=1 ORDER BY bt_id DESC", array($article_id), 'commentaires');
+	$liste = liste_elements("SELECT c.*, a.bt_title FROM commentaires AS c, articles AS a WHERE c.bt_article_id=? AND c.bt_article_id=a.bt_id AND c.bt_statut=1 ORDER BY c.bt_id DESC", array($article_id), 'commentaires');
 
 	if (!empty($liste)) {
-		$query = "SELECT * FROM articles WHERE bt_id=? AND bt_date<=".date('YmdHis')." AND bt_statut=1";
-		$billet = liste_elements($query, array($article_id), 'articles');
-		$xml .= '<title>Commentaires sur '.$billet[0]['bt_title'].' - '.$GLOBALS['nom_du_site'].'</title>'."\n";
-		$xml .= '<link>'.$billet[0]['bt_link'].'</link>'."\n";
+		$xml .= '<title>Commentaires sur '.$liste[0]['bt_title'].' - '.$GLOBALS['nom_du_site'].'</title>'."\n";
+		$xml .= '<link>'.$liste[0]['bt_link'].'</link>'."\n";
 		$xml .= '<description><![CDATA['.$GLOBALS['description'].']]></description>'."\n";
 		$xml .= '<language>fr</language>'."\n";
 		$xml .= '<copyright>'.$GLOBALS['auteur'].'</copyright>'."\n";

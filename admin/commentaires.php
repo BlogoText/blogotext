@@ -60,10 +60,14 @@ if ( isset($_GET['post_id']) and preg_match('#\d{14}#', $_GET['post_id']) )  {
 	$param_makeup['menu_theme'] = 'for_article';
 	$article_id = $_GET['post_id'];
 
-	$article_title = get_entry($GLOBALS['db_handle'], 'articles', 'bt_title', $article_id, 'return');
-	$query = "SELECT * FROM commentaires WHERE bt_article_id=? ORDER BY bt_id";
-
+	$query = "SELECT c.*, a.bt_title FROM commentaires AS c, articles AS a WHERE c.bt_article_id=? AND c.bt_article_id=a.bt_id ORDER BY c.bt_id";
 	$commentaires = liste_elements($query, array($article_id), 'commentaires');
+
+	if (!empty($commentaires)) {
+		$article_title = $commentaires[0]['bt_title'];
+	} else {
+		$article_title = get_entry($GLOBALS['db_handle'], 'articles', 'bt_title', $article_id, 'return');
+	}
 
 	$param_makeup['show_links'] = '0';
 
