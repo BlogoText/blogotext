@@ -161,7 +161,7 @@
 	#nav #lien-lscom:before    { content: "\e91b"; }
 	#nav #lien-fichiers:before { content: "\e921"; }
 	#nav #lien-links:before    { content: "\e910"; }
-	#nav #lien-rss:before      { content: "\e922"; }
+	#nav #lien-rss:before      { content: "\e940"; }
 
 	/* TOP > searchbar
 	------------------------------------------------------*/

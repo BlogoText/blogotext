@@ -48,10 +48,6 @@ a {
 	text-decoration: none;
 }
 
-a:hover {
-	text-decoration: underline;
-}
-
 .centrer {
 	text-align: center;
 }
@@ -112,10 +108,6 @@ q, blockquote {
 	width: 100%;
 	align-items: center;
 	justify-content: space-between;
-}
-
-#top-bar a:hover {
-	text-decoration: none;
 }
 
 #top-bar > h1,
@@ -332,6 +324,31 @@ q, blockquote {
     white-space: nowrap;
 }
 
+#lastcom > ul a:hover {
+	text-decoration: underline;
+}
+#alltags > ul {
+	list-style: none;
+	padding: 0;
+	font-size: 0;
+}
+#alltags > ul li {
+	display: inline-block;
+	margin: 0;
+}
+#alltags > ul a {
+	margin: 2px;
+	font-size: initial;
+	display: inline-block;
+	padding: 3px 5px;
+	border: 1px solid silver;
+	background: rgba(0, 0, 0, .05);
+	border-radius: 3px;
+}
+
+#alltags > ul a:hover {
+	text-decoration: underline;
+}
 
 /* TOP HEADER with IMAGE
 ------------------------------------------------------------------------ */
@@ -476,7 +493,6 @@ q, blockquote {
 }
 .post-footer > .post-tags > a:hover {
 	background: rgba(0, 0, 0, .1);
-	text-decoration: none;
 }
 
 /* list of comments */
@@ -534,7 +550,7 @@ q, blockquote {
 }
 
 .comment:target .comm-main-frame {
-	box-shadow: 0 8px 16px rgba(0, 0, 0, .6);
+	box-shadow: 0 8px 16px #2196F3;
 }
 
 .comment .com-head {
@@ -563,7 +579,6 @@ q, blockquote {
 	font-style: italic;
 }
 .com-footer a:hover {
-	text-decoration: none;
 	box-shadow: 0 0 2px rgba(0,0,0,0.12),0 2px 4px rgba(0,0,0,0.24);
 }
 
@@ -572,6 +587,10 @@ q, blockquote {
 	display: flex;
 	align-items: center;
 	border-bottom: 1px solid #eee;
+}
+
+.post.lien .lien-title a:hover {
+	text-decoration: underline;
 }
 
 .post.lien .lien-title .date {
@@ -744,6 +763,28 @@ p.formatbut {
 	color: rgba(0, 0, 0, .5);
 }
 
+.pagination a {
+	display: inline-block;
+	padding: 8px 16px;
+	border: 1px solid #ccc;
+	background: white;
+	transition: background-color .3s,color .15s,box-shadow .3s,opacity 0.3s;
+}
+
+.pagination a:hover {
+	background: #ccc;
+}
+.pagination a:nth-of-type(n+2) {
+	border-left: 0;
+}
+
+.pagination a[rel="next"]::after {
+	content: " »";
+}
+.pagination a[rel="prev"]::before {
+	content: "« ";
+}
+
 /* PAGE FOOTER 
 ------------------------------------------------------------------------ */
 body > footer {
@@ -757,22 +798,6 @@ body > footer a {
 	color: inherit;
 }
 
-/* FOOTER : comments
-------------------------------------- */
-footer #lastcom ul {
-	list-style-type: none;
-	padding: 20px;
-}
-
-footer #lastcom ul li {
-	padding: 5px;
-	word-wrap: break-word;
-	text-align: left;
-}
-
-footer #lastcom ul li a {
-	font-style: italic;
-}
 
 
 /* MOBILE THEME ~ MEDIA QUERIES
