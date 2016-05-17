@@ -232,7 +232,7 @@ $GLOBALS['lang'] = array(
 've'									=> 'Ve',
 'sa'									=> 'Sa',
 'di'									=> 'Di',
-// Jours	
+// Jours
 'lundi'								=> 'lundi',
 'mardi'								=> 'mardi',
 'mercredi'							=> 'mercredi',
@@ -391,6 +391,7 @@ $GLOBALS['lang'] = array(
 //Formulaire Images
 'label_jusqua'						=> 'Jusqu’à ',
 'label_parfichier'				=> ' par fichier',
+'label_codes'			    	=> 'Codes d’intégration :',
 'img_upload'						=> 'Envoyer',
 'img_specifier_url'				=> 'Spécifier une URL à la place',
 'img_upload_un_fichier'			=> 'Envoyer un seul fichier',
@@ -470,5 +471,3 @@ $GLOBALS['lang'] = array(
 'derniere_connexion_le'			=> 'Dernière connexion depuis',
 'cet_ordi'							=> 'cet ordinateur',
 );
-
-
