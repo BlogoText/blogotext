@@ -101,7 +101,7 @@
 	border: 0;
 }
 
-#form-image #fichier[type="file"]:valid {
+#form-image #fichier[type="file"][required]:valid {
 	width: auto;
 	padding: 0;
 	border: 0;
