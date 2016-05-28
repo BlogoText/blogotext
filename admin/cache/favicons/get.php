@@ -34,7 +34,18 @@ if ( isset($_GET['g']) and !empty($_GET['g']) ) {
 	}
 	// no local favicon or deleted because expired? getting new.
 	if (!file_exists($newfile)) {
-		copy($file, $newfile);
+		// request
+		$curl_handle = curl_init();
+		curl_setopt($curl_handle, CURLOPT_URL, $file);
+		curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1); 
+		$file_content = curl_exec($curl_handle);
+		curl_close($curl_handle);
+		if ($file_content == NULL) { // impossible request
+			header("HTTP/1.0 404 Not Found"); exit;
+		}
+		// saving
+		file_put_contents($newfile, $file_content);
+
 		$imagecheck = getimagesize($newfile);
 		if ($imagecheck['mime']!=='image/png') { // is it a PNG?
 			imagepng(imagecreatefromjpeg($newfile),$newfile.'2');  // if not, creating PNG and replacing

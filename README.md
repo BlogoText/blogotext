@@ -4,16 +4,17 @@
 
 This is [Blogotext](http://lehollandaisvolant.net/blogotext/), the lightweight SQLite Blog-Engine.
 
-2011 - 2016 Timo van Neerden
+(by Timo van Neerden, since 2010)
 
 ---
 
 ## Features
 
  * Blog with comments and RSS feeds
- * Links sharing (Shaarli-like)
+ * Links sharing
  * RSS Reader
  * Images/Files uploading and sharing
+ * JSON/ZIP/HTML import-export; Wordpress import
 
 ![alt tag](http://lehollandaisvolant.net/blogotext/blogotext-screen.png?3)
 
@@ -26,15 +27,16 @@ This is [Blogotext](http://lehollandaisvolant.net/blogotext/), the lightweight S
  * min 1 Mo disk space (more data = more space needed)
 
 ## Recommended PHP-libraries
- * GD (for captcha);
- * cURL, LibXML (for RSS reader and links sharing)
+ * GD (for captcha / comments icons);
+ * cURL (for RSS reader, links sharing, comments icons)
+ * LibXML (for RSS reader)
  * GZip (for zip exporting function)
 
 ## Installation
  * Unzip the downloaded archive file
- * Upload folder to your site (eg: to http://example.com/blog)
+ * Upload folder to your site (eg: to `http://example.com/blog`)
  * Use your browser to go to your site
  * Follow the few steps
 
 ## Bugs
- * Please, report any bugs to me using [my email](http://lehollandaisvolant.net/contact) or the Github bugtracking system.
+ * Please, report any bugs using [my cont@ct page](http://lehollandaisvolant.net/contact) or the Github bugtracking system.

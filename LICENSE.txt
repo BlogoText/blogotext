@@ -4,15 +4,12 @@
 | Blogotext is a lightweight PHP-only Blog engine.                        |
 |                                                                         |
 | (c) 2006      Frederic Nassar.                                          |
-| (c) 2010-2014 Timo van Neerden, AKA Le Hollandais Volant                |
+| (c) 2010-* Timo van Neerden, AKA Le Hollandais Volant                   |
 |                                                                         |
 | Blogotext is redistributed under the terms of the X11 / MIT Licence     |
 |                                      http://opensource.org/licenses/MIT |
 |                                                                         |
 | Blogotext is based upon others ressources, that are listed below.       |
-|                                                                         |
-| Please, feel free to send bugs reports or questions to                  |
-|                                   http://lehollandaisvolant.net/contact |
 |                                                                         |
 +-------------------------------------------------------------------------+
 |                                                                    LINX |
@@ -21,7 +18,7 @@
 |                                                                         |
 | Linx is an ultra-lightweight SQLite-based "delicous-like" url-saver.    |
 |                                                                         |
-| (c) 2011 Timo van Neerden, AKA Le Hollandais Volant                     |
+| (c) March 2011 Timo van Neerden, AKA Le Hollandais Volant               |
 |                                                                         |
 | Linx is redistributed under the terms of the WTFPL.                     |
 |                                                                         |
@@ -47,7 +44,7 @@
 | (c) 2014 Google Inc                                                     |
 |                                                                         |
 | The ressource is included according to the CC-BY-4.0 license            |
-| script-tutorials.com.                                                   |
+|                                                                         |
 +-------------------------------------------------------------------------+
 |                                                     GOOGLE ROBOTO FONTS |
 +-------------------------------------------------------------------------+
@@ -72,18 +69,6 @@
 | These icons are licensed under a Creative Commons                       |
 | Attribution 3.0 License.                                                |
 | http://creativecommons.org/licenses/by/3.0/                             | 
-|                                                                         |
-+-------------------------------------------------------------------------+
-|                                                               PARSEDOWN |
-+-------------------------------------------------------------------------+
-| http://parsedown.org/                                                   |
-|                                                                         |
-| ParseDown is a PHP markdown parser.                                     |
-|                                                                         |
-| (c) 2013 Emanuil Rusev                                                  |
-|                                                                         |
-| ParseDown is distributed under the MIT License and included in          |
-| Blogotext accordingly.                                                  |
 |                                                                         |
 +-------------------------------------------------------------------------+
 |                                                                       ~ |
