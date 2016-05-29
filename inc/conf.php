@@ -19,7 +19,7 @@
 // GENERAL
 define('BLOGOTEXT_NAME', 'BlogoText');
 define('BLOGOTEXT_SITE', 'http://lehollandaisvolant.net/blogotext/');
-define('BLOGOTEXT_VERSION', '3.3.12-1');
+define('BLOGOTEXT_VERSION', '3.3.12-2');
 define('MINIMAL_PHP_REQUIRED_VERSION', '5.5');
 
 // FOLDERS (change this only if you know what you are doing...)
@@ -41,6 +41,7 @@ date_default_timezone_set($GLOBALS['fuseau_horaire']);
 
 // INIT SOME VARS
 $GLOBALS['addons'] = array();
+$GLOBALS['form_commentaire'] = '';
 
 // IMPORT SEVERAL .ini CONFIG FILES
 // with this function

@@ -67,7 +67,6 @@ function fichier_adv_conf() {
 
 	$conf .= 'BLOG_UID = \''.sha1(uniqid(mt_rand(), true)).'\''."\n";
 	$conf .= 'DISPLAY_PHP_ERRORS = -1;'."\n";
-	$conf .= 'GRAVATAR_LINK = \'themes/default/gravatars/get.php?g=\''."\n";
 	$conf .= 'USE_IP_IN_SESSION = 0;'."\n\n\n";
 	$conf .= '; */ ?>'."\n";
 

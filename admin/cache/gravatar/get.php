@@ -23,28 +23,39 @@ if (isset($_GET['g'])) {
 		$s = (isset($_GET['s']) and is_numeric($_GET['s'])) ? htmlspecialchars($_GET['s']) : 48;
 		// try to get substitute image (d param)
 		$d = (isset($_GET['d'])) ? htmlspecialchars($_GET['d']) : 'monsterid';
-		$gravatar_url = 'https://secure.gravatar.com/avatar/'.$hash.'.png?s='.$s.'&d='.$d;
-
+		$gravatar_url = 'http://www.gravatar.com/avatar/'.$hash.'?s='.$s.'&d='.$d;
 		// request
 		$curl_handle = curl_init();
+
+		curl_setopt($curl_handle, CURLOPT_ENCODING, 'gzip');
 		curl_setopt($curl_handle, CURLOPT_URL, $gravatar_url);
 		curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1); 
+		curl_setopt($curl_handle, CURLOPT_TIMEOUT, 5); 
 		$file_content = curl_exec($curl_handle);
 		curl_close($curl_handle);
 
 		if ($file_content == NULL) { // impossible request
 			header("HTTP/1.0 404 Not Found");
+			die('404');
 			exit;
 		}
 
 		// saving
 		file_put_contents($newfile, $file_content);
+
+		$imagecheck = getimagesize($newfile);
+		if ($imagecheck['mime']!=='image/png') { // is it a PNG ?
+			imagepng(imagecreatefromjpeg($newfile),$newfile.'2');  // if no, creating PNG and replacing
+			unlink($newfile);
+			rename($newfile.'2', $newfile);
+		}
+
 	}
 	// and finally send the cached image.
 	header('Content-Type: image/png');
 	header('Last-Modified: '.gmdate('D, d M Y H:i:s', filemtime($newfile)).' GMT');
 	header('Content-Length: ' . filesize($newfile));
-	header('Cache-Control: public, max-age=86400');
+	header('Cache-Control: public, max-age=2592000');
 	readfile($newfile);
 	exit;
 }
