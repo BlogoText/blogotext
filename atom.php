@@ -124,6 +124,16 @@ else {
 		$found = 0;
 		// 1 = articles
 		if ( strpos($_GET['mode'], 'blog') !== FALSE ) {
+			// if is tag in url, filter articles.
+			if (isset($_GET['tag'])) {
+				foreach ($liste['a'] as $i => $art) {
+					if ( (strpos($art['bt_categories'], htmlspecialchars($_GET['tag'].',')) === FALSE) and
+					 	 (strpos($art['bt_categories'], htmlspecialchars(', '.$_GET['tag'])) === FALSE) and
+						 ($art['bt_categories'] != htmlspecialchars($_GET['tag']))) {
+						unset($liste['a'][$i]);
+					}
+				}
+			}
 			$liste_rss = array_merge($liste_rss, $liste['a']);
 			$found = 1; $modes_url .= 'blog-';
 		}

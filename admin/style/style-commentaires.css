@@ -9,8 +9,10 @@
 	position: relative;
 	z-index: 1;
 	color: #444;
-	margin: 15px auto;
-	padding : 0;
+	margin: 20px auto;
+	padding: 0;
+	page-break-inside: avoid;
+	-webkit-column-break-inside: avoid;
 }
 
 .commentbloc {

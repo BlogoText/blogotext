@@ -168,8 +168,8 @@ elseif ($step == 2) { // lien donné dans l’URL
 	echo afficher_form_link($step, $erreurs_form);
 }
 else { // aucun lien à ajouter ou éditer : champ nouveau lien + listage des liens en dessus.
-	echo '<div id="list-link">'."\n";
 	echo afficher_form_link(1, $erreurs_form);
+	echo '<div id="list-link">'."\n";
 	foreach ($tableau as $link) {
 		afficher_lien($link);
 	}
