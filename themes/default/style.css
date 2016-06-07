@@ -334,20 +334,32 @@ q, blockquote {
 }
 #alltags > ul li {
 	display: inline-block;
-	margin: 0;
-}
-#alltags > ul a {
 	margin: 2px;
 	font-size: initial;
-	display: inline-block;
-	padding: 3px 5px;
 	border: 1px solid silver;
 	background: rgba(0, 0, 0, .05);
 	border-radius: 3px;
 }
+#alltags > ul li:hover {
+	background: rgba(0, 0, 0, .1);
+}
 
-#alltags > ul a:hover {
-	text-decoration: underline;
+#alltags > ul a {
+	display: inline-block;
+	margin: 0;
+	padding: 3px 5px;
+	vertical-align: middle;
+}
+
+#alltags > ul a:last-of-type {
+	width: 16px;
+	height: 20px;
+	background: transparent url(sprites.png) no-repeat -116px -168px / 640px 400px;
+	border-left: 1px solid transparent;
+}
+
+#alltags > ul li:hover a:last-of-type {
+	border-left: 1px solid silver;
 }
 
 /* TOP HEADER with IMAGE

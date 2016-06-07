@@ -126,16 +126,6 @@ else {
 		$found = 0;
 		// 1 = articles
 		if ( strpos($_GET['mode'], 'blog') !== FALSE ) {
-			// if is tag in url, filter articles.
-			if (isset($_GET['tag'])) {
-				foreach ($liste['a'] as $i => $art) {
-					if ( (strpos($art['bt_categories'], htmlspecialchars($_GET['tag'].',')) === FALSE) and
-					 	 (strpos($art['bt_categories'], htmlspecialchars(', '.$_GET['tag'])) === FALSE) and
-						 ($art['bt_categories'] != htmlspecialchars($_GET['tag']))) {
-						unset($liste['a'][$i]);
-					}
-				}
-			}
 			$liste_rss = array_merge($liste_rss, $liste['a']);
 			$found = 1; $modes_url .= 'blog-';
 		}
@@ -146,16 +136,6 @@ else {
 		}
 		// 4 = links
 		if (strpos($_GET['mode'], 'links') !== FALSE) {
-			// if is tag in url, filter links.
-			if (isset($_GET['tag'])) {
-				foreach ($liste['l'] as $i => $link) {
-					if ( (strpos($link['bt_tags'], htmlspecialchars($_GET['tag'].',')) === FALSE) and
-					 	 (strpos($link['bt_tags'], htmlspecialchars(', '.$_GET['tag'])) === FALSE) and
-						 ($link['bt_tags'] != htmlspecialchars($_GET['tag']))) {
-						unset($liste['l'][$i]);
-					}
-				}
-			}
 			$liste_rss = array_merge($liste_rss, $liste['l']);
 			$found = 1; $modes_url .= 'links-';
 		}
@@ -167,13 +147,30 @@ else {
 		$liste_rss = $liste['a'];
 	}
 
-	// trick : tri selon des sous-clés d'un tableau à plusieurs sous-niveaux (trouvé dans doc-PHP)
+	// tri selon tags (si il y a)
+	if (isset($_GET['tag'])) {
+		foreach ($liste_rss as $i => $entry) {
+			if ($entry['bt_type'] == 'article') $fd = 'bt_categories';
+			if ($entry['bt_type'] == 'link' or $entry['bt_type'] == 'note') $fd = 'bt_tags';
+			if (isset($fd)) {
+				if ( (strpos($entry[$fd], htmlspecialchars($_GET['tag'].',')) === FALSE) and
+				 	 (strpos($entry[$fd], htmlspecialchars(', '.$_GET['tag'])) === FALSE) and
+					 ($entry[$fd] != htmlspecialchars($_GET['tag']))) {
+					unset($liste_rss[$i]);
+				}
+			}
+		}
+	}
+
+	// tri selon la date (qui est une sous-clé du tableau, d’où cette manœuvre)
 	foreach ($liste_rss as $key => $item) {
 		 $bt_id[$key] = (isset($item['bt_date'])) ? $item['bt_date'] : $item['bt_id'];
 	}
 	if (!empty($liste_rss)) {
 		array_multisort($bt_id, SORT_DESC, $liste_rss);
 	}
+
+	// ne garde que les 20 premières entrées
 	$liste_rss = array_slice($liste_rss, 0, 20);
 	$invert = (isset($_GET['invertlinks'])) ? TRUE : FALSE;
 	$xml .= '<title>'.$GLOBALS['nom_du_site'].'</title>'."\n";
