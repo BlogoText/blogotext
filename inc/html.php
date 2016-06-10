@@ -193,7 +193,9 @@ function encart_categories($mode) {
 
 		// create the <UL> with "tags (nb) "
 		foreach($liste as $tag => $nb) {
-			$uliste .= "\t".'<li><a href="?tag='.urlencode(trim($tag)).$ampmode.'" rel="tag">'.ucfirst($tag).' ('.$nb[1].')</a><a href="rss.php?tag='.urlencode($tag).$mode.'" rel="alternate"></a></li>'."\n";
+			if ($tag != '' and $nb[1] > 1) {
+				$uliste .= "\t".'<li><a href="?tag='.urlencode(trim($tag)).$ampmode.'" rel="tag">'.ucfirst($tag).' ('.$nb[1].')</a><a href="rss.php?tag='.urlencode($tag).$mode.'" rel="alternate"></a></li>'."\n";
+			}
 		}
 		$uliste .= '</ul>'."\n";
 		return $uliste;
