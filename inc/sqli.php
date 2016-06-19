@@ -263,7 +263,7 @@ function init_post_article() { //no $mode : it's always admin.
 		'bt_id'				=> $id,
 		'bt_date'			=> $date,
 		'bt_title'			=> protect($_POST['titre']),
-		'bt_abstract'		=> (empty($_POST['chapo']) ? '' : formatage_wiki(clean_txt($_POST['chapo']))),
+		'bt_abstract'		=> (empty($_POST['chapo']) ? '' : clean_txt($_POST['chapo'])),
 		'bt_notes'			=> protect($_POST['notes']),
 		'bt_content'		=> $formated_contenu,
 		'bt_wiki_content'	=> stripslashes(clean_txt($_POST['contenu'])),
