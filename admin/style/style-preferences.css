@@ -9,7 +9,7 @@
 
 #preferences .form-legend {
 	padding: 15px 10px 30px;
-	font-weight: bold;
+	font-weight: 500;
 	box-sizing: border-box;
 	color: #1e88e5;
 }
@@ -18,7 +18,7 @@
 	max-width: 100%;
 	margin: 20px auto;
 	display: flex;
-	align-items: baseline;
+	align-items: center;
 }
 
 #preferences label {

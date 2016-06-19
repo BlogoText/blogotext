@@ -1,7 +1,4 @@
 @media (max-width: 850px) {
-	#axe {
-		padding: 20px 15px;
-	}
 	#subnav .nombre-elem {
 	}
 	select {
@@ -19,6 +16,7 @@
 	/* liste fichiers */
 	#image-wall {
 		text-align: center;
+		padding: 10px;
 	}
 	#image-wall .image_bloc {
 		width: 147px;
@@ -60,6 +58,12 @@
 
 	/* TOP
 	------------------------------------------------------*/
+	body {
+		padding-top: 0;
+	}
+	#header {
+		position: static;
+	}
 	#top {
 		display: flex;
 		box-sizing: border-box;
@@ -74,6 +78,10 @@
 		line-height: 60px;
 		vertical-align: middle;
 		overflow: hidden;
+	}
+
+	#top > #nav > ul {
+		padding-right: 0;
 	}
 
 	/* TOP > right nav bar
@@ -114,10 +122,11 @@
 		z-index: 20;
 		opacity: 0;
 		padding-top: 10px;
-		transition: opacity .2s ease-in-out .05s, left .4s ease-in-out .05s;
+		transition: opacity 0s linear .55s, left .5s ease-in-out .05s;
 	}
 
 	#top > #nav:hover > ul {
+		transition: left .5s ease-in-out .05s;
 		left: 0;
 		top: 60px;
 		opacity: 1;
@@ -193,6 +202,7 @@
 		width: 80%;
 		width: calc(100% - 60px - 60px );
 		top: 10px; right: 60px;
+		background: rgba(255, 255, 255, 1);
 	}
 
 	#top > #search:hover #input-rechercher:active,
@@ -200,7 +210,6 @@
 	#top > #search #q:not([value=""])+#input-rechercher {
 		position: static;
 	}
-
 
 
 	#top > #search #q[value=""]:focus { /* onfocus */
@@ -294,6 +303,21 @@
 	#post-list > li .post-title > a:hover {
 		flex: 1 0 100%;
 	}
+
+	/* Slider */
+	#slider-main-content.infos-on + #slider-infos {
+		width: 250px;
+	}
+	#slider-main-content.infos-on #slider-nav-bar {
+   	right: 250px;
+	}
+	#slider-main-content.infos-on {
+		margin-right: 250px;
+	}
+	#slider-infos > #infos-details {
+		padding-left: 40px;
+	}
+
 }
 
 

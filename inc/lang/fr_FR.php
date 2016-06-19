@@ -134,6 +134,8 @@ $GLOBALS['lang'] = array(
 'label_image'						=> 'image',
 'label_images'						=> 'images',
 'label_feeds'						=> 'flux RSS',
+'label_feed_entry'				=> 'Entrée RSS',
+'label_feed_entrys'				=> 'Entrées RSS',
 'label_import-export'			=> 'Import/Export',
 'label_fichier'					=> 'fichier',
 'label_fichiers'					=> 'fichiers',
@@ -375,6 +377,8 @@ $GLOBALS['lang'] = array(
 'note_no_link'						=> 'Aucun lien',
 'note_no_image'					=> 'Aucune image',
 'note_no_fichier'					=> 'Aucun fichier',
+'note_no_feed'						=> 'Aucun flux RSS',
+'note_no_feed_entry'				=> 'Aucune entrée RSS',
 // placeholders
 'placeholder_search'				=> 'Rechercher',
 'placeholder_nom_fichier'		=> 'nom',

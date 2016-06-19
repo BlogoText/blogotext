@@ -452,19 +452,25 @@ function feed2array($feed_content, $feedlink) {
 				elseif (!empty($item->id)) {          $flux['items'][$c]['bt_id'] = (string)$item->id; }
 					else { $flux['items'][$c]['bt_id'] = microtime(); }
 
-				if (!empty($item->updated)) {       $flux['items'][$c]['bt_date'] = (string)$item->updated; }
 				if (!empty($item->pubDate)) {       $flux['items'][$c]['bt_date'] = (string)$item->pubDate; }
 				if (!empty($item->published)) {     $flux['items'][$c]['bt_date'] = (string)$item->published; }
+
 				if (!empty($item->subtitle)) {      $flux['items'][$c]['bt_content'] = (string)$item->subtitle; }
 				if (!empty($item->description)) {   $flux['items'][$c]['bt_content'] = (string)$item->description; }
 				if (!empty($item->summary)) {       $flux['items'][$c]['bt_content'] = (string)$item->summary; }
 				if (!empty($item->content)) {       $flux['items'][$c]['bt_content'] = (string)$item->content; }
 
-				if (!empty($item->children('content', true)->encoded)) {       $flux['items'][$c]['bt_content'] = (string)$item->children('content', true)->encoded; }
+				if (!empty($item->children('content', true)->encoded)) { $flux['items'][$c]['bt_content'] = (string)$item->children('content', true)->encoded; }
 
+				// no content found ?
 				if (!isset($flux['items'][$c]['bt_content'])) $flux['items'][$c]['bt_content'] = '';
+
+				// no date found ?
+				if (!isset($flux['items'][$c]['bt_date'])) { if (!empty($item->updated)) { $flux['items'][$c]['bt_date'] = (string)$item->updated; } }
+				if (!isset($flux['items'][$c]['bt_date'])) { if (!empty($item->children('dc', true)->date)) { $flux['items'][$c]['bt_date'] = (string)$item->children('dc', true)->date; } } // <dc:date>
+
 				if (!empty($flux['items'][$c]['bt_date'])) { $flux['items'][$c]['bt_date'] = strtotime($flux['items'][$c]['bt_date']); }
-					else { $flux['items'][$c]['bt_date'] = time(); }
+				else { $flux['items'][$c]['bt_date'] = time(); }
 
 				// place le lien du flux (on a besoin de ça)
 				$flux['items'][$c]['bt_feed_url'] = $feedlink;

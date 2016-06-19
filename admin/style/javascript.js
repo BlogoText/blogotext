@@ -894,7 +894,7 @@ function openItem(thisPost) {
 	var isVisible = ( (rect.top < 0) || (rect.bottom > window.innerHeight) ) ? false : true ;
 	if (!isVisible) {
 		window.location.hash = thisPost.id;
-		window.scrollBy(0,-10);
+		window.scrollBy(0, -120);
 	}
 
 	if (!thisPost.classList.contains('read')) {
@@ -1404,7 +1404,7 @@ function keyboardNextPrevious(e) {
 		elmt.dispatchEvent(evt);
 		e.preventDefault();
 		window.location.hash = elmt.parentNode.parentNode.id;
-		window.scrollBy(0,-10);
+		window.scrollBy(0,-120);
 	}
 	else if (e.keyCode == '40' && e.ctrlKey && openPost.nextElementSibling != null) {
 		// down
@@ -1413,7 +1413,7 @@ function keyboardNextPrevious(e) {
 		elmt.dispatchEvent(evt);
 		e.preventDefault();
 		window.location.hash = elmt.parentNode.parentNode.id;
-		window.scrollBy(0,-10);
+		window.scrollBy(0,-120);
 	}
 	return true;
 }
@@ -1629,7 +1629,7 @@ function draw(container) {
 			ctx.moveTo(coordsNew.left - cont.x + coordsNew.width/2, 150);
 			ctx.lineTo(coordsNew.left - cont.x + coordsNew.width/2, coordsNew.top - cont.y);
 		} else {
-			if (coordsNew.top - cont.y < 150) {
+			if (coordsNew.top - cont.y <= 150) {
 				ctx.lineTo(coordsNew.left - cont.x + coordsNew.width/2, coordsNew.top - cont.y);
 				var coordsOld = coordsNew;
 			}

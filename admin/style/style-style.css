@@ -11,7 +11,14 @@
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  src: local("roboto"), url("roboto-400.woff2") format("woff2"), url("roboto-400.woff") format("woff");
+  src: local("roboto"), local("roboto regular"), url("roboto-400.woff2") format("woff2"), url("roboto-400.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  src: local("roboto medium"), url("roboto-500.woff2") format("woff2"), url("roboto-500.woff") format("woff");
 }
 
 @font-face {
@@ -116,6 +123,7 @@ html {
 body {
 	font-size: 1em; /* 15px */
 	position: relative;
+	padding-top: 62px;
 }
 
 #header {/* the top bar(s) */
@@ -124,14 +132,16 @@ body {
 	width: 100%;
 	z-index: 100;
 	color: white;
+	position: fixed;
+	top: 0;
 }
 
 #axe { /* the entire page without top bars (#header) and footer (#footer) */ 
-	padding: 25px 20px;
+	padding: 20px;
 }
 
 #page { /* the main frame. #axe minus the "filtre" forms, and the subnav */
-	padding: 0px 1% 20px;
+	padding: 5px;
 }
 
 /* Footer */
@@ -255,7 +265,7 @@ q, blockquote {
 	min-height: 60px;
 	box-sizing: border-box;
 	background: #263238;
-	padding: 0 0 0 20px;
+	padding: 0 0 0 15px;
 	color: inherit;
 }
 
@@ -281,14 +291,14 @@ q, blockquote {
 #top > #nav > ul {
 	list-style-type: none;
 	margin: 0;
-	padding: 0;
+	padding: 0 10px 0 0;
 	box-sizing: border-box;
 	min-height: 55px;
 }
 
 #top > #nav > ul li {
 	display: inline-block;
-	margin: 0 20px 0 0;
+	margin: 0;
 }
 
 #top > #nav a {
@@ -296,13 +306,17 @@ q, blockquote {
 	text-decoration: none;
 	color: inherit;
 	transition: box-shadow 0.1s ease-in 0s;
+	text-transform: uppercase;
+	font-weight: 500;
+	font-size: .9em;
+	padding: 0 10px;
 }
 
 #top > #nav a.current {
-	font-weight: bold;
+	background-color: rgba(255, 255, 255, .1);
 }
-#top > #nav a:hover,
-#top > #nav a.current {
+
+#top > #nav a:hover {
 	box-shadow: 0px -3px 0px currentColor inset;
 }
 
@@ -316,10 +330,10 @@ q, blockquote {
 ------------------------------------------------------*/
 #top > #search {
 	order: 2;
-	flex: 0 1 700px;
+	flex: 0 1 550px;
 	padding: 0;
 	text-align: right;
-	max-width: 700px;
+	max-width: 550px;
 	display: flex;
 	align-items: center;
 }
@@ -341,7 +355,7 @@ q, blockquote {
 	border-radius: 2px 0 0 2px;
 	box-sizing: border-box;
 	height: 40px;
-	max-width: 700px;
+	max-width: 550px;
 	flex: 1 1 auto;
 	background-color: rgba(255, 255, 255, .3);
 	color: inherit;
@@ -375,8 +389,9 @@ q, blockquote {
 #top > #search #q:not([value=""]),
 #top > #search #q:not([value=""])+#input-rechercher { /* not empty : focus */
 	z-index: 20;
-	color: rgba(0, 0, 0, 1);
-	background: rgba(255, 255, 255, 1);
+	color: rgb(0, 0, 0);
+	background: rgba(255, 255, 255, .7);
+	transition: background-color .3s, color .3s;
 }
 
 /* TOP > Right nav bar
@@ -578,12 +593,6 @@ q, blockquote {
 #fab.add-feed::before {
 	content: "\e927";
 }
-/* PAGE INDEX 
-------------------------------------------------------------------------- */
-#resultat-recherche {
-	list-style-type: none; /* TODO */
-}
-
 
 /* GENERAL FORM STUFF
 ----------------------------------------------------------*/
@@ -664,7 +673,7 @@ select optgroup::before {
 
 .submit {
 	color: white;
-	font-weight: bold;
+	font-weight: 500;
 	vertical-align: middle;
 	padding: 6px 12px;
 	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
@@ -677,9 +686,9 @@ select optgroup::before {
 	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 	border-radius: 2px;
 }
-.submit:active {
+/*.submit:active {
 	box-shadow: none;
-}
+}*/
 
 .button-submit {
 	min-width: 140px;
@@ -691,10 +700,11 @@ select optgroup::before {
 }
 
 .button-cancel {
-	box-shadow: none;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0);
 	background: white;
-	color: #333;
+	color: #555;
 	margin-right: 5px;
+	transition: box-shadow .2s;
 }
 
 
@@ -782,7 +792,7 @@ fieldset {
 *************************************/
 
 #apercu, #form-ecrire,
-#mainpage,
+#graphs .graph,
 #post-new-lien,
 .linkbloc,
 #billets,
