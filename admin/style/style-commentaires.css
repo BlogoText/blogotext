@@ -142,7 +142,7 @@
 
 .commentbloc .comm-header .link-article,
 .linkbloc .date {
-	flex: 1 0 auto;
+	flex: 1 1 auto;
 	text-align: right;
 	color: gray;
 	font-style: italic;

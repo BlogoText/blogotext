@@ -195,6 +195,7 @@
 	}
 
 	#top > #search #q:focus,
+	#top > #search #q[value=""]:focus,
 	#top > #search #q:not([value=""]) { /* focus OR not empty (a search is done) */
 		position: absolute;
 		border-radius: 3px;
