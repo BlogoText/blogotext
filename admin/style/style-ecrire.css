@@ -50,17 +50,17 @@
 /*	overflow: hidden;*/
 }
 
-#form-ecrire #chapo {
-	flex: 2 2 auto;
+#chapo_note > textarea {
 	width: auto;
-}
-#form-ecrire #notes {
-	flex: 1 1 auto;
-	width: auto;
+	min-width: 0;
 }
 
 #form-ecrire #chapo {
+	flex: 2 2 auto;
 	border-right: 1px solid silver;
+}
+#form-ecrire #notes {
+	flex: 1 2 auto;
 }
 
 #type_tags,
