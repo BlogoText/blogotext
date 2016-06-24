@@ -222,6 +222,7 @@ function init_list_articles($article) {
 			mb_internal_encoding('UTF-8');
 			$abstract = mb_substr(strip_tags($article['bt_content']), 0, 249);
 			$article['bt_abstract'] = $abstract."…";
+			$article['bt_db_abstract'] = '';
 		}
 		$dec_id = decode_id($article['bt_id']);
 		$article = array_merge($article, decode_id($article['bt_date']));

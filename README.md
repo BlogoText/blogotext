@@ -37,6 +37,3 @@ This is [Blogotext](http://lehollandaisvolant.net/blogotext/), the lightweight S
  * Upload folder to your site (eg: to `http://example.com/blog`)
  * Use your browser to go to your site
  * Follow the few steps
-
-## Bugs
- * Please, report any bugs using [my cont@ct page](http://lehollandaisvolant.net/contact) or the Github bugtracking system.
