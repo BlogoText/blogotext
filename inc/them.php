@@ -103,6 +103,7 @@ function conversions_theme($texte, $solo_art, $cnt_mode) {
 			$texte = str_replace($GLOBALS['balises']['blog_motscles'], $solo_art['bt_keywords'], $texte);
 		}
 		if ($solo_art['bt_type'] == 'link' or $solo_art['bt_type'] == 'note') {
+			$texte = str_replace($GLOBALS['balises']['article_chapo'], trim(str_replace(array("\r", "\n"), ' ', mb_substr(strip_tags($solo_art['bt_content']), 0, 149))).'…', $texte);
 			$texte = str_replace($GLOBALS['balises']['article_titre_page'], $solo_art['bt_title'].' - ', $texte);
 		}
 	}
