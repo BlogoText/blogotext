@@ -131,7 +131,6 @@ if (!empty($_GET['q'])) {
 /* sinon, affiche les graphes. */
 
 else {
-	mb_internal_encoding('UTF-8');
 	$nothingyet = 0;
 
 	if (!$total_artic == 0) {

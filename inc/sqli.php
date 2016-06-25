@@ -217,13 +217,6 @@ function get_entry($base_handle, $table, $entry, $id, $retour_mode) {
 // from an array given by SQLite's requests, this function adds some more stuf to data stored by DB.
 function init_list_articles($article) {
 	if (!empty($article)) {
-		// pour ne plus rendre obligatoire le chapô : s'il est vide, on le recrée à partir du début du bt_content
-		if (isset($article['bt_abstract']) and empty($article['bt_abstract'])) {
-			mb_internal_encoding('UTF-8');
-			$abstract = mb_substr(strip_tags($article['bt_content']), 0, 249);
-			$article['bt_abstract'] = $abstract."…";
-			$article['bt_db_abstract'] = '';
-		}
 		$dec_id = decode_id($article['bt_id']);
 		$article = array_merge($article, decode_id($article['bt_date']));
 		$article['bt_link'] = $GLOBALS['racine'].'?d='.$dec_id['annee'].'/'.$dec_id['mois'].'/'.$dec_id['jour'].'/'.$dec_id['heure'].'/'.$dec_id['minutes'].'/'.$dec_id['secondes'].'-'.titre_url($article['bt_title']);

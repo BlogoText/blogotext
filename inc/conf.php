@@ -21,6 +21,8 @@ define('BLOGOTEXT_NAME', 'BlogoText');
 define('BLOGOTEXT_SITE', 'http://lehollandaisvolant.net/blogotext/');
 define('BLOGOTEXT_VERSION', '3.4.5-2');
 define('MINIMAL_PHP_REQUIRED_VERSION', '5.5');
+mb_internal_encoding('UTF-8');
+
 
 // FOLDERS (change this only if you know what you are doing...)
 define('DIR_ADMIN', 'admin');

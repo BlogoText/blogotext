@@ -208,7 +208,6 @@ function insert_table_articles($tableau) {
 		foreach($table_diff as $art) {
 			$query = 'INSERT INTO articles ( bt_type, bt_id, bt_date, bt_title, bt_abstract, bt_notes, bt_link, bt_content, bt_wiki_content, bt_categories, bt_keywords, bt_nb_comments, bt_allow_comments, bt_statut ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )';
 			$req = $GLOBALS['db_handle']->prepare($query);
-			$art['bt_abstract'] = (isset($art['bt_db_abstract']) ? '' : $art['bt_abstract']);
 			$req->execute(array( $art['bt_type'], $art['bt_id'], $art['bt_date'], $art['bt_title'], $art['bt_abstract'], $art['bt_notes'], $art['bt_link'], $art['bt_content'], $art['bt_wiki_content'], $art['bt_categories'], $art['bt_keywords'], $art['bt_nb_comments'], $art['bt_allow_comments'], $art['bt_statut'] ));
 		}
 		$GLOBALS['db_handle']->commit();
