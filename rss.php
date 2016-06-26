@@ -199,6 +199,12 @@ else {
 			$xml_post .= '<link>'.$elem['bt_link'].'</link>'."\n";
 			$xml_post .= '<description><![CDATA['.rel2abs($elem['bt_content']).']]></description>'."\n";
 		}
+		if (isset($elem['bt_tags']) or isset($elem['bt_categories'])) {
+			$tags = (isset($elem['bt_tags'])) ? $elem['bt_tags'] : $elem['bt_categories'];
+			if (!empty($tags)) {
+				$xml_post .= '<category>'.implode('</category>'."\n".'<category>', explode(', ', $tags)).'</category>'."\n";
+			}
+		}
 		$xml_post .= '</item>'."\n";
 		$xml .= $xml_post;
 	}

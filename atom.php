@@ -198,6 +198,13 @@ else {
 			$xml_post .= '<link href="'.$elem['bt_link'].'"/>'."\n";
 			$xml_post .= '<content type="html">'.htmlspecialchars(rel2abs($elem['bt_content'])).'</content>'."\n";
 		}
+		if (isset($elem['bt_tags']) or isset($elem['bt_categories'])) {
+			$tags = (isset($elem['bt_tags'])) ? $elem['bt_tags'] : $elem['bt_categories'];
+			if (!empty($tags)) {
+				$xml_post .= '<category term="'.implode('" />'."\n".'<category term="', explode(', ', $tags)).'" />'."\n";
+			}
+		}
+
 		$xml_post .= '</entry>'."\n";
 	}
 	$xml .= '<updated>'.date_create_from_format('YmdHis', $main_updated)->format('c').'</updated>'."\n";
