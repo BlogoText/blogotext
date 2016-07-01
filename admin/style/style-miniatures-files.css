@@ -161,12 +161,7 @@
 #img-others-infos label[for^="dossier"]::before     { content: "\e91a"; }
 
 #img-others-infos label[for="statut"] {
-	text-align: left;
-	display: inline-block;
-	margin-left: 5px;
-	vertical-align: middle;
-	margin-top: 20px;
-	padding-left: 24px;
+	margin-left: 60px;
 }
 
 #img-others-infos .text {

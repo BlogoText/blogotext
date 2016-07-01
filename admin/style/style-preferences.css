@@ -37,13 +37,13 @@
 	width: auto;
 }
 
-#preferences input[type="checkbox"]+label {
+#preferences .checkbox-toggle+label {
 	cursor: pointer;
 	position: relative;
 	margin-right: 60px;
 }
 
-#preferences input[type="checkbox"]+label::before {
+#preferences .checkbox-toggle+label::before {
 	position: absolute;
 	right: -49px;
 	top: 0;
@@ -57,11 +57,11 @@
 	content: '';
 }
 
-#preferences input[type="checkbox"]:focus+label::after {
+#preferences .checkbox-toggle:focus+label::after {
 	box-shadow: 0px 3px 3px rgba(0,0,0,0.2), 0 0 0 5px rgba(0, 0, 0, .1);
 }
 
-#preferences input[type="checkbox"]+label::after {
+#preferences .checkbox-toggle+label::after {
 	position: absolute;
 	right: -29px;
 	top: -3px;
@@ -75,31 +75,31 @@
 	transition: all 0.3s ease;
 }
 
-#preferences input[type="checkbox"]:not(:disabled):active + label::after {
+#preferences .checkbox-toggle:not(:disabled):active + label::after {
 	box-shadow: 0px 3px 3px rgba(0,0,0,0.2), 0 0 0 15px rgba(111, 190, 181, .4);
 }
 
-#preferences input[type="checkbox"] {
+#preferences .checkbox-toggle {
 	position: absolute;
 	left: -9999px;
 }
 
-#preferences input[type="checkbox"]:checked + label:before {
+#preferences .checkbox-toggle:checked + label:before {
 	background: #A0C2F9;
 }
 
 
-#preferences input[type="checkbox"]:checked + label::after {
+#preferences .checkbox-toggle:checked + label::after {
 	right: -51px;
 	background: #4285F4;
 }
 
-#preferences input[type="checkbox"]:disabled + label::before {
+#preferences .checkbox-toggle:disabled + label::before {
 	background: #d5d5d5;
 	pointer-events: none;
 }
 
-#preferences input[type="checkbox"]:disabled + label::after {
+#preferences .checkbox-toggle:disabled + label::after {
 	background: #bcbdbc;
 }
 

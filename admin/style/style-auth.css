@@ -93,11 +93,6 @@
 	color: red;
 }
 
-#auth label[for="stay_logged"],
-#auth label[for="stay_logged"]+input {
-	align-self: center;	
-}
-
 #auth p label[for="user"]::before     { content: "\e930"; }
 #auth p label[for="password"]::before { content: "\e93d"; }
 #auth p label[for="word"]::before     { content: "\e93b"; }
