@@ -737,38 +737,39 @@ select optgroup::before {
 }
 
 /* checkboxes */
-.checkbox+label {
-	cursor: pointer;
-	position: relative;
-	margin: 15px 5px 10px 35px;
-	display: inline-block;
-}
-
 .checkbox {
 	position: absolute;
 	left: -9999px;
+}
+
+.checkbox+label {
+	cursor: pointer;
+	position: relative;
+	margin: 15px 5px 10px 30px;
+	display: inline-block;
 }
 
 .checkbox+label::after { /* the checkbox */
 	content: '\e905';
 	text-align: center;
 	color: white;
-	font-size: 1.2em;
-	border: 1px solid rgba(0, 0, 0, .35);
-	border-radius: 4px;
+	font-size: 1em;
+	border: 2px solid rgba(0, 0, 0, .3);
+	border-radius: 3px;
 	background-color: white;
 	position: absolute;
 	top: 50%;
-	left: -9px;
+	left: -4px;
 	transform: translate(-20px, -50%);
 	box-sizing: border-box;
-	width: 20px;
-	height: 20px;
+	width: 18px;
+	height: 18px;
+	line-height: 14px;
 	transition: background-color 1s, border-color 1s;
 }
 
 .checkbox:checked+label::after { /* the checkbox -- checked */
-	border: 1px solid rgba(33, 150, 243, 0);
+	border-color: rgba(33, 150, 243, 0);
 	background-color: rgba(33, 150, 243, 1);
 }
 
@@ -779,7 +780,7 @@ select optgroup::before {
 	position: absolute;
 	box-sizing: border-box;
 	top: 50%;
-	left: -20px;
+	left: -15px;
 	transform: translate(-50%, -50%) scale(0);
 	width: 1.5px;
 	height: 1.5px;
@@ -789,22 +790,62 @@ select optgroup::before {
 	animation: md-ripple 1s ease-out;
 }
 
+/* checkboxes with "toggle-button" style */
+.checkbox-toggle {
+	position: absolute;
+	left: -9999px;
+}
 
+.checkbox-toggle+label {
+	cursor: pointer;
+	position: relative;
+	margin-right: 60px;
+}
 
+.checkbox-toggle+label::after {
+	position: absolute;
+	right: -30px;
+	top: -1px;
+	display: block;
+	width: 22px;
+	height: 22px;
+	border-radius: 100%;
+	background: #ECECEC;
+	box-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+	content: '';
+	transition: all 0.3s ease;
+}
 
+.checkbox-toggle:checked + label::after {
+	right: -50px;
+	background: #4285F4;
+}
 
+.checkbox-toggle+label::before {
+	position: absolute;
+	right: -50px;
+	top: 3px;
+	display: block;
+	height: 15px;
+	width: 40px;
+	background: #B2B2B2;
+	border-radius: 10px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	content: '';
+}
 
+.checkbox-toggle:checked + label:before {
+	background: #A0C2F9;
+}
 
+.checkbox-toggle:focus+label::after {
+	box-shadow: 0px 3px 3px rgba(0,0,0,0.2), 0 0 0 5px rgba(0, 0, 0, .1);
+}
 
-
-
-
-
-
-
-
-
-
+.checkbox-toggle:not(:disabled):active + label::after {
+	box-shadow: 0px 3px 3px rgba(0,0,0,0.2), 0 0 0 15px rgba(160, 194, 249, .4);
+}
 
 legend {
 	padding: 0;
