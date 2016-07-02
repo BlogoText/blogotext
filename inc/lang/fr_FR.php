@@ -182,8 +182,6 @@ $GLOBALS['lang'] = array(
 'label_dp_email_required'		=> 'E-mail : ',
 'label_dp_identifiant'			=> 'Identifiant : ',
 'label_dp_motdepasse'			=> 'Mot de passe : ',
-'label_dp_word_captcha'			=> 'texte dans l’image : ',
-'label_dp_changer_captcha'		=> 'Changer d’image : ',
 // Commentaire
 'aucun'								=> 'aucun',
 'comment_ajout'					=> 'Ajouter un commentaire',
@@ -359,7 +357,6 @@ $GLOBALS['lang'] = array(
 'pref_categories'					=> 'Classement des billets par catégories : ',
 'pref_commentaires'				=> 'Utiliser les commentaires : ',
 'pref_allow_global_coms'		=> 'Fermeture de tous les commentaires : ',
-'pref_connexion_captcha'		=> 'Captcha à la connexion (<a href="?test_captcha" target="_blank">tester!</a>) : ',
 'pref_all'							=> 'Tout',
 'pref_go_to_maintenance'		=> 'Accéder à la page de maintenance : ',
 'pref_rss_go_to_imp-export'	=> 'Accéder à la page d’import/export OMPL : ',

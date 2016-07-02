@@ -814,14 +814,6 @@ function afficher_form_prefs($erreurs = '') {
 		$fld_securite .= "\t".'<label for="mdp_rep">'.$GLOBALS['lang']['pref_mdp_nouv'].'</label>';
 		$fld_securite .= "\t".'<input type="password" id="mdp_rep" name="mdp_rep" size="30" value="" class="text" autocomplete="off" />'."\n";
 		$fld_securite .= '</p>'."\n";
-
-		if (in_array('gd', get_loaded_extensions())) { // captcha only possible if GD library is installed.
-			$fld_securite .= '<p>'."\n";
-			$fld_securite .= form_checkbox('connexion_captcha', $GLOBALS['connexion_captcha'], $GLOBALS['lang']['pref_connexion_captcha']);
-			$fld_securite .= '</p>'."\n";
-		} else {
-			$fld_securite .= hidden_input('connexion_captcha', '0');
-		}
 		$fld_securite .= '</div>';
 
 		$fld_securite .= $submit_box;

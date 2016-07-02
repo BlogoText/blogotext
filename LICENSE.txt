@@ -23,18 +23,6 @@
 | Linx is redistributed under the terms of the WTFPL.                     |
 |                                                                         |
 +-------------------------------------------------------------------------+
-|                                                                 FREECAP |
-+-------------------------------------------------------------------------+
-| http://www.puremango.co.uk                                              |
-|                                                                         |
-| Freecap is an independent Image Captcha generator.                      |
-|                                                                         |
-| (c) 2006 Howard Yend                                                    |
-|                                                                         |
-| Freecap is redistributed under the terms of the GNU GPL License.        |
-| Freecap is used in Blogotext with special grant of its author.          |
-|                                                                         |
-+-------------------------------------------------------------------------+
 |                                            GOOGLE MATERIAL DESIGN ICONS |
 +-------------------------------------------------------------------------+
 | https://github.com/google/material-design-icons                         |

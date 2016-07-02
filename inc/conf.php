@@ -68,11 +68,6 @@ import_ini_file(BT_ROOT.DIR_CONFIG.'/'.'mysql.ini');
 // USER LOGIN + PW HASH
 import_ini_file(BT_ROOT.DIR_CONFIG.'/'.'user.ini');
 
-
-
-
-
-
 // regenerate captcha (always)
 if (!isset($GLOBALS['captcha'])) {
 	$ua = (isset($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : '';

@@ -82,10 +82,6 @@ if (isset($_POST['_verif_envoi']) and valider_form() === TRUE) { // OK : getting
 		echo '<div id="auth">'."\n";
 		echo '<p><label for="user">'.ucfirst($GLOBALS['lang']['label_dp_identifiant']).'</label><input class="text" type="text"  autocomplete="off" id="user" name="nom_utilisateur" placeholder="John Doe" value="" /></p>'."\n";
 		echo '<p><label for="password">'.ucfirst($GLOBALS['lang']['label_dp_motdepasse']).'</label><input class="text" id="password" type="password" placeholder="••••••••••••" name="mot_de_passe" value="" /></p>'."\n";
-		if (isset($GLOBALS['connexion_captcha']) and ($GLOBALS['connexion_captcha'] == "1")) {
-			echo '<p><label for="word">'.ucfirst($GLOBALS['lang']['label_dp_word_captcha']).'</label><input class="text" type="text" id="word" name="word" value="" /></p>'."\n";
-			echo '<p><a href="#" onclick="new_freecap();return false;" title="'.$GLOBALS['lang']['label_dp_changer_captcha'].'"><img src="../inc/freecap/freecap.php" id="freecap" alt="captcha"></a></p>'."\n";
-		}
 		echo '<p><input type="checkbox" id="stay_logged" name="stay_logged" checked class="checkbox" /><label for="stay_logged">'.$GLOBALS['lang']['label_stay_logged'].'</label></p>'."\n";
 		echo '<button class="submit button-submit" type="submit" name="submit">'.$GLOBALS['lang']['connexion'].'</button>'."\n";
 		echo '<input type="hidden" name="_verif_envoi" value="1" />'."\n";
@@ -94,16 +90,8 @@ if (isset($_POST['_verif_envoi']) and valider_form() === TRUE) { // OK : getting
 }
 
 function valider_form() {
-	// first test password
 	if (!password_verify($_POST['mot_de_passe'], USER_PWHASH)) {
 		return FALSE;
-	}
-	// then test captcha
-	if (isset($GLOBALS['connexion_captcha']) and ($GLOBALS['connexion_captcha'] == "1")) { // si captcha activé
-		if ( empty($_SESSION['freecap_word_hash']) or empty($_POST['word']) or (sha1(strtolower($_POST['word'])) != $_SESSION['freecap_word_hash']) ) {
-			return FALSE;
-		}
-		$_SESSION['freecap_word_hash'] = FALSE; // reset captcha word
 	}
 	return TRUE;
 }

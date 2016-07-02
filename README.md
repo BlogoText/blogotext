@@ -27,7 +27,7 @@ This is [Blogotext](http://lehollandaisvolant.net/blogotext/), the lightweight S
  * min 1 Mo disk space (more data = more space needed)
 
 ## Recommended PHP-libraries
- * GD (for captcha / comments icons);
+ * GD (for comments icons / favicons);
  * cURL (for RSS reader, links sharing, comments icons)
  * LibXML (for RSS reader)
  * GZip (for zip exporting function)

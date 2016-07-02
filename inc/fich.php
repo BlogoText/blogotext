@@ -95,7 +95,6 @@ function fichier_prefs() {
 		$format_heure = htmlspecialchars($_POST['format_heure']);
 		$fuseau_horaire = addslashes(clean_txt(htmlspecialchars($_POST['fuseau_horaire'])));
 		$global_com_rule = (isset($_POST['global_comments'])) ? '1' : '0';
-		$connexion_captcha = (isset($_POST['connexion_captcha'])) ? '1' : '0';
 		$activer_categories = (isset($_POST['activer_categories'])) ? '1' : '0';
 		$afficher_rss = (isset($_POST['aff_onglet_rss'])) ? '1' : '0';
 		$afficher_liens = (isset($_POST['aff_onglet_liens'])) ? '1' : '0';
@@ -104,9 +103,6 @@ function fichier_prefs() {
 		$automatic_keywords = (isset($_POST['auto_keywords'])) ? '1' : '0';
 		$require_email = (isset($_POST['require_email'])) ? '1' : '0';
 		$auto_check_updates = (isset($_POST['check_update'])) ? '1' : '0';
-		// linx
-//		$autoriser_liens_public = $_POST['allow_public_linx'];
-//		$linx_defaut_status = $_POST['linx_defaut_status'];
 		$auto_dl_liens_fichiers = htmlspecialchars($_POST['dl_link_to_files']);
 		$nombre_liens_admin = htmlspecialchars($_POST['nb_list_linx']);
 	} else {
@@ -118,15 +114,12 @@ function fichier_prefs() {
 		$keywords = 'blog, blogotext';
 		$racine = clean_txt(trim(htmlspecialchars($_POST['racine'])));
 		$max_bill_acceuil = '10';
-//		$max_linx_accueil = '50';
-//		$max_comm_encart = '5';
 		$max_bill_admin = '25';
 		$max_comm_admin = '50';
 		$format_date = '0';
 		$format_heure = '0';
 		$fuseau_horaire = 'UTC';
 		$global_com_rule = '0';
-		$connexion_captcha = '0';
 		$activer_categories = '1';
 		$afficher_rss = '1';
 		$afficher_liens = '1';
@@ -135,9 +128,6 @@ function fichier_prefs() {
 		$automatic_keywords = '1';
 		$require_email = '0';
 		$auto_check_updates = 1;
-		// linx
-//		$autoriser_liens_public = '0';
-//		$linx_defaut_status = '1';
 		$auto_dl_liens_fichiers = '0';
 		$nombre_liens_admin = '50';
 	}
@@ -151,13 +141,10 @@ function fichier_prefs() {
 	$prefs .= "\$GLOBALS['racine'] = '".$racine."';\n";
 	$prefs .= "\$GLOBALS['max_bill_acceuil'] = '".$max_bill_acceuil."';\n";
 	$prefs .= "\$GLOBALS['max_bill_admin'] = '".$max_bill_admin."';\n";
-//	$prefs .= "\$GLOBALS['max_comm_encart'] = '".$max_comm_encart."';\n";
 	$prefs .= "\$GLOBALS['max_comm_admin'] = '".$max_comm_admin."';\n";
-//	$prefs .= "\$GLOBALS['max_linx_acceuil'] = '".$max_linx_accueil."';\n";
 	$prefs .= "\$GLOBALS['format_date'] = '".$format_date."';\n";
 	$prefs .= "\$GLOBALS['format_heure'] = '".$format_heure."';\n";
 	$prefs .= "\$GLOBALS['fuseau_horaire'] = '".$fuseau_horaire."';\n";
-	$prefs .= "\$GLOBALS['connexion_captcha']= '".$connexion_captcha."';\n";
 	$prefs .= "\$GLOBALS['activer_categories']= '".$activer_categories."';\n";
 	$prefs .= "\$GLOBALS['onglet_rss']= '".$afficher_rss."';\n";
 	$prefs .= "\$GLOBALS['onglet_liens']= '".$afficher_liens."';\n";
@@ -167,8 +154,6 @@ function fichier_prefs() {
 	$prefs .= "\$GLOBALS['automatic_keywords']= '".$automatic_keywords."';\n";
 	$prefs .= "\$GLOBALS['require_email']= '".$require_email."';\n";
 	$prefs .= "\$GLOBALS['check_update']= '".$auto_check_updates."';\n";
-//	$prefs .= "\$GLOBALS['allow_public_linx']= '".$autoriser_liens_public."';\n";
-//	$prefs .= "\$GLOBALS['linx_defaut_status']= '".$linx_defaut_status."';\n";
 	$prefs .= "\$GLOBALS['max_linx_admin']= '".$nombre_liens_admin."';\n";
 	$prefs .= "\$GLOBALS['dl_link_to_files']= '".$auto_dl_liens_fichiers."';\n";
 	$prefs .= "?>";
