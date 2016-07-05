@@ -69,7 +69,7 @@ $GLOBALS['balises'] = array(
 	'commentaire_webpage' => '{commentaire_webpage}',
 	'commentaire_anchor' => '{commentaire_ancre}', // the id="" content
 	'commentaire_lien' => '{commentaire_lien}',
-	'commentaire_gravatar' => '{commentaire_gravatar_link}', // http://2.gravatar.com/avatar/md5($email)
+	'commentaire_md5email' => '{commentaire_md5email}',
 
 	// Liens
 	'lien_auteur' => '{lien_auteur}',
@@ -99,15 +99,16 @@ function conversions_theme($texte, $solo_art, $cnt_mode) {
 		$texte = str_replace($GLOBALS['balises']['article_titre_echape'], urlencode($solo_art['bt_title']), $texte);
 		$texte = str_replace($GLOBALS['balises']['article_lien'], $solo_art['bt_link'], $texte);
 		if ($solo_art['bt_type'] == 'article') {
-			$texte = str_replace($GLOBALS['balises']['article_chapo'], str_replace(array("\r", "\n"), ' ', $solo_art['bt_abstract']), $texte);
+			$texte = str_replace($GLOBALS['balises']['article_chapo'], str_replace(array("\r", "\n"), ' ', ((empty($solo_art['bt_abstract'])) ? mb_substr(strip_tags($solo_art['bt_content']), 0, 249).'…' : $solo_art['bt_abstract'])), $texte);
 			$texte = str_replace($GLOBALS['balises']['blog_motscles'], $solo_art['bt_keywords'], $texte);
 		}
 		if ($solo_art['bt_type'] == 'link' or $solo_art['bt_type'] == 'note') {
+			$texte = str_replace($GLOBALS['balises']['article_chapo'], trim(str_replace(array("\r", "\n"), ' ', mb_substr(strip_tags($solo_art['bt_content']), 0, 149))).'…', $texte);
 			$texte = str_replace($GLOBALS['balises']['article_titre_page'], $solo_art['bt_title'].' - ', $texte);
 		}
 	}
 
-	// si remplacé, ceci ne sert à rien. Si pas remplacé, ça sert.
+	// si remplacé, ceci n'a pas d'effet.
 	$texte = str_replace($GLOBALS['balises']['blog_description'], $GLOBALS['description'], $texte);
 	$texte = str_replace($GLOBALS['balises']['article_titre_page'], '', $texte);
 	$texte = str_replace($GLOBALS['balises']['blog_motscles'], $GLOBALS['keywords'], $texte);
@@ -141,7 +142,7 @@ function conversions_theme_commentaire($texte, $commentaire) {
 	$texte = str_replace($GLOBALS['balises']['commentaire_date_iso'], date_formate_iso($commentaire['bt_id']), $texte);
 	$texte = str_replace($GLOBALS['balises']['commentaire_heure'], heure_formate($commentaire['bt_id']), $texte);
 	$texte = str_replace($GLOBALS['balises']['commentaire_email'], $commentaire['bt_email'], $texte);
-	$texte = str_replace($GLOBALS['balises']['commentaire_gravatar'], GRAVATAR_LINK.md5($commentaire['bt_email']), $texte);
+	$texte = str_replace($GLOBALS['balises']['commentaire_md5email'], md5($commentaire['bt_email']), $texte);
 	$texte = str_replace($GLOBALS['balises']['commentaire_auteur_lien'], $commentaire['auteur_lien'], $texte);
 	$texte = str_replace($GLOBALS['balises']['commentaire_auteur'], str_replace("'", "\\'", $commentaire['bt_author']), $texte);
 	$texte = str_replace($GLOBALS['balises']['commentaire_webpage'], $commentaire['bt_webpage'], $texte);
@@ -152,18 +153,10 @@ function conversions_theme_commentaire($texte, $commentaire) {
 
 // Article
 function conversions_theme_article($texte, $billet) {
-	// Formulaire commentaires
-	if (isset($GLOBALS['form_commentaire'])) { $texte = str_replace($GLOBALS['balises']['form_commentaire'], $GLOBALS['form_commentaire'], $texte); }
-		else { $texte = str_replace($GLOBALS['balises']['form_commentaire'], '', $texte); }
-
-	// FIXME : remplacer uniquement dans le texte, pas les liens.
-	//	$billet['bt_content'] = str_replace($q, '<mark>'.$q.'</mark>', $billet['bt_content']);
-
-	$texte = str_replace($GLOBALS['balises']['blog_auteur'], $GLOBALS['auteur'], $texte);
-	$texte = str_replace($GLOBALS['balises']['style'], $GLOBALS['theme_style'], $texte);
+	$texte = str_replace($GLOBALS['balises']['form_commentaire'], $GLOBALS['form_commentaire'], $texte);
 	$texte = str_replace($GLOBALS['balises']['rss_comments'], 'rss.php?id='.$billet['bt_id'], $texte);
 	$texte = str_replace($GLOBALS['balises']['article_titre'], $billet['bt_title'], $texte);
-	$texte = str_replace($GLOBALS['balises']['article_chapo'], $billet['bt_abstract'], $texte);
+	$texte = str_replace($GLOBALS['balises']['article_chapo'], ((empty($billet['bt_abstract'])) ? mb_substr(strip_tags($billet['bt_content']), 0, 249).'…' : $billet['bt_abstract']), $texte);
 	$texte = str_replace($GLOBALS['balises']['article_contenu'], $billet['bt_content'], $texte);
 	$texte = str_replace($GLOBALS['balises']['article_date'], date_formate($billet['bt_date']), $texte);
 	$texte = str_replace($GLOBALS['balises']['article_date_iso'], date_formate_iso($billet['bt_date']), $texte);
@@ -237,7 +230,6 @@ function afficher_index($tableau, $type) {
 				exit;
 			} else {
 				if (count($tableau)==1 and ($tableau[0]['bt_type'] == 'link' or $tableau[0]['bt_type'] == 'note') ) $data = $tableau[0]; 
-				$HTML_article = conversions_theme($theme_page, $data, 'post');
 				if ($tableau[0]['bt_type'] == 'article') {
 					if (!($theme_article = file_get_contents($GLOBALS['theme_post_artc']))) die($GLOBALS['lang']['err_theme_introuvable']);
 					$conversion_theme_fonction = 'conversions_theme_article';
@@ -253,7 +245,8 @@ function afficher_index($tableau, $type) {
 				foreach ($tableau as $element) {
 					$HTML_elmts .=  $conversion_theme_fonction($theme_article, $element);
 				}
-				$HTML = str_replace(extract_boucles($theme_page, $GLOBALS['boucles']['posts'], 'incl'), $HTML_elmts, $HTML_article);
+				$HTML = str_replace(extract_boucles($theme_page, $GLOBALS['boucles']['posts'], 'incl'), $HTML_elmts, $theme_page);
+				$HTML = conversions_theme($HTML, $data, 'post');
 			}
 		}
 		else {
@@ -264,30 +257,29 @@ function afficher_index($tableau, $type) {
 
 	elseif ($type == 'post') {
 		$billet = $tableau;
+		// parse & apply template article
+		$HTML_article = conversions_theme_article($theme_post, $billet);
 
+		// parse & apply templace commentaires
 		$HTML_comms = '';
 		// get list comments
 		if ($billet['bt_nb_comments'] != 0) {
-			$query = "SELECT * FROM commentaires WHERE bt_article_id=? AND bt_statut=1 ORDER BY bt_id LIMIT ? ";
+			$query = "SELECT c.*, a.bt_title FROM commentaires AS c, articles AS a WHERE c.bt_article_id=? AND c.bt_article_id=a.bt_id AND c.bt_statut=1 ORDER BY c.bt_id LIMIT ? ";
 			$commentaires = liste_elements($query, array($billet['bt_id'], $billet['bt_nb_comments']), 'commentaires');
-
-			// parse & apply template comments
 			$template_comments = extract_boucles($theme_post, $GLOBALS['boucles']['commentaires'], 'excl');
-
 			foreach ($commentaires as $element) {
 				$HTML_comms .=  conversions_theme_commentaire($template_comments, $element);
 			}
 		}
 
-		// replace {boucle commentaires} in $theme_post
+		// in $article : pastes comments
 		$v = extract_boucles($theme_post, $GLOBALS['boucles']['commentaires'], 'incl');
-		$HTML_article = conversions_theme_article($theme_post, $billet);
-		$HTML = str_replace($v, $HTML_comms, $HTML_article);
+		$HTML_article = str_replace($v, $HTML_comms, $HTML_article);
 
-		// replace article+comment data in page
-		$HTML = str_replace(extract_boucles($theme_page, $GLOBALS['boucles']['posts'], 'incl'), $HTML, $theme_page);
+		// in global page : pastes article and comms
+		$HTML = str_replace(extract_boucles($theme_page, $GLOBALS['boucles']['posts'], 'incl'), $HTML_article, $theme_page);
 
-		// replace tags.
+		// in global page : remplace remaining tags
 		$HTML = conversions_theme($HTML, $billet, 'post');
 	}
 	echo $HTML;

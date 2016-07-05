@@ -1,8 +1,7 @@
 @media (max-width: 700px) {
 	#axe {
-		padding: 20px 10px;
+		padding: 10px;
 	}
-
 	#subnav form select {
 		max-width: 35px;
 		padding-right: 30px;
@@ -24,7 +23,7 @@
 	}
 
 	#subnav #form-filtre::before {
-		content: "\e93f";
+		content: "\e941";
 		position: relative;
 		font-size: 2em;
 		display: inline-block;
@@ -153,7 +152,7 @@
 		left: 0;
 		max-width: 80%;
 		overflow: visible;
-		transition: transform .3s ease-in-out .25s;
+		transition: transform .5s ease-in-out .15s;
 		
 	}
 	#feed-list:hover {

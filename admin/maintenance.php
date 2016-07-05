@@ -658,7 +658,7 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 						// get list of comments (comments that belong to selected articles only)
 						if ($_GET['incl-comms'] == 1) {
 							foreach ($data_array['articles'] as $article) {
-								$comments = liste_elements('SELECT * FROM commentaires WHERE bt_article_id = ? ', array($article['bt_id']), 'commentaires');
+								$comments = liste_elements('SELECT c.*, a.bt_title FROM commentaires AS c, articles AS a WHERE c.bt_article_id = ? AND c.bt_article_id=a.bt_id', array($article['bt_id']), 'commentaires');
 								if (!empty($comments)) {
 									$data_array['commentaires'] = array_merge($data_array['commentaires'], $comments);
 								}

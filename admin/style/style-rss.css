@@ -1,10 +1,8 @@
 /* RSS Reader CSS
 ------------------------------------------------------------ */
-/* the main blog (with rounded corners) */
 #rss-list {
-	padding: 1px 0;
+	padding: 50px 0 1px
 }
-
 
 /* The frame with elements to read + menu */
 #posts-content {
@@ -137,7 +135,7 @@
 	text-decoration: none;
 	color: inherit;
 	flex: 1;
-	padding: 15px 20px 15px 35px;
+	padding: 15px 20px 15px 40px;
 	background-repeat: no-repeat;
 	background-position: 15px center;
 	display: block;
@@ -157,7 +155,7 @@
 #feed-list > li.feed-folder > .feed-folder-title > a:first-of-type::before {
 	content: "\e93e";
 	font-size: 1.2em;
-	width: 20px;
+	width: 25px;
 	display: inline-block;
 	color: rgba(0, 0, 0, .4);
 }
@@ -186,8 +184,8 @@
 }
 
 #feed-list > li.feed-folder > ul > li > a {
-	padding-left: 55px;
-	background-position: 35px center;
+	padding-left: 50px;
+	background-position: 25px center;
 }
 
 #feed-list > li:first-of-type::before {
@@ -343,7 +341,9 @@
 }
 
 #post-list > li .rss-item-content {
-	display: none;
+	height: 0;
+	overflow: hidden;
+	opacity: 0;
 }
 
 #post-list > li .rss-item-content * {
@@ -375,8 +375,10 @@
 }
 
 #post-list > li.open-post .rss-item-content {
-	display: block;
 	margin-top: 15px;
+	transition: opacity .7s cubic-bezier(0.175, 0.585, 0.32, 1);
+	opacity: 1;
+	height: auto;
 }
 
 #post-list > li .post-title .lien-share {

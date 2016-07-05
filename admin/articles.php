@@ -59,14 +59,14 @@ else {
 
 function afficher_liste_articles($tableau) {
 	if (!empty($tableau)) {
-		mb_internal_encoding('UTF-8');
 		$i = 0;
 		$out = '<ul id="billets">'."\n";
 		foreach ($tableau as $article) {
 			// COULEUR DE FOND SELON DATE
 			$out .= "\t".'<li'.( ($article['bt_date'] > date('YmdHis')) ? ' class="planned"' : '').'>'."\n";
 			// TITRE + ICONE SELON STATUT
-			$out .= "\t\t".'<span class="'.( ($article['bt_statut'] == '1') ? 'on' : 'off').'">'.'<a href="ecrire.php?post_id='.$article['bt_id'].'" title="'.htmlspecialchars(trim(mb_substr(strip_tags($article['bt_abstract']), 0, 249)), ENT_QUOTES).'">'.$article['bt_title'].'</a>'.'</span>'."\n";
+			$title = trim(htmlspecialchars(mb_substr(strip_tags( (empty($article['bt_abstract']) ? $article['bt_content'] : $article['bt_abstract']) ), 0, 249), ENT_QUOTES)) . '…';
+			$out .= "\t\t".'<span class="'.( ($article['bt_statut'] == '1') ? 'on' : 'off').'">'.'<a href="ecrire.php?post_id='.$article['bt_id'].'" title="'.$title.'">'.$article['bt_title'].'</a>'.'</span>'."\n";
 			// DATE
 			$out .= "\t\t".'<span><a href="'.basename($_SERVER['SCRIPT_NAME']).'?filtre='.substr($article['bt_date'],0,8).'">'.date_formate($article['bt_date']).'</a><span>, '.heure_formate($article['bt_date']).'</span></span>'."\n";
 			// NOMBRE COMMENTS

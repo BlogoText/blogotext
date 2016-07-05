@@ -47,12 +47,14 @@ echo '</div>'."\n";
 $total_artic = liste_elements_count("SELECT count(ID) AS nbr FROM articles", array());
 $total_links = liste_elements_count("SELECT count(ID) AS nbr FROM links", array());
 $total_comms = liste_elements_count("SELECT count(ID) AS nbr FROM commentaires", array());
+$total_rss = liste_elements_count("SELECT count(ID) AS nbr FROM rss", array());
 
 $total_nb_fichiers = sizeof($GLOBALS['liste_fichiers']);
 
 
 echo '<div id="axe">'."\n";
-echo '<div id="mainpage">'."\n";
+echo '<div id="page">'."\n";
+echo '<div id="graphs">'."\n";
 
 
 // transforme les valeurs numériques d’un tableau pour les ramener la valeur max du tableau à $maximum. Les autres valeurs du tableau sont à l’échelle
@@ -107,42 +109,44 @@ function get_tableau_date($data_type) {
 /* Une recherche a été faite : affiche la recherche */
 if (!empty($_GET['q'])) {
 	$q = htmlspecialchars($_GET['q']);
+	$nb_articles = liste_elements_count("SELECT count(ID) AS nbr FROM articles WHERE ( bt_content || bt_title ) LIKE ?", array('%'.$q.'%'));
+	$nb_liens = liste_elements_count("SELECT count(ID) AS nbr FROM links WHERE ( bt_content || bt_title || bt_link ) LIKE ?", array('%'.$q.'%'));
 	$nb_commentaires = liste_elements_count("SELECT count(ID) AS nbr FROM commentaires WHERE bt_content LIKE ?", array('%'.$q.'%'));
-	$nb_articles = liste_elements_count("SELECT count(ID) AS nbr FROM articles WHERE ( bt_content LIKE ? OR bt_title LIKE ? )", array('%'.$q.'%', '%'.$q.'%'));
-	$nb_liens = liste_elements_count("SELECT count(ID) AS nbr FROM links WHERE ( bt_content LIKE ? OR bt_title LIKE ? OR bt_link LIKE ? )", array('%'.$q.'%','%'.$q.'%', '%'.$q.'%'));
+	$nb_feeds = liste_elements_count("SELECT count(ID) AS nbr FROM rss WHERE ( bt_content || bt_title ) LIKE ?", array('%'.$q.'%'));
 	$nb_files = sizeof(liste_base_files('recherche', urldecode($_GET['q']), ''));
 
-	echo '<h2>'.$GLOBALS['lang']['recherche'].' "<span style="font-style: italic">'.htmlspecialchars($_GET['q']).'</span>" :</h2>'."\n";
+	echo '<div class="graph">'."\n";
+	echo '<div class="legend">'.$GLOBALS['lang']['recherche'].'  <span style="font-style: italic">'.htmlspecialchars($_GET['q']).'</span></div>'."\n";
 	echo '<ul id="resultat-recherche">';
-	echo "\t".'<li><a href="commentaires.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_objets($nb_commentaires, 'commentaire').'</a></li>';
 	echo "\t".'<li><a href="articles.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_objets($nb_articles, 'article').'</a></li>';
 	echo "\t".'<li><a href="links.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_objets($nb_liens, 'link').'</a></li>';
+	echo "\t".'<li><a href="commentaires.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_objets($nb_commentaires, 'commentaire').'</a></li>';
 	echo "\t".'<li><a href="fichiers.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_objets($nb_files, 'fichier').'</a></li>';
+	echo "\t".'<li><a href="feed.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_objets($nb_feeds, 'feed_entry').'</a></li>';
 	echo '</ul>';
+	echo '</div>'."\n";
+
 }
 
 /* sinon, affiche les graphes. */
 
 else {
-	mb_internal_encoding('UTF-8');
-	echo '<div id="graphs">'."\n";
 	$nothingyet = 0;
 
 	if (!$total_artic == 0) {
+		echo '<div class="graph">'."\n";
 		// print sur chaque div pour les articles.
-		echo '<p>'.ucfirst($GLOBALS['lang']['label_articles']).' :</p>'."\n";
+		echo '<div class="legend">'.ucfirst($GLOBALS['lang']['label_articles']).'</div>'."\n";
 		echo '<div class="graph-container" id="graph-container-article">'."\n";
-		echo '<canvas height="150" width="400">Texte alternatif pour les navigateurs ne supportant pas Canvas.</canvas>'."\n";
-		echo '<div class="graphique" id="articles">'."\n";
-		$table = scaled_size(get_tableau_date('articles'), 150);
-//		while ($table[0]['nb'] === 0) {
-//			$first = array_shift($table);
-//		}
-		$table = array_reverse($table);
-		echo '<div class="month"><div class="month-bar" style="height: 151px; margin-top:20px;"></div></div>';
-		foreach ($table as $i => $data) {
-			echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(3-$data['nb_scale'], 0).'px"></div><span class="month-nb">'.$data['nb'].'</span><a href="articles.php?filtre='.$data['date'].'"><span class="month-name">'.mb_substr(mois_en_lettres(substr($data['date'],4,2)),0,3)."\n".substr($data['date'],2,2).'</span></a></div>';
-		}
+			echo '<canvas height="150" width="400"></canvas>'."\n";
+			echo '<div class="graphique" id="articles">'."\n";
+				$table = scaled_size(get_tableau_date('articles'), 150);
+				$table = array_reverse($table);
+				echo '<div class="month"><div class="month-bar" style="height: 151px; margin-top:20px;"></div></div>';
+				foreach ($table as $i => $data) {
+					echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(3-$data['nb_scale'], 0).'px"></div><span class="month-nb">'.$data['nb'].'</span><a href="articles.php?filtre='.$data['date'].'"><span class="month-name">'.mb_substr(mois_en_lettres(substr($data['date'],4,2)),0,3)."\n".substr($data['date'],2,2).'</span></a></div>';
+				}
+			echo '</div>'."\n";
 		echo '</div>'."\n";
 		echo '</div>'."\n";
 	} else {
@@ -150,20 +154,19 @@ else {
 	}
 
 	if (!$total_comms == 0) {
+		echo '<div class="graph">'."\n";
 		// print sur chaque div pour les com.
-		echo '<p>'.ucfirst($GLOBALS['lang']['label_commentaires']).' :</p>'."\n";
+		echo '<div class="legend">'.ucfirst($GLOBALS['lang']['label_commentaires']).'</div>'."\n";
 		echo '<div class="graph-container" id="graph-container-commentaires">'."\n";
-		echo '<canvas height="150" width="400">Texte alternatif pour les navigateurs ne supportant pas Canvas.</canvas>'."\n";
-		echo '<div class="graphique" id="commentaires">'."\n";
-		$table = scaled_size(get_tableau_date('commentaires'), 150);
-//		while ($table[0]['nb'] === 0) {
-//			$first = array_shift($table);
-//		}
-		$table = array_reverse($table);
-		echo '<div class="month"><div class="month-bar" style="height: 151px; margin-top:20px;"></div></div>';
-		foreach ($table as $i => $data) {
-			echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(3-$data['nb_scale'], 0).'px"></div><span class="month-nb">'.$data['nb'].'</span><a href="commentaires.php?filtre='.$data['date'].'"><span class="month-name">'.mb_substr(mois_en_lettres(substr($data['date'],4,2)),0,3)."\n".substr($data['date'],2,2).'</span></a></div>';
-		}
+			echo '<canvas height="150" width="400"></canvas>'."\n";
+			echo '<div class="graphique" id="commentaires">'."\n";
+				$table = scaled_size(get_tableau_date('commentaires'), 150);
+				$table = array_reverse($table);
+				echo '<div class="month"><div class="month-bar" style="height: 151px; margin-top:20px;"></div></div>';
+				foreach ($table as $i => $data) {
+					echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(3-$data['nb_scale'], 0).'px"></div><span class="month-nb">'.$data['nb'].'</span><a href="commentaires.php?filtre='.$data['date'].'"><span class="month-name">'.mb_substr(mois_en_lettres(substr($data['date'],4,2)),0,3)."\n".substr($data['date'],2,2).'</span></a></div>';
+				}
+			echo '</div>'."\n";
 		echo '</div>'."\n";
 		echo '</div>'."\n";
 	} else {
@@ -171,40 +174,31 @@ else {
 	}
 
 	if (!$total_links == 0) {
+		echo '<div class="graph">'."\n";
 		// print sur chaque div pour les liens.
-		echo '<p>'.ucfirst($GLOBALS['lang']['label_links']).' :</p>'."\n";
+		echo '<div class="legend">'.ucfirst($GLOBALS['lang']['label_links']).'</div>'."\n";
 		echo '<div class="graph-container" id="graph-container-links">'."\n";
-		echo '<canvas height="150" width="400">Texte alternatif pour les navigateurs ne supportant pas Canvas.</canvas>'."\n";
-		echo '<div class="graphique" id="links">'."\n";
-		$table = scaled_size(get_tableau_date('links'), 150);
-//		while ($table[0]['nb'] === 0) {
-//			$first = array_shift($table);
-//		}
-		$table = array_reverse($table);
-		echo '<div class="month"><div class="month-bar" style="height: 151px; margin-top:20px;"></div></div>';
-		foreach ($table as $i => $data) {
-			echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(3-$data['nb_scale'], 0).'px"></div><span class="month-nb">'.$data['nb'].'</span><a href="links.php?filtre='.$data['date'].'"><span class="month-name">'.mb_substr(mois_en_lettres(substr($data['date'],4,2)),0,3)."\n".substr($data['date'],2,2).'</span></a></div>';
-		}
+			echo '<canvas height="150" width="400"></canvas>'."\n";
+			echo '<div class="graphique" id="links">'."\n";
+				$table = scaled_size(get_tableau_date('links'), 150);
+				$table = array_reverse($table);
+				echo '<div class="month"><div class="month-bar" style="height: 151px; margin-top:20px;"></div></div>';
+				foreach ($table as $i => $data) {
+					echo '<div class="month"><div class="month-bar" style="height: '.$data['nb_scale'].'px; margin-top:'.max(3-$data['nb_scale'], 0).'px"></div><span class="month-nb">'.$data['nb'].'</span><a href="links.php?filtre='.$data['date'].'"><span class="month-name">'.mb_substr(mois_en_lettres(substr($data['date'],4,2)),0,3)."\n".substr($data['date'],2,2).'</span></a></div>';
+				}
+			echo '</div>'."\n";
 		echo '</div>'."\n";
 		echo '</div>'."\n";
 	} else {
 		$nothingyet++;
 	}
 
-	echo '</div>'."\n";
-
 	if ($nothingyet == 3) {
-		echo '
-	<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADoAAABwAgMAAAAyFouxAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QMFDDAtgYm8UQAAAAxQTFRFGBEPg3ue872G////A0Y42AAAAWNJREFUOMul1KGOXDEMheFDQkLOq4WYDMmrXbIk5L6aSciQv2C222rH2YKafZYly7JsATkxr0gVdirVzk4ANA+OyeIzXTnXc93Ac9amf2jmaLdr7/W4rySfB9M7T4NPzs4N9JO3PCcSB8/Uo0vTB9vT6fmDw7T76GwM4KvfdyMWT3x0PqW9OZo+aT47NRk6OjuS7YOz36kbp2tLd0pi5yxtlAZvdmkZI7UgK2cbkiLahFk5x6BFeLNdeKadEWHmrOy0pQhvXHhLgmcLb7zfnWBSEZ443z2hQxs62CAj5+bk1AX5AUZvTkgJ8q6N1C+/3CvjtPw6rCsrQ5PGT37VR3fhvSdttOH92ud3J5s2Iv7L+oej/eyRZ88vj9I7Ph1ZGjKuDENpRD6uDJMundLDNEnUjlimRYyTH8u0WNfJsUxbGrWbWgxaRLi0JI1ckmbpTmLUf8/z5rUEuRa1U6+n+Nf8f/wL/hlQOQcLWpwAAAAASUVORK5CYII=" style="height:112px; width:58px;display:block;margin:30px auto;">
-
-	<div style=" display: inline-block; border: 2px black inset; border-radius: 4px;"><div style="text-align: left;border: 1px white solid; border-radius: 4px;"><div style="border: 1px black inset; padding: 3px 5px; letter-spacing: 2px;">No data yet . . .<br/>
-	Why not write <a href="ecrire.php" style="color: inherit">something</a> ?
-	</div></div></div>
-	';
-
+		echo info($GLOBALS['lang']['note_no_article']);
 	}
 }
 
+echo '</div>'."\n";
 echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
 echo "\n".'<script type="text/javascript">'."\n";
 echo '\'use strict\''."\n";

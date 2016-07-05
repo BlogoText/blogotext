@@ -1,7 +1,4 @@
 @media (max-width: 850px) {
-	#axe {
-		padding: 20px 15px;
-	}
 	#subnav .nombre-elem {
 	}
 	select {
@@ -19,6 +16,7 @@
 	/* liste fichiers */
 	#image-wall {
 		text-align: center;
+		padding: 10px;
 	}
 	#image-wall .image_bloc {
 		width: 147px;
@@ -60,6 +58,12 @@
 
 	/* TOP
 	------------------------------------------------------*/
+	body {
+		padding-top: 0;
+	}
+	#header {
+		position: static;
+	}
 	#top {
 		display: flex;
 		box-sizing: border-box;
@@ -74,6 +78,10 @@
 		line-height: 60px;
 		vertical-align: middle;
 		overflow: hidden;
+	}
+
+	#top > #nav > ul {
+		padding-right: 0;
 	}
 
 	/* TOP > right nav bar
@@ -105,22 +113,20 @@
 	#top > #nav ul {
 		position: absolute;
 		line-height: 3;
-		background-color: inherit;
-		width: 210px;
+		background-color: white;
+		width: 250px;
 		height: 100%;
-		left: -250px;
-		top: 50px;
+		left: 0;
+		transform: translate(-250px);
+		top: 60px;
 		box-shadow: 0px 14px 24px rgba(0, 0, 0, 0.6);
 		z-index: 20;
-		opacity: 0;
-		transition: opacity ease-in .2s, top ease-in .2s, left ease-out 0s .2s;
+		padding-top: 10px;
+		transition: transform .4s ease-in-out;
 	}
 
 	#top > #nav:hover > ul {
-		left: 0;
-		top: 60px;
-		opacity: 1;
-		transition: opacity .2s ease-in .05s, top .2s ease-in .05s, left 0s ease-out .05s;
+		transform: translate(0);
 	}
 
 	#top > #nav > ul > li {
@@ -132,15 +138,14 @@
 		margin: 0;
 		height: 45px;
 		line-height: 45px;
-		padding-left: 30px;
+		padding-left: 15px;
 		display: block;
 		text-decoration: none;
-		color: inherit;
+		color: rgba(0, 0, 0, .6);
 		vertical-align: middle;
 	}
 	#top > #nav > ul > li > a:hover {
 		background-color: rgba(0, 0, 0, .1);
-		color: inherit;
 		box-shadow: none;
 	}
 
@@ -148,10 +153,11 @@
 		box-shadow: none;
 		background-color: rgba(0, 0, 0, .1);
 		border: 0;
+		color: #1e88e5;
 	}
 
 	#nav a:before {
-		margin-right: 5px;
+		margin-right: 15px;
 		font-size: 1.4em;
 	}
 
@@ -161,45 +167,50 @@
 	#nav #lien-lscom:before    { content: "\e91b"; }
 	#nav #lien-fichiers:before { content: "\e921"; }
 	#nav #lien-links:before    { content: "\e910"; }
-	#nav #lien-rss:before      { content: "\e922"; }
+	#nav #lien-rss:before      { content: "\e940"; }
 
 	/* TOP > searchbar
 	------------------------------------------------------*/
 	#top > #search {
 		order: 2;
-		flex: 0 0 60px;
-		padding: 0;
+		flex: 0 0 42px;
 		position: static;
 	}
-	#top > #search label::before {
-		z-index: 20;
-		top: -1px;
-	}
-	#top > #search input[type='search'] { /* normal */
+	#top > #search #q { /* normal */
 		padding: 5px 20px;
 		border-radius: 50%;
 		box-sizing: border-box;
 		height: 40px;
 		width: 40px;
+		z-index: 1;
 		background-color: transparent;
 	}
-	#top > #search input:hover { /* hover */
-		cursor: pointer;
-		background: rgba(255, 255, 255, .3);
+	#top #input-rechercher {
+		background: transparent;
+		position: relative;
+		left: -40px;
 	}
-	#top > #search input[value=""]:focus,
-	#top > #search input:not([value=""]) { /* focus OR not empty (a search is done) */
+
+	#top > #search #q:focus,
+	#top > #search #q[value=""]:focus,
+	#top > #search #q:not([value=""]) { /* focus OR not empty (a search is done) */
 		position: absolute;
 		border-radius: 3px;
-		padding: 0 40px 0 10px;
-		box-shadow: 0 12px 24px rgba(0, 0, 0, .3);
-		background: white;
-		cursor: text;
+		padding: 0 10px;
 		width: 80%;
 		width: calc(100% - 60px - 60px );
 		top: 10px; right: 60px;
+		background: rgba(255, 255, 255, 1);
 	}
-	#top > #search input[value=""]:focus { /* onfocus */
+
+	#top > #search:hover #input-rechercher:active,
+	#top > #search #q:focus+#input-rechercher,
+	#top > #search #q:not([value=""])+#input-rechercher {
+		position: static;
+	}
+
+
+	#top > #search #q[value=""]:focus { /* onfocus */
 		animation: popup-search .4s;
 		animation-fill-mode: forwards;
 	}
@@ -290,6 +301,21 @@
 	#post-list > li .post-title > a:hover {
 		flex: 1 0 100%;
 	}
+
+	/* Slider */
+	#slider-main-content.infos-on + #slider-infos {
+		width: 250px;
+	}
+	#slider-main-content.infos-on #slider-nav-bar {
+   	right: 250px;
+	}
+	#slider-main-content.infos-on {
+		margin-right: 250px;
+	}
+	#slider-infos > #infos-details {
+		padding-left: 40px;
+	}
+
 }
 
 

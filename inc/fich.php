@@ -67,7 +67,6 @@ function fichier_adv_conf() {
 
 	$conf .= 'BLOG_UID = \''.sha1(uniqid(mt_rand(), true)).'\''."\n";
 	$conf .= 'DISPLAY_PHP_ERRORS = -1;'."\n";
-	$conf .= 'GRAVATAR_LINK = \'themes/default/gravatars/get.php?g=\''."\n";
 	$conf .= 'USE_IP_IN_SESSION = 0;'."\n\n\n";
 	$conf .= '; */ ?>'."\n";
 
@@ -96,7 +95,6 @@ function fichier_prefs() {
 		$format_heure = htmlspecialchars($_POST['format_heure']);
 		$fuseau_horaire = addslashes(clean_txt(htmlspecialchars($_POST['fuseau_horaire'])));
 		$global_com_rule = (isset($_POST['global_comments'])) ? '1' : '0';
-		$connexion_captcha = (isset($_POST['connexion_captcha'])) ? '1' : '0';
 		$activer_categories = (isset($_POST['activer_categories'])) ? '1' : '0';
 		$afficher_rss = (isset($_POST['aff_onglet_rss'])) ? '1' : '0';
 		$afficher_liens = (isset($_POST['aff_onglet_liens'])) ? '1' : '0';
@@ -105,9 +103,6 @@ function fichier_prefs() {
 		$automatic_keywords = (isset($_POST['auto_keywords'])) ? '1' : '0';
 		$require_email = (isset($_POST['require_email'])) ? '1' : '0';
 		$auto_check_updates = (isset($_POST['check_update'])) ? '1' : '0';
-		// linx
-//		$autoriser_liens_public = $_POST['allow_public_linx'];
-//		$linx_defaut_status = $_POST['linx_defaut_status'];
 		$auto_dl_liens_fichiers = htmlspecialchars($_POST['dl_link_to_files']);
 		$nombre_liens_admin = htmlspecialchars($_POST['nb_list_linx']);
 	} else {
@@ -119,15 +114,12 @@ function fichier_prefs() {
 		$keywords = 'blog, blogotext';
 		$racine = clean_txt(trim(htmlspecialchars($_POST['racine'])));
 		$max_bill_acceuil = '10';
-//		$max_linx_accueil = '50';
-//		$max_comm_encart = '5';
 		$max_bill_admin = '25';
 		$max_comm_admin = '50';
 		$format_date = '0';
 		$format_heure = '0';
 		$fuseau_horaire = 'UTC';
 		$global_com_rule = '0';
-		$connexion_captcha = '0';
 		$activer_categories = '1';
 		$afficher_rss = '1';
 		$afficher_liens = '1';
@@ -136,9 +128,6 @@ function fichier_prefs() {
 		$automatic_keywords = '1';
 		$require_email = '0';
 		$auto_check_updates = 1;
-		// linx
-//		$autoriser_liens_public = '0';
-//		$linx_defaut_status = '1';
 		$auto_dl_liens_fichiers = '0';
 		$nombre_liens_admin = '50';
 	}
@@ -152,13 +141,10 @@ function fichier_prefs() {
 	$prefs .= "\$GLOBALS['racine'] = '".$racine."';\n";
 	$prefs .= "\$GLOBALS['max_bill_acceuil'] = '".$max_bill_acceuil."';\n";
 	$prefs .= "\$GLOBALS['max_bill_admin'] = '".$max_bill_admin."';\n";
-//	$prefs .= "\$GLOBALS['max_comm_encart'] = '".$max_comm_encart."';\n";
 	$prefs .= "\$GLOBALS['max_comm_admin'] = '".$max_comm_admin."';\n";
-//	$prefs .= "\$GLOBALS['max_linx_acceuil'] = '".$max_linx_accueil."';\n";
 	$prefs .= "\$GLOBALS['format_date'] = '".$format_date."';\n";
 	$prefs .= "\$GLOBALS['format_heure'] = '".$format_heure."';\n";
 	$prefs .= "\$GLOBALS['fuseau_horaire'] = '".$fuseau_horaire."';\n";
-	$prefs .= "\$GLOBALS['connexion_captcha']= '".$connexion_captcha."';\n";
 	$prefs .= "\$GLOBALS['activer_categories']= '".$activer_categories."';\n";
 	$prefs .= "\$GLOBALS['onglet_rss']= '".$afficher_rss."';\n";
 	$prefs .= "\$GLOBALS['onglet_liens']= '".$afficher_liens."';\n";
@@ -168,8 +154,6 @@ function fichier_prefs() {
 	$prefs .= "\$GLOBALS['automatic_keywords']= '".$automatic_keywords."';\n";
 	$prefs .= "\$GLOBALS['require_email']= '".$require_email."';\n";
 	$prefs .= "\$GLOBALS['check_update']= '".$auto_check_updates."';\n";
-//	$prefs .= "\$GLOBALS['allow_public_linx']= '".$autoriser_liens_public."';\n";
-//	$prefs .= "\$GLOBALS['linx_defaut_status']= '".$linx_defaut_status."';\n";
 	$prefs .= "\$GLOBALS['max_linx_admin']= '".$nombre_liens_admin."';\n";
 	$prefs .= "\$GLOBALS['dl_link_to_files']= '".$auto_dl_liens_fichiers."';\n";
 	$prefs .= "?>";
@@ -307,7 +291,7 @@ function request_external_files($feeds, $timeout, $echo_progress=false) {
 		foreach ($chunk as $i => $url) {
 			$response = curl_multi_getcontent($curl_arr[$url]);
 			$header_size = curl_getinfo($curl_arr[$url], CURLINFO_HEADER_SIZE);
-			$results[$url]['headers'] = http_parse_headers(substr($response, 0, $header_size));
+			$results[$url]['headers'] = http_parse_headers(mb_strtolower(substr($response, 0, $header_size)));
 			$results[$url]['body'] = substr($response, $header_size);
 		}
 		// Ferme les gestionnaires
@@ -319,9 +303,9 @@ function request_external_files($feeds, $timeout, $echo_progress=false) {
 
 function rafraichir_cache_lv1() {
 	creer_dossier(BT_ROOT.DIR_CACHE, 1);
-	$arr_a = liste_elements("SELECT * FROM articles WHERE bt_statut = 1 ORDER BY bt_date DESC LIMIT 0, 20", array(), 'articles');
-	$arr_c = liste_elements("SELECT * FROM commentaires WHERE bt_statut = 1 ORDER BY bt_id DESC LIMIT 0, 20", array(), 'commentaires');
-	$arr_l = liste_elements("SELECT * FROM links WHERE bt_statut = 1 ORDER BY bt_id DESC LIMIT 0, 20", array(), 'links');
+	$arr_a = liste_elements("SELECT * FROM articles WHERE bt_statut=1 ORDER BY bt_date DESC LIMIT 0, 20", array(), 'articles');
+	$arr_c = liste_elements("SELECT c.*, a.bt_title FROM commentaires AS c, articles AS a WHERE c.bt_statut=1 AND c.bt_article_id=a.bt_id ORDER BY c.bt_id DESC LIMIT 0, 20", array(), 'commentaires');
+	$arr_l = liste_elements("SELECT * FROM links WHERE bt_statut=1 ORDER BY bt_id DESC LIMIT 0, 20", array(), 'links');
 	$file = BT_ROOT.DIR_CACHE.'/'.'cache_rss_array.dat';
 	return file_put_contents($file, '<?php /* '.chunk_split(base64_encode(serialize(array('c' => $arr_c, 'a' => $arr_a, 'l' => $arr_l)))).' */');
 }
@@ -453,19 +437,25 @@ function feed2array($feed_content, $feedlink) {
 				elseif (!empty($item->id)) {          $flux['items'][$c]['bt_id'] = (string)$item->id; }
 					else { $flux['items'][$c]['bt_id'] = microtime(); }
 
-				if (!empty($item->updated)) {       $flux['items'][$c]['bt_date'] = (string)$item->updated; }
 				if (!empty($item->pubDate)) {       $flux['items'][$c]['bt_date'] = (string)$item->pubDate; }
 				if (!empty($item->published)) {     $flux['items'][$c]['bt_date'] = (string)$item->published; }
+
 				if (!empty($item->subtitle)) {      $flux['items'][$c]['bt_content'] = (string)$item->subtitle; }
 				if (!empty($item->description)) {   $flux['items'][$c]['bt_content'] = (string)$item->description; }
 				if (!empty($item->summary)) {       $flux['items'][$c]['bt_content'] = (string)$item->summary; }
 				if (!empty($item->content)) {       $flux['items'][$c]['bt_content'] = (string)$item->content; }
 
-				if (!empty($item->children('content', true)->encoded)) {       $flux['items'][$c]['bt_content'] = (string)$item->children('content', true)->encoded; }
+				if (!empty($item->children('content', true)->encoded)) { $flux['items'][$c]['bt_content'] = (string)$item->children('content', true)->encoded; }
 
+				// no content found ?
 				if (!isset($flux['items'][$c]['bt_content'])) $flux['items'][$c]['bt_content'] = '';
+
+				// no date found ?
+				if (!isset($flux['items'][$c]['bt_date'])) { if (!empty($item->updated)) { $flux['items'][$c]['bt_date'] = (string)$item->updated; } }
+				if (!isset($flux['items'][$c]['bt_date'])) { if (!empty($item->children('dc', true)->date)) { $flux['items'][$c]['bt_date'] = (string)$item->children('dc', true)->date; } } // <dc:date>
+
 				if (!empty($flux['items'][$c]['bt_date'])) { $flux['items'][$c]['bt_date'] = strtotime($flux['items'][$c]['bt_date']); }
-					else { $flux['items'][$c]['bt_date'] = time(); }
+				else { $flux['items'][$c]['bt_date'] = time(); }
 
 				// place le lien du flux (on a besoin de ça)
 				$flux['items'][$c]['bt_feed_url'] = $feedlink;

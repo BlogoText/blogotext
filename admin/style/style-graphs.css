@@ -1,13 +1,19 @@
 /* GRAPHS */
-#mainpage {
-	padding: 15px 0;
-	margin: auto 1%;
-	text-align: center;
+
+#graphs .graph {
+	padding-bottom: 20px;
+	margin-bottom: 40px;
 }
 
-#graphs > p {
-	height: 25px;
-	font-weight: bold;
+#graphs .graph > .legend {
+	font-weight: 500;
+	font-size: 1.1em;
+	font-variant: small-caps;
+	padding: 15px 10px 30px;
+	font-weight: 500;
+	box-sizing: border-box;
+	color: #1e88e5;
+
 }
 
 .graph-container {
@@ -16,7 +22,7 @@
 	margin: 30px 0 40px;
 }
 
-.graph-container canvas {
+.graph-container > canvas {
 	height: 150px;
 }
 
@@ -102,4 +108,34 @@
 .graph-container .month:hover .month-name {
 	font-weight: bold;
 	border-color: currentColor;
+}
+
+/* global search results */
+#graphs .legend > span {
+	font-variant: none;
+	text-decoration: underline
+}
+
+#resultat-recherche {
+	list-style-type: none;
+	padding-left: 10px;
+}
+
+#resultat-recherche li {
+	display: inline-block;
+}
+#resultat-recherche a {
+	text-decoration: none;
+	color: inherit;
+	display: inline-block;
+	margin-right: 5px;
+	vertical-align: middle;
+	padding: 6px 12px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+	border-radius: 2px;
+	border: 0px solid transparent;
+}
+
+#resultat-recherche a:hover {
+	background-color: rgba(0, 0, 0, .05);
 }

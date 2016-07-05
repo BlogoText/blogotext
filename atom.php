@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2014 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden <timo@neerden.eu>
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -14,7 +14,7 @@
 header('Content-Type: application/atom+xml; charset=UTF-8');
 
 // second level caching file.
-$lv2_cache_file = 'cache/c_atom_'.substr(md5($_SERVER['QUERY_STRING']), 0, 8).'.dat';
+$lv2_cache_file = 'cache/c_atom_'.substr(md5(isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : ''), 0, 8).'.dat';
 
 // if cache file exists
 if (file_exists($lv2_cache_file)) {
@@ -61,14 +61,12 @@ if (isset($_GET['id']) and preg_match('#^[0-9]{14}$#', $_GET['id'])) {
 	$GLOBALS['db_handle'] = open_base();
 	$article_id = htmlspecialchars($_GET['id']);
 
-	$liste = liste_elements("SELECT * FROM commentaires WHERE bt_article_id=? AND bt_statut=1 ORDER BY bt_id DESC", array($article_id), 'commentaires');
+	$liste = liste_elements("SELECT c.*, a.bt_title FROM commentaires AS c, articles AS a WHERE c.bt_article_id=? AND c.bt_article_id=a.bt_id AND c.bt_statut=1 ORDER BY c.bt_id DESC", array($article_id), 'commentaires');
 
 	if (!empty($liste)) {
-		$query = "SELECT * FROM articles WHERE bt_id=? AND bt_date<=".date('YmdHis')." AND bt_statut=1";
-		$billet = liste_elements($query, array($article_id), 'articles');
-		$xml .= '<title>Commentaires sur '.$billet[0]['bt_title'].' - '.$GLOBALS['nom_du_site'].'</title>'."\n";
-		$xml .= '<link href="'.$billet[0]['bt_link'].'" />'."\n";
-		$xml .= '<id>'.$billet[0]['bt_link'].'</id>';
+		$xml .= '<title>Commentaires sur '.$liste[0]['bt_title'].' - '.$GLOBALS['nom_du_site'].'</title>'."\n";
+		$xml .= '<link href="'.$liste[0]['bt_link'].'" />'."\n";
+		$xml .= '<id>'.$liste[0]['bt_link'].'</id>';
 
 		foreach ($liste as $comment) {
 			$dec = decode_id($comment['bt_id']);
@@ -136,16 +134,6 @@ else {
 		}
 		// 4 = links
 		if (strpos($_GET['mode'], 'links') !== FALSE) {
-			// if is tag in url, filter links.
-			if (isset($_GET['tag'])) {
-				foreach ($liste['l'] as $i => $link) {
-					if ( (strpos($link['bt_tags'], htmlspecialchars($_GET['tag'].',')) === FALSE) and
-						(strpos($link['bt_tags'], htmlspecialchars(', '.$_GET['tag'])) === FALSE) and
-						($link['bt_tags'] != htmlspecialchars($_GET['tag']))) {
-						unset($liste['l'][$i]);
-					}
-				}
-			}
 			$liste_rss = array_merge($liste_rss, $liste['l']);
 			$found = 1; $modes_url .= 'links-';
 		}
@@ -157,7 +145,22 @@ else {
 		$liste_rss = $liste['a'];
 	}
 
-	// trick : tri selon des sous-clés d'un tableau à plusieurs sous-niveaux (trouvé dans doc-PHP)
+	// tri selon tags (si il y a)
+	if (isset($_GET['tag'])) {
+		foreach ($liste_rss as $i => $entry) {
+			if ($entry['bt_type'] == 'article') $fd = 'bt_categories';
+			if ($entry['bt_type'] == 'link' or $entry['bt_type'] == 'note') $fd = 'bt_tags';
+			if (isset($fd)) {
+				if ( (strpos($entry[$fd], htmlspecialchars($_GET['tag'].',')) === FALSE) and
+				 	 (strpos($entry[$fd], htmlspecialchars(', '.$_GET['tag'])) === FALSE) and
+					 ($entry[$fd] != htmlspecialchars($_GET['tag']))) {
+					unset($liste_rss[$i]);
+				}
+			}
+		}
+	}
+
+	// tri selon la date (qui est une sous-clé du tableau, d’où cette manœuvre)
 	foreach ($liste_rss as $key => $item) {
 		 $bt_id[$key] = (isset($item['bt_date'])) ? $item['bt_date'] : $item['bt_id'];
 	}
@@ -195,6 +198,13 @@ else {
 			$xml_post .= '<link href="'.$elem['bt_link'].'"/>'."\n";
 			$xml_post .= '<content type="html">'.htmlspecialchars(rel2abs($elem['bt_content'])).'</content>'."\n";
 		}
+		if (isset($elem['bt_tags']) or isset($elem['bt_categories'])) {
+			$tags = (isset($elem['bt_tags'])) ? $elem['bt_tags'] : $elem['bt_categories'];
+			if (!empty($tags)) {
+				$xml_post .= '<category term="'.implode('" />'."\n".'<category term="', explode(', ', $tags)).'" />'."\n";
+			}
+		}
+
 		$xml_post .= '</entry>'."\n";
 	}
 	$xml .= '<updated>'.date_create_from_format('YmdHis', $main_updated)->format('c').'</updated>'."\n";

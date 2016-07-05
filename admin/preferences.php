@@ -41,47 +41,8 @@ afficher_html_head($GLOBALS['lang']['preferences']);
 echo '<div id="axe">'."\n";
 echo '<div id="page">'."\n";
 
-if (isset($_GET['test_captcha'])) {
-	afficher_form_captcha();
-} else {
-	afficher_form_prefs($erreurs_form);
-}
+afficher_form_prefs($erreurs_form);
 
-
-/*
-	FORMULAIRE DE TEST DU CAPTCHA
-*/
-function afficher_form_captcha() {
-	if (!empty($_SESSION['freecap_word_hash']) and !empty($_POST['word'])) {
-		if (sha1(strtolower($_POST['word'])) == $_SESSION['freecap_word_hash']) {
-			$_SESSION['freecap_word_hash'] = false;
-			$word_ok = "yes";
-		} else {
-			$word_ok = "no";
-		}
-	} else {
-		$word_ok = FALSE;
-	}
-	echo '<form id="preferences-captcha" action="'.basename($_SERVER['SCRIPT_NAME']).'?test_captcha" method="post" class="bordered-formbloc" >'."\n";
-	echo '<div role="group" class="pref">';
-	echo '<div class="form-legend">'.legend('Captcha', 'legend-config').'</div>'."\n";
-	echo '<p>';
-	if ($word_ok !== FALSE) {
-		if ($word_ok == "yes") {
-			echo '<b style="color: green;">you got the word correct, rock on.</b>';
-		} else {
-			echo '<b style="color: red;">sorry, that\'s not the right word, try again.</b>';
-		}
-	}
-	echo '</p>';
-	echo '<p><img src="../inc/freecap/freecap.php" id="freecap" alt="freecap"/></p>'."\n";
-	echo '<p>If you can\'t read the word, <a href="#" onclick="new_freecap();return false;">click here to change image</a></p>'."\n";
-	echo '<p>word above : <input type="text" class="text" name="word" /></p>'."\n";
-	echo '<button class="submit button-submit" type="submit" name="valider">'.$GLOBALS['lang']['envoyer'].'</button>'."\n";
-	echo '</div>';
-	echo '</form>'."\n";
-
-}
 
 echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
 

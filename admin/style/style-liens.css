@@ -1,5 +1,14 @@
 /* MES LIENS 
 --------------------------------------------------------------------------- */
+#list-link {
+	-webkit-column-width: 700px;
+	-moz-column-width: 700px;
+	column-width: 700px;
+	margin-top: 20px;
+	-webkit-column-gap: 20px;
+	-moz-column-gap: 20px;
+	column-gap: 20px;
+}
 
 .linkbloc.privatebloc {
     border-left: 10px #555 solid;
@@ -133,14 +142,17 @@
 	border-left-width: 1px;
 }
 
-#post-lien .forcheckbox {
-	padding: 15px 5px;
-}
-
-
 /* LINKS : list of link-blocs (see also in
    "style-commentaires.css" for shared CSS with comments-blocs
 --------------------------------------------------------------*/
+.linkbloc:first-of-type {
+	margin-top: 0;
+
+}
+.linkbloc:first-of-type:last-of-type {
+	display: inline-block; /* firefox bugfix for avoid collumn-break when single element */
+}
+
 /* LINKS : link header 
 --------------------------------*/
 .linkbloc .titre-lien {
@@ -184,7 +196,8 @@
 /* LINKS : link footer 
 --------------------------------*/
 .linkbloc .link-footer {
-	display: flex;
+	/*display: flex;*//* display block for muti-collum layout */
+	display: block;
 	align-items: center;
 	background-color: rgba(0, 0, 0, .05);
 	border-top: #eee;

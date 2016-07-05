@@ -38,27 +38,6 @@
 
 #form-ecrire .main-form .text {
 	width: 100%;
-	margin: 0;
-	border: 0;
-	border-bottom: 1px solid silver;
-	padding: 10px 5px;
-
-	transition: background-size 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
-	background: linear-gradient(to bottom, #2196F3, #2196F3) no-repeat 0% 100% / 0 2px;
-}
-
-
-#form-ecrire .main-form .text:invalid {
-	box-shadow: none;
-	background: linear-gradient(to bottom, #F44336, #F44336) no-repeat 0% 100% / 0 2px;
-}
-
-#form-ecrire .main-form .text:invalid:focus {
-
-}
-
-#form-ecrire .main-form .text:focus {
-	background-size: 100% 2px;
 }
 
 #titre {
@@ -68,20 +47,19 @@
 
 #chapo_note {
 	display: flex;
-/*	overflow: hidden;*/
+}
+
+#chapo_note > textarea {
+	width: auto;
+	min-width: 0;
 }
 
 #form-ecrire #chapo {
 	flex: 2 2 auto;
-	width: auto;
+	border-right: 1px solid silver;
 }
 #form-ecrire #notes {
-	flex: 1 1 auto;
-	width: auto;
-}
-
-#form-ecrire #chapo {
-	border-right: 1px solid silver;
+	flex: 1 2 auto;
 }
 
 #type_tags,
@@ -120,9 +98,9 @@ p.formatbut {
 
 .formatbut .but > span:nth-of-type(1) {
 	display: inline-block;
-	width: 16px;
+	width: 24px;
 	height: 24px;
-	background: no-repeat transparent url(formatx2.png) 0 0 / 24px 563px;
+	background: no-repeat transparent url(formatx2.png) 0 0 / 24px 492px;
 }
 
 .formatbut span.spacer {
@@ -132,23 +110,23 @@ p.formatbut {
 }
 
 /* buttons : works in comment form and in article form */
-#button01 > span:nth-of-type(1) { background-position: -4px   -1px; } /* bold */
-#button02 > span:nth-of-type(1) { background-position: -4px  -21px; } /* ital */
-#button03 > span:nth-of-type(1) { background-position: -4px  -42px; } /* underline */
-#button04 > span:nth-of-type(1) { background-position: -4px  -82px; } /* strike */
-#button05 > span:nth-of-type(1) { background-position: -4px -319px; } /* left align */
-#button06 > span:nth-of-type(1) { background-position: -4px -293px; } /* center align */
-#button07 > span:nth-of-type(1) { background-position: -4px -241px; } /* right align */
-#button08 > span:nth-of-type(1) { background-position: -4px -267px; } /* justify */
-#button09 > span:nth-of-type(1) { background-position: -4px  -62px; } /* link */
-#button10 > span:nth-of-type(1) { background-position: -4px -102px; } /* quote */
-#button11 > span:nth-of-type(1) { background-position: -4px -213px; } /* image */
-#button12 > span:nth-of-type(1) { background-position: -4px -122px; } /* code */
-#button13 > span:nth-of-type(1) { background-position: -4px -345px; } /* color edit */
-#button14 > span:nth-of-type(1) { background-position: -4px -187px; } /* font size edit */
-#button15 > span:nth-of-type(1) { background-position: -4px -376px; } /* unicode char insert */
-#button16 > span:nth-of-type(1) { background-position: -4px -440px; } /* ul list */
-#button17 > span:nth-of-type(1) { background-position: -4px -408px; } /* ol list */
+#button01 > span:nth-of-type(1) { background-position: 0px   0px; } /* bold */
+#button02 > span:nth-of-type(1) { background-position: 0px  -24px; } /* ital */
+#button03 > span:nth-of-type(1) { background-position: 0px  -48px; } /* underline */
+#button04 > span:nth-of-type(1) { background-position: 0px  -72px; } /* strike */
+#button05 > span:nth-of-type(1) { background-position: 0px -168px; } /* left align */
+#button06 > span:nth-of-type(1) { background-position: 0px -192px; } /* center align */
+#button07 > span:nth-of-type(1) { background-position: 0px -216px; } /* right align */
+#button08 > span:nth-of-type(1) { background-position: 0px -240px; } /* justify */
+#button09 > span:nth-of-type(1) { background-position: 0px -336px; } /* link */
+#button10 > span:nth-of-type(1) { background-position: 0px -360px; } /* quote */
+#button11 > span:nth-of-type(1) { background-position: 0px -264px; } /* image */
+#button12 > span:nth-of-type(1) { background-position: 0px -384px; } /* code */
+#button13 > span:nth-of-type(1) { background-position: 0px  -96px; } /* color edit */
+#button14 > span:nth-of-type(1) { background-position: 0px -120px; } /* font size edit */
+#button15 > span:nth-of-type(1) { background-position: 0px -144px; } /* unicode char insert */
+#button16 > span:nth-of-type(1) { background-position: 0px -288px; } /* ul list */
+#button17 > span:nth-of-type(1) { background-position: 0px -312px; } /* ol list */
 
 .but-dropdown {
 	position: relative;
@@ -267,7 +245,7 @@ p.formatbut {
 
 #tag_bloc {
 	flex: 0;
-	margin: 0px 0 0;
+	margin: 0;
 	display: flex;
 }
 

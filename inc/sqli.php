@@ -217,12 +217,6 @@ function get_entry($base_handle, $table, $entry, $id, $retour_mode) {
 // from an array given by SQLite's requests, this function adds some more stuf to data stored by DB.
 function init_list_articles($article) {
 	if (!empty($article)) {
-		// pour ne plus rendre obligatoire le chapô : s'il est vide, on le recrée à partir du début du bt_content
-		if (isset($article['bt_abstract']) and empty($article['bt_abstract'])) {
-			mb_internal_encoding('UTF-8');
-			$abstract = mb_substr(strip_tags($article['bt_content']), 0, 249);
-			$article['bt_abstract'] = $abstract."…";
-		}
 		$dec_id = decode_id($article['bt_id']);
 		$article = array_merge($article, decode_id($article['bt_date']));
 		$article['bt_link'] = $GLOBALS['racine'].'?d='.$dec_id['annee'].'/'.$dec_id['mois'].'/'.$dec_id['jour'].'/'.$dec_id['heure'].'/'.$dec_id['minutes'].'/'.$dec_id['secondes'].'-'.titre_url($article['bt_title']);
@@ -233,8 +227,8 @@ function init_list_articles($article) {
 function init_list_comments($comment) {
 		$comment['auteur_lien'] = (!empty($comment['bt_webpage'])) ? '<a href="'.$comment['bt_webpage'].'" class="webpage">'.$comment['bt_author'].'</a>' : $comment['bt_author'] ;
 		$comment['anchor'] = article_anchor($comment['bt_id']);
-		$comment['article_title'] = get_entry($GLOBALS['db_handle'], 'articles', 'bt_title', $comment['bt_article_id'], 'return');
-		$comment['bt_link'] = get_blogpath($comment['bt_article_id'], $comment['article_title']).'#'.$comment['anchor'];
+//		$comment['article_title'] = get_entry($GLOBALS['db_handle'], 'articles', 'bt_title', $comment['bt_article_id'], 'return');
+		$comment['bt_link'] = get_blogpath($comment['bt_article_id'], $comment['bt_title']).'#'.$comment['anchor'];
 		$comment = array_merge($comment, decode_id($comment['bt_id']));
 	return $comment;
 }
@@ -263,7 +257,7 @@ function init_post_article() { //no $mode : it's always admin.
 		'bt_id'				=> $id,
 		'bt_date'			=> $date,
 		'bt_title'			=> protect($_POST['titre']),
-		'bt_abstract'		=> (empty($_POST['chapo']) ? '' : formatage_wiki(clean_txt($_POST['chapo']))),
+		'bt_abstract'		=> (empty($_POST['chapo']) ? '' : clean_txt($_POST['chapo'])),
 		'bt_notes'			=> protect($_POST['notes']),
 		'bt_content'		=> $formated_contenu,
 		'bt_wiki_content'	=> stripslashes(clean_txt($_POST['contenu'])),

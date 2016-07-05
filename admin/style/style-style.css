@@ -11,7 +11,14 @@
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  src: local("roboto"), url("roboto-400.woff2") format("woff2"), url("roboto-400.woff") format("woff");
+  src: local("roboto"), local("roboto regular"), url("roboto-400.woff2") format("woff2"), url("roboto-400.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  src: local("roboto medium"), url("roboto-500.woff2") format("woff2"), url("roboto-500.woff") format("woff");
 }
 
 @font-face {
@@ -23,7 +30,7 @@
 
 @font-face {
   font-family: "icon";
-  src: url("icon.woff?12") format("woff");
+  src: url("icon.woff?14") format("woff");
 }
 
 /* ANIMATIONS
@@ -84,15 +91,14 @@
     opacity: 1;
   }
   20% {
-    transform: scale(1, 4);
+    transform: scale(25, 25);
     opacity: 1;
   }
   100% {
     opacity: 0;
-    transform: scale(1.2, 4);
+    transform: scale(40, 40);
   }
 }
-
 
 
 /* GENERAL PAGE LAYOUT
@@ -116,6 +122,7 @@ html {
 body {
 	font-size: 1em; /* 15px */
 	position: relative;
+	padding-top: 62px;
 }
 
 #header {/* the top bar(s) */
@@ -124,14 +131,16 @@ body {
 	width: 100%;
 	z-index: 100;
 	color: white;
+	position: fixed;
+	top: 0;
 }
 
 #axe { /* the entire page without top bars (#header) and footer (#footer) */ 
-	padding: 25px 20px;
+	padding: 20px;
 }
 
 #page { /* the main frame. #axe minus the "filtre" forms, and the subnav */
-	padding: 0px 1% 20px;
+	padding: 5px;
 }
 
 /* Footer */
@@ -255,7 +264,7 @@ q, blockquote {
 	min-height: 60px;
 	box-sizing: border-box;
 	background: #263238;
-	padding: 0 0 0 20px;
+	padding: 0 0 0 15px;
 	color: inherit;
 }
 
@@ -281,14 +290,14 @@ q, blockquote {
 #top > #nav > ul {
 	list-style-type: none;
 	margin: 0;
-	padding: 0;
+	padding: 0 10px 0 0;
 	box-sizing: border-box;
 	min-height: 55px;
 }
 
 #top > #nav > ul li {
 	display: inline-block;
-	margin: 0 20px 0 0;
+	margin: 0;
 }
 
 #top > #nav a {
@@ -296,13 +305,17 @@ q, blockquote {
 	text-decoration: none;
 	color: inherit;
 	transition: box-shadow 0.1s ease-in 0s;
+	text-transform: uppercase;
+	font-weight: 500;
+	font-size: .9em;
+	padding: 0 10px;
 }
 
 #top > #nav a.current {
-	font-weight: bold;
+	background-color: rgba(255, 255, 255, .1);
 }
-#top > #nav a:hover,
-#top > #nav a.current {
+
+#top > #nav a:hover {
 	box-shadow: 0px -3px 0px currentColor inset;
 }
 
@@ -316,64 +329,68 @@ q, blockquote {
 ------------------------------------------------------*/
 #top > #search {
 	order: 2;
-	flex: 0 1 700px;
+	flex: 0 1 550px;
 	padding: 0;
 	text-align: right;
-	max-width: 700px;
+	max-width: 550px;
+	display: flex;
+	align-items: center;
 }
 
-#top #search label {
+#top #input-rechercher {
 	border: 0;
-	display: inline-block;
-	width: 0;
-	vertical-align: baseline;
+	height: 40px;
+	overflow: hidden;
+	border-radius: 0 2px 2px 0;
+	padding: 0 0 0 40px;
+	box-sizing: border-box;
+	flex: 0 0 40px;
+	background-color: rgba(255, 255, 255, .3);
 }
 
-#top > #search input[type='submit'] {
-	display: none;
-}
-
-#top > #search input[type='search'] { /* normal */
-	padding: 0 40px 0 10px;
+#top > #search #q { /* normal */
+	padding: 0 10px;
 	border: 1px solid transparent;
-	border-radius: 2px;
+	border-radius: 2px 0 0 2px;
 	box-sizing: border-box;
 	height: 40px;
-	max-width: 700px;
-	width: 96%;
+	max-width: 550px;
+	flex: 1 1 auto;
 	background-color: rgba(255, 255, 255, .3);
 	color: inherit;
+	min-width: 0;
 }
 
 
-#top > #search input[type='search']::-webkit-input-placeholder { color: inherit; }
-#top > #search input[type='search']::-moz-placeholder { color: inherit; }
-#top > #search input[type='search']:-ms-input-placeholder { color: inherit; }
-#top > #search input[type='search']:placeholder-shown { color: inherit; }
+#top > #search #q::-webkit-input-placeholder { color: inherit; }
+#top > #search #q::-moz-placeholder { color: inherit; }
+#top > #search #q:-ms-input-placeholder { color: inherit; }
+#top > #search #q:placeholder-shown { color: inherit; }
 
 
-#top > #search label::before {
+#top > #search #input-rechercher::before {
 	content: "\e925";
 	position: relative;
-	left: -33px;
+	left: -40px;
 	font-size: 1.9em;
+	display: block;
+	width: 40px;
+	line-height: 40px;
 }
 
-#top > #search input[value=""]:focus+label::before,
-#top > #search input:not([value=""])+label::before {
-	color: rgba(0, 0, 0, 1);
-}
 
-
-#top > #search input:hover { /* hover */
+#top > #search #q:hover { /* hover */
 	cursor: text;
 }
 
-#top > #search input[value=""]:focus,
-#top > #search input:not([value=""]) { /* not empty : focus */
+#top > #search #q[value=""]:focus,
+#top > #search #q[value=""]:focus+#input-rechercher,
+#top > #search #q:not([value=""]),
+#top > #search #q:not([value=""])+#input-rechercher { /* not empty : focus */
 	z-index: 20;
-	color: rgba(0, 0, 0, 1);
-	background: rgba(255, 255, 255, .8);
+	color: rgb(0, 0, 0);
+	background: rgba(255, 255, 255, .7);
+	transition: background-color .3s, color .3s;
 }
 
 /* TOP > Right nav bar
@@ -575,12 +592,6 @@ q, blockquote {
 #fab.add-feed::before {
 	content: "\e927";
 }
-/* PAGE INDEX 
-------------------------------------------------------------------------- */
-#resultat-recherche {
-	list-style-type: none; /* TODO */
-}
-
 
 /* GENERAL FORM STUFF
 ----------------------------------------------------------*/
@@ -596,25 +607,25 @@ form {
 }
 
 .text {
-	border: 1px solid transparent;
-	border-radius: 0;
-	border-bottom-color: silver;
-	padding: 10px 5px;
 	margin: 0;
+	padding: 10px 5px;
+	border: 0 solid transparent;
+	border-radius: 0;
+	background: white no-repeat;
+	background-image: linear-gradient(to bottom, #2196F3, #2196F3), linear-gradient(to bottom, silver, silver);
+	background-position: 0 100%, 100% 100%;
+	background-size: 0 2px, 100% 1px;
 	transition: background-size 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
-	background: white linear-gradient(to bottom, #2196F3, #2196F3) no-repeat 0% 100% / 0 2px;
 }
+
 .text:invalid {
 	box-shadow: none;
 	outline: none;
-	background: white linear-gradient(to bottom, #F44336, #F44336) no-repeat 0% 100% / 0 2px;
-	border-bottom-color: #F44336;
+	background-image: linear-gradient(to bottom, #f44336, #f44336), linear-gradient(to bottom, silver, silver);
 }
-.text:invalid:focus {
 
-}
 .text:focus {
-	background-size: 100% 2px;
+	background-size: 100% 2px, 100% 1px;
 }
 
 
@@ -661,7 +672,7 @@ select optgroup::before {
 
 .submit {
 	color: white;
-	font-weight: bold;
+	font-weight: 500;
 	vertical-align: middle;
 	padding: 6px 12px;
 	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
@@ -674,9 +685,9 @@ select optgroup::before {
 	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 	border-radius: 2px;
 }
-.submit:active {
+/*.submit:active {
 	box-shadow: none;
-}
+}*/
 
 .button-submit {
 	min-width: 140px;
@@ -688,36 +699,34 @@ select optgroup::before {
 }
 
 .button-cancel {
-	box-shadow: none;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0);
 	background: white;
-	color: #333;
+	color: #555;
 	margin-right: 5px;
+	transition: box-shadow .2s;
 }
 
-
-
-
 .submit {
-  position: relative;
-  overflow: hidden;
+	position: relative;
+	overflow: hidden;
 }
 
 .submit:after {
-  content: '';
-  position: absolute;
-  top: 0%;
-  left: 0%;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, .5);
-  opacity: 0;
-  border-radius: 100%;
-  transform: scale(0, 0);
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 4px;
+	height: 4px;
+	background: rgba(255, 255, 255, .5);
+	opacity: 0;
+	border-radius: 100%;
+	transform: scale(1, 1) translate(-50%);
 }
 
 /* for mouse focus */
 .submit:focus:hover::after {
-  animation: md-ripple 1s ease-out;
+	animation: md-ripple 1s ease-out;
 }
 /* for keyboard focus */
 .submit:focus:not(:hover)::after {
@@ -725,6 +734,117 @@ select optgroup::before {
 	transform: scale(1, 1);
 	border-radius: 0;
 	opacity: 1;
+}
+
+/* checkboxes */
+.checkbox {
+	position: absolute;
+	left: -9999px;
+}
+
+.checkbox+label {
+	cursor: pointer;
+	position: relative;
+	margin: 15px 5px 10px 30px;
+	display: inline-block;
+}
+
+.checkbox+label::after { /* the checkbox */
+	content: '\e905';
+	text-align: center;
+	color: white;
+	font-size: 1em;
+	border: 2px solid rgba(0, 0, 0, .3);
+	border-radius: 3px;
+	background-color: white;
+	position: absolute;
+	top: 50%;
+	left: -4px;
+	transform: translate(-20px, -50%);
+	box-sizing: border-box;
+	width: 18px;
+	height: 18px;
+	line-height: 14px;
+	transition: background-color 1s, border-color 1s;
+}
+
+.checkbox:checked+label::after { /* the checkbox -- checked */
+	border-color: rgba(33, 150, 243, 0);
+	background-color: rgba(33, 150, 243, 1);
+}
+
+.checkbox+label::before { /* the focus ripple */
+	content: '';
+	border-radius: 50%;
+	background-color: rgba(0, 0, 0, .1);
+	position: absolute;
+	box-sizing: border-box;
+	top: 50%;
+	left: -15px;
+	transform: translate(-50%, -50%) scale(0);
+	width: 1.5px;
+	height: 1.5px;
+}
+
+.checkbox:focus+label::before {
+	animation: md-ripple 1s ease-out;
+}
+
+/* checkboxes with "toggle-button" style */
+.checkbox-toggle {
+	position: absolute;
+	left: -9999px;
+}
+
+.checkbox-toggle+label {
+	cursor: pointer;
+	position: relative;
+	margin-right: 60px;
+}
+
+.checkbox-toggle+label::after {
+	position: absolute;
+	right: -30px;
+	top: -1px;
+	display: block;
+	width: 22px;
+	height: 22px;
+	border-radius: 100%;
+	background: #ECECEC;
+	box-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+	content: '';
+	transition: all 0.3s ease;
+}
+
+.checkbox-toggle:checked + label::after {
+	right: -50px;
+	background: #4285F4;
+}
+
+.checkbox-toggle+label::before {
+	position: absolute;
+	right: -50px;
+	top: 3px;
+	display: block;
+	height: 15px;
+	width: 40px;
+	background: #B2B2B2;
+	border-radius: 10px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	content: '';
+}
+
+.checkbox-toggle:checked + label:before {
+	background: #A0C2F9;
+}
+
+.checkbox-toggle:focus+label::after {
+	box-shadow: 0px 3px 3px rgba(0,0,0,0.2), 0 0 0 5px rgba(0, 0, 0, .1);
+}
+
+.checkbox-toggle:not(:disabled):active + label::after {
+	box-shadow: 0px 3px 3px rgba(0,0,0,0.2), 0 0 0 15px rgba(160, 194, 249, .4);
 }
 
 legend {
@@ -779,7 +899,7 @@ fieldset {
 *************************************/
 
 #apercu, #form-ecrire,
-#mainpage,
+#graphs .graph,
 #post-new-lien,
 .linkbloc,
 #billets,

@@ -101,7 +101,7 @@
 	border: 0;
 }
 
-#form-image #fichier[type="file"]:valid {
+#form-image #fichier[type="file"][required]:valid {
 	width: auto;
 	padding: 0;
 	border: 0;
@@ -161,12 +161,7 @@
 #img-others-infos label[for^="dossier"]::before     { content: "\e91a"; }
 
 #img-others-infos label[for="statut"] {
-	text-align: left;
-	display: inline-block;
-	margin-left: 5px;
-	vertical-align: middle;
-	margin-top: 20px;
-	padding-left: 24px;
+	margin-left: 55px;
 }
 
 #img-others-infos .text {
@@ -445,7 +440,7 @@
 	background: rgba(0, 0, 0, .95);
 	position: fixed;
 	top: 0; left: 0; right: 0; bottom: 0;
-	z-index: 20;
+	z-index: 120;
 }
 
 /* IMAGES : slider : top nav

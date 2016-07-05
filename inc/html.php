@@ -129,6 +129,9 @@ function afficher_msg() {
 function apercu($article) {
 	if (isset($article)) {
 		$apercu = '<h2>'.$article['bt_title'].'</h2>'."\n";
+		if (empty($article['bt_abstract'])) {
+			$article['bt_abstract'] = mb_substr(strip_tags($article['bt_content']), 0, 249).'…';
+		}
 		$apercu .= '<div><strong>'.$article['bt_abstract'].'</strong></div>'."\n";
 		$apercu .= '<div>'.rel2abs_admin($article['bt_content']).'</div>'."\n";
 		echo '<div id="apercu">'."\n".$apercu.'</div>'."\n\n";
@@ -140,10 +143,10 @@ function moteur_recherche() {
 	if (isset($_GET['q'])) {
 		$requete = htmlspecialchars(stripslashes($_GET['q']));
 	}
-	$return = '<form action="'.basename($_SERVER['SCRIPT_NAME']).'" method="get" id="search">'."\n";
+	$return = '<form action="?" method="get" id="search">'."\n";
 	$return .= '<input id="q" name="q" type="search" size="20" value="'.$requete.'" placeholder="'.$GLOBALS['lang']['placeholder_search'].'" accesskey="f" />'."\n";
-	$return .= '<label for="q">'.'</label>'."\n";
-	$return .= '<input id="input-rechercher" type="submit" value="'.$GLOBALS['lang']['rechercher'].'" />'."\n";
+//	$return .= '<label for="q">'.'</label>'."\n";
+	$return .= '<button id="input-rechercher" type="submit">'.$GLOBALS['lang']['rechercher'].'</button>'."\n";
 	if (isset($_GET['mode'])) {
 		$return .= '<input id="mode" name="mode" type="hidden" value="'.htmlspecialchars(stripslashes($_GET['mode'])).'"/>'."\n";
 	}
@@ -152,8 +155,7 @@ function moteur_recherche() {
 }
 
 function encart_commentaires() {
-	mb_internal_encoding('UTF-8');
-	$query = "SELECT c.bt_author, c.bt_id, c.bt_article_id, c.bt_content FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id WHERE c.bt_statut=1 AND a.bt_statut=1 ORDER BY c.bt_id DESC LIMIT 5";
+	$query = "SELECT a.bt_title, c.bt_author, c.bt_id, c.bt_article_id, c.bt_content FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id WHERE c.bt_statut=1 AND a.bt_statut=1 ORDER BY c.bt_id DESC LIMIT 5";
 	$tableau = liste_elements($query, array(), 'commentaires');
 	if (isset($tableau)) {
 		$listeLastComments = '<ul class="encart_lastcom">'."\n";
@@ -166,7 +168,8 @@ function encart_commentaires() {
 			if (strlen($comment['bt_author']) >= 30) {
 				$comment['bt_author'] = mb_substr($comment['bt_author'], 0, 29).'…';
 			}
-			$listeLastComments .= '<li title="'.date_formate($comment['bt_id']).'"><b>'.$comment['bt_author'].'</b> '.$GLOBALS['lang']['sur'].' <b>'.$comment['article_title'].'</b><br/><a href="'.$comment['bt_link'].'">'.$comment['contenu_abbr'].'</a>'.'</li>'."\n";
+//			$listeLastComments .= '<li title="'.date_formate($comment['bt_id']).'"><b>'.$comment['bt_author'].'</b> '.$GLOBALS['lang']['sur'].' <b>'.$comment['article_title'].'</b><br/><a href="'.$comment['bt_link'].'">'.$comment['contenu_abbr'].'</a>'.'</li>'."\n";
+			$listeLastComments .= '<li title="'.date_formate($comment['bt_id']).'"><strong>'.$comment['bt_author'].' : </strong><a href="'.$comment['bt_link'].'">'.$comment['contenu_abbr'].'</a>'.'</li>'."\n";
 		}
 		$listeLastComments .= '</ul>'."\n";
 		return $listeLastComments;
@@ -192,7 +195,9 @@ function encart_categories($mode) {
 
 		// create the <UL> with "tags (nb) "
 		foreach($liste as $tag => $nb) {
-			$uliste .= "\t".'<li><a href="'.basename($_SERVER['SCRIPT_NAME']).'?tag='.urlencode(trim($tag)).$ampmode.'" rel="tag">'.ucfirst($tag).' ('.$nb[1].')</a></li>'."\n";
+			if ($tag != '' and $nb[1] > 1) {
+				$uliste .= "\t".'<li><a href="?tag='.urlencode(trim($tag)).$ampmode.'" rel="tag">'.ucfirst($tag).' ('.$nb[1].')</a><a href="rss.php?tag='.urlencode($tag).$ampmode.'" rel="alternate"></a></li>'."\n";
+			}
 		}
 		$uliste .= '</ul>'."\n";
 		return $uliste;
@@ -209,26 +214,24 @@ function lien_pagination() {
 	}
 	$page_courante = (isset($_GET['p']) and is_numeric($_GET['p'])) ? $_GET['p'] : 0;
 	$qstring = remove_url_param('p');
+//	debug($qstring);
 
 	if ($page_courante <=0) {
 		$lien_precede = '';
-		$lien_suivant = '<a href="'.htmlspecialchars(basename($_SERVER['SCRIPT_NAME'])).'?'.$qstring.'&amp;p=1" rel="next">'.$GLOBALS['lang']['label_suivant'].' &#187;</a>';
+		$lien_suivant = '<a href="?'.$qstring.'&amp;p=1" rel="next">'.$GLOBALS['lang']['label_suivant'].'</a>';
 		if ($nb < $nb_par_page) { // évite de pouvoir aller dans la passé s’il y a moins de 10 posts
 			$lien_suivant = '';
 		}
 	}
 	elseif ($nb < $nb_par_page) { // évite de pouvoir aller dans l’infini en arrière dans les pages, nottament pour les robots.
-		$lien_precede = '<a href="'.htmlspecialchars(basename($_SERVER['SCRIPT_NAME'])).'?'.$qstring.'&amp;p='.($page_courante-1).'" rel="prev">&#171; '.$GLOBALS['lang']['label_precedent'].'</a>';
+		$lien_precede = '<a href="?'.$qstring.'&amp;p='.($page_courante-1).'" rel="prev">'.$GLOBALS['lang']['label_precedent'].'</a>';
 		$lien_suivant = '';
 	} else {
-		$lien_precede = '<a href="'.htmlspecialchars(basename($_SERVER['SCRIPT_NAME'])).'?'.$qstring.'&amp;p='.($page_courante-1).'" rel="prev">&#171; '.$GLOBALS['lang']['label_precedent'].'</a>';
-		$lien_suivant = '<a href="'.htmlspecialchars(basename($_SERVER['SCRIPT_NAME'])).'?'.$qstring.'&amp;p='.($page_courante+1).'" rel="next">'.$GLOBALS['lang']['label_suivant'].' &#187;</a>';
+		$lien_precede = '<a href="?'.$qstring.'&amp;p='.($page_courante-1).'" rel="prev">'.$GLOBALS['lang']['label_precedent'].'</a>';
+		$lien_suivant = '<a href="?'.$qstring.'&amp;p='.($page_courante+1).'" rel="next">'.$GLOBALS['lang']['label_suivant'].'</a>';
 	}
 
-	$glue = ' – ';
-	if (empty($lien_precede) or empty($lien_suivant)) $glue = ' ';
-
-	return '<p class="pagination">'.$lien_precede.$glue.$lien_suivant.'</p>';
+	return '<p class="pagination">'.$lien_precede.$lien_suivant.'</p>';
 }
 
 
@@ -247,7 +250,7 @@ function liste_tags($billet, $html_link) {
 		foreach($tag_list as $tag) {
 			$tag = trim($tag['t']);
 			if ($html_link == 1) {
-				$liste .= '<a href="'.basename($_SERVER['SCRIPT_NAME']).'?tag='.urlencode($tag).$mode.'" rel="tag">'.$tag.'</a>';
+				$liste .= '<a href="?tag='.urlencode($tag).$mode.'" rel="tag">'.$tag.'</a>';
 			} else {
 				$liste .= $tag.' ';
 			}

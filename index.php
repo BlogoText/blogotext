@@ -152,15 +152,14 @@ else {
 	// paramètre mode : quelle table "mode" ?
 	if (isset($_GET['mode'])) {
 		switch($_GET['mode']) {
-			case 'blog':
-				$where = 'articles';
-				break;
 			case 'comments':
+				$query = "SELECT c.*, a.bt_title FROM ";
 				$where = 'commentaires';
 				break;
 			case 'links':
 				$where = 'links';
 				break;
+			case 'blog':
 			default:
 				$where = 'articles';
 				break;
@@ -168,10 +167,25 @@ else {
 	} else {
 		$where = 'articles';
 	}
-	$query .= $where.' ';
 
-	// paramètre de recherche uniquement dans les articles publiés :
-	$query .= 'WHERE bt_statut=1 ';
+	switch($where) {
+		case 'commentaires':
+			$query .= "commentaires AS c, articles AS a ";
+			break;
+		default:
+			$query .= $where.' ';
+			break;
+	}
+
+	// paramètre de recherche uniquement dans les éléments publiés :
+	switch($where) {
+		case 'commentaires':
+			$query .= 'WHERE c.bt_statut=1 ';
+			break;
+		default:
+			$query .= 'WHERE bt_statut=1 ';
+			break;
+	}
 
 
 	// paramètre de date "d"
@@ -187,6 +201,9 @@ else {
 			switch ($where) {
 				case 'articles':
 					$sql_date = "bt_date LIKE ? ";
+					break;
+				case 'commentaires':
+					$sql_date = "c.bt_date LIKE ? ";
 					break;
 				default:
 					$sql_date = "bt_id LIKE ? ";
@@ -210,7 +227,7 @@ else {
 				$sql_q = implode(array_fill(0, count($arr), '( bt_content || bt_title || bt_link ) LIKE ? '), 'AND ');
 				break;
 			case 'commentaires' :
-				$sql_q = implode(array_fill(0, count($arr), 'bt_content LIKE ? '), 'AND ');
+				$sql_q = implode(array_fill(0, count($arr), 'c.bt_content LIKE ? '), 'AND ');
 				break;
 			default:
 				$sql_q = "";
@@ -229,14 +246,14 @@ else {
 				$array[] = '%, '.$_GET['tag'];
 				break;
 			case 'links' :
-				$sql_tag = "( bt_tags LIKE ? OR bt_tags LIKE ? OR bt_tags LIKE ? OR bt_tags LIKE ? )";
+				$sql_tag = "( bt_tags LIKE ? OR bt_tags LIKE ? OR bt_tags LIKE ? OR bt_tags LIKE ? ) ";
 				$array[] = $_GET['tag'];
 				$array[] = $_GET['tag'].', %';
 				$array[] = '%, '.$_GET['tag'].', %';
 				$array[] = '%, '.$_GET['tag'];
 				break;
 			default:
-				$sql_tag = "";
+				$sql_tag = " ";
 				break;
 		}
 	}
@@ -248,18 +265,24 @@ else {
 		case 'articles' :
 			$sql_order = "ORDER BY bt_date DESC ";
 			break;
+		case 'commentaires' :
+			$sql_order = "ORDER BY c.bt_id DESC ";
+			break;
 		default:
 			$sql_order = "ORDER BY bt_id DESC ";
 			break;
 	}
 
-	// paramètre de filtrage admin/public (pas un paramètre, mais ajouté quand même)
+	// paramètre de filtrage date (pas un paramètre, mais ajouté quand même)
 	switch ($where) {
 		case 'articles' :
-			$sql_a_p = "bt_date <= ".date('YmdHis')." AND bt_statut=1 ";
+			$sql_a_p = "bt_date <= ".date('YmdHis')." ";
+			break;
+		case 'commentaires' :
+			$sql_a_p = "c.bt_id <= ".date('YmdHis')." AND c.bt_article_id=a.bt_id ";
 			break;
 		default:
-			$sql_a_p = "bt_id <= ".date('YmdHis')." AND bt_statut=1 ";
+			$sql_a_p = "bt_id <= ".date('YmdHis')." ";
 			break;
 	}
 
@@ -285,7 +308,6 @@ else {
 	}
 
 	$query .= $glue.$sql_a_p.$sql_order.$sql_p;
-
 	$tableau = liste_elements($query, $array, $where);
 	$GLOBALS['param_pagination'] = array('nb' => count($tableau), 'nb_par_page' => $GLOBALS['max_bill_acceuil']);
 	afficher_index($tableau, 'list');

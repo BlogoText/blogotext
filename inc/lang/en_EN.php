@@ -134,6 +134,8 @@ $GLOBALS['lang'] = array(
 'label_image'						=> 'image',
 'label_images'						=> 'images',
 'label_feeds'						=> 'feeds',
+'label_feed_entry'				=> 'feed entry',
+'label_feed_entrys'				=> 'feed entries',
 'label_import-export'			=> 'Import/Export',
 'label_fichier'					=> 'file',
 'label_fichiers'					=> 'files',
@@ -180,8 +182,6 @@ $GLOBALS['lang'] = array(
 'label_dp_email_required'		=> 'E-mail: ',
 'label_dp_identifiant'			=> 'Username: ',
 'label_dp_motdepasse'			=> 'Password: ',
-'label_dp_word_captcha'			=> 'Text in image: ',
-'label_dp_changer_captcha'		=> 'Change image: ',
 // Commentaire
 'aucun'								=> 'no',
 'comment_ajout'					=> 'Write a comment',
@@ -357,7 +357,6 @@ $GLOBALS['lang'] = array(
 'pref_categories'					=> 'Use tags for articles: ',
 'pref_commentaires'				=> 'Use comments: ',
 'pref_allow_global_coms'		=> 'Close comments on every article: ',
-'pref_connexion_captcha'		=> 'Use captach on login (<a href="?test_captcha" target="_blank">test before!</a>): ',
 'pref_all'							=> 'All',
 'pref_go_to_maintenance'		=> 'Go on maintenance page: ',
 'pref_rss_go_to_imp-export'	=> 'Access OPML import/export utility: ',
@@ -375,6 +374,8 @@ $GLOBALS['lang'] = array(
 'note_no_link'						=> 'No links',
 'note_no_image'					=> 'No images',
 'note_no_fichier'					=> 'No files',
+'note_no_feed'						=> 'No RSS feed',
+'note_no_feed_entry'				=> 'No RSS entry',
 // placeholders
 'placeholder_search'				=> 'Search',
 'placeholder_nom_fichier'		=> 'name',
@@ -391,6 +392,7 @@ $GLOBALS['lang'] = array(
 //Formulaire Images
 'label_jusqua'						=> 'Up to',
 'label_parfichier'				=> ' per file',
+'label_codes'			    	=> 'Integration codes:',
 'img_upload'						=> 'Sens',
 'img_specifier_url'				=> 'From URL',
 'img_upload_un_fichier'			=> 'Upload one file',
@@ -446,7 +448,6 @@ $GLOBALS['lang'] = array(
 'rss_raccourcis_clavier'		=> 'Ctrl+Up = Read previous entry, Ctrl+Down = Read next entry.',
 'rss_nouveau_flux'				=> 'new entries.',
 
-
 // vérifier les mises à jours
 'maint_chk_update'				=> 'Updates',
 'maint_update_youisgood'		=> 'BlogoText is up to date',
@@ -471,5 +472,3 @@ $GLOBALS['lang'] = array(
 'derniere_connexion_le'			=> 'Last connection from',
 'cet_ordi'							=> 'this computer',
 );
-
-

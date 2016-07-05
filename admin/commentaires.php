@@ -60,10 +60,14 @@ if ( isset($_GET['post_id']) and preg_match('#\d{14}#', $_GET['post_id']) )  {
 	$param_makeup['menu_theme'] = 'for_article';
 	$article_id = $_GET['post_id'];
 
-	$article_title = get_entry($GLOBALS['db_handle'], 'articles', 'bt_title', $article_id, 'return');
-	$query = "SELECT * FROM commentaires WHERE bt_article_id=? ORDER BY bt_id";
-
+	$query = "SELECT c.*, a.bt_title FROM commentaires AS c, articles AS a WHERE c.bt_article_id=? AND c.bt_article_id=a.bt_id ORDER BY c.bt_id";
 	$commentaires = liste_elements($query, array($article_id), 'commentaires');
+
+	if (!empty($commentaires)) {
+		$article_title = $commentaires[0]['bt_title'];
+	} else {
+		$article_title = get_entry($GLOBALS['db_handle'], 'articles', 'bt_title', $article_id, 'return');
+	}
 
 	$param_makeup['show_links'] = '0';
 
@@ -119,7 +123,7 @@ function afficher_commentaire($comment, $with_link) {
 	echo '<div class="commentbloc'.(!$comment['bt_statut'] ? ' privatebloc' : '').'" id="'.article_anchor($comment['bt_id']).'">'."\n";
 	echo '<div class="comm-side-icon">'."\n";
 		echo "\t".'<div class="comm-title">'."\n";
-		echo "\t\t".'<img class="author-icon" src="cache/gravatar/get.php?g='.md5($comment['bt_email']).'&amp;s=48&amp;d=monsterid"/>'."\n";
+		echo "\t\t".'<img class="author-icon" src="cache/get.php?w=gravatar&amp;q='.md5((!empty($comment['bt_email']) ? $comment['bt_email'] : $comment['bt_author'] )).'&amp;s=48&amp;d=monsterid"/>'."\n";
 		echo "\t\t".'<span class="date">'.date_formate($comment['bt_id']).'<span>'.heure_formate($comment['bt_id']).'</span></span>'."\n" ;
 
 		echo "\t\t".'<span class="reply" onclick="reply(\'[b]@['.str_replace('\'', '\\\'', $comment['bt_author']).'|#'.article_anchor($comment['bt_id']).'] :[/b] \'); ">Reply</span> ';

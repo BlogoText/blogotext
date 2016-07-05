@@ -134,6 +134,8 @@ $GLOBALS['lang'] = array(
 'label_image'						=> 'image',
 'label_images'						=> 'images',
 'label_feeds'						=> 'flux RSS',
+'label_feed_entry'				=> 'Entrée RSS',
+'label_feed_entrys'				=> 'Entrées RSS',
 'label_import-export'			=> 'Import/Export',
 'label_fichier'					=> 'fichier',
 'label_fichiers'					=> 'fichiers',
@@ -180,8 +182,6 @@ $GLOBALS['lang'] = array(
 'label_dp_email_required'		=> 'E-mail : ',
 'label_dp_identifiant'			=> 'Identifiant : ',
 'label_dp_motdepasse'			=> 'Mot de passe : ',
-'label_dp_word_captcha'			=> 'texte dans l’image : ',
-'label_dp_changer_captcha'		=> 'Changer d’image : ',
 // Commentaire
 'aucun'								=> 'aucun',
 'comment_ajout'					=> 'Ajouter un commentaire',
@@ -232,7 +232,7 @@ $GLOBALS['lang'] = array(
 've'									=> 'Ve',
 'sa'									=> 'Sa',
 'di'									=> 'Di',
-// Jours	
+// Jours
 'lundi'								=> 'lundi',
 'mardi'								=> 'mardi',
 'mercredi'							=> 'mercredi',
@@ -357,7 +357,6 @@ $GLOBALS['lang'] = array(
 'pref_categories'					=> 'Classement des billets par catégories : ',
 'pref_commentaires'				=> 'Utiliser les commentaires : ',
 'pref_allow_global_coms'		=> 'Fermeture de tous les commentaires : ',
-'pref_connexion_captcha'		=> 'Captcha à la connexion (<a href="?test_captcha" target="_blank">tester!</a>) : ',
 'pref_all'							=> 'Tout',
 'pref_go_to_maintenance'		=> 'Accéder à la page de maintenance : ',
 'pref_rss_go_to_imp-export'	=> 'Accéder à la page d’import/export OMPL : ',
@@ -375,6 +374,8 @@ $GLOBALS['lang'] = array(
 'note_no_link'						=> 'Aucun lien',
 'note_no_image'					=> 'Aucune image',
 'note_no_fichier'					=> 'Aucun fichier',
+'note_no_feed'						=> 'Aucun flux RSS',
+'note_no_feed_entry'				=> 'Aucune entrée RSS',
 // placeholders
 'placeholder_search'				=> 'Rechercher',
 'placeholder_nom_fichier'		=> 'nom',
@@ -391,6 +392,7 @@ $GLOBALS['lang'] = array(
 //Formulaire Images
 'label_jusqua'						=> 'Jusqu’à ',
 'label_parfichier'				=> ' par fichier',
+'label_codes'			    	=> 'Codes d’intégration :',
 'img_upload'						=> 'Envoyer',
 'img_specifier_url'				=> 'Spécifier une URL à la place',
 'img_upload_un_fichier'			=> 'Envoyer un seul fichier',
@@ -470,5 +472,3 @@ $GLOBALS['lang'] = array(
 'derniere_connexion_le'			=> 'Dernière connexion depuis',
 'cet_ordi'							=> 'cet ordinateur',
 );
-
-
