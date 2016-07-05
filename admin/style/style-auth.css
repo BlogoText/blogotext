@@ -98,9 +98,11 @@
 #auth p label[for="word"]::before     { content: "\e93b"; }
 
 
-#auth .button-submit {
+#auth .button-submit,
+#install .button-submit {
 	width: 200px;
 	line-height: 1.9em;
+	margin-top: 20px;
 }
 
 #pageauth h1 {

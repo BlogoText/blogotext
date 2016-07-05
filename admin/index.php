@@ -194,14 +194,7 @@ else {
 	}
 
 	if ($nothingyet == 3) {
-		echo '
-	<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADoAAABwAgMAAAAyFouxAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QMFDDAtgYm8UQAAAAxQTFRFGBEPg3ue872G////A0Y42AAAAWNJREFUOMul1KGOXDEMheFDQkLOq4WYDMmrXbIk5L6aSciQv2C222rH2YKafZYly7JsATkxr0gVdirVzk4ANA+OyeIzXTnXc93Ac9amf2jmaLdr7/W4rySfB9M7T4NPzs4N9JO3PCcSB8/Uo0vTB9vT6fmDw7T76GwM4KvfdyMWT3x0PqW9OZo+aT47NRk6OjuS7YOz36kbp2tLd0pi5yxtlAZvdmkZI7UgK2cbkiLahFk5x6BFeLNdeKadEWHmrOy0pQhvXHhLgmcLb7zfnWBSEZ443z2hQxs62CAj5+bk1AX5AUZvTkgJ8q6N1C+/3CvjtPw6rCsrQ5PGT37VR3fhvSdttOH92ud3J5s2Iv7L+oej/eyRZ88vj9I7Ph1ZGjKuDENpRD6uDJMundLDNEnUjlimRYyTH8u0WNfJsUxbGrWbWgxaRLi0JI1ckmbpTmLUf8/z5rUEuRa1U6+n+Nf8f/wL/hlQOQcLWpwAAAAASUVORK5CYII=" style="height:112px; width:58px;display:block;margin:30px auto;">
-
-	<div style=" display: inline-block; border: 2px black inset; border-radius: 4px;"><div style="text-align: left;border: 1px white solid; border-radius: 4px;"><div style="border: 1px black inset; padding: 3px 5px; letter-spacing: 2px;">No data yet . . .<br/>
-	Why not write <a href="ecrire.php" style="color: inherit">something</a> ?
-	</div></div></div>
-	';
-
+		echo info($GLOBALS['lang']['note_no_article']);
 	}
 }
 

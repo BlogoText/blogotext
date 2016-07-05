@@ -210,10 +210,6 @@ function afficher_form_3($erreurs='') {
 	}
 	echo '</div>'."\n";
 
-	echo '<div id="sqlite_vars">'."\n";
-	echo $GLOBALS['lang']['install_sqlite_no_more_todo'];
-	echo '</div>'."\n";
-
 	echo hidden_input('langue', $GLOBALS['lang']['id']);
 	echo hidden_input('verif_envoi_3', '1');
 	echo '<button class="submit button-submit" type="submit" name="enregistrer">Ok</button>'."\n";
@@ -386,10 +382,8 @@ function show_mysql_form() {
 	if (selected) {
 		if (selected == "mysql") {
 			document.getElementById("mysql_vars").style.display = "block";
-			document.getElementById("sqlite_vars").style.display = "none";
 		} else {
 			document.getElementById("mysql_vars").style.display = "none";
-			document.getElementById("sqlite_vars").style.display = "block";
 		}
 	}
 }

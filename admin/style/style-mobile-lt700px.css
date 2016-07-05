@@ -23,7 +23,7 @@
 	}
 
 	#subnav #form-filtre::before {
-		content: "\e93f";
+		content: "\e941";
 		position: relative;
 		font-size: 2em;
 		display: inline-block;
