@@ -263,7 +263,7 @@ function request_external_files($feeds, $timeout, $echo_progress=false) {
 					CURLOPT_FOLLOWLOCATION => TRUE, // follow 302 ans 301 redirects
 					CURLOPT_CONNECTTIMEOUT => 100, // 0 = indefinately ; no connection-timeout (ruled out by "set_time_limit" hereabove)
 					CURLOPT_TIMEOUT => $timeout, // downloading timeout
-					CURLOPT_USERAGENT => $_SERVER['HTTP_USER_AGENT'], // User-agent (uses the UA of browser)
+					CURLOPT_USERAGENT => BLOGOTEXT_UA, // User-agent (uses the UA of browser)
 					CURLOPT_SSL_VERIFYPEER => FALSE, // ignore SSL errors
 					CURLOPT_SSL_VERIFYHOST => FALSE, // ignore SSL errors
 					CURLOPT_ENCODING => "gzip", // take into account gziped pages
