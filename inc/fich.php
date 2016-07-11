@@ -82,11 +82,11 @@ function fichier_prefs() {
 	$fichier_prefs = '../'.DIR_CONFIG.'/prefs.php';
 	if(!empty($_POST['_verif_envoi'])) {
 		$lang = (isset($_POST['langue']) and preg_match('#^[a-z]{2}$#', $_POST['langue'])) ? $_POST['langue'] : 'fr';
-		$auteur = clean_txt(htmlspecialchars($_POST['auteur']));
-		$email = clean_txt(htmlspecialchars($_POST['email']));
-		$nomsite = clean_txt(htmlspecialchars($_POST['nomsite']));
-		$description = clean_txt(htmlspecialchars($_POST['description']));
-		$keywords = clean_txt(htmlspecialchars($_POST['keywords']));
+		$auteur = addslashes(clean_txt(htmlspecialchars($_POST['auteur'])));
+		$email = addslashes(clean_txt(htmlspecialchars($_POST['email'])));
+		$nomsite = addslashes(clean_txt(htmlspecialchars($_POST['nomsite'])));
+		$description = addslashes(clean_txt(htmlspecialchars($_POST['description'])));
+		$keywords = addslashes(clean_txt(htmlspecialchars($_POST['keywords'])));
 		$racine = addslashes(trim(htmlspecialchars($_POST['racine'])));
 		$max_bill_acceuil = htmlspecialchars($_POST['nb_maxi']);
 		$max_bill_admin = htmlspecialchars($_POST['nb_list']);
@@ -107,12 +107,12 @@ function fichier_prefs() {
 		$nombre_liens_admin = htmlspecialchars($_POST['nb_list_linx']);
 	} else {
 		$lang = (isset($_POST['langue']) and preg_match('#^[a-z]{2}$#', $_POST['langue'])) ? $_POST['langue'] : 'fr';
-		$auteur = clean_txt(htmlspecialchars(USER_LOGIN));
+		$auteur = addslashes(clean_txt(htmlspecialchars(USER_LOGIN)));
 		$email = 'mail@example.com';
 		$nomsite = 'Blogotext';
-		$description = clean_txt($GLOBALS['lang']['go_to_pref']);
+		$description = addslashes(clean_txt($GLOBALS['lang']['go_to_pref']));
 		$keywords = 'blog, blogotext';
-		$racine = clean_txt(trim(htmlspecialchars($_POST['racine'])));
+		$racine = addslashes(clean_txt(trim(htmlspecialchars($_POST['racine']))));
 		$max_bill_acceuil = '10';
 		$max_bill_admin = '25';
 		$max_comm_admin = '50';

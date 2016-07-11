@@ -55,15 +55,14 @@ function titre_url($title) {
 // remove slashes if necessary
 function clean_txt($text) {
 	if (!get_magic_quotes_gpc()) {
-		$return = trim(addslashes($text));
+		return trim($text);
 	} else {
-		$return = trim($text);
+		return trim(stripslashes($text));
 	}
-	return $return;
 }
 
 function protect($text) {
-	$return = htmlspecialchars(stripslashes(clean_txt($text)));
+	$return = htmlspecialchars(clean_txt($text));
 	return $return;
 }
 
@@ -241,7 +240,6 @@ function formatage_wiki($texte) {
 		}
 	}
 
-	$texte_formate = stripslashes($texte_formate);
 	return $texte_formate;
 }
 
@@ -280,7 +278,6 @@ function formatage_commentaires($texte) {
 		$texte = preg_replace($tofindc["$i"], $toreplacec["$i"], $texte);
 	}
 
-	$texte = stripslashes($texte);
 	$texte = str_replace(array("\\"), array("&#92;"), $texte);
 	$texte = ''.trim(nl2br($texte)).'';
 	$texte = str_replace('<p></p>', '', $texte);

@@ -435,8 +435,8 @@ function init_post_fichier() { //no $mode : it's always admin.
 			'bt_fileext' => $ext,
 			'bt_filesize' => $size,
 			'bt_filename' => $filename, // le nom du final du fichier peut changer à la fin, si le nom est déjà pris par exemple
-			'bt_content' => stripslashes(clean_txt($_POST['description'])),
-			'bt_wiki_content' => stripslashes(clean_txt($_POST['description'])),
+			'bt_content' => clean_txt($_POST['description']),
+			'bt_wiki_content' => clean_txt($_POST['description']),
 			'bt_checksum' => $checksum,
 			'bt_statut' => $statut,
 			'bt_dossier' => (empty($dossier) ? 'default' : $dossier ), // tags

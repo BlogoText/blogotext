@@ -260,7 +260,7 @@ function init_post_article() { //no $mode : it's always admin.
 		'bt_abstract'		=> (empty($_POST['chapo']) ? '' : clean_txt($_POST['chapo'])),
 		'bt_notes'			=> protect($_POST['notes']),
 		'bt_content'		=> $formated_contenu,
-		'bt_wiki_content'	=> stripslashes(clean_txt($_POST['contenu'])),
+		'bt_wiki_content'	=> clean_txt($_POST['contenu']),
 		'bt_link'			=> '', // this one is not needed yet. Maybe in the futur. I dunno why it is still in the DB…
 		'bt_keywords'		=> $keywords,
 		'bt_categories'	=> (isset($_POST['categories']) ? htmlspecialchars(traiter_tags($_POST['categories'])) : ''), // htmlSpecialChars() nedded to escape the (") since tags are put in a <input/>. (') are escaped in form_categories(), with addslashes – not here because of JS problems :/
@@ -303,7 +303,7 @@ function init_post_comment($id, $mode) {
 			'bt_id'				=> $comment_id,
 			'bt_article_id'		=> $id,
 			'bt_content'		=> formatage_commentaires(htmlspecialchars(clean_txt($_POST['commentaire']), ENT_NOQUOTES)),
-			'bt_wiki_content'	=> stripslashes(clean_txt($_POST['commentaire'])),
+			'bt_wiki_content'	=> clean_txt($_POST['commentaire']),
 			'bt_author'			=> protect($_POST['auteur']),
 			'bt_email'			=> protect($_POST['email']),
 			'bt_link'			=> '', // this is empty, 'cause bt_link is created on reading of DB, not written in DB (useful if we change server or site name some day).
@@ -325,7 +325,7 @@ function init_post_link2() { // second init : the whole link data needs to be st
 	$link = array (
 		'bt_id'				=> $id,
 		'bt_type'			=> htmlspecialchars($_POST['type']),
-		'bt_content'		=> formatage_links(htmlspecialchars(stripslashes(clean_txt($_POST['description'])), ENT_NOQUOTES)), // formatage_wiki() ne parse que les tags BBCode. Le HTML est converti en texte.
+		'bt_content'		=> formatage_links(htmlspecialchars(clean_txt($_POST['description']), ENT_NOQUOTES)), // formatage_wiki() ne parse que les tags BBCode. Le HTML est converti en texte.
 		'bt_wiki_content'	=> protect($_POST['description']),
 		'bt_author'			=> protect($_POST['bt_author']),
 		'bt_title'			=> protect($_POST['title']),

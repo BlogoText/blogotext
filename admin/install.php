@@ -322,7 +322,10 @@ function valid_install_2() {
 	$erreurs = array();
 	if (!strlen(trim($_POST['identifiant']))) {
 		$erreurs[] = $GLOBALS['lang']['err_prefs_identifiant'];
-	}	
+	}
+	if (!preg_match('#[^\w ]#iu', $_POST['identifiant'])) {
+		$erreurs[] = $GLOBALS['lang']['err_prefs_id_syntaxe'];
+	}
 	if ( (strlen($_POST['mdp']) < 6) ) {
 		$erreurs[] = $GLOBALS['lang']['err_prefs_mdp'] ;
 	}
