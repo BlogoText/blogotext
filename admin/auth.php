@@ -90,7 +90,7 @@ if (isset($_POST['_verif_envoi']) and valider_form() === TRUE) { // OK : getting
 }
 
 function valider_form() {
-	if (!password_verify($_POST['mot_de_passe'], USER_PWHASH)) {
+	if (!password_verify($_POST['mot_de_passe'], USER_PWHASH) or $_POST['nom_utilisateur'] != USER_LOGIN) {
 		return FALSE;
 	}
 	return TRUE;
