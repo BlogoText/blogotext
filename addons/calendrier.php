@@ -21,7 +21,7 @@ function addon_calendrier() {
 	if ( isset($_GET['d']) and preg_match('#^\d{4}(/\d{2}){5}#', $_GET['d'])) {
 		$id = substr(str_replace('/', '', $_GET['d']), 0, 14);
 		$date = substr(get_entry($GLOBALS['db_handle'], 'articles', 'bt_date', $id, 'return'), 0, 8);
-		$date = ($date <= date('YmdHis')) ? $date : date('Ym');
+		$date = ($date <= date('Ymd')) ? $date : date('Ym');
 	} elseif ( isset($_GET['d']) and preg_match('#^\d{4}/\d{2}(/\d{2})?#', $_GET['d']) ) {
 		$date = str_replace('/', '', $_GET['d']);
 		$date = (preg_match('#^\d{6}\d{2}#', $date)) ? substr($date, 0, 8) : substr($date, 0, 6); // avec jour ?
