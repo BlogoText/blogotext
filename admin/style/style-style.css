@@ -46,7 +46,7 @@
 }
 
 /* bottom left popup in/out sliding */
-@keyframes popup-disapear {  
+@keyframes popup-disapear {
 	10% {
 		bottom: 30px;
 	}
@@ -135,7 +135,7 @@ body {
 	top: 0;
 }
 
-#axe { /* the entire page without top bars (#header) and footer (#footer) */ 
+#axe { /* the entire page without top bars (#header) and footer (#footer) */
 	padding: 20px;
 }
 
@@ -159,7 +159,7 @@ body {
 	line-height: 1;
 	color: inherit;
 }
-/* GENERAL STUFF 
+/* GENERAL STUFF
 ------------------------------------------------------------------- */
 
 a {
@@ -257,7 +257,7 @@ q, blockquote {
 }
 
 
-/* TOP 
+/* TOP
 ------------------------------------------------------------------------ */
 #top {
 	display: flex;
@@ -859,7 +859,7 @@ fieldset {
 	margin: 0;
 }
 
-/* ERREURS */ 
+/* ERREURS */
 #erreurs, .erreurs, #succes, .succes {
 	display: block;
 	clear: both;

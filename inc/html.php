@@ -161,7 +161,7 @@ function encart_commentaires() {
 		$listeLastComments = '<ul class="encart_lastcom">'."\n";
 		foreach ($tableau as $i => $comment) {
 			$comment['contenu_abbr'] = strip_tags($comment['bt_content']);
-			// limits length of comment abbreviation and name 
+			// limits length of comment abbreviation and name
 			if (strlen($comment['contenu_abbr']) >= 60) {
 				$comment['contenu_abbr'] = mb_substr($comment['contenu_abbr'], 0, 59).'…';
 			}

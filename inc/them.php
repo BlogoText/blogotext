@@ -128,7 +128,7 @@ function conversions_theme($texte, $solo_art, $cnt_mode) {
 	$texte = str_replace($GLOBALS['balises']['cat_encart'], encart_categories((isset($_GET['mode']))?$_GET['mode']:''), $texte);
 	if (isset($GLOBALS['rss_comments'])) { $texte = str_replace($GLOBALS['balises']['rss_comments'], $GLOBALS['rss_comments'], $texte);}
 
-	// addons 
+	// addons
 	$texte = conversion_theme_addons($texte);
 
 	return $texte;
@@ -229,7 +229,7 @@ function afficher_index($tableau, $type) {
 				redirection($tableau[0]['bt_link']);
 				exit;
 			} else {
-				if (count($tableau)==1 and ($tableau[0]['bt_type'] == 'link' or $tableau[0]['bt_type'] == 'note') ) $data = $tableau[0]; 
+				if (count($tableau)==1 and ($tableau[0]['bt_type'] == 'link' or $tableau[0]['bt_type'] == 'note') ) $data = $tableau[0];
 				if ($tableau[0]['bt_type'] == 'article') {
 					if (!($theme_article = file_get_contents($GLOBALS['theme_post_artc']))) die($GLOBALS['lang']['err_theme_introuvable']);
 					$conversion_theme_fonction = 'conversions_theme_article';

@@ -15,7 +15,7 @@ define('BT_ROOT', '../');
 require_once '../inc/inc.php';
 
 // Update all RSS feeds using GET (for cron jobs).
-	// only test here is on install UID. 
+	// only test here is on install UID.
 if (isset($_GET['refresh_all'], $_GET['guid']) and ($_GET['guid'] == BLOG_UID)) {
 	if ($_GET['guid'] == BLOG_UID) {
 		$GLOBALS['db_handle'] = open_base();

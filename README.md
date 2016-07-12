@@ -1,4 +1,4 @@
-# BLOGOTEXT 
+# BLOGOTEXT
 
 ---
 

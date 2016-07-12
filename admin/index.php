@@ -72,7 +72,7 @@ function scaled_size($tableau, $maximum) {
 	return $return;
 }
 
-// compte le nombre d’éléments dans la base, pour chaque mois les 12 derniers mois. 
+// compte le nombre d’éléments dans la base, pour chaque mois les 12 derniers mois.
 /*
  * retourne un tableau YYYYMM => nb;
  *

@@ -10,7 +10,7 @@
 # *** LICENSE ***
 
 # This plugin replaces the {calendrier} tag in the public template with
-# a navigable HTML calendar. 
+# a navigable HTML calendar.
 
 // include this addon
 $GLOBALS['addons'][] = array('tag' => '{calendrier}', 'callback_function' => 'addon_calendrier');

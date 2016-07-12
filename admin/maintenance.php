@@ -728,7 +728,7 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 						recompte_commentaires();
 					}
 					// delete old RSS entries
-					if ($_GET['opti-rss'] == 1) { 
+					if ($_GET['opti-rss'] == 1) {
 						try {
 							$req = $GLOBALS['db_handle']->prepare('DELETE FROM rss WHERE bt_statut=0');
 							$req->execute(array());

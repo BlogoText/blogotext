@@ -12,7 +12,7 @@
 # *** LICENSE ***
 
 // THIS FILE
-// 
+//
 // This file contains functions relative to search and list data posts.
 // It also contains functions about files : creating, deleting files, etc.
 
@@ -34,7 +34,7 @@ function fichier_user() {
 	$fichier_user = '../'.DIR_CONFIG.'/user.ini';
 	$content = '';
 	if (strlen(trim($_POST['mdp'])) == 0) {
-		$new_mdp = USER_PWHASH; 
+		$new_mdp = USER_PWHASH;
 	} else {
 		$new_mdp = password_hash($_POST['mdp'], PASSWORD_BCRYPT);
 	}

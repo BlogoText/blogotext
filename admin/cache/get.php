@@ -71,7 +71,7 @@ if (!file_exists($target_file) or $force_new === TRUE) {
 	// request
 	$curl_handle = curl_init();
 	curl_setopt($curl_handle, CURLOPT_URL, $source_file);
-	curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1); 
+	curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
 	$file_content = curl_exec($curl_handle);
 	curl_close($curl_handle);
 	if ($file_content == NULL) { // impossible request
