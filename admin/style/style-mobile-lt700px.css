@@ -95,10 +95,6 @@
 	#preferences p {
 		display: block;
 	}
-	#preferences .form-legend {
-		padding: 0;
-		margin-top: 20px;
-	}
 	#preferences label {
 		width: auto;
 		text-align: left;

@@ -759,7 +759,7 @@ function afficher_form_prefs($erreurs = '') {
 	echo '<form id="preferences" method="post" action="'.basename($_SERVER['SCRIPT_NAME']).'" >' ;
 		echo erreurs($erreurs);
 		$fld_user = '<div role="group" class="pref">'; /* no fieldset because browset can’t style them correctly */
-		$fld_user .= '<div class="form-legend">'.legend($GLOBALS['lang']['prefs_legend_utilisateur'], 'legend-user').'</div>'."\n";
+		$fld_user .= '<div class="form-legend"><legend class="legend-user">'.$GLOBALS['lang']['prefs_legend_utilisateur'].'</legend></div>'."\n";
 
 		$fld_user .= '<div class="form-lines">'."\n";
 		$fld_user .= '<p>'."\n";
@@ -799,7 +799,7 @@ function afficher_form_prefs($erreurs = '') {
 	echo $fld_user;
 
 		$fld_securite = '<div role="group" class="pref">';
-		$fld_securite .= '<div class="form-legend">'.legend($GLOBALS['lang']['prefs_legend_securite'], 'legend-securite').'</div>'."\n";
+		$fld_securite .= '<div class="form-legend"><legend class="legend-securite">'.$GLOBALS['lang']['prefs_legend_securite'].'</legend></div>'."\n";
 
 		$fld_securite .= '<div class="form-lines">'."\n";
 		$fld_securite .= '<p>'."\n";
@@ -824,7 +824,7 @@ function afficher_form_prefs($erreurs = '') {
 	echo $fld_securite;
 
 		$fld_apparence = '<div role="group" class="pref">';
-		$fld_apparence .= '<div class="form-legend">'.legend($GLOBALS['lang']['prefs_legend_apparence'], 'legend-apparence').'</div>'."\n";
+		$fld_apparence .= '<div class="form-legend"><legend class="legend-apparence">'.$GLOBALS['lang']['prefs_legend_apparence'].'</legend></div>'."\n";
 
 		$fld_apparence .= '<div class="form-lines">'."\n";
 		$fld_apparence .= '<p>'."\n";
@@ -859,7 +859,7 @@ function afficher_form_prefs($erreurs = '') {
 	echo $fld_apparence;
 
 		$fld_dateheure = '<div role="group" class="pref">';
-		$fld_dateheure .= '<div class="form-legend">'.legend($GLOBALS['lang']['prefs_legend_langdateheure'], 'legend-dateheure').'</div>'."\n";
+		$fld_dateheure .= '<div class="form-legend"><legend class="legend-dateheure">'.$GLOBALS['lang']['prefs_legend_langdateheure'].'</legend></div>'."\n";
 
 		$fld_dateheure .= '<div class="form-lines">'."\n";
 		$fld_dateheure .= '<p>'."\n";
@@ -885,9 +885,9 @@ function afficher_form_prefs($erreurs = '') {
 	echo $fld_dateheure;
 
 		$fld_cfg_blog = '<div role="group" class="pref">';
-		$fld_cfg_blog .= '<div class="form-legend">'.legend($GLOBALS['lang']['prefs_legend_configblog'], 'legend-blogcomm').'</div>'."\n";
-		$fld_cfg_blog .= '<div class="form-lines">'."\n";
+		$fld_cfg_blog .= '<div class="form-legend"><legend class="legend-blogcomm">'.$GLOBALS['lang']['prefs_legend_configblog'].'</legend></div>'."\n";
 
+		$fld_cfg_blog .= '<div class="form-lines">'."\n";
 		$fld_cfg_blog .= '<p>'."\n";
 		$fld_cfg_blog .= form_checkbox('activer_categories', $GLOBALS['activer_categories'], $GLOBALS['lang']['pref_categories'] );
 		$fld_cfg_blog .= '</p>'."\n";
@@ -916,7 +916,7 @@ function afficher_form_prefs($erreurs = '') {
 
 		if ($GLOBALS['onglet_liens']) {
 			$fld_cfg_linx = '<div role="group" class="pref">';
-			$fld_cfg_linx .= '<div class="form-legend">'.legend($GLOBALS['lang']['prefs_legend_configlinx'], 'legend-links').'</div>'."\n";
+			$fld_cfg_linx .= '<div class="form-legend"><legend class="legend-links">'.$GLOBALS['lang']['prefs_legend_configlinx'].'</legend></div>'."\n";
 
 			$fld_cfg_linx .= '<div class="form-lines">'."\n";
 			// nb liens côté admin
@@ -954,8 +954,7 @@ function afficher_form_prefs($erreurs = '') {
 			- Export OPML
 			*/
 			$fld_cfg_rss = '<div role="group" class="pref">';
-			$fld_cfg_rss .= '<div class="form-legend">'.legend($GLOBALS['lang']['prefs_legend_configrss'], 'legend-rss').'</div>'."\n";
-
+			$fld_cfg_rss .= '<div class="form-legend"><legend class="legend-rss">'.$GLOBALS['lang']['prefs_legend_configrss'].'</legend></div>'."\n";
 			$fld_cfg_rss .= '<div class="form-lines">'."\n";
 
 			$fld_cfg_rss .= '<p>'."\n";
@@ -981,10 +980,9 @@ function afficher_form_prefs($erreurs = '') {
 
 
 		$fld_maintenance = '<div role="group" class="pref">';
-		$fld_maintenance .= '<div class="form-legend">'.legend($GLOBALS['lang']['titre_maintenance'], 'legend-sweep').'</div>'."\n";
+		$fld_maintenance .= '<div class="form-legend"><legend class="legend-sweep">'.$GLOBALS['lang']['titre_maintenance'].'</legend></div>'."\n";
 
 		$fld_maintenance .= '<div class="form-lines">'."\n";
-
 		$fld_maintenance .= '<p>'."\n";
 		$fld_maintenance .= form_checkbox('check_update', $GLOBALS['check_update'], $GLOBALS['lang']['pref_check_update'] );
 		$fld_maintenance .= '</p>'."\n";
@@ -1020,7 +1018,7 @@ function afficher_form_prefs($erreurs = '') {
 		$newestversion = file_get_contents($version_file);
 		if (version_compare($newestversion, BLOGOTEXT_VERSION) == 1) {
 				$fld_update = '<div role="group" class="pref">';
-				$fld_update .= '<div class="form-legend">'.legend($GLOBALS['lang']['maint_chk_update'], 'legend-update').'</div>'."\n";
+				$fld_update .= '<div class="form-legend"><legend class="legend-update">'.$GLOBALS['lang']['maint_chk_update'].'</legend></div>'."\n";
 				$fld_update .= '<div class="form-lines">'."\n";
 				$fld_update .= '<p>'."\n";
 				$fld_update .= "\t".'<label>'.$GLOBALS['lang']['maint_update_youisbad'].' ('.$newestversion.'). '.$GLOBALS['lang']['maint_update_go_dl_it'].'</label>'."\n";

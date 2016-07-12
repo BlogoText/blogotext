@@ -849,8 +849,6 @@ select optgroup::before {
 
 legend {
 	padding: 0;
-	font-size: 1.1em;
-	font-variant: small-caps;
 }
 
 fieldset {

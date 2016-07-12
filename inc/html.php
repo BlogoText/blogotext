@@ -79,10 +79,6 @@ function no_confirmation($message) {
 	echo '<div class="no_confirmation">'.$message.'</div>'."\n";
 }
 
-function legend($legend, $class='') {
-	return '<legend class="'.$class.'">'.$legend.'</legend>'."\n";
-}
-
 function label($for, $txt) {
 	return '<label for="'.$for.'">'.$txt.'</label>'."\n";
 }

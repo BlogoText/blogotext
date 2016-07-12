@@ -541,7 +541,7 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 	echo '<form action="maintenance.php" onsubmit="hide_forms(\'exp-format\')" method="get" class="bordered-formbloc" id="form_export">'."\n";
 	// choose export what ?
 		echo '<fieldset>'."\n";
-		echo legend($GLOBALS['lang']['maintenance_export'], 'legend-backup');
+		echo '<legend class="legend-backup">'.$GLOBALS['lang']['maintenance_export'].'</legend>';
 		echo "\t".'<p><label for="json">'.$GLOBALS['lang']['bak_export_json'].'</label>'.
 			'<input type="radio" name="exp-format" value="json" id="json" onchange="switch_export_type(\'e_json\')" /></p>'."\n";
 		echo "\t".'<p><label for="html">'.$GLOBALS['lang']['bak_export_netscape'].'</label>'.
@@ -553,19 +553,19 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 		echo '</fieldset>'."\n";
 		// export in JSON.
 		echo '<fieldset id="e_json">';
-		echo legend($GLOBALS['lang']['maintenance_incl_quoi'], 'legend-backup');
+		echo '<legend class="legend-backup">'.$GLOBALS['lang']['maintenance_incl_quoi'].'</legend>';
 		echo "\t".'<p>'.select_yes_no('incl-artic', 0, $GLOBALS['lang']['bak_articles_do']).form_select_no_label('nb-artic', $nbs, 50).'</p>'."\n";
 		echo "\t".'<p>'.select_yes_no('incl-comms', 0, $GLOBALS['lang']['bak_comments_do']).'</p>'."\n";
 		echo "\t".'<p>'.select_yes_no('incl-links', 0, $GLOBALS['lang']['bak_links_do']).form_select_no_label('nb-links', $nbs, 50).'</p>'."\n";
 		echo '</fieldset>'."\n";
 		// export links in html
 		echo '<fieldset id="e_html">'."\n";
-		echo legend($GLOBALS['lang']['bak_combien_linx'], 'legend-backup');
+		echo '<legend class="legend-backup">'.$GLOBALS['lang']['bak_combien_linx'].'</legend>';
 		echo "\t".'<p>'.form_select('nb-links2', $nbs, 50, $GLOBALS['lang']['bak_combien_linx']).'</p>'."\n";
 		echo '</fieldset>'."\n";
 		// export data in zip
 		echo '<fieldset id="e_zip">';
-		echo legend($GLOBALS['lang']['maintenance_incl_quoi'], 'legend-backup');
+		echo '<legend class="legend-backup">'.$GLOBALS['lang']['maintenance_incl_quoi'].'</legend>';
 		if (DBMS == 'sqlite')
 		echo "\t".'<p>'.select_yes_no('incl-sqlit', 0, $GLOBALS['lang']['bak_incl_sqlit']).'</p>'."\n";
 		echo "\t".'<p>'.select_yes_no('incl-files', 0, $GLOBALS['lang']['bak_incl_files']).'</p>'."\n";
@@ -587,7 +587,7 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 			'rssopml' => $GLOBALS['lang']['bak_import_rssopml'] );
 	echo '<form action="maintenance.php" method="post" enctype="multipart/form-data" class="bordered-formbloc" id="form_import">'."\n";
 		echo '<fieldset class="pref valid-center">';
-		echo legend($GLOBALS['lang']['maintenance_import'], 'legend-backup');
+		echo '<legend class="legend-backup">'.$GLOBALS['lang']['maintenance_import'].'</legend>';
 		echo "\t".'<p>'.form_select_no_label('imp-format', $importformats, 'jsonbak');
 		echo '<input type="file" name="file" id="file" class="text" /></p>'."\n";
 		echo '</fieldset>'."\n";
@@ -602,7 +602,7 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 	// Form optimi
 	echo '<form action="maintenance.php" method="get" class="bordered-formbloc" id="form_optimi">'."\n";
 		echo '<fieldset class="pref valid-center">';
-		echo legend($GLOBALS['lang']['maintenance_optim'], 'legend-sweep');
+		echo '<legend class="legend-sweep">'.$GLOBALS['lang']['maintenance_optim'].'</legend>';
 
 		echo "\t".'<p>'.select_yes_no('opti-file', 0, $GLOBALS['lang']['bak_opti_miniature']).'</p>'."\n";
 		if (DBMS == 'sqlite') {
@@ -629,7 +629,7 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 	if ($erreurs_form = valider_form_maintenance()) {
 		echo '<div class="bordered-formbloc">'."\n";
 		echo '<fieldset class="pref valid-center">'."\n";
-		echo legend($GLOBALS['lang']['bak_restor_done'], 'legend-backup');
+		echo '<legend class="legend-backup">'.$GLOBALS['lang']['bak_restor_done'].'</legend>';
 		echo erreurs($erreurs_form);
 		echo '<p class="submit-bttns"><button class="submit button-submit" type="button" onclick="annuler(\'maintenance.php\')">'.$GLOBALS['lang']['valider'].'</button></p>'."\n";
 		echo '</fieldset>'."\n";
@@ -702,7 +702,8 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 				if (!empty($file_archive)) {
 					echo '<form action="maintenance.php" method="get" class="bordered-formbloc">'."\n";
 					echo '<fieldset class="pref valid-center">';
-					echo legend($GLOBALS['lang']['bak_succes_save'], 'legend-backup');
+					echo '<legend class="legend-backup">'.$GLOBALS['lang']['bak_succes_save'].'</legend>';
+
 					echo '<p><a href="'.$file_archive.'" download>'.$GLOBALS['lang']['bak_dl_fichier'].'</a></p>'."\n";
 					echo '<p class="submit-bttns"><button class="submit button-submit" type="submit">'.$GLOBALS['lang']['valider'].'</button></p>'."\n";
 					echo '</fieldset>'."\n";
@@ -738,7 +739,7 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 					}
 					echo '<form action="maintenance.php" method="get" class="bordered-formbloc">'."\n";
 					echo '<fieldset class="pref valid-center">';
-					echo legend($GLOBALS['lang']['bak_optim_done'], 'legend-backup');
+					echo '<legend class="legend-backup">'.$GLOBALS['lang']['bak_optim_done'].'</legend>';
 					echo '<p class="submit-bttns"><button class="submit button-submit" type="submit">'.$GLOBALS['lang']['valider'].'</button></p>'."\n";
 					echo '</fieldset>'."\n";
 					echo '</form>'."\n";
@@ -772,7 +773,7 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 				if (!empty($message)) {
 					echo '<form action="maintenance.php" method="get" class="bordered-formbloc">'."\n";
 					echo '<fieldset class="pref valid-center">';
-					echo legend($GLOBALS['lang']['bak_restor_done'], 'legend-backup');
+					echo '<legend class="legend-backup">'.$GLOBALS['lang']['bak_restor_done'].'</legend>';
 					echo '<ul>';
 					foreach ($message as $type => $nb) echo '<li>'.$GLOBALS['lang']['label_'.$type].' : '.$nb.'</li>'."\n";
 					echo '</ul>';
