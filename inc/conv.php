@@ -90,7 +90,7 @@ function rel2abs_admin($article) { // pour le panel admin : l’aperçu de l’a
 function parse_texte_paragraphs($texte) {
 	// trims empty lines at begining and end of raw texte
 	$texte_formate = preg_replace('#^(\r|\n|<br>|<br/>|<br />){0,}(.*?)(\r|<br>|<br/>|<br />){0,}$#s', '$2', $texte);
-	$block_elements = 'address|article|aside|audio|blockquote|canvas|dd|li|div|[oud]l|fieldset|fig(caption|ure)|footer|form|h[1-6]|header|hgroup|hr|main|nav|noscript|output|p|pre|prebtcode|section|table|thead|tfoot|tr|td|video';
+	$block_elements = 'address|article|aside|audio|blockquote|canvas|dd|li|div|[oud]l|fieldset|fig(caption|ure)|footer|form|h[1-6]|header|hgroup|hr|main|nav|noscript|output|p|pre|section|table|thead|tfoot|tr|td|video';
 
 	$texte_final = '';
 	$finished = false;
@@ -113,7 +113,7 @@ function parse_texte_paragraphs($texte) {
 			$finished = (strlen($texte_retire) === 0) ? TRUE : FALSE;
 		}
 		else {
-		// we have an inline element (or text) : do set it in <p></p>
+			// we have an inline element (or text) : do set it in <p></p>
 			// grep the text until newline OR new block element
 			$texte_restant = preg_replace('#^(.*?)(\r\r|<('.$block_elements.') ?.*?>)#s', '$2', $texte_formate, 1);
 			// saves the text we just "greped"
@@ -143,6 +143,29 @@ function parse_texte_paragraphs($texte) {
 	return $texte_final;
 }
 
+function formatage_codes($texte, $tofind, $toreplace) {
+	// Formater l’ensemble du message, sauf les balises [code] et [code=langage]
+        $nb_balises_code_avant = preg_match_all('#\[code\](.+?)\[/code\]#s', $texte, $balises_code, PREG_SET_ORDER);
+        $nb_balises_code_spec_avant = preg_match_all('#\[code=([a-z]{1,16})\](.+?)\[/code\]#s', $texte, $balises_code_spec, PREG_SET_ORDER);
+        $texte_formate = nl2br(trim($texte_formate));
+        $texte_formate = preg_replace($tofind, $toreplace, $texte);
+        $texte_formate = parse_texte_paragraphs($texte_formate);
+        if ($nb_balises_code_avant || $nb_balises_code_spec_avant) {
+                $nb_balises_code_apres = preg_match_all('#\[code\](.*?)\[/code\]#s', $texte_formate, $balises_code_apres, PREG_SET_ORDER);
+                foreach ($balises_code as $i => $code) {
+                        $texte_formate = str_replace($balises_code_apres[$i][0], '<code>'.htmlspecialchars($balises_code[$i][1]).'</code>', $texte_formate);
+                }
+
+                $nb_balises_code_spec_apres = preg_match_all('#\[code=([a-z]{1,16})\](.*?)\[/code\]#s', $texte_formate, $balises_code_spec_apres, PREG_SET_ORDER);
+                foreach ($balises_code_spec as $i => $code) {
+                        $texte_formate = str_replace($balises_code_spec_apres[$i][0], sprintf(CODE_HIGHTLIGHT_FMT, $balises_code_spec[$i][1], htmlspecialchars($balises_code_spec[$i][2])), $texte_formate);
+                }
+        }
+
+	$texte_formate = stripslashes($texte_formate);
+	return $texte_formate;
+}
+
 function formatage_wiki($texte) {
 	$texte = preg_replace("/(\r\n|\r\n\r|\n|\n\r|\r)/", "\r", $texte);
 	$tofind = array(
@@ -169,7 +192,6 @@ function formatage_wiki($texte) {
 		'#\#\#(.*?)(\r|$)#s',													// ol/li
 		'#</ol>\r<ol>#s',															// ol/li
 		'#\[quote\](.*?)\[/quote\]#s',										// citation
-		'#\[code\]\[/code\]#s',													// code
 		'#\[color=(\\\?")?(\w*|\#[0-9a-fA-F]{3}|\#[0-9a-fA-F]{6})(\\\?")?\](.*?)\[/color\]#s',			// color
 		'#\[size=(\\\?")?([0-9]{1,})(\\\?")?\](.*?)\[/size\]#s',		// size
 
@@ -204,7 +226,6 @@ function formatage_wiki($texte) {
 		'<ol><li>$1</li></ol>'."\r",											// ol/li
 		'',																			// ol/li
 		'<blockquote>$1</blockquote>'."\r",									// citation
-		'<prebtcode></prebtcode>'."\r",										// code
 		'<span style="color:$2;">$4</span>',								// color
 		'<span style="font-size:$2pt;">$4</span>',						// text-size
 
@@ -216,44 +237,17 @@ function formatage_wiki($texte) {
 		'&nbsp;?',
 	);
 
-	// un array des balises [code] avant qu’ils ne soient modifiées par le preg_replace($tofind, $toreplace, $texte);
-	// il met en mémoire le contenu des balises [code] tels quelles
-	$nb_balises_code_avant = preg_match_all('#\[code\](.*?)\[/code\]#s', $texte, $balises_code, PREG_SET_ORDER);
-
-	// vide les balises de code, vu qu’on ne souhaite pas les formater (leur contenu est en mémoire)
-	$texte_formate = preg_replace('#\[code\](.*?)\[/code\]#s', '[code][/code]', $texte);
-
-	// formate tout
-	$texte_formate = preg_replace($tofind, $toreplace, $texte_formate);
-
-	$texte_formate = parse_texte_paragraphs($texte_formate);
-
-	// remplace les balises [codes] modifiées par la balise code non formatée et précédement mises en mémoire.
-	// ceci permet de formater l’ensemble du message, sauf les balises [code],
-	if ($nb_balises_code_avant) {
-		$nb_balises_code_apres = preg_match_all('#<prebtcode></prebtcode>#s', $texte_formate, $balises_code_apres, PREG_SET_ORDER);
-		foreach ($balises_code as $i => $code) {
-			// needed to not replace all the #<prebtcode></prebtcode># with the first code (since there is no limit to str_replace() to we could increment the replacements)
-			$pos = strpos($texte_formate, $balises_code_apres[$i][0]);
-			if ($pos !== false) {
-				 $texte_formate = substr_replace($texte_formate, '<pre>'.htmlspecialchars($balises_code[$i][1]).'</pre>', $pos, strlen($balises_code_apres[$i][0]));
-			}
-		}
-	}
-
-	$texte_formate = stripslashes($texte_formate);
-	return $texte_formate;
+	return formatage_codes($texte, $tofind, $toreplace);
 }
 
 function formatage_commentaires($texte) {
 	$texte = " ".$texte;
 	$texte = preg_replace('#\[([^|]+)\|(\s*javascript.*)\]#i', '$1', $texte);
-	$tofindc = array(
+	$tofind = array(
 		'#\[quote\](.+?)\[/quote\]#s',									// citation } les citation imbriquées marchent pour **deux niveaux** seulement,
 		'#\[quote\](.+?)\[/quote\]#s',									//          } [quote][quote]bla[/quote][quote]bla[/quote][/quote] marchent et donnent le résultat attendu.
 																					//				} !!!! : [quote*][quote**][quote]bla[/quote**][/quote*][/quote] fait que les balises avec *, ** matchent.
 		'#<p>(\r|\n)+#s',
-		'#\[code\](.+?)\[/code\]#s',										// code
 		'#([^"\[\]|])((http|ftp)s?://([^"\'\[\]<>\s\)\(]+))#i',	// Regex URL
 		'#\[([^[]+)\|([^[]+)\]#',											// a href
 		'#\[b\](.*?)\[/b\]#s',												// strong
@@ -261,12 +255,11 @@ function formatage_commentaires($texte) {
 		'#\[s\](.*?)\[/s\]#s',												// strike
 		'#\[u\](.*?)\[/u\]#s',												// souligne
 	);
-	$toreplacec = array(
+	$toreplace = array(
 		'<blockquote>$1</blockquote>',		// citation
 		'<blockquote>$1</blockquote>',		// citation
 		'<p>',										// removes unwanted \n
 
-		'<code>$1</code>',						// code
 		'$1<a href="$2">$2</a>',				// url
 		'<a href="$2">$1</a>',					// a href
 		'<strong>$1</strong>',					// strong
@@ -275,14 +268,8 @@ function formatage_commentaires($texte) {
 		'<u>$1</u>',								// souligne
 	);
 
-	$toreplaceArrayLength = sizeof($tofindc);
-	for ($i=0; $i < $toreplaceArrayLength; $i++) {
-		$texte = preg_replace($tofindc["$i"], $toreplacec["$i"], $texte);
-	}
-
-	$texte = stripslashes($texte);
+	$texte = formatage_codes($texte, $tofind, $toreplace);
 	$texte = str_replace(array("\\"), array("&#92;"), $texte);
-	$texte = ''.trim(nl2br($texte)).'';
 	$texte = str_replace('<p></p>', '', $texte);
 	return $texte;
 }
@@ -305,17 +292,7 @@ function formatage_links($texte) {
 		'<u>$1</u>',															// souligne
 	);
 
-	// ceci permet de formater l’ensemble du message, sauf les balises [code],
-	$nb_balises_code_avant = preg_match_all('#\[code\](.*?)\[/code\]#s', $texte, $balises_code, PREG_SET_ORDER);
-	$texte_formate = preg_replace($tofind, $toreplace, ' '.$texte.' ');
-	$texte_formate = nl2br(trim(($texte_formate)));
-	if ($nb_balises_code_avant) {
-		$nb_balises_code_apres = preg_match_all('#\[code\](.*?)\[/code\]#s', $texte_formate, $balises_code_apres, PREG_SET_ORDER);
-		foreach ($balises_code as $i => $code) {
-			$texte_formate = str_replace($balises_code_apres[$i][0], '<pre>'.$balises_code[$i][1].'</pre>', $texte_formate);
-		}
-	}
-	return $texte_formate;
+	return formatage_codes($texte, $tofind, $toreplace);
 }
 
 
