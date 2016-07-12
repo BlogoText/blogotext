@@ -149,6 +149,7 @@ function formatage_codes($texte, $tofind, $toreplace) {
         $nb_balises_code_spec_avant = preg_match_all('#\[code=([a-z]{1,16})\](.+?)\[/code\]#s', $texte, $balises_code_spec, PREG_SET_ORDER);
         $texte_formate = preg_replace($tofind, $toreplace, $texte);
         $texte_formate = nl2br(trim($texte_formate));
+        $texte_formate = parse_texte_paragraphs($texte_formate);
         if ($nb_balises_code_avant || $nb_balises_code_spec_avant) {
                 $nb_balises_code_apres = preg_match_all('#\[code\](.*?)\[/code\]#s', $texte_formate, $balises_code_apres, PREG_SET_ORDER);
                 foreach ($balises_code as $i => $code) {
