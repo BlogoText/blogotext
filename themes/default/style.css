@@ -449,24 +449,41 @@ q, blockquote {
 }
 
 
-.post-content pre,
-.post-content blockquote {
+.post-content blockquote,
+.link-content blockquote,
+.com-content blockquote {
 	padding: 10px 10px 10px 15px;
-	border-radius: 0 2px 2px 0;
-	box-shadow: 0 0 3px #111;
-	border-left: 5px transparent solid;
+	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
 }
 
-.post-content pre {
+.post-content pre,
+.link-content pre,
+.com-content pre {
+	padding: 0;
 	white-space: pre-wrap;
-	border-left-color: #E3922C;
-	background-color: #fafafa;
-	box-shadow: inset 0 0 2px #111;
 	font-size: .8em;
+	position: relative;
+	display: flex;
+	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
 }
 
-.post-content blockquote {
-	border-left-color: #2CABE3;
+.post-content pre[data-language]::before,
+.link-content pre[data-language]::before,
+.com-content pre[data-language]::before {
+	content: attr(data-language);
+	display: block;
+	padding: 15px 2px;
+	background: rgba(0, 0, 0, .1);
+	flex: 0 0 45px;
+	text-align: center;
+}
+
+.post-content pre > code,
+.link-content pre > code,
+.com-content pre > code {
+	flex: 1 1 auto;
+	display: block;
+	padding: 15px;
 }
 
 .article table {

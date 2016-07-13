@@ -23,6 +23,43 @@
 	margin: 20px;
 }
 
+#apercu blockquote,
+.link-content blockquote,
+.commentbloc .comm-content blockquote {
+	padding: 10px 10px 10px 15px;
+	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+#apercu pre,
+.link-content pre,
+.commentbloc .comm-content pre {
+	padding: 0;
+	white-space: pre-wrap;
+	font-size: .8em;
+	position: relative;
+	display: flex;
+	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+#apercu pre[data-language]::before,
+.link-content pre[data-language]::before,
+.commentbloc .comm-content pre[data-language]::before {
+	content: attr(data-language);
+	display: block;
+	padding: 15px 2px;
+	background: rgba(0, 0, 0, .1);
+	flex: 0 0 45px;
+	text-align: center;
+}
+
+#apercu pre > code,
+.link-content pre > code,
+.commentbloc .comm-content pre > code {
+	flex: 1 1 auto;
+	display: block;
+	padding: 15px;
+}
+
 #apercu img {
 	padding: 2px;
 	border: 1px solid #ddd;

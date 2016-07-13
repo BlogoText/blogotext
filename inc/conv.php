@@ -112,7 +112,7 @@ function parse_texte_paragraphs($texte) {
 			$finished = (strlen($texte_retire) === 0) ? TRUE : FALSE;
 		}
 		else {
-		// we have an inline element (or text) : do set it in <p></p>
+			// we have an inline element (or text) : do set it in <p></p>
 			// grep the text until newline OR new block element
 			$texte_restant = preg_replace('#^(.*?)(\r\r|<('.$block_elements.') ?.*?>)#s', '$2', $texte_formate, 1);
 			// saves the text we just "greped"
@@ -142,17 +142,30 @@ function parse_texte_paragraphs($texte) {
 	return $texte_final;
 }
 
+function parse_texte_code($texte, $code_before) {
+	if ($code_before) {
+		preg_match_all('#<prebtcode( data-language="\w+")?></prebtcode>#s', $texte, $code_after, PREG_SET_ORDER);
+		foreach ($code_before as $i => $code) {
+			$pos = strpos($texte, $code_after[$i][0]);
+			if ($pos !== false) {
+				 $texte = substr_replace($texte, '<pre'.(isset($code_after[$i][1]) ? $code_after[$i][1] : '').'><code>'.htmlspecialchars($code_before[$i][3]).'</code></pre>', $pos, strlen($code_after[$i][0]));
+			}
+		}
+	}
+	return $texte;
+}
+
 function formatage_wiki($texte) {
 	$texte = preg_replace("/(\r\n|\r\n\r|\n|\n\r|\r)/", "\r", $texte);
 	$tofind = array(
-		// transforme certains \r en \n
-		'#<(.*?)>\r#',			// html (les <tag> suivi d’un \r ne prennent pas de <br/> (le <br> remplace un \r, pas un \n).
+		// replace \r with \n when following HTML elements
+		'#<(.*?)>\r#',
 
 		// css block elements
-		'#\[left\](.*?)\[/left\]#s',			// aligner à gauche
-		'#\[center\](.*?)\[/center\]#s',		// aligner au centre
-		'#\[right\](.*?)\[/right\]#s',		// aligner à droite
-		'#\[justify\](.*?)\[/justify\]#s',	// justifier
+		'#\[left\](.*?)\[/left\]#s',			// left align
+		'#\[center\](.*?)\[/center\]#s',		// center align
+		'#\[right\](.*?)\[/right\]#s',		// right align
+		'#\[justify\](.*?)\[/justify\]#s',	// justify
 
 		// misc
 		'#([^"\[\]|])((http|ftp)s?://([^"\'\[\]<>\s]+))#i',			// Regex URL
@@ -169,25 +182,23 @@ function formatage_wiki($texte) {
 		'#</ol>\r<ol>#s',															// ol/li
 		'#\[quote\](.*?)\[/quote\]#s',										// citation
 		'#\[code\]\[/code\]#s',													// code
+		'#\[code=(\w+)\]\[/code\]#s',											// code=language
 		'#\[color=(\\\?")?(\w*|\#[0-9a-fA-F]{3}|\#[0-9a-fA-F]{6})(\\\?")?\](.*?)\[/color\]#s',			// color
 		'#\[size=(\\\?")?([0-9]{1,})(\\\?")?\](.*?)\[/size\]#s',		// size
 
-		// quelques &nbsp; que j’ajoute
-		'# »#',
+		// adding some &nbsp
+		'# (»|!|:|\?|;)#',
 		'#« #',
-		'# !#',
-		'# :#',
-		'# \?#',
 	);
 	$toreplace = array(
-		// transforme certains \r en \n
-		'<$1>'."\n",		// html
+		//  replace \r with \n
+		'<$1>'."\n",
 
 		// css block elements
-		'<div style="text-align:left;">$1</div>',		// aligner à gauche
-		'<div style="text-align:center;">$1</div>',	// aligner au centre
-		'<div style="text-align:right;">$1</div>',	// aligner à droite
-		'<div style="text-align:justify;">$1</div>',	// justifier
+		'<div style="text-align:left;">$1</div>',		// left align
+		'<div style="text-align:center;">$1</div>',	// center align
+		'<div style="text-align:right;">$1</div>',	// right align
+		'<div style="text-align:justify;">$1</div>',	// justify
 
 		// misc
 		'$1<a href="$2">$2</a>',												// url regex
@@ -204,87 +215,71 @@ function formatage_wiki($texte) {
 		'',																			// ol/li
 		'<blockquote>$1</blockquote>'."\r",									// citation
 		'<prebtcode></prebtcode>'."\r",										// code
+		'<prebtcode data-language="$1"></prebtcode>'."\r",				// code=language
 		'<span style="color:$2;">$4</span>',								// color
 		'<span style="font-size:$2pt;">$4</span>',						// text-size
 
-		// quelques &nbsp; que j’ajoute
-		'&nbsp;»',
-		'«&nbsp;',
-		'&nbsp;!',
-		'&nbsp;:',
-		'&nbsp;?',
+		// adding some &nbsp
+		' $1',
+		'« ',
 	);
 
-	// un array des balises [code] avant qu’ils ne soient modifiées par le preg_replace($tofind, $toreplace, $texte);
-	// il met en mémoire le contenu des balises [code] tels quelles
-	$nb_balises_code_avant = preg_match_all('#\[code\](.*?)\[/code\]#s', $texte, $balises_code, PREG_SET_ORDER);
+	// memorizes [code] tags contents before bbcode being appliyed
+	preg_match_all('#\[code(=(\w+))?\](.*?)\[/code\]#s', $texte, $code_contents, PREG_SET_ORDER);
 
-	// vide les balises de code, vu qu’on ne souhaite pas les formater (leur contenu est en mémoire)
-	$texte_formate = preg_replace('#\[code\](.*?)\[/code\]#s', '[code][/code]', $texte);
+	// empty the [code] tags (content is in memory)
+	$texte_formate = preg_replace('#\[code(=(\w+))?\](.*?)\[/code\]#s', '[code$1][/code]', $texte);
 
-	// formate tout
+	// apply bbcode filter
 	$texte_formate = preg_replace($tofind, $toreplace, $texte_formate);
 
+	// apply <p>paragraphe</p> filter
 	$texte_formate = parse_texte_paragraphs($texte_formate);
 
-	// remplace les balises [codes] modifiées par la balise code non formatée et précédement mises en mémoire.
-	// ceci permet de formater l’ensemble du message, sauf les balises [code],
-	if ($nb_balises_code_avant) {
-		$nb_balises_code_apres = preg_match_all('#<prebtcode></prebtcode>#s', $texte_formate, $balises_code_apres, PREG_SET_ORDER);
-		foreach ($balises_code as $i => $code) {
-			// needed to not replace all the #<prebtcode></prebtcode># with the first code (since there is no limit to str_replace() to we could increment the replacements)
-			$pos = strpos($texte_formate, $balises_code_apres[$i][0]);
-			if ($pos !== false) {
-				 $texte_formate = substr_replace($texte_formate, '<pre>'.htmlspecialchars($balises_code[$i][1]).'</pre>', $pos, strlen($balises_code_apres[$i][0]));
-			}
-		}
-	}
+	// replace [code] elements with theire initial content
+	$texte_formate = parse_texte_code($texte_formate, $code_contents);
 
 	return $texte_formate;
 }
 
 function formatage_commentaires($texte) {
-	$texte = " ".$texte;
+	$texte = preg_replace("/(\r\n|\r\n\r|\n|\n\r|\r)/", "\r", $texte);
 	$texte = preg_replace('#\[([^|]+)\|(\s*javascript.*)\]#i', '$1', $texte);
-	$tofindc = array(
-		'#\[quote\](.+?)\[/quote\]#s',									// citation } les citation imbriquées marchent pour **deux niveaux** seulement,
-		'#\[quote\](.+?)\[/quote\]#s',									//          } [quote][quote]bla[/quote][quote]bla[/quote][/quote] marchent et donnent le résultat attendu.
-																					//				} !!!! : [quote*][quote**][quote]bla[/quote**][/quote*][/quote] fait que les balises avec *, ** matchent.
-		'#<p>(\r|\n)+#s',
-		'#\[code\](.+?)\[/code\]#s',										// code
+	$tofind = array(
+		'#\[quote\](.+?)\[/quote\]#s',									// quotes
 		'#([^"\[\]|])((http|ftp)s?://([^"\'\[\]<>\s\)\(]+))#i',	// Regex URL
 		'#\[([^[]+)\|([^[]+)\]#',											// a href
 		'#\[b\](.*?)\[/b\]#s',												// strong
 		'#\[i\](.*?)\[/i\]#s',												// italic
 		'#\[s\](.*?)\[/s\]#s',												// strike
 		'#\[u\](.*?)\[/u\]#s',												// souligne
-	);
-	$toreplacec = array(
-		'<blockquote>$1</blockquote>',		// citation
-		'<blockquote>$1</blockquote>',		// citation
-		'<p>',										// removes unwanted \n
+		'#\[code\]\[/code\]#s',												// code
+		'#\[code=(\w+)\]\[/code\]#s',										// code=language
 
-		'<code>$1</code>',						// code
+	);
+	$toreplace = array(
+		'<blockquote>$1</blockquote>'."\r",		// citation
 		'$1<a href="$2">$2</a>',				// url
 		'<a href="$2">$1</a>',					// a href
 		'<strong>$1</strong>',					// strong
 		'<em>$1</em>',								// italic
 		'<del>$1</del>',							// barre
 		'<u>$1</u>',								// souligne
+		'<prebtcode></prebtcode>'."\r",							// code
+		'<prebtcode data-language="$1"></prebtcode>'."\r",	// code=language
 	);
 
-	$toreplaceArrayLength = sizeof($tofindc);
-	for ($i=0; $i < $toreplaceArrayLength; $i++) {
-		$texte = preg_replace($tofindc["$i"], $toreplacec["$i"], $texte);
-	}
+	preg_match_all('#\[code(=(\w+))?\](.*?)\[/code\]#s', $texte, $code_contents, PREG_SET_ORDER);
+	$texte_formate = preg_replace('#\[code(=(\w+))?\](.*?)\[/code\]#s', '[code$1][/code]', $texte);
+	$texte_formate = preg_replace($tofind, $toreplace, $texte_formate);
+	$texte_formate = parse_texte_paragraphs($texte_formate);
+	$texte_formate = parse_texte_code($texte_formate, $code_contents);
 
-	$texte = str_replace(array("\\"), array("&#92;"), $texte);
-	$texte = ''.trim(nl2br($texte)).'';
-	$texte = str_replace('<p></p>', '', $texte);
-	return $texte;
+	return $texte_formate;
 }
 
 function formatage_links($texte) {
+	$texte = preg_replace("/(\r\n|\r\n\r|\n|\n\r|\r)/", "\r", $texte);
 	$tofind = array(
 		'#([^"\[\]|])((http|ftp)s?://([^"\'\[\]<>\s]+))#i',		// Regex URL
 		'#\[([^[]+)\|([^[]+)\]#',											// a href
@@ -292,26 +287,30 @@ function formatage_links($texte) {
 		'#\[i\](.*?)\[/i\]#s',												// italic
 		'#\[s\](.*?)\[/s\]#s',												// strike
 		'#\[u\](.*?)\[/u\]#s',												// souligne
+		'#\[quote\](.*?)\[/quote\]#s',									// citation
+		'#\[code\]\[/code\]#s',												// code
+		'#\[code=(\w+)\]\[/code\]#s',										// code=language
 	);
 	$toreplace = array(
-		'$1<a href="$2">$2</a>',												// url  '$1<a href="$2">$2</a>'
+		'$1<a href="$2">$2</a>',											// url
 		'<a href="$2">$1</a>',												// a href
 		'<strong>$1</strong>',												// strong
 		'<em>$1</em>',															// italic
 		'<del>$1</del>',														// barre
 		'<u>$1</u>',															// souligne
+		'<blockquote>$1</blockquote>'."\r",								// citation
+		'<prebtcode></prebtcode>'."\r",									// code
+		'<prebtcode data-language="$1"></prebtcode>'."\r",			// code=language
 	);
 
-	// ceci permet de formater l’ensemble du message, sauf les balises [code],
-	$nb_balises_code_avant = preg_match_all('#\[code\](.*?)\[/code\]#s', $texte, $balises_code, PREG_SET_ORDER);
-	$texte_formate = preg_replace($tofind, $toreplace, ' '.$texte.' ');
-	$texte_formate = nl2br(trim(($texte_formate)));
-	if ($nb_balises_code_avant) {
-		$nb_balises_code_apres = preg_match_all('#\[code\](.*?)\[/code\]#s', $texte_formate, $balises_code_apres, PREG_SET_ORDER);
-		foreach ($balises_code as $i => $code) {
-			$texte_formate = str_replace($balises_code_apres[$i][0], '<pre>'.$balises_code[$i][1].'</pre>', $texte_formate);
-		}
-	}
+
+	// [code] tags
+	preg_match_all('#\[code(=(\w+))?\](.*?)\[/code\]#s', $texte, $code_contents, PREG_SET_ORDER);
+	$texte_formate = preg_replace('#\[code(=(\w+))?\](.*?)\[/code\]#s', '[code$1][/code]', $texte);
+	$texte_formate = preg_replace($tofind, $toreplace, $texte_formate);
+	$texte_formate = parse_texte_paragraphs($texte_formate);
+	$texte_formate = parse_texte_code($texte_formate, $code_contents);
+
 	return $texte_formate;
 }
 
