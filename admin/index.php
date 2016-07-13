@@ -116,7 +116,7 @@ if (!empty($_GET['q'])) {
 	$nb_files = sizeof(liste_base_files('recherche', urldecode($_GET['q']), ''));
 
 	echo '<div class="graph">'."\n";
-	echo '<div class="legend">'.$GLOBALS['lang']['recherche'].'  <span style="font-style: italic">'.htmlspecialchars($_GET['q']).'</span></div>'."\n";
+	echo '<div class="form-legend">'.$GLOBALS['lang']['recherche'].'  <span style="font-style: italic">'.htmlspecialchars($_GET['q']).'</span></div>'."\n";
 	echo '<ul id="resultat-recherche">';
 	echo "\t".'<li><a href="articles.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_objets($nb_articles, 'article').'</a></li>';
 	echo "\t".'<li><a href="links.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_objets($nb_liens, 'link').'</a></li>';
@@ -136,7 +136,7 @@ else {
 	if (!$total_artic == 0) {
 		echo '<div class="graph">'."\n";
 		// print sur chaque div pour les articles.
-		echo '<div class="legend">'.ucfirst($GLOBALS['lang']['label_articles']).'</div>'."\n";
+		echo '<div class="form-legend">'.ucfirst($GLOBALS['lang']['label_articles']).'</div>'."\n";
 		echo '<div class="graph-container" id="graph-container-article">'."\n";
 			echo '<canvas height="150" width="400"></canvas>'."\n";
 			echo '<div class="graphique" id="articles">'."\n";
@@ -156,7 +156,7 @@ else {
 	if (!$total_comms == 0) {
 		echo '<div class="graph">'."\n";
 		// print sur chaque div pour les com.
-		echo '<div class="legend">'.ucfirst($GLOBALS['lang']['label_commentaires']).'</div>'."\n";
+		echo '<div class="form-legend">'.ucfirst($GLOBALS['lang']['label_commentaires']).'</div>'."\n";
 		echo '<div class="graph-container" id="graph-container-commentaires">'."\n";
 			echo '<canvas height="150" width="400"></canvas>'."\n";
 			echo '<div class="graphique" id="commentaires">'."\n";
@@ -176,7 +176,7 @@ else {
 	if (!$total_links == 0) {
 		echo '<div class="graph">'."\n";
 		// print sur chaque div pour les liens.
-		echo '<div class="legend">'.ucfirst($GLOBALS['lang']['label_links']).'</div>'."\n";
+		echo '<div class="form-legend">'.ucfirst($GLOBALS['lang']['label_links']).'</div>'."\n";
 		echo '<div class="graph-container" id="graph-container-links">'."\n";
 			echo '<canvas height="150" width="400"></canvas>'."\n";
 			echo '<div class="graphique" id="links">'."\n";
