@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2016 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden.
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -44,7 +44,7 @@ require_once BT_ROOT.'/inc/inc.php';
 
 if (isset($_GET['s']) and is_numeric($_GET['s'])) {
 	$GLOBALS['step'] = $_GET['s'];
-} else { 
+} else {
 	$GLOBALS['step'] = '1';
 }
 
@@ -119,7 +119,7 @@ function afficher_form_1($erreurs='') {
 	if (version_compare(PHP_VERSION, MINIMAL_PHP_REQUIRED_VERSION, '<')) {
 		$conferrors[] = "\t".'<li>Your PHP Version is '.PHP_VERSION.'. BlogoText requires '.MINIMAL_PHP_REQUIRED_VERSION.'.</li>'."\n";
 	}
-	// pdo_sqlite and pdo_mysql (minimum one is required) 
+	// pdo_sqlite and pdo_mysql (minimum one is required)
 	if (!extension_loaded('pdo_sqlite') and !extension_loaded('pdo_mysql') ) {
 		$conferrors[] = "\t".'<li>Neither <b>pdo_sqlite</b> or <b>pdo_mysql</b> PHP-modules are loaded. Blogotext needs at least one.</li>'."\n";
 	}
@@ -174,7 +174,7 @@ function afficher_form_2($erreurs='') {
 	echo '</div>'."\n";
 	echo '</form>'."\n";
 }
-                                                                                                                                                
+
 
 // form choix SGBD
 function afficher_form_3($erreurs='') {
@@ -322,7 +322,10 @@ function valid_install_2() {
 	$erreurs = array();
 	if (!strlen(trim($_POST['identifiant']))) {
 		$erreurs[] = $GLOBALS['lang']['err_prefs_identifiant'];
-	}	
+	}
+	if (!preg_match('#[^\w ]#iu', $_POST['identifiant'])) {
+		$erreurs[] = $GLOBALS['lang']['err_prefs_id_syntaxe'];
+	}
 	if ( (strlen($_POST['mdp']) < 6) ) {
 		$erreurs[] = $GLOBALS['lang']['err_prefs_mdp'] ;
 	}

@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2015 Timo Van Neerden <timo@neerden.eu>
+# 2010-2015 Timo Van Neerden.
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -72,7 +72,7 @@ if ( isset($_GET['post_id']) and preg_match('#\d{14}#', $_GET['post_id']) )  {
 	$param_makeup['show_links'] = '0';
 
 }
-// else, no ID 
+// else, no ID
 else {
 	$param_makeup['menu_theme'] = 'for_comms';
 	if ( !empty($_GET['filtre']) ) {

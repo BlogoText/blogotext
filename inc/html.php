@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2016 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden.
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -77,10 +77,6 @@ function confirmation($message) {
 
 function no_confirmation($message) {
 	echo '<div class="no_confirmation">'.$message.'</div>'."\n";
-}
-
-function legend($legend, $class='') {
-	return '<legend class="'.$class.'">'.$legend.'</legend>'."\n";
 }
 
 function label($for, $txt) {
@@ -161,7 +157,7 @@ function encart_commentaires() {
 		$listeLastComments = '<ul class="encart_lastcom">'."\n";
 		foreach ($tableau as $i => $comment) {
 			$comment['contenu_abbr'] = strip_tags($comment['bt_content']);
-			// limits length of comment abbreviation and name 
+			// limits length of comment abbreviation and name
 			if (strlen($comment['contenu_abbr']) >= 60) {
 				$comment['contenu_abbr'] = mb_substr($comment['contenu_abbr'], 0, 59).'…';
 			}

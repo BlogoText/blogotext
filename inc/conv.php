@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2016 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden.
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -17,54 +17,46 @@ function extraire_mots($texte) {
 	$texte = preg_replace('#[!"\#$%&\'()*+,./:;<=>?@\[\]^_`{|}~«»“”…]#', ' ', $texte); // removes punctuation
 	$texte = trim(preg_replace('# {2,}#', ' ', $texte)); // remove consecutive spaces
 
-	$mots = explode(' ', $texte);
-	foreach ($mots as $i => $mot) {
+	$words = explode(' ', $texte);
+	foreach ($words as $i => $word) {
 		// remove short words & words with numbers
-		if (strlen($mot) <= 4 or preg_match('#\d#', $mot)) {
-			unset($mots[$i]);
+		if (strlen($word) <= 4 or preg_match('#\d#', $word)) {
+			unset($words[$i]);
 		}
-		elseif ( preg_match('#\?#', utf8_decode(preg_replace('#&(.)(acute|grave|circ|uml|cedil|tilde|ring|slash|caron);#', '$1', $mot))) ) {
-			unset($mots[$i]);
-		}
-	}
-
-	// Ici on a une liste de mots avec doublons.
-	// on recherche les mots trouvés plusieurs fois dans la liste, qui seront les mots clés en priorité
-	$mots = array_unique($mots);
-
-	$liste = array();
-	// only keep words with 3 occurences or more
-	foreach ($mots as $i => $mot) {
-		if (substr_count($texte, $mot) >= 3) {
-			$liste[] = $mot;
+		elseif ( preg_match('#\?#', utf8_decode(preg_replace('#&(.)(acute|grave|circ|uml|cedil|tilde|ring|slash|caron);#', '$1', $word))) ) {
+			unset($words[$i]);
 		}
 	}
-	$liste = array_unique($liste);
 
-	natsort($liste);
-	$liste = implode($liste, ', ');
-	return $liste;
+	// keep only words that occure at least 3 times
+	$words = array_unique($words);
+	$keywords = array();
+	foreach ($words as $i => $word) {
+		if (substr_count($texte, $word) >= 3) {
+			$keywords[] = $word;
+		}
+	}
+	$keywords = array_unique($keywords);
+
+	natsort($keywords);
+	return implode($keywords, ', ');
 }
 
 function titre_url($title) {
-	$title = diacritique($title);
-	$title = trim($title, '-');
-	return $title;
+	return trim(diacritique($title), '-');
 }
 
 // remove slashes if necessary
 function clean_txt($text) {
 	if (!get_magic_quotes_gpc()) {
-		$return = trim(addslashes($text));
+		return trim($text);
 	} else {
-		$return = trim($text);
+		return trim(stripslashes($text));
 	}
-	return $return;
 }
 
 function protect($text) {
-	$return = htmlspecialchars(stripslashes(clean_txt($text)));
-	return $return;
+	return htmlspecialchars(clean_txt($text));
 }
 
 function diacritique($texte) {
@@ -81,8 +73,8 @@ function diacritique($texte) {
 	return $texte;
 }
 
-function rel2abs_admin($article) { // pour le panel admin : l’aperçu de l’article doit convertir les liens (vu que /admin est un sous dossier de /).
-	// remplace tous les (src|href)="$i" ou $i ne contient pas "/" ni "[a-z]+://" (référence avant négative (avec le !))
+function rel2abs_admin($article) {
+	// if relative URI in path, make absolute paths (since /admin/ panel is 1 lv deeper) for href/src.
 	$article = preg_replace('#(src|href)=\"(?!(/|[a-z]+://))#i','$1="../', $article);
 	return $article;
 }
@@ -101,9 +93,9 @@ function parse_texte_paragraphs($texte) {
 		if ( preg_match('#^<('.$block_elements.') ?.*?>(.*?)</(\1)>#s', $texte_formate, $matches) ) {
 			// extract the block element
 			$texte_retire = $matches[0];
-			// parses inner text for nl2br(), but removes <br/> tha follow a block (ie: <block><br> → <block>)
+			// parses inner text for nl2br()
 			$texte_nl2br = "\n".nl2br($texte_retire)."\n";
-			// add it to the final text
+			// removes <br/> that follow a block (ie: <block><br> → <block>) and add it to the final text
 			$texte_final .= preg_replace('#(</?('.$block_elements.') ?.*?>)(<br ?/?>)(\n?\r?)#s', '$1$3$5', $texte_nl2br);
 			// saves the remaining text
 			$texte_restant = preg_replace('#^<('.$block_elements.') ?.*?>(.*?)</(\1)>#s', '', $texte_formate, 1);
@@ -113,13 +105,12 @@ function parse_texte_paragraphs($texte) {
 			$finished = (strlen($texte_retire) === 0) ? TRUE : FALSE;
 		}
 		else {
-		// we have an inline element (or text) : do set it in <p></p>
-			// grep the text until newline OR new block element
+			// we have an inline element (or text)
+			// grep the text until newline OR new block element do AND set it in <p></p>
 			$texte_restant = preg_replace('#^(.*?)(\r\r|<('.$block_elements.') ?.*?>)#s', '$2', $texte_formate, 1);
 			// saves the text we just "greped"
 			$texte_retire = trim(substr($texte_formate, 0, -strlen($texte_restant)));
-
-			// greped text is empty: no text or no further block element (or new line)
+			// IF greped text is empty: no text or no further block element (or new line)
 			if (strlen($texte_retire) === 0) {
 				// remaining text is NOT empty : keep it in a <p></p>
 				if (strlen($texte_restant) !== 0) {
@@ -128,7 +119,7 @@ function parse_texte_paragraphs($texte) {
 				// since the entire remaining text is in a new <p></p>, we are finished
 				$finished = true;
 
-			// greped text is not empty: keep it in a new <p></p>.
+			// FI IF greped text is not empty: keep it in a new <p></p>.
 			} else {
 				$texte_final .= "\n".'<p>'.nl2br($texte_retire).'</p>'."\n";
 			}
@@ -143,17 +134,30 @@ function parse_texte_paragraphs($texte) {
 	return $texte_final;
 }
 
-function formatage_wiki($texte) {
+function parse_texte_code($texte, $code_before) {
+	if ($code_before) {
+		preg_match_all('#<prebtcode( data-language="\w+")?></prebtcode>#s', $texte, $code_after, PREG_SET_ORDER);
+		foreach ($code_before as $i => $code) {
+			$pos = strpos($texte, $code_after[$i][0]);
+			if ($pos !== false) {
+				 $texte = substr_replace($texte, '<pre'.(isset($code_after[$i][1]) ? $code_after[$i][1] : '').'><code>'.htmlspecialchars($code_before[$i][3]).'</code></pre>', $pos, strlen($code_after[$i][0]));
+			}
+		}
+	}
+	return $texte;
+}
+
+function markup_articles($texte) {
 	$texte = preg_replace("/(\r\n|\r\n\r|\n|\n\r|\r)/", "\r", $texte);
 	$tofind = array(
-		// transforme certains \r en \n
-		'#<(.*?)>\r#',			// html (les <tag> suivi d’un \r ne prennent pas de <br/> (le <br> remplace un \r, pas un \n).
+		// replace \r with \n when following HTML elements
+		'#<(.*?)>\r#',
 
 		// css block elements
-		'#\[left\](.*?)\[/left\]#s',			// aligner à gauche
-		'#\[center\](.*?)\[/center\]#s',		// aligner au centre
-		'#\[right\](.*?)\[/right\]#s',		// aligner à droite
-		'#\[justify\](.*?)\[/justify\]#s',	// justifier
+		'#\[left\](.*?)\[/left\]#s',			// left align
+		'#\[center\](.*?)\[/center\]#s',		// center align
+		'#\[right\](.*?)\[/right\]#s',		// right align
+		'#\[justify\](.*?)\[/justify\]#s',	// justify
 
 		// misc
 		'#([^"\[\]|])((http|ftp)s?://([^"\'\[\]<>\s]+))#i',			// Regex URL
@@ -170,25 +174,23 @@ function formatage_wiki($texte) {
 		'#</ol>\r<ol>#s',															// ol/li
 		'#\[quote\](.*?)\[/quote\]#s',										// citation
 		'#\[code\]\[/code\]#s',													// code
-		'#\[color=(\\\?")?(\w*|\#[0-9a-fA-F]{3}|\#[0-9a-fA-F]{6})(\\\?")?\](.*?)\[/color\]#s',			// color
+		'#\[code=(\w+)\]\[/code\]#s',											// code=language
+		'#\[color=(\\\?")?(\w+|\#([0-9a-fA-F]{3}){1,2})(\\\?")?\](.*?)\[/color\]#s',			// color
 		'#\[size=(\\\?")?([0-9]{1,})(\\\?")?\](.*?)\[/size\]#s',		// size
 
-		// quelques &nbsp; que j’ajoute
-		'# »#',
+		// adding some &nbsp
+		'# (»|!|:|\?|;)#',
 		'#« #',
-		'# !#',
-		'# :#',
-		'# \?#',
 	);
 	$toreplace = array(
-		// transforme certains \r en \n
-		'<$1>'."\n",		// html
+		//  replace \r with \n
+		'<$1>'."\n",
 
 		// css block elements
-		'<div style="text-align:left;">$1</div>',		// aligner à gauche
-		'<div style="text-align:center;">$1</div>',	// aligner au centre
-		'<div style="text-align:right;">$1</div>',	// aligner à droite
-		'<div style="text-align:justify;">$1</div>',	// justifier
+		'<div style="text-align:left;">$1</div>',		// left align
+		'<div style="text-align:center;">$1</div>',	// center align
+		'<div style="text-align:right;">$1</div>',	// right align
+		'<div style="text-align:justify;">$1</div>',	// justify
 
 		// misc
 		'$1<a href="$2">$2</a>',												// url regex
@@ -205,119 +207,63 @@ function formatage_wiki($texte) {
 		'',																			// ol/li
 		'<blockquote>$1</blockquote>'."\r",									// citation
 		'<prebtcode></prebtcode>'."\r",										// code
+		'<prebtcode data-language="$1"></prebtcode>'."\r",				// code=language
 		'<span style="color:$2;">$4</span>',								// color
 		'<span style="font-size:$2pt;">$4</span>',						// text-size
 
-		// quelques &nbsp; que j’ajoute
-		'&nbsp;»',
-		'«&nbsp;',
-		'&nbsp;!',
-		'&nbsp;:',
-		'&nbsp;?',
+		// adding some &nbsp
+		' $1',
+		'« ',
 	);
 
-	// un array des balises [code] avant qu’ils ne soient modifiées par le preg_replace($tofind, $toreplace, $texte);
-	// il met en mémoire le contenu des balises [code] tels quelles
-	$nb_balises_code_avant = preg_match_all('#\[code\](.*?)\[/code\]#s', $texte, $balises_code, PREG_SET_ORDER);
-
-	// vide les balises de code, vu qu’on ne souhaite pas les formater (leur contenu est en mémoire)
-	$texte_formate = preg_replace('#\[code\](.*?)\[/code\]#s', '[code][/code]', $texte);
-
-	// formate tout
+	// memorizes [code] tags contents before bbcode being appliyed
+	preg_match_all('#\[code(=(\w+))?\](.*?)\[/code\]#s', $texte, $code_contents, PREG_SET_ORDER);
+	// empty the [code] tags (content is in memory)
+	$texte_formate = preg_replace('#\[code(=(\w+))?\](.*?)\[/code\]#s', '[code$1][/code]', $texte);
+	// apply bbcode filter
 	$texte_formate = preg_replace($tofind, $toreplace, $texte_formate);
-
+	// apply <p>paragraphe</p> filter
 	$texte_formate = parse_texte_paragraphs($texte_formate);
+	// replace [code] elements with theire initial content
+	$texte_formate = parse_texte_code($texte_formate, $code_contents);
 
-	// remplace les balises [codes] modifiées par la balise code non formatée et précédement mises en mémoire.
-	// ceci permet de formater l’ensemble du message, sauf les balises [code],
-	if ($nb_balises_code_avant) {
-		$nb_balises_code_apres = preg_match_all('#<prebtcode></prebtcode>#s', $texte_formate, $balises_code_apres, PREG_SET_ORDER);
-		foreach ($balises_code as $i => $code) {
-			// needed to not replace all the #<prebtcode></prebtcode># with the first code (since there is no limit to str_replace() to we could increment the replacements)
-			$pos = strpos($texte_formate, $balises_code_apres[$i][0]);
-			if ($pos !== false) {
-				 $texte_formate = substr_replace($texte_formate, '<pre>'.htmlspecialchars($balises_code[$i][1]).'</pre>', $pos, strlen($balises_code_apres[$i][0]));
-			}
-		}
-	}
-
-	$texte_formate = stripslashes($texte_formate);
 	return $texte_formate;
 }
 
-function formatage_commentaires($texte) {
-	$texte = " ".$texte;
+function markup($texte) {
 	$texte = preg_replace('#\[([^|]+)\|(\s*javascript.*)\]#i', '$1', $texte);
-	$tofindc = array(
-		'#\[quote\](.+?)\[/quote\]#s',									// citation } les citation imbriquées marchent pour **deux niveaux** seulement,
-		'#\[quote\](.+?)\[/quote\]#s',									//          } [quote][quote]bla[/quote][quote]bla[/quote][/quote] marchent et donnent le résultat attendu.
-																					//				} !!!! : [quote*][quote**][quote]bla[/quote**][/quote*][/quote] fait que les balises avec *, ** matchent.
-		'#<p>(\r|\n)+#s',
-		'#\[code\](.+?)\[/code\]#s',										// code
+	$texte = preg_replace("/(\r\n|\r\n\r|\n|\n\r|\r)/", "\r", $texte);
+	$tofind = array(
 		'#([^"\[\]|])((http|ftp)s?://([^"\'\[\]<>\s\)\(]+))#i',	// Regex URL
 		'#\[([^[]+)\|([^[]+)\]#',											// a href
 		'#\[b\](.*?)\[/b\]#s',												// strong
 		'#\[i\](.*?)\[/i\]#s',												// italic
 		'#\[s\](.*?)\[/s\]#s',												// strike
 		'#\[u\](.*?)\[/u\]#s',												// souligne
-	);
-	$toreplacec = array(
-		'<blockquote>$1</blockquote>',		// citation
-		'<blockquote>$1</blockquote>',		// citation
-		'<p>',										// removes unwanted \n
-
-		'<code>$1</code>',						// code
-		'$1<a href="$2">$2</a>',				// url
-		'<a href="$2">$1</a>',					// a href
-		'<strong>$1</strong>',					// strong
-		'<em>$1</em>',								// italic
-		'<del>$1</del>',							// barre
-		'<u>$1</u>',								// souligne
-	);
-
-	$toreplaceArrayLength = sizeof($tofindc);
-	for ($i=0; $i < $toreplaceArrayLength; $i++) {
-		$texte = preg_replace($tofindc["$i"], $toreplacec["$i"], $texte);
-	}
-
-	$texte = stripslashes($texte);
-	$texte = str_replace(array("\\"), array("&#92;"), $texte);
-	$texte = ''.trim(nl2br($texte)).'';
-	$texte = str_replace('<p></p>', '', $texte);
-	return $texte;
-}
-
-function formatage_links($texte) {
-	$tofind = array(
-		'#([^"\[\]|])((http|ftp)s?://([^"\'\[\]<>\s]+))#i',		// Regex URL 
-		'#\[([^[]+)\|([^[]+)\]#',											// a href
-		'#\[b\](.*?)\[/b\]#s',												// strong
-		'#\[i\](.*?)\[/i\]#s',												// italic
-		'#\[s\](.*?)\[/s\]#s',												// strike
-		'#\[u\](.*?)\[/u\]#s',												// souligne
+		'#\[quote\](.*?)\[/quote\]#s',									// citation
+		'#\[code\]\[/code\]#s',												// code
+		'#\[code=(\w+)\]\[/code\]#s',										// code=language
 	);
 	$toreplace = array(
-		'$1<a href="$2">$2</a>',												// url  '$1<a href="$2">$2</a>'
+		'$1<a href="$2">$2</a>',											// url
 		'<a href="$2">$1</a>',												// a href
 		'<strong>$1</strong>',												// strong
 		'<em>$1</em>',															// italic
 		'<del>$1</del>',														// barre
 		'<u>$1</u>',															// souligne
+		'<blockquote>$1</blockquote>'."\r",								// citation
+		'<prebtcode></prebtcode>'."\r",									// code
+		'<prebtcode data-language="$1"></prebtcode>'."\r",			// code=language
 	);
 
-	// ceci permet de formater l’ensemble du message, sauf les balises [code],
-	$nb_balises_code_avant = preg_match_all('#\[code\](.*?)\[/code\]#s', $texte, $balises_code, PREG_SET_ORDER);
-	$texte_formate = preg_replace($tofind, $toreplace, ' '.$texte.' ');
-	$texte_formate = nl2br(trim(($texte_formate)));
-	if ($nb_balises_code_avant) {
-		$nb_balises_code_apres = preg_match_all('#\[code\](.*?)\[/code\]#s', $texte_formate, $balises_code_apres, PREG_SET_ORDER);
-		foreach ($balises_code as $i => $code) {
-			$texte_formate = str_replace($balises_code_apres[$i][0], '<pre>'.$balises_code[$i][1].'</pre>', $texte_formate);
-		}
-	}
+	preg_match_all('#\[code(=(\w+))?\](.*?)\[/code\]#s', $texte, $code_contents, PREG_SET_ORDER);
+	$texte_formate = preg_replace('#\[code(=(\w+))?\](.*?)\[/code\]#s', '[code$1][/code]', $texte);
+	$texte_formate = preg_replace($tofind, $toreplace, $texte_formate);
+	$texte_formate = parse_texte_paragraphs($texte_formate);
+	$texte_formate = parse_texte_code($texte_formate, $code_contents);
+
 	return $texte_formate;
 }
-
 
 function date_formate($id, $format_force='') {
 	$retour ='';
@@ -325,15 +271,15 @@ function date_formate($id, $format_force='') {
 		$jour_l = jour_en_lettres($date['jour'], $date['mois'], $date['annee']);
 		$mois_l = mois_en_lettres($date['mois']);
 			$format = array (
-				'0' => $date['jour'].'/'.$date['mois'].'/'.$date['annee'],           // 14/01/1983
-				'1' => $date['mois'].'/'.$date['jour'].'/'.$date['annee'],           // 01/14/1983
-				'2' => $date['jour'].' '.$mois_l.' '.$date['annee'],                 // 14 janvier 1983
-				'3' => $jour_l.' '.$date['jour'].' '.$mois_l.' '.$date['annee'],     // vendredi 14 janvier 1983
-				'4' => $jour_l.' '.$date['jour'].' '.$mois_l,                        // vendredi 14 janvier
-				'5' => $mois_l.' '.$date['jour'].', '.$date['annee'],                // janvier 14, 1983
-				'6' => $jour_l.', '.$mois_l.' '.$date['jour'].', '.$date['annee'],   // vendredi, janvier 14, 1983
-				'7' => $date['annee'].'-'.$date['mois'].'-'.$date['jour'],           // 1983-01-14
-				'8' => substr($jour_l,0,3).'. '.$date['jour'].' '.$mois_l,           // ven. 14 janvier
+				'0' => $date['jour'].'/'.$date['mois'].'/'.$date['annee'],         // 14/01/1983
+				'1' => $date['mois'].'/'.$date['jour'].'/'.$date['annee'],         // 01/14/1983
+				'2' => $date['jour'].' '.$mois_l.' '.$date['annee'],               // 14 janvier 1983
+				'3' => $jour_l.' '.$date['jour'].' '.$mois_l.' '.$date['annee'],   // vendredi 14 janvier 1983
+				'4' => $jour_l.' '.$date['jour'].' '.$mois_l,                      // vendredi 14 janvier
+				'5' => $mois_l.' '.$date['jour'].', '.$date['annee'],              // janvier 14, 1983
+				'6' => $jour_l.', '.$mois_l.' '.$date['jour'].', '.$date['annee'], // vendredi, janvier 14, 1983
+				'7' => $date['annee'].'-'.$date['mois'].'-'.$date['jour'],         // 1983-01-14
+				'8' => substr($jour_l,0,3).'. '.$date['jour'].' '.$mois_l,         // ven. 14 janvier
 			);
 
 		if ($format_force != '') {
@@ -346,12 +292,12 @@ function date_formate($id, $format_force='') {
 
 function heure_formate($id) {
 	$date = decode_id($id);
-	$ts = mktime($date['heure'], $date['minutes'], $date['secondes'], $date['mois'], $date['jour'], $date['annee']); // ts : timestamp
+	$timestamp = mktime($date['heure'], $date['minutes'], $date['secondes'], $date['mois'], $date['jour'], $date['annee']);
 	$format = array (
-		'0' => date('H\:i\:s',$ts),		// 23:56:04
-		'1' => date('H\:i',$ts),			// 23:56
-		'2' => date('h\:i\:s A',$ts),		// 11:56:04 PM
-		'3' => date('h\:i A',$ts),			// 11:56 PM
+		'0' => date('H\:i\:s',$timestamp),	// 23:56:04
+		'1' => date('H\:i',$timestamp),		// 23:56
+		'2' => date('h\:i\:s A',$timestamp),	// 11:56:04 PM
+		'3' => date('h\:i A',$timestamp),		// 11:56 PM
 	);
 	$valeur = $format[$GLOBALS['format_heure']];
 	return $valeur;
@@ -359,13 +305,12 @@ function heure_formate($id) {
 
 function date_formate_iso($id) {
 	$date = decode_id($id);
-	$ts = mktime($date['heure'], $date['minutes'], $date['secondes'], $date['mois'], $date['jour'], $date['annee']); // ts : timestamp
-	$date_iso = date('c', $ts);
+	$timestamp = mktime($date['heure'], $date['minutes'], $date['secondes'], $date['mois'], $date['jour'], $date['annee']);
+	$date_iso = date('c', $timestamp);
 	return $date_iso;
 }
 
 // From a filesize (like "20M"), returns a size in bytes.
-// Syntaxe like "20M" is used for example with ini_get("max_upload_size") command
 function return_bytes($val) {
 	$val = trim($val);
 	$prefix = strtolower($val[strlen($val)-1]);
@@ -377,7 +322,7 @@ function return_bytes($val) {
 	return $val;
 }
 
-// retourne une chaine en kio, Mio, Gio… d’un entier représentant une taille en octets
+// from a filesize in bytes, returns computed size in kiB, MiB, GiB…
 function taille_formate($taille) {
 	$prefixe = array (
 		'0' => $GLOBALS['lang']['byte_symbol'],   // 2^00 o
@@ -399,18 +344,7 @@ function taille_formate($taille) {
 }
 
 function en_lettres($captchavalue) {
-	switch($captchavalue) {
-		case 0 : return $GLOBALS['lang']['0']; break;
-		case 1 : return $GLOBALS['lang']['1']; break;
-		case 2 : return $GLOBALS['lang']['2']; break;
-		case 3 : return $GLOBALS['lang']['3']; break;
-		case 4 : return $GLOBALS['lang']['4']; break;
-		case 5 : return $GLOBALS['lang']['5']; break;
-		case 6 : return $GLOBALS['lang']['6']; break;
-		case 7 : return $GLOBALS['lang']['7']; break;
-		case 8 : return $GLOBALS['lang']['8']; break;
-		case 9 : return $GLOBALS['lang']['9']; break;
-	}
+	return $GLOBALS['lang'][strval($captchavalue)];
 }
 
 function jour_en_lettres($jour, $mois, $annee) {

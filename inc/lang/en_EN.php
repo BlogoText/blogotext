@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2014 Timo Van Neerden <timo@neerden.eu>
+# 2010-2014 Timo Van Neerden.
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -259,6 +259,7 @@ $GLOBALS['lang'] = array(
 'err_prefs_email'					=> 'Email is incorrect',
 'err_prefs_identifiant'			=> 'Username is empty',
 'err_prefs_id_mdp'				=> 'To change username, yo have to type your password',
+'err_prefs_id_syntaxe'			=> 'The new username should be alphanumeric',
 'err_prefs_oldmdp'				=> 'Old password is wrong',
 'err_prefs_mdp_diff'				=> 'The two passwords do not match',
 'err_prefs_mdp'					=> 'Password must be longer than 6 caracters',

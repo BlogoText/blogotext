@@ -29,8 +29,8 @@ if (isset($_GET['g'])) {
 
 		curl_setopt($curl_handle, CURLOPT_ENCODING, 'gzip');
 		curl_setopt($curl_handle, CURLOPT_URL, $gravatar_url);
-		curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1); 
-		curl_setopt($curl_handle, CURLOPT_TIMEOUT, 5); 
+		curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($curl_handle, CURLOPT_TIMEOUT, 5);
 		$file_content = curl_exec($curl_handle);
 		curl_close($curl_handle);
 

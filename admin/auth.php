@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2016 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden.
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -90,7 +90,7 @@ if (isset($_POST['_verif_envoi']) and valider_form() === TRUE) { // OK : getting
 }
 
 function valider_form() {
-	if (!password_verify($_POST['mot_de_passe'], USER_PWHASH)) {
+	if (!password_verify($_POST['mot_de_passe'], USER_PWHASH) or $_POST['nom_utilisateur'] != USER_LOGIN) {
 		return FALSE;
 	}
 	return TRUE;

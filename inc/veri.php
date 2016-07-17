@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2016 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden.
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -110,8 +110,11 @@ function valider_form_preferences() {
 	if (!strlen(trim($_POST['identifiant']))) {
 		$erreurs[] = $GLOBALS['lang']['err_prefs_identifiant'];
 	}
-	if ( ($_POST['identifiant']) != USER_LOGIN and (!strlen($_POST['mdp'])) ) {
+	if ($_POST['identifiant'] != USER_LOGIN and (!strlen($_POST['mdp']))) {
 		$erreurs[] = $GLOBALS['lang']['err_prefs_id_mdp'];
+	}
+	if (preg_match('#[^\w ]#iu', $_POST['identifiant'])) {
+		$erreurs[] = $GLOBALS['lang']['err_prefs_id_syntaxe'];
 	}
 	if ( (!empty($_POST['mdp'])) and (!password_verify($_POST['mdp'], USER_PWHASH)) ) {
 		$erreurs[] = $GLOBALS['lang']['err_prefs_oldmdp'];

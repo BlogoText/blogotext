@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2016 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden.
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -19,7 +19,7 @@
 // GENERAL
 define('BLOGOTEXT_NAME', 'BlogoText');
 define('BLOGOTEXT_SITE', 'http://lehollandaisvolant.net/blogotext/');
-define('BLOGOTEXT_VERSION', '3.4.8.0');
+define('BLOGOTEXT_VERSION', '3.5.0.2');
 define('MINIMAL_PHP_REQUIRED_VERSION', '5.5');
 define('BLOGOTEXT_UA', 'Mozilla/5.0 (Windows NT 10; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0');
 mb_internal_encoding('UTF-8');

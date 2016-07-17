@@ -4,7 +4,7 @@
 # http://lehollandaisvolant.net/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2015 Timo Van Neerden <timo@neerden.eu>
+# 2010-2015 Timo Van Neerden.
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
@@ -71,7 +71,7 @@ if (!file_exists($target_file) or $force_new === TRUE) {
 	// request
 	$curl_handle = curl_init();
 	curl_setopt($curl_handle, CURLOPT_URL, $source_file);
-	curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1); 
+	curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
 	$file_content = curl_exec($curl_handle);
 	curl_close($curl_handle);
 	if ($file_content == NULL) { // impossible request
