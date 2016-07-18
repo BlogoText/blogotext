@@ -175,7 +175,7 @@ function markup_articles($texte) {
 		'#\[quote\](.*?)\[/quote\]#s',										// citation
 		'#\[code\]\[/code\]#s',													// code
 		'#\[code=(\w+)\]\[/code\]#s',											// code=language
-		'#\[color=(\\\?")?(\w+|\#([0-9a-fA-F]{3}){1,2})(\\\?")?\](.*?)\[/color\]#s',			// color
+		'#\[color=(?:\\\?")?(\w+|\#(?:[0-9a-fA-F]{3}){1,2})(?:\\\?")?\](.*?)\[/color\]#s',			// color
 		'#\[size=(\\\?")?([0-9]{1,})(\\\?")?\](.*?)\[/size\]#s',		// size
 
 		// adding some &nbsp
@@ -208,7 +208,7 @@ function markup_articles($texte) {
 		'<blockquote>$1</blockquote>'."\r",									// citation
 		'<prebtcode></prebtcode>'."\r",										// code
 		'<prebtcode data-language="$1"></prebtcode>'."\r",				// code=language
-		'<span style="color:$2;">$4</span>',								// color
+		'<span style="color:$1;">$2</span>',								// color
 		'<span style="font-size:$2pt;">$4</span>',						// text-size
 
 		// adding some &nbsp
@@ -410,4 +410,3 @@ function str2($nb) {
 function str4($nb) {
 	return str_pad($nb, 4, "0", STR_PAD_LEFT);
 }
-
