@@ -175,7 +175,7 @@ function markup_articles($texte) {
 		'#\[quote\](.*?)\[/quote\]#s',										// citation
 		'#\[code\]\[/code\]#s',													// code
 		'#\[code=(\w+)\]\[/code\]#s',											// code=language
-		'#\[color=(?:\\\?")?(\w+|\#(?:[0-9a-fA-F]{3}){1,2})(?:\\\?")?\](.*?)\[/color\]#s',			// color
+		'#\[color=(?:")?(\w+|\#(?:[0-9a-fA-F]{3}){1,2})(?:")?\](.*?)\[/color\]#s',			// color
 		'#\[size=(\\\?")?([0-9]{1,})(\\\?")?\](.*?)\[/size\]#s',		// size
 
 		// adding some &nbsp
