@@ -323,7 +323,7 @@ function valid_install_2() {
 	if (!strlen(trim($_POST['identifiant']))) {
 		$erreurs[] = $GLOBALS['lang']['err_prefs_identifiant'];
 	}
-	if (!preg_match('#[^\w ]#iu', $_POST['identifiant'])) {
+	if (preg_match('#[=\'"\\\\]#iu', $_POST['identifiant'])) {
 		$erreurs[] = $GLOBALS['lang']['err_prefs_id_syntaxe'];
 	}
 	if ( (strlen($_POST['mdp']) < 6) ) {
