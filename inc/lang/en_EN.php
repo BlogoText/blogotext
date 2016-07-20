@@ -259,7 +259,7 @@ $GLOBALS['lang'] = array(
 'err_prefs_email'					=> 'Email is incorrect',
 'err_prefs_identifiant'			=> 'Username is empty',
 'err_prefs_id_mdp'				=> 'To change username, yo have to type your password',
-'err_prefs_id_syntaxe'			=> 'The new username can’t contain any \', ", \\ or = characters.',
+'err_prefs_id_syntaxe'			=> 'The new username can’t contain any \', ", \\, | or = characters.',
 'err_prefs_oldmdp'				=> 'Old password is wrong',
 'err_prefs_mdp_diff'				=> 'The two passwords do not match',
 'err_prefs_mdp'					=> 'Password must be longer than 6 caracters',

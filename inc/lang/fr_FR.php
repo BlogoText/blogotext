@@ -259,7 +259,7 @@ $GLOBALS['lang'] = array(
 'err_prefs_email'					=> 'L’adresse e-mail n’est pas valide',
 'err_prefs_identifiant'			=> 'Le nom d’utilisateur est vide',
 'err_prefs_id_mdp'				=> 'Pour définir un nouvel identifiant, vous devez saisir votre mot de passe',
-'err_prefs_id_syntaxe'			=> 'Le nouvel identifiant ne peut pas comporter les caractères \', ", \\ ou =.' ,
+'err_prefs_id_syntaxe'			=> 'Le nouvel identifiant ne peut pas comporter les caractères \', ", \\, | ou =.' ,
 'err_prefs_oldmdp'				=> 'L’ancien mot de passe n’est pas valide',
 'err_prefs_mdp_diff'				=> 'Les deux mots de passe ne correspondent pas',
 'err_prefs_mdp'					=> 'Le mot de passe doit faire au moins 6 caractères',

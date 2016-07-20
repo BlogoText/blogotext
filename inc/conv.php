@@ -82,7 +82,9 @@ function rel2abs_admin($article) {
 function parse_texte_paragraphs($texte) {
 	// trims empty lines at begining and end of raw texte
 	$texte_formate = preg_replace('#^(\r|\n|<br>|<br/>|<br />){0,}(.*?)(\r|<br>|<br/>|<br />){0,}$#s', '$2', $texte);
-	$block_elements = 'address|article|aside|audio|blockquote|canvas|dd|li|div|[oud]l|fieldset|fig(caption|ure)|footer|form|h[1-6]|header|hgroup|hr|main|nav|noscript|output|p|pre|prebtcode|section|table|thead|tfoot|tr|td|video';
+	// trick to make <hr/> elements be recognized by parser
+	$texte_formate = preg_replace('#<hr */?>#is', '<hr></hr>', $texte);
+	$block_elements = 'address|article|aside|audio|blockquote|canvas|dd|li|div|[oud]l|fieldset|fig(caption|ure)|footer|form|h[1-6]|header|hgroup|hr|main|nav|noscript|output|p|pre|prebtcode|section|table|thead|tbody|tfoot|tr|td|video';
 
 	$texte_final = '';
 	$finished = false;
@@ -130,7 +132,8 @@ function parse_texte_paragraphs($texte) {
 		// loops on the text, to find the next element.
 		$texte_formate = $texte_restant;
 	}
-
+	// retransforms <hr/>
+	$texte_final = preg_replace('#<hr></hr>#', '<hr/>', $texte_final);
 	return $texte_final;
 }
 
