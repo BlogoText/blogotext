@@ -20,6 +20,8 @@ function create_tables() {
 		include(BT_ROOT.DIR_CONFIG.'/'.'mysql.php');
 	}
 	$auto_increment = (DBMS == 'mysql') ? 'AUTO_INCREMENT' : ''; // SQLite doesn't need this, but MySQL does.
+	$index_limit_size = (DBMS == 'mysql') ? '(15)' : ''; // MySQL needs a limit for indexes on TEXT fields.
+	$if_not_exists = (DBMS == 'sqlite') ? 'IF NOT EXISTS' : ''; // MySQL doesn’t know this statement for INDEXES
 
 	$dbase_structure['links'] = "CREATE TABLE IF NOT EXISTS links
 		(
@@ -28,12 +30,11 @@ function create_tables() {
 			bt_id BIGINT,
 			bt_content TEXT,
 			bt_wiki_content TEXT,
-			bt_author TEXT,
 			bt_title TEXT,
 			bt_tags TEXT,
 			bt_link TEXT,
 			bt_statut TINYINT
-		); CREATE INDEX dateL ON links ( bt_id );";
+		); CREATE INDEX $if_not_exists dateL ON links ( bt_id );";
 
 	$dbase_structure['commentaires'] = "CREATE TABLE IF NOT EXISTS commentaires
 		(
@@ -49,7 +50,7 @@ function create_tables() {
 			bt_email TEXT,
 			bt_subscribe TINYINT,
 			bt_statut TINYINT
-		); CREATE INDEX dateC ON commentaires ( bt_id );";
+		); CREATE INDEX $if_not_exists dateC ON commentaires ( bt_id );";
 
 
 	$dbase_structure['articles'] = "CREATE TABLE IF NOT EXISTS articles
@@ -64,12 +65,12 @@ function create_tables() {
 			bt_link TEXT,
 			bt_content TEXT,
 			bt_wiki_content TEXT,
-			bt_categories TEXT,
+			bt_tags TEXT,
 			bt_keywords TEXT,
 			bt_nb_comments INTEGER,
 			bt_allow_comments TINYINT,
 			bt_statut TINYINT
-		); CREATE INDEX dateidA ON articles (bt_date, bt_id );";
+		); CREATE INDEX $if_not_exists dateidA ON articles ( bt_date, bt_id );";
 
 	/* here bt_ID is a GUID, from the feed, not only a 'YmdHis' date string.*/
 	$dbase_structure['rss'] = "CREATE TABLE IF NOT EXISTS rss
@@ -82,8 +83,9 @@ function create_tables() {
 			bt_feed TEXT,
 			bt_content TEXT,
 			bt_statut TINYINT,
+			bt_bookmarked TINYINT,
 			bt_folder TEXT
-		); CREATE INDEX dateidR ON rss (bt_date, bt_id );";
+		); CREATE INDEX $if_not_exists dateidR ON rss ( bt_date, bt_id$index_limit_size );";
 
 	/*
 	* SQLite
@@ -103,9 +105,10 @@ function create_tables() {
 					$db_handle->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 					$db_handle->query("PRAGMA temp_store=MEMORY; PRAGMA synchronous=OFF; PRAGMA journal_mode=WAL;");
 
+
 					$wanted_tables = array('commentaires', 'articles', 'links', 'rss');
 					foreach ($wanted_tables as $i => $name) {
-						$results = $db_handle->query($dbase_structure[$name]);
+							$results = $db_handle->exec($dbase_structure[$name]);
 					}
 				} catch (Exception $e) {
 					die('Erreur 1: '.$e->getMessage());
@@ -263,7 +266,7 @@ function init_post_article() { //no $mode : it's always admin.
 		'bt_wiki_content'	=> clean_txt($_POST['contenu']),
 		'bt_link'			=> '', // this one is not needed yet. Maybe in the futur. I dunno why it is still in the DB…
 		'bt_keywords'		=> $keywords,
-		'bt_categories'	=> (isset($_POST['categories']) ? htmlspecialchars(traiter_tags($_POST['categories'])) : ''), // htmlSpecialChars() nedded to escape the (") since tags are put in a <input/>. (') are escaped in form_categories(), with addslashes – not here because of JS problems :/
+		'bt_tags'			=> (isset($_POST['categories']) ? htmlspecialchars(traiter_tags($_POST['categories'])) : ''), // htmlSpecialChars() nedded to escape the (") since tags are put in a <input/>. (') are escaped in form_categories(), with addslashes – not here because of JS problems :/
 		'bt_statut'			=> $_POST['statut'],
 		'bt_allow_comments'	=> $_POST['allowcomment'],
 	);
@@ -327,7 +330,6 @@ function init_post_link2() { // second init : the whole link data needs to be st
 		'bt_type'			=> htmlspecialchars($_POST['type']),
 		'bt_content'		=> markup(htmlspecialchars(clean_txt($_POST['description']), ENT_NOQUOTES)),
 		'bt_wiki_content'	=> protect($_POST['description']),
-		'bt_author'			=> protect($_POST['bt_author']),
 		'bt_title'			=> protect($_POST['title']),
 		'bt_link'			=> (empty($_POST['url'])) ? $GLOBALS['racine'].'?mode=links&amp;id='.$id : protect($_POST['url']),
 		'bt_tags'			=> htmlspecialchars(traiter_tags($_POST['categories'])),
@@ -382,7 +384,7 @@ function bdd_article($billet, $what) {
 					bt_notes,
 					bt_content,
 					bt_wiki_content,
-					bt_categories,
+					bt_tags,
 					bt_keywords,
 					bt_allow_comments,
 					bt_nb_comments,
@@ -399,7 +401,7 @@ function bdd_article($billet, $what) {
 				$billet['bt_notes'],
 				$billet['bt_content'],
 				$billet['bt_wiki_content'],
-				$billet['bt_categories'],
+				$billet['bt_tags'],
 				$billet['bt_keywords'],
 				$billet['bt_allow_comments'],
 				0,
@@ -420,7 +422,7 @@ function bdd_article($billet, $what) {
 				bt_notes=?,
 				bt_content=?,
 				bt_wiki_content=?,
-				bt_categories=?,
+				bt_tags=?,
 				bt_keywords=?,
 				bt_allow_comments=?,
 				bt_statut=?
@@ -433,7 +435,7 @@ function bdd_article($billet, $what) {
 					$billet['bt_notes'],
 					$billet['bt_content'],
 					$billet['bt_wiki_content'],
-					$billet['bt_categories'],
+					$billet['bt_tags'],
 					$billet['bt_keywords'],
 					$billet['bt_allow_comments'],
 					$billet['bt_statut'],
@@ -494,7 +496,6 @@ function bdd_lien($link, $what) {
 				bt_id,
 				bt_content,
 				bt_wiki_content,
-				bt_author,
 				bt_title,
 				bt_link,
 				bt_tags,
@@ -506,7 +507,6 @@ function bdd_lien($link, $what) {
 				$link['bt_id'],
 				$link['bt_content'],
 				$link['bt_wiki_content'],
-				$link['bt_author'],
 				$link['bt_title'],
 				$link['bt_link'],
 				$link['bt_tags'],
@@ -522,7 +522,6 @@ function bdd_lien($link, $what) {
 			$req = $GLOBALS['db_handle']->prepare('UPDATE links SET
 				bt_content=?,
 				bt_wiki_content=?,
-				bt_author=?,
 				bt_title=?,
 				bt_link=?,
 				bt_tags=?,
@@ -531,7 +530,6 @@ function bdd_lien($link, $what) {
 			$req->execute(array(
 				$link['bt_content'],
 				$link['bt_wiki_content'],
-				$link['bt_author'],
 				$link['bt_title'],
 				$link['bt_link'],
 				$link['bt_tags'],
@@ -761,18 +759,17 @@ function table_list_date($date, $statut, $table) {
 }
 
 function list_all_tags($table, $statut) {
-	$col = ($table == 'articles') ? 'bt_categories' : 'bt_tags';
 	try {
 		if ($statut !== FALSE) {
-			$res = $GLOBALS['db_handle']->query("SELECT $col FROM $table WHERE bt_statut = $statut");
+			$res = $GLOBALS['db_handle']->query("SELECT bt_tags FROM $table WHERE bt_statut = $statut");
 		} else {
-			$res = $GLOBALS['db_handle']->query("SELECT $col FROM $table");
+			$res = $GLOBALS['db_handle']->query("SELECT bt_tags FROM $table");
 		}
 		$liste_tags = '';
 		// met tous les tags de tous les articles bout à bout
 		while ($entry = $res->fetch()) {
-			if (trim($entry[$col]) != '') {
-				$liste_tags .= $entry[$col].',';
+			if (trim($entry['bt_tags']) != '') {
+				$liste_tags .= $entry['bt_tags'].',';
 			}
 		}
 		$res->closeCursor();
@@ -807,9 +804,10 @@ function bdd_rss($flux, $what) {
 					bt_feed,
 					bt_content,
 					bt_statut,
+					bt_bookmarked,
 					bt_folder
 				)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
 				$req->execute(array(
 					$post['bt_id'],
 					$post['bt_date'],
@@ -817,7 +815,8 @@ function bdd_rss($flux, $what) {
 					$post['bt_link'],
 					$post['bt_feed_url'],
 					$post['bt_content'],
-					$post['bt_statut'],
+					1,
+					0,
 					$post['bt_folder']
 				));
 			}
@@ -844,7 +843,7 @@ function rss_list_guid() {
 /* FOR RSS : RETUNS nb of articles per feed */
 function rss_count_feed() {
 	$result = array();
-	$query = "SELECT bt_feed, SUM(bt_statut) AS nbrun FROM rss GROUP BY bt_feed ORDER BY nbrun DESC";
+	$query = "SELECT bt_feed, SUM(bt_statut) AS nbrun, SUM(bt_bookmarked) AS nbfav FROM rss GROUP BY bt_feed";
 	try {
 		$result = $GLOBALS['db_handle']->query($query)->fetchAll(PDO::FETCH_ASSOC);
 		return $result;

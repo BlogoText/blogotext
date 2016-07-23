@@ -873,7 +873,8 @@ function hideFolder(btn) {
 }
 
 /* open rss-item */
-function openItem(thisPost) {
+function openItem(thisPostLink) {
+	var thisPost = thisPostLink.parentNode.parentNode;
 	// on clic on open post : open link in new tab.
 	if (thisPost.classList.contains('open-post')) { return true; }
 	// on clic on item, close the previous opened item
@@ -897,15 +898,32 @@ function openItem(thisPost) {
 		window.scrollBy(0, -120);
 	}
 
+	// mark as read in DOM and saves for mark as read in DB
 	if (!thisPost.classList.contains('read')) {
-		// instead of marking an item as read every time an item is opened, 
-		// creates a queue of 10 and makes a request for all ten in once.
-
 		markAsRead('post', thisPost.id.substr(2));
 		addToReadQueue(thisPost.id.substr(2));
 	}
 
+	return false;
+}
 
+function favPost(thisPostLink) {
+	var favCount = document.querySelector('#favs-post-counter');
+
+	var thisPost = thisPostLink.parentNode.parentNode.parentNode;
+
+	sendMarkFavRequest(thisPost.id);
+	// mark as fav in DOM and on screen
+	thisPostLink.dataset.isFav = 1 - parseInt(thisPostLink.dataset.isFav);
+	favCount.dataset.nbrun = ( parseInt(favCount.dataset.nbrun) + ((thisPostLink.dataset.isFav == 1) ? 1 : -1 ) );
+	favCount.firstChild.nodeValue = '('+favCount.dataset.nbrun+')';
+	// mark as fav in var Rss
+	for (var i = 0, len = Rss.length ; i < len ; i++) {
+		if (Rss[i].id == thisPost.id.substr(2)) {
+			Rss[i].fav = thisPostLink.dataset.isFav;
+			break;
+		}
+	}
 	return false;
 }
 
@@ -913,8 +931,6 @@ function openItem(thisPost) {
 function addToReadQueue(elem) {
 	readQueue.count++;
 	readQueue.urlList.push(elem);
-
-	//console.log(JSON.stringify(readQueue.urlList));
 
 	// if 10 items in queue, send XHR request and reset list to zero.
 	if (readQueue.count == 10) {
@@ -971,7 +987,6 @@ function rss_feedlist(RssPosts) {
 		li.id = 'i_'+item.id;
 		li.classList.add('li-post-bloc');
 		li.dataset.feedUrl = item.feed;
-		li.onclick = function(){ return openItem(this); };
 		if (item.statut == 0) { li.classList.add('read'); }
 
 		// li-head: title-block
@@ -990,6 +1005,7 @@ function rss_feedlist(RssPosts) {
 		titleLink.title = item.title;
 		titleLink.target = "_blank";
 		titleLink.appendChild(document.createTextNode(item.title));
+		titleLink.onclick = function(){ return openItem(this); };
 		title.appendChild(titleLink);
 		
 		// post date
@@ -1001,7 +1017,7 @@ function rss_feedlist(RssPosts) {
 		date.appendChild(time);
 		title.appendChild(date);
 
-		// post share link
+		// post share link & fav link
 		var share = document.createElement("div");
 		share.classList.add('share');
 		var shareLink = document.createElement("a");
@@ -1009,6 +1025,14 @@ function rss_feedlist(RssPosts) {
 		shareLink.target = "_blank";
 		shareLink.classList.add("lien-share");
 		share.appendChild(shareLink);
+		var favLink = document.createElement("a");
+		favLink.href = '#';
+		favLink.target = "_blank";
+		favLink.classList.add("lien-fav");
+		favLink.dataset.isFav = item.fav;
+		favLink.onclick = function(){ favPost(this); return false; };
+		share.appendChild(favLink);
+
 		title.appendChild(share);
 
 
@@ -1053,6 +1077,25 @@ function sortAll() {
 	openAllSwich = 'open';
 	document.getElementById('openallitemsbutton').classList.remove('unfold');
 	if (Rss.length != 0) window.location.hash = '';
+}
+
+/* Sort favorites */
+function sortFavs() {
+	// unhighlight previously selected site
+	if (document.querySelector('.active-site')) document.querySelector('.active-site').classList.remove('active-site');
+	var listpost = Rss;
+	var newList = new Array();
+
+	// create list of items that are favs
+	for (var i = 0, len = listpost.length ; i < len ; i++) {
+		var item = listpost[i];
+		if (listpost[i].fav == 1) {
+			newList.push(item);
+		}
+	}
+	rss_feedlist(newList);
+	openAllSwich = 'open';
+	document.getElementById('openallitemsbutton').classList.remove('unfold');
 }
 
 /* Sort rss entries from a site */
@@ -1318,7 +1361,7 @@ function markAsRead(what, url) {
 	return false;
 }
 
-/* sends the AJAX request */
+/* sends the AJAX "mark as read" request */
 function sendMarkReadRequest(what, url, async) {
 	loading_animation('on');
 	var notifDiv = document.createElement('div');
@@ -1359,6 +1402,48 @@ function sendMarkReadRequest(what, url, async) {
 	formData.append('token', token);
 	formData.append('mark-as-read', what);
 	formData.append('url', url);
+	xhr.send(formData);
+
+}
+
+/* sends the AJAX "mark as read" request */
+function sendMarkFavRequest(url) {
+	loading_animation('on');
+	var notifDiv = document.createElement('div');
+	var notifNode = document.getElementById('message-return');
+
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', '_rss.ajax.php', true);
+
+	// onload
+	xhr.onload = function() {
+		var resp = this.responseText;
+		if (resp.indexOf("Success") == 0) {
+			token = resp.substr(7, 40);
+			loading_animation('off');
+			return true;
+		} else {
+			loading_animation('off');
+			notifNode.innerHTML = resp;
+			return false;
+		}
+	};
+
+	// onerror
+	xhr.onerror = function(e) {
+		loading_animation('off');
+		// adding notif
+		notifDiv.textContent = 'AJAX Error ' +e.target.status;
+		notifDiv.classList.add('no_confirmation');
+		document.getElementById('top').appendChild(notifDiv);
+		notifNode.innerHTML = resp;
+	};
+
+	// prepare and send FormData
+	var formData = new FormData();
+	formData.append('token', token);
+	formData.append('mark-as-fav', 1);
+	formData.append('url', url.substr(2));
 	xhr.send(formData);
 
 }

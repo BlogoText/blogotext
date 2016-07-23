@@ -72,7 +72,6 @@ $GLOBALS['balises'] = array(
 	'commentaire_md5email' => '{commentaire_md5email}',
 
 	// Liens
-	'lien_auteur' => '{lien_auteur}',
 	'lien_titre' => '{lien_titre}',
 	'lien_url' => '{lien_url}',
 	'lien_date' => '{lien_date}',
@@ -174,7 +173,6 @@ function conversions_theme_article($texte, $billet) {
 // Liens
 function conversions_theme_lien($texte, $lien) {
 	$texte = str_replace($GLOBALS['balises']['article_titre'], $lien['bt_title'], $texte);
-	$texte = str_replace($GLOBALS['balises']['lien_auteur'], $lien['bt_author'], $texte);
 	$texte = str_replace($GLOBALS['balises']['lien_titre'], $lien['bt_title'], $texte);
 	$texte = str_replace($GLOBALS['balises']['lien_url'], $lien['bt_link'], $texte);
 	$texte = str_replace($GLOBALS['balises']['lien_date'], date_formate($lien['bt_id']), $texte);

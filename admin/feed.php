@@ -51,7 +51,7 @@ if (!empty($_GET['q'])) {
 	//debug($query);
 	$tableau = liste_elements($query, $arr, 'rss');
 } else {
-	$tableau = liste_elements('SELECT * FROM rss WHERE bt_statut=1 ORDER BY bt_date DESC', array(), 'rss');
+	$tableau = liste_elements('SELECT * FROM rss WHERE bt_statut=1 OR bt_bookmarked=1 ORDER BY bt_date DESC', array(), 'rss');
 }
 
 
@@ -103,7 +103,7 @@ else {
 	$out_html .= "\t\t".'<div id="post-list-wrapper">'."\n";
 	$out_html .= "\t\t\t".'<div id="post-list-title">'."\n";
 	$out_html .= "\t\t\t".'<ul class="rss-menu-buttons">'."\n";
-	$out_html .= "\t\t\t\t".'<li><button type="button" onclick="sendMarkReadRequest(\'all\', \'\', true);" id="markasread" title="'.$GLOBALS['lang']['rss_label_markasread'].'"></button></li>'."\n";
+	$out_html .= "\t\t\t\t".'<li><button type="button" onclick="markAsRead(\'all\', true);" id="markasread" title="'.$GLOBALS['lang']['rss_label_markasread'].'"></button></li>'."\n";
 	$out_html .= "\t\t\t\t".'<li><button type="button" onclick="openAllItems(this);" id="openallitemsbutton" title="'.$GLOBALS['lang']['rss_label_unfoldall'].'"></button></li>'."\n";
 	$out_html .= "\t\t\t".'</ul>'."\n";
 	$out_html .= "\t\t\t".'<p><span id="post-counter"></span> '.$GLOBALS['lang']['label_elements'].'</p>'."\n";

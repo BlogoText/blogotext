@@ -150,12 +150,10 @@ else {
 	// tri selon tags (si il y a)
 	if (isset($_GET['tag'])) {
 		foreach ($liste_rss as $i => $entry) {
-			if ($entry['bt_type'] == 'article') $fd = 'bt_categories';
-			if ($entry['bt_type'] == 'link' or $entry['bt_type'] == 'note') $fd = 'bt_tags';
-			if (isset($fd)) {
-				if ( (strpos($entry[$fd], htmlspecialchars($_GET['tag'].',')) === FALSE) and
-				 	 (strpos($entry[$fd], htmlspecialchars(', '.$_GET['tag'])) === FALSE) and
-					 ($entry[$fd] != htmlspecialchars($_GET['tag']))) {
+			if (isset($entry['bt_tags'])) {
+				if ( (strpos($entry['bt_tags'], htmlspecialchars($_GET['tag'].',')) === FALSE) and
+				 	 (strpos($entry['bt_tags'], htmlspecialchars(', '.$_GET['tag'])) === FALSE) and
+					 ($entry['bt_tags'] != htmlspecialchars($_GET['tag']))) {
 					unset($liste_rss[$i]);
 				}
 			}
@@ -199,11 +197,8 @@ else {
 			$xml_post .= '<link>'.$elem['bt_link'].'</link>'."\n";
 			$xml_post .= '<description><![CDATA['.rel2abs($elem['bt_content']).']]></description>'."\n";
 		}
-		if (isset($elem['bt_tags']) or isset($elem['bt_categories'])) {
-			$tags = (isset($elem['bt_tags'])) ? $elem['bt_tags'] : $elem['bt_categories'];
-			if (!empty($tags)) {
-				$xml_post .= '<category>'.implode('</category>'."\n".'<category>', explode(', ', $tags)).'</category>'."\n";
-			}
+		if (isset($elem['bt_tags']) and !empty($elem['bt_tags'])) {
+			$xml_post .= '<category>'.implode('</category>'."\n".'<category>', explode(', ', $elem['bt_tags'])).'</category>'."\n";
 		}
 		$xml_post .= '</item>'."\n";
 		$xml .= $xml_post;

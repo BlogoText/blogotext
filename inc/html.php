@@ -232,11 +232,10 @@ function lien_pagination() {
 
 
 function liste_tags($billet, $html_link) {
-	$tags = ($billet['bt_type'] == 'article') ? $billet['bt_categories'] : $billet['bt_tags'];
 	$mode = ($billet['bt_type'] == 'article') ? '' : '&amp;mode=links';
 	$liste = '';
-	if (!empty($tags)) {
-		$tag_list = explode(', ', $tags);
+	if (!empty($billet['bt_tags'])) {
+		$tag_list = explode(', ', $billet['bt_tags']);
 		// remove diacritics, so that "ééé" does not passe after "zzz" and re-indexes
 		foreach ($tag_list as $i => $tag) {
 			$tag_list[$i] = array('t' => trim($tag), 'tt' => diacritique(trim($tag)));
@@ -260,13 +259,17 @@ function liste_tags($billet, $html_link) {
 function feed_list_html() {
 	// counts unread feeds in DB
 	$feeds_nb = rss_count_feed();
-	$total_unread = 0;
+	$total_unread = $total_favs = 0;
 	foreach ($feeds_nb as $feed) {
 		$total_unread += $feed['nbrun'];
+		$total_favs += $feed['nbfav'];
 	}
 
 	// First item : link all feeds
-	$html = "\t\t".'<li class="all-feeds"><a href="#" onclick="document.getElementById(\'markasread\').onclick=function(){sendMarkReadRequest(\'all\',\'\', true);}; return sortAll();">'.$GLOBALS['lang']['rss_label_all_feeds'].' <span id="global-post-counter" data-nbrun="'.$total_unread.'">('.$total_unread.')</span></a></li>'."\n";
+	$html = "\t\t".'<li class="all-feeds"><a href="#" onclick="document.getElementById(\'markasread\').onclick=function(){markAsRead(\'all\', true);}; sortAll(); return false;">'.$GLOBALS['lang']['rss_label_all_feeds'].' <span id="global-post-counter" data-nbrun="'.$total_unread.'">('.$total_unread.')</span></a></li>'."\n";
+
+	// Next item : favorites items
+	$html .= "\t\t".'<li class="fav-feeds"><a href="#" onclick="document.getElementById(\'markasread\').onclick=function(){markAsRead(\'favs\', true);}; return sortFavs(); return false;">'.$GLOBALS['lang']['rss_label_favs_feeds'].' <span id="favs-post-counter" data-nbrun="'.$total_favs.'">('.$total_favs.')</span></a></li>'."\n";
 
 	$feed_urls = array();
 	foreach ($feeds_nb as $i => $feed) {

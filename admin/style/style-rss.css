@@ -104,14 +104,27 @@
 	align-items: center;
 }
 
-#feed-list > li.all-feeds {
+#feed-list > li.all-feeds a,
+#feed-list > li.fav-feeds a {
+	padding-left: 15px;
 	text-align: center;
 }
+
 
 #feed-list > li.all-feeds a::before {
 	display: inline-block;
 	vertical-align: middle;
 	content: "\e901";
+	font-size: 1.6em;
+	font-weight: normal;
+	padding-right: 5px;
+	color: rgba(0, 0, 0, .6);
+}
+
+#feed-list > li.fav-feeds a::before {
+	display: inline-block;
+	vertical-align: middle;
+	content: "\e90c";
 	font-size: 1.6em;
 	font-weight: normal;
 	padding-right: 5px;
@@ -263,14 +276,13 @@
 }
 
 #post-list > li {
-	padding: 15px 20px 15px;
+	padding: 0px 20px 0px;
 	border-bottom: #F9F9F9 solid 1px;
 	background: white;
 }
 
 #post-list > li:hover {
 	box-shadow: 4px 0px 0px gray inset;
-	cursor: pointer;
 }
 
 #post-list > li.read:not(.open-post) {
@@ -306,7 +318,7 @@
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	padding-right: 10px;
+	padding: 17px 10px 15px 0;
 }
 
 #post-list > li .post-title a:hover {
@@ -372,6 +384,11 @@
 	color: inherit;
 	cursor: auto;
 	position: relative;
+	padding: 15px 20px;
+}
+
+#post-list > li.open-post .post-title > a {
+	padding: 0 10px 0 0;
 }
 
 #post-list > li.open-post .rss-item-content {
@@ -381,7 +398,7 @@
 	height: auto;
 }
 
-#post-list > li .post-title .lien-share {
+#post-list > li .post-title .share a {
 	margin-left: 5px;
 	text-decoration: none;
 }
@@ -389,6 +406,17 @@
 	content: "\e91f";
 	font-size: 1.3em;
 	color: rgba(0, 0, 0, .4);
+}
+
+#post-list > li .post-title .lien-fav::before {
+	content: "\e942";
+	font-size: 1.5em;
+	color: rgba(0, 0, 0, .4);
+}
+
+#post-list > li .post-title .lien-fav[data-is-fav="1"]::before {
+	content: "\e90c";
+	color: gold;
 }
 
 

@@ -433,6 +433,7 @@ $GLOBALS['lang'] = array(
 'bak_dl_fichier'					=> 'Download file.',
 // page RSS
 'rss_label_all_feeds'			=> 'All feeds',
+'rss_label_favs_feeds'			=> 'Bookmarks',
 'rss_label_refresh'				=> 'Refresh',
 'rss_label_markasread'			=> 'Mark as read',
 'rss_label_unfoldall'			=> 'Unfold all',

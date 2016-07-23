@@ -199,7 +199,6 @@ function filtre($type, $filtre) { // cette fonction est très gourmande en resso
 	// Liens
 	} elseif ($type == 'links') {
 		$ret .= '<option value="">'.$GLOBALS['lang']['label_link_derniers'].'</option>'."\n";
-		// $tab_auteur = nb_entries_as('links', 'bt_author'); // uncomment when readers will be able to post links
 		$tab_tags = list_all_tags('links', FALSE);
 		$query = "SELECT DISTINCT substr(bt_id, 1, 6) AS date FROM links ORDER BY bt_id DESC";
 		$BDD = 'sqlite';
@@ -261,7 +260,7 @@ function filtre($type, $filtre) { // cette fonction est très gourmande en resso
 		$ret .= '</optgroup>'."\n";
 	}
 
-	/// PAR AUTEUR S'IL S'AGIT DES COMMENTAIRES OU DE LIENS
+	/// PAR AUTEUR S'IL S'AGIT DES COMMENTAIRES
 	if (!empty($tab_auteur)) {
 		$ret .= '<optgroup label="'.$GLOBALS['lang']['pref_auteur'].'">'."\n";
 		foreach ($tab_auteur as $nom) {
@@ -404,7 +403,6 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= "\t".'</p>'."\n";
 		$form .= hidden_input('_verif_envoi', '1');
 		$form .= hidden_input('bt_id', $new_id);
-		$form .= hidden_input('bt_author', $GLOBALS['auteur']);
 		$form .= hidden_input('token', new_token());
 		$form .= hidden_input('dossier', '');
 		$form .= '</form>'."\n\n";
@@ -430,7 +428,6 @@ function afficher_form_link($step, $erreurs, $editlink='') {
 		$form .= "\t".'</p>'."\n";
 		$form .= hidden_input('ID', $editlink['ID']);
 		$form .= hidden_input('bt_id', $editlink['bt_id']);
-		$form .= hidden_input('bt_author', $editlink['bt_author']);
 		$form .= hidden_input('_verif_envoi', '1');
 		$form .= hidden_input('is_it_edit', 'yes');
 		$form .= hidden_input('token', new_token());
@@ -502,7 +499,7 @@ function afficher_form_billet($article, $erreurs) {
 		// abstract : s’il est vide, il est regénéré à l’affichage, mais reste vide dans la BDD)
 		$chapodefaut = get_entry($GLOBALS['db_handle'], 'articles', 'bt_abstract', $article['bt_id'], 'return');
 		$notesdefaut = $article['bt_notes'];
-		$categoriesdefaut = $article['bt_categories'];
+		$tagsdefaut = $article['bt_tags'];
 		$contenudefaut = htmlspecialchars($article['bt_wiki_content']);
 		$motsclesdefaut = $article['bt_keywords'];
 		$statutdefaut = $article['bt_statut'];
@@ -517,7 +514,7 @@ function afficher_form_billet($article, $erreurs) {
 		$chapodefaut = '';
 		$contenudefaut = '';
 		$motsclesdefaut = '';
-		$categoriesdefaut = '';
+		$tagsdefaut = '';
 		$titredefaut = '';
 		$notesdefaut = '';
 		$statutdefaut = '1';
@@ -544,7 +541,7 @@ function afficher_form_billet($article, $erreurs) {
 
 	if ($GLOBALS['activer_categories'] == '1') {
 		$html .= "\t".'<div id="tag_bloc">'."\n";
-		$html .= form_categories_links('articles', $categoriesdefaut);
+		$html .= form_categories_links('articles', $tagsdefaut);
 		$html .= "\t\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'" tabindex="65"/>'."\n";
 		$html .= "\t\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
 		$html .= "\t".'</div>'."\n";

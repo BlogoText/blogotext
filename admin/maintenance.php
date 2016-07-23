@@ -151,7 +151,7 @@ function creer_fich_html($nb_links) {
 	foreach ($list as $n => $link) {
 		$dec = decode_id($link['bt_id']);
 		$timestamp = mktime($dec['heure'], $dec['minutes'], $dec['secondes'], $dec['mois'], $dec['jour'], $dec['annee']); // HISMDY : wtf!
-		$html .= '<DT><A HREF="'.$link['bt_link'].'" ADD_DATE="'.$timestamp.'" PRIVATE="'.abs(1-$link['bt_statut']).'" TAGS="'.$link['bt_tags'].'" AUTHOR="'.$link['bt_author'].'">'.$link['bt_title'].'</A>'."\n";
+		$html .= '<DT><A HREF="'.$link['bt_link'].'" ADD_DATE="'.$timestamp.'" PRIVATE="'.abs(1-$link['bt_statut']).'" TAGS="'.$link['bt_tags'].'">'.$link['bt_title'].'</A>'."\n";
 		$html .= '<DD>'.strip_tags($link['bt_wiki_content'])."\n";
 	}
 	return (file_put_contents($path, $html) === FALSE) ? FALSE : $path; // écriture du fichier
@@ -188,9 +188,9 @@ function insert_table_links($tableau) {
 	try {
 		$GLOBALS['db_handle']->beginTransaction();
 		foreach($table_diff as $f) {
-			$query = 'INSERT INTO links (bt_type, bt_id, bt_link, bt_content, bt_wiki_content, bt_statut, bt_author, bt_title, bt_tags ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? ) ';
+			$query = 'INSERT INTO links (bt_type, bt_id, bt_link, bt_content, bt_wiki_content, bt_statut, bt_title, bt_tags ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? ) ';
 			$req = $GLOBALS['db_handle']->prepare($query);
-			$req->execute(array($f['bt_type'], $f['bt_id'], $f['bt_link'], $f['bt_content'], $f['bt_wiki_content'], $f['bt_statut'], $f['bt_author'], $f['bt_title'], $f['bt_tags']));
+			$req->execute(array($f['bt_type'], $f['bt_id'], $f['bt_link'], $f['bt_content'], $f['bt_wiki_content'], $f['bt_statut'], $f['bt_title'], $f['bt_tags']));
 		}
 		$GLOBALS['db_handle']->commit();
 	} catch (Exception $e) {
@@ -206,9 +206,9 @@ function insert_table_articles($tableau) {
 	try {
 		$GLOBALS['db_handle']->beginTransaction();
 		foreach($table_diff as $art) {
-			$query = 'INSERT INTO articles ( bt_type, bt_id, bt_date, bt_title, bt_abstract, bt_notes, bt_link, bt_content, bt_wiki_content, bt_categories, bt_keywords, bt_nb_comments, bt_allow_comments, bt_statut ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )';
+			$query = 'INSERT INTO articles ( bt_type, bt_id, bt_date, bt_title, bt_abstract, bt_notes, bt_link, bt_content, bt_wiki_content, bt_tags, bt_keywords, bt_nb_comments, bt_allow_comments, bt_statut ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )';
 			$req = $GLOBALS['db_handle']->prepare($query);
-			$req->execute(array( $art['bt_type'], $art['bt_id'], $art['bt_date'], $art['bt_title'], $art['bt_abstract'], $art['bt_notes'], $art['bt_link'], $art['bt_content'], $art['bt_wiki_content'], $art['bt_categories'], $art['bt_keywords'], $art['bt_nb_comments'], $art['bt_allow_comments'], $art['bt_statut'] ));
+			$req->execute(array( $art['bt_type'], $art['bt_id'], $art['bt_date'], $art['bt_title'], $art['bt_abstract'], $art['bt_notes'], $art['bt_link'], $art['bt_content'], $art['bt_wiki_content'], (isset($art['bt_tags']) ? $art['bt_tags'] : $art['bt_categories']), $art['bt_keywords'], $art['bt_nb_comments'], $art['bt_allow_comments'], $art['bt_statut'] ));
 		}
 		$GLOBALS['db_handle']->commit();
 	} catch (Exception $e) {
@@ -400,9 +400,9 @@ function importer_wordpress($xml) {
 		$new_article['bt_content'] = wiki($new_article['bt_wiki_content']);
 		$new_article['bt_abstract'] = '';
 		// get categories
-		$new_article['bt_categories'] = '';
-			foreach($value->category as $tag) $new_article['bt_categories'] .= (string) $tag . ',';
-			$new_article['bt_categories'] = trim($new_article['bt_categories'], ',');
+		$new_article['bt_tags'] = '';
+			foreach($value->category as $tag) $new_article['bt_tags'] .= (string) $tag . ',';
+			$new_article['bt_tags'] = trim($new_article['bt_tags'], ',');
 		$new_article['bt_keywords'] = '';
 		$new_article['bt_nb_comments'] = 0;
 		$new_article['bt_allow_comments'] = ( ($value->children("wp", true)->comment_status) == 'open' ) ? 1 : 0;
@@ -487,7 +487,7 @@ function parse_html($content) {
 		$ids_array = array();
 		$tab1_DT = explode('<DT>',$content);
 		foreach ($tab1_DT as $dt) {
-			$link = array('bt_id' => '', 'bt_title' => '', 'bt_author' => $GLOBALS['auteur'], 'bt_link' => '', 'bt_content' => '', 'bt_wiki_content' => '', 'bt_tags' => '', 'bt_statut' => 1, 'bt_type' => 'link');
+			$link = array('bt_id' => '', 'bt_title' => '', 'bt_link' => '', 'bt_content' => '', 'bt_wiki_content' => '', 'bt_tags' => '', 'bt_statut' => 1, 'bt_type' => 'link');
 			$d = explode('<DD>', $dt);
 			if (strcmp(substr($d[0], 0, strlen('<A ')), '<A ') === 0) {
 				$link['bt_content'] = (isset($d[1]) ? html_entity_decode(trim($d[1]), ENT_QUOTES,'utf-8') : '');  // Get description (optional)
@@ -500,7 +500,6 @@ function parse_html($content) {
 					$attr = $m[1]; $value = $m[2];
 					if ($attr == 'HREF') { $link['bt_link'] = html_entity_decode($value, ENT_QUOTES, 'utf-8'); }
 					elseif ($attr == 'ADD_DATE') { $raw_add_date = intval($value); }
-					elseif ($attr == 'AUTHOR') { $link['bt_author'] = $value; }
 					elseif ($attr == 'PRIVATE') { $link['bt_statut'] = ($value == '1') ? '0' : '1'; } // value=1 =>> statut=0 (it’s reversed)
 					elseif ($attr == 'TAGS') { $link['bt_tags'] = str_replace('  ', ' ', str_replace(',', ', ', html_entity_decode($value, ENT_QUOTES, 'utf-8'))); }
 				}

@@ -176,5 +176,28 @@ if (isset($_POST['mark-as-read'])) {
 	}
 }
 
+// mark so elements as fav 
+if (isset($_POST['mark-as-fav'])) {
+	$erreurs = valider_form_rss();
+	if (!empty($erreurs)) {
+		echo erreurs($erreurs);
+		die;
+	}
+
+	$url = $_POST['url'];
+	$query = 'UPDATE rss SET bt_bookmarked= (1-bt_bookmarked) WHERE bt_id= ? ';
+	$array = array($url);
+
+	try {
+		$req = $GLOBALS['db_handle']->prepare($query);
+		$req->execute($array);
+		echo 'Success';
+		echo new_token();
+	} catch (Exception $e) {
+		die('Error : Rss mark as fav: '.$e->getMessage());
+	}
+
+}
+
 exit;
 

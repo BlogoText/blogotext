@@ -239,7 +239,7 @@ else {
 	if (isset($_GET['tag'])) {
 		switch ($where) {
 			case 'articles' :
-				$sql_tag = "( bt_categories LIKE ? OR bt_categories LIKE ? OR bt_categories LIKE ? OR bt_categories LIKE ? ) ";
+				$sql_tag = "( bt_tags LIKE ? OR bt_tags LIKE ? OR bt_tags LIKE ? OR bt_tags LIKE ? ) ";
 				$array[] = $_GET['tag'];
 				$array[] = $_GET['tag'].', %';
 				$array[] = '%, '.$_GET['tag'].', %';

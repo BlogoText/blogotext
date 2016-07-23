@@ -96,7 +96,7 @@ $tableau = array();
 // on affiche les anciens liens seulement si on ne veut pas en ajouter un
 if (!isset($_GET['url']) and !isset($_GET['ajout'])) {
 	if ( !empty($_GET['filtre']) ) {
-		// for "tags" & "author" the requests is "tag.$search" : here we split the type of search and what we search.
+		// for "tags" the requests is "tag.$search" : here we split the type of search and what we search.
 		$type = substr($_GET['filtre'], 0, -strlen(strstr($_GET['filtre'], '.')));
 		$search = htmlspecialchars(ltrim(strstr($_GET['filtre'], '.'), '.'));
 		if ( preg_match('#^\d{6}(\d{1,8})?$#', $_GET['filtre']) ) { // date
@@ -108,9 +108,6 @@ if (!isset($_GET['url']) and !isset($_GET['ajout'])) {
 		} elseif ($type == 'tag' and $search != '') { // tags
 			$query = "SELECT * FROM links WHERE bt_tags LIKE ? OR bt_tags LIKE ? OR bt_tags LIKE ? OR bt_tags LIKE ? ORDER BY bt_id DESC";
 			$tableau = liste_elements($query, array($search, $search.',%', '%, '.$search, '%, '.$search.', %'), 'links');
-		} elseif ($type == 'auteur' and $search != '') { // auteur
-			$query = "SELECT * FROM links WHERE bt_author=? ORDER BY bt_id DESC";
-			$tableau = liste_elements($query, array($search), 'links');
 		} else {
 			$query = "SELECT * FROM links ORDER BY bt_id DESC LIMIT ".$GLOBALS['max_linx_admin'];
 			$tableau = liste_elements($query, array(), 'links');

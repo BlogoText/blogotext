@@ -431,7 +431,7 @@ function feed2array($feed_content, $feedlink) {
 				} else { $flux['items'][$c]['bt_title'] = "-"; }
 				if (!empty($item->link['href'])) {  $flux['items'][$c]['bt_link'] = (string)$item->link['href']; }
 				if (!empty($item->link)) {          $flux['items'][$c]['bt_link'] = (string)$item->link; }
-				if (!empty($item->author->name)) {  $flux['items'][$c]['bt_author'] = (string)$item->author->name; }
+//				if (!empty($item->author->name)) {  $flux['items'][$c]['bt_author'] = (string)$item->author->name; }
 
 				if (!empty($item->guid)) {          $flux['items'][$c]['bt_id'] = (string)$item->guid; }
 				elseif (!empty($item->id)) {          $flux['items'][$c]['bt_id'] = (string)$item->id; }
@@ -459,8 +459,6 @@ function feed2array($feed_content, $feedlink) {
 
 				// place le lien du flux (on a besoin de ça)
 				$flux['items'][$c]['bt_feed_url'] = $feedlink;
-				// place le statut
-				$flux['items'][$c]['bt_statut'] = '1';
 				// place le dossier
 				$flux['items'][$c]['bt_folder'] = (isset($GLOBALS['liste_flux'][$feedlink]['folder']) ? $GLOBALS['liste_flux'][$feedlink]['folder'] : '' ) ;
 
@@ -491,16 +489,17 @@ function send_rss_json($rss_entries) {
 	foreach ($rss_entries as $i => $entry) {
 		// note : json_encode DOES add « " » on the data, so I use « encode() » and not '"'.encode().'"';
 		$out .= '{'.
-			'"id": "'.$entry['bt_id'].'",'.
-			'"date": "'.date_formate(date('YmdHis', $entry['bt_date'])).'",'.
-			'"time": "'.heure_formate(date('YmdHis', $entry['bt_date'])).'",'.
+			'"id": '.json_encode($entry['bt_id']).','.
+			'"date": '.json_encode(date_formate(date('YmdHis', $entry['bt_date']))).','.
+			'"time": '.json_encode(heure_formate(date('YmdHis', $entry['bt_date']))).','.
 			'"title": '.json_encode($entry['bt_title']).','.
 			'"link": '.json_encode($entry['bt_link']).','.
 			'"feed": '.json_encode($entry['bt_feed']).','.
 			'"sitename": '.json_encode($GLOBALS['liste_flux'][$entry['bt_feed']]['title']).','.
 			'"folder": '.json_encode($GLOBALS['liste_flux'][$entry['bt_feed']]['folder']).','.
 			'"content": '.json_encode($entry['bt_content']).','.
-			'"statut": "'.$entry['bt_statut'].'"'.
+			'"statut": '.$entry['bt_statut'].','.
+			'"fav": '.$entry['bt_bookmarked'].''.
 		'}'.(($count==$i) ? '' :',')."\n";
 	}
 	$out .= ']'."\n".'}';
