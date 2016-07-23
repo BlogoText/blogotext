@@ -313,9 +313,11 @@ function conversion_theme_addons($texte) {
 
 	// include the addons
 	foreach ($addons_list as $addon) {
-		include(DIR_ADDONS.'/'.$addon);
+		if (pathinfo($addon, PATHINFO_EXTENSION) == 'php') {
+			include(DIR_ADDONS.'/'.$addon);
+		}
 	}
-	
+
 	// parse the $texte and replace {tags} with html generated in addon.
 	foreach ($GLOBALS['addons'] as $addon) {
 		if (strpos($texte, $addon['tag']) !== FALSE) {
