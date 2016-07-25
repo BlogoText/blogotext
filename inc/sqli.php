@@ -738,26 +738,6 @@ function nb_entries_as($table, $what) {
 }
 
 
-// retourne la liste les jours d’un mois que le calendrier doit afficher.
-function table_list_date($date, $statut, $table) {
-	$return = array();
-	$and_statut = (!empty($statut)) ? 'AND bt_statut=\''.$statut.'\'' : '';
-	$bt_ = ($table == 'articles') ? 'bt_date' : 'bt_id';
-	$and_date = 'AND '.$bt_.' <= '.date('YmdHis');
-
-	$query = "SELECT DISTINCT substr($bt_, 7, 2) AS date FROM $table WHERE $bt_ LIKE '$date%' $and_statut $and_date";
-
-	try {
-		$req = $GLOBALS['db_handle']->query($query);
-		while ($row = $req->fetch(PDO::FETCH_ASSOC)) {
-			$return[] = $row['date'];
-		}
-		return $return;
-	} catch (Exception $e) {
-		die('Erreur 21436 : '.$e->getMessage());
-	}
-}
-
 function list_all_tags($table, $statut) {
 	try {
 		if ($statut !== FALSE) {
@@ -911,4 +891,3 @@ function traiter_form_rssconf() {
 	redirection($redir);
 
 }
-
