@@ -52,6 +52,7 @@ function afficher_topnav($titre) {
 	$html .=  "\t\t".'<li><a href="ecrire.php" id="lien-nouveau"'.(($tab == 'ecrire.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['nouveau'].'</a></li>'."\n";
 	$html .=  "\t\t".'<li><a href="commentaires.php" id="lien-lscom"'.(($tab == 'commentaires.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['titre_commentaires'].'</a></li>'."\n";
 	$html .=  "\t\t".'<li><a href="fichiers.php" id="lien-fichiers"'.(($tab == 'fichiers.php') ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_fichiers']).'</a></li>'."\n";
+	$html .=  "\t\t".'<li><a href="modules.php" id="lien-modules"'.(($tab == 'modules.php') ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_modules']).'</a></li>'."\n";
 	if ($GLOBALS['onglet_liens'])
 	$html .=  "\t\t".'<li><a href="links.php" id="lien-links"'.(($tab == 'links.php') ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_links']).'</a></li>'."\n";
 	if ($GLOBALS['onglet_rss'])
@@ -342,4 +343,3 @@ function php_lang_to_js($a) {
 	}
 	return $sc;
 }
-

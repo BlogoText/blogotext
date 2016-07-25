@@ -25,7 +25,6 @@ $GLOBALS['boucles'] = array(
 $GLOBALS['balises'] = array(
 	'version' => '{version}',
 	'app_name' => '{app_name}',
-	'style' => '{style}',
 	'racine_du_site' => '{racine_du_site}',
 	'rss' => '{rss}',
 	'rss_comments' => '{rss_comments}',
@@ -86,7 +85,6 @@ $GLOBALS['balises'] = array(
 function conversions_theme($texte, $solo_art, $cnt_mode) {
 	$texte = str_replace($GLOBALS['balises']['version'], BLOGOTEXT_VERSION, $texte);
 	$texte = str_replace($GLOBALS['balises']['app_name'], BLOGOTEXT_NAME, $texte);
-	$texte = str_replace($GLOBALS['balises']['style'], $GLOBALS['theme_style'], $texte);
 	$texte = str_replace($GLOBALS['balises']['racine_du_site'], $GLOBALS['racine'], $texte);
 	$texte = str_replace($GLOBALS['balises']['blog_auteur'], $GLOBALS['auteur'], $texte);
 	$texte = str_replace($GLOBALS['balises']['blog_email'], $GLOBALS['email'], $texte);
@@ -306,24 +304,51 @@ function afficher_liste($tableau) {
 
 // Include Addons and converts {tags} to HTML (specified in addons)
 function conversion_theme_addons($texte) {
-	if (!is_dir(DIR_ADDONS)) return $texte;
+	// include all addons
+	$addons_status = list_addons();
 
-	// get the list of installed addons
-	$addons_list = rm_dots_dir(scandir(DIR_ADDONS));
-
-	// include the addons
-	foreach ($addons_list as $addon) {
-		if (pathinfo($addon, PATHINFO_EXTENSION) == 'php') {
-			include(DIR_ADDONS.'/'.$addon);
-		}
-	}
-
-	// parse the $texte and replace {tags} with html generated in addon.
+	// Parse the $texte and replace {tags} with html generated in addon.
+	// Generate CSS and JS includes too.
+	$css = sprintf("<style>\n\t\t@charset 'utf-8';\n\t\t@import url(%s/style.css);", $GLOBALS['theme_style']);
+	$js = '';
 	foreach ($GLOBALS['addons'] as $addon) {
-		if (strpos($texte, $addon['tag']) !== FALSE) {
-			$texte = str_replace($addon['tag'], call_user_func($addon['callback_function']), $texte);
+		$look_for = '{addon_'.$addon['tag'].'}';
+		if (strpos($texte, $look_for) !== FALSE) {
+			$callback = 'addon_'.$addon['tag'];
+			$to_replace = '';
+			if ($addons_status[$addon['tag']]) {
+				$texte = str_replace($look_for, call_user_func($callback), $texte);
+			} else {
+				$texte = str_replace($look_for, '', $texte);
+			}
+
+		}
+
+		if (isset($addon['css'])) {
+			if (!is_array($addon['css'])) {
+				$addon['css'] = array($addon['css']);
+			}
+			foreach ($addon['css'] as $inc_file) {
+				$inc = sprintf('%s/%s/%s', DIR_ADDONS, $addon['tag'], $inc_file);
+				$css .= sprintf("\n\t\t@import url(%s);", $inc);
+			}
+		}
+
+		if (isset($addon['js'])) {
+			if (!is_array($addon['js'])) {
+				$addon['js'] = array($addon['js']);
+			}
+			foreach ($addon['js'] as $inc_file) {
+				$inc = sprintf('%s/%s/%s', DIR_ADDONS, $addon['tag'], $inc_file);
+				$js .= sprintf("<script src=\"%s\"></script>;\n", $inc);
+			}
 		}
 	}
+
+	// CSS and JS inclusions
+	$css .= "\n\t</style>";
+	$texte = str_replace('{includes.css}', $css, $texte);
+	$texte = str_replace('{includes.js}', $js, $texte);
 
 	return $texte;
 }

@@ -9,11 +9,18 @@
 #
 # *** LICENSE ***
 
-# This plugin replaces the {calendrier} tag in the public template with
+# This plugin replaces the {addon_calendar} tag in the public template with
 # a navigable HTML calendar.
 
 // include this addon
-$GLOBALS['addons'][] = array('tag' => '{calendrier}', 'callback_function' => 'addon_calendrier');
+$GLOBALS['addons'][] = array(
+	'tag' => 'calendar',  // the same name of this file without ".php"
+	'name' => 'Calendar',  // the displayed name into back office
+	'desc' => 'Display a navigable HTML calendar',  // a little description
+	'version' => '1.0.0',  // SemVer notation: http://semver.org/
+	'css' => 'style.css',  // CSS files to include
+	//'js' => array('file1.js', 'file2.js'),  // JS files to include
+);
 
 // returns a list of days containing at least one post for a given month
 function table_list_date($date, $table) {
@@ -58,7 +65,7 @@ function prev_next_posts($year, $month, $table) {
 }
 
 // returns HTML <table> calendar
-function addon_calendrier() {
+function addon_calendar() {
 	// article
 	if ( isset($_GET['d']) and preg_match('#^\d{4}(/\d{2}){5}#', $_GET['d'])) {
 		$id = substr(str_replace('/', '', $_GET['d']), 0, 14);
