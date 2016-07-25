@@ -9,11 +9,13 @@
 #
 # *** LICENSE ***
 
-# This plugin replaces the {plugin_readmore} tag in the public template with
+# This plugin replaces the {addon_readmore} tag in the public template with
 # HTML for "read-also like" thumbnails.
 
 // include this addon
-$GLOBALS['addons'][] = array('tag' => '{plugin_readmore}', 'callback_function' => 'addon_readmore');
+$GLOBALS['addons'][] = array(
+	'name' => 'readmore',
+);
 
 // returns HTML <table> calender
 function addon_readmore() {
@@ -71,6 +73,3 @@ function addon_readmore() {
 
 
 }
-
-
-
