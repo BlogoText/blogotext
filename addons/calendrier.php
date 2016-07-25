@@ -15,7 +15,49 @@
 // include this addon
 $GLOBALS['addons'][] = array('tag' => '{calendrier}', 'callback_function' => 'addon_calendrier');
 
-// returns HTML <table> calender
+// returns a list of days containing at least one post for a given month
+function table_list_date($date, $table) {
+	$return = array();
+	$column = ($table == 'articles') ? 'bt_date' : 'bt_id';
+	$and_date = 'AND '.$column.' <= '.date('YmdHis');
+
+	$query = "SELECT DISTINCT SUBSTR($column, 7, 2) AS date FROM $table WHERE bt_statut = 1 AND $column LIKE '$date%' $and_date";
+
+	try {
+		$req = $GLOBALS['db_handle']->query($query);
+		while ($row = $req->fetch(PDO::FETCH_ASSOC)) {
+			$return[] = $row['date'];
+		}
+		return $return;
+	} catch (Exception $e) {
+		die('Erreur 21436 : '.$e->getMessage());
+	}
+}
+
+// returns dates of the previous and next visible posts
+function prev_next_posts($year, $month, $table) {
+	$column = ($table == 'articles') ? 'bt_date' : 'bt_id';
+	$and_date = 'AND '.$column.' <= '.date('YmdHis');
+
+	$date = new DateTime();
+	$date->setDate($year, $month, 1)->setTime(0, 0, 0);
+	$date_min = $date->format('YmdHis');
+	$date->modify('+1 month');
+	$date_max = $date->format('YmdHis');
+
+	$query = "SELECT
+		(SELECT SUBSTR($column, 0, 7) FROM $table WHERE bt_statut = 1 AND $column < $date_min ORDER BY $column DESC LIMIT 1),
+		(SELECT SUBSTR($column, 0, 7) FROM $table WHERE bt_statut = 1 AND $column > $date_max $and_date ORDER BY $column ASC LIMIT 1)";
+
+	try {
+		$req = $GLOBALS['db_handle']->query($query);
+		return array_values($req->fetch(PDO::FETCH_ASSOC));
+	} catch (Exception $e) {
+		die('Erreur 21436 : '.$e->getMessage());
+	}
+}
+
+// returns HTML <table> calendar
 function addon_calendrier() {
 	// article
 	if ( isset($_GET['d']) and preg_match('#^\d{4}(/\d{2}){5}#', $_GET['d'])) {
@@ -46,17 +88,9 @@ function addon_calendrier() {
 		$GLOBALS['lang']['sa'],
 		$GLOBALS['lang']['di']
 	);
-	$premier_jour = mktime('0', '0', '0', $ce_mois, '1', $annee);
+	$premier_jour = mktime(0, 0, 0, $ce_mois, 1, $annee);
 	$jours_dans_mois = date('t', $premier_jour);
-	$decalage_jour = date('w', $premier_jour-'1');
-	$prev_mois =      '?'.$qstring.'d='.$annee.'/'.str2($ce_mois-1);
-	if ($prev_mois == '?'.$qstring.'d='.$annee.'/'.'00') {
-		$prev_mois =   '?'.$qstring.'d='.($annee-'1').'/'.'12';
-	}
-	$next_mois =      '?'.$qstring.'d='.$annee.'/'.str2($ce_mois+1);
-	if ($next_mois == '?'.$qstring.'d='.$annee.'/'.'13') {
-		$next_mois =   '?'.$qstring.'d='.($annee+'1').'/'.'01';
-	}
+	$decalage_jour = date('w', $premier_jour-1);
 
 	// On verifie si il y a un ou des articles/liens/commentaire du jour dans le mois courant
 	$tableau = array();
@@ -71,18 +105,23 @@ function addon_calendrier() {
 			$where = 'articles'; break;
 	}
 
-	$tableau = table_list_date($annee.$ce_mois, 1, $where);
+	// On cherche les dates des articles précédent et suivant
+	list($previous_post, $next_post) = prev_next_posts($annee, $ce_mois, $where);
+	$prev_mois = '?'.$qstring.'d='.substr($previous_post, 0, 4).'/'.substr($previous_post, 4, 2);
+	$next_mois = '?'.$qstring.'d='.substr($next_post, 0, 4).'/'.substr($next_post, 4, 2);
+
+	$tableau = table_list_date($annee.$ce_mois, $where);
 
 	$html = '<table id="calendrier">'."\n";
 	$html .= '<caption>';
-	if ( $annee.$ce_mois > DATE_PREMIER_MESSAGE_BLOG) {
+	if ($previous_post !== null) {
 		$html .= '<a href="'.$prev_mois.'">&#171;</a>&nbsp;';
 	}
 
 	// Si on affiche un jour on ajoute le lien sur le mois
 	$html .= '<a href="?'.$qstring.'d='.$annee.'/'.$ce_mois.'">'.mois_en_lettres($ce_mois).' '.$annee.'</a>';
 	// On ne peut pas aller dans le futur
-	if ( ($ce_mois != date('m')) || ($annee != date('Y')) ) {
+	if ($next_post !== null) {
 		$html .= '&nbsp;<a href="'.$next_mois.'">&#187;</a>';
 	}
 	$html .= '</caption>'."\n".'<tr>'."\n";

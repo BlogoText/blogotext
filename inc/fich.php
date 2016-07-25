@@ -56,15 +56,6 @@ function fichier_adv_conf() {
 	$conf='';
 	$conf .= '; <?php die(); /*'."\n\n";
 	$conf .= '; This file contains some more advanced configuration features.'."\n\n";
-	// get first article date
-	try {
-		$result = $GLOBALS['db_handle']->query("SELECT MIN(bt_date) FROM articles")->fetch();
-		$date = decode_id($result[0]);
-		$conf .= 'DATE_PREMIER_MESSAGE_BLOG = \''.$date['annee'].$date['mois'].'\''."\n";
-	} catch (Exception $e) {
-		die('Erreur MIN in Fichier_adv_conf() gen.: '.$e->getMessage());
-	}
-
 	$conf .= 'BLOG_UID = \''.sha1(uniqid(mt_rand(), true)).'\''."\n";
 	$conf .= 'DISPLAY_PHP_ERRORS = -1;'."\n";
 	$conf .= 'USE_IP_IN_SESSION = 0;'."\n\n\n";
@@ -132,8 +123,8 @@ function fichier_prefs() {
 		$nombre_liens_admin = '50';
 	}
 	$prefs = "<?php\n";
-	$prefs .= "\$GLOBALS['lang'] = '".$lang."';\n";	
-	$prefs .= "\$GLOBALS['auteur'] = '".$auteur."';\n";	
+	$prefs .= "\$GLOBALS['lang'] = '".$lang."';\n";
+	$prefs .= "\$GLOBALS['auteur'] = '".$auteur."';\n";
 	$prefs .= "\$GLOBALS['email'] = '".$email."';\n";
 	$prefs .= "\$GLOBALS['nom_du_site'] = '".$nomsite."';\n";
 	$prefs .= "\$GLOBALS['description'] = '".$description."';\n";
@@ -525,4 +516,3 @@ if (!function_exists('http_parse_headers')) {
 		return $headers;
 	}
 }
-

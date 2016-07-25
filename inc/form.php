@@ -443,14 +443,7 @@ function afficher_form_billet($article, $erreurs) {
 	$html = '';
 
 	function form_annee($year_shown) {
-		$yearBegin = min (substr(DATE_PREMIER_MESSAGE_BLOG, 0, 4), date('Y') -3);
-		for ($year = $yearBegin, $year_max = date('Y') +3; $year <= $year_max; $year++) $years[$year] = $year;
-		$ret = '<select name="annee">'."\n" ;
-			foreach ($years as $option => $label) {
-				$ret .= "\t".'<option value="'.htmlentities($option).'"'.(($year_shown == $option) ? ' selected="selected"' : '').'>'.htmlentities($label).'</option>'."\n";
-			}
-		$ret .= '</select>'."\n";
-		return $ret;
+		return '<input type="number" name="annee" max="'.(date('Y') + 3).'" value="'.$year_shown.'">'."\n";
 	}
 
 	function form_mois($mois_affiche) {
@@ -1029,4 +1022,3 @@ function afficher_form_prefs($erreurs = '') {
 
 	echo '</form>'."\n";
 }
-
