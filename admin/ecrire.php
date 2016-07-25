@@ -34,7 +34,7 @@ if (isset($_POST['_verif_envoi'])) {
 	}
 }
 
-// RECUP INFOS ARTICLE SI DONNÉE
+// RECUP INFOS ARTICLE SI DONNÉ
 $post = '';
 $article_id = '';
 if (isset($_GET['post_id'])) {
@@ -99,4 +99,3 @@ echo '</script>';
 
 
 footer($begin);
-

@@ -75,9 +75,7 @@ function addon_calendrier() {
 
 	$html = '<table id="calendrier">'."\n";
 	$html .= '<caption>';
-	if ( $annee.$ce_mois > DATE_PREMIER_MESSAGE_BLOG) {
-		$html .= '<a href="'.$prev_mois.'">&#171;</a>&nbsp;';
-	}
+	$html .= '<a href="'.$prev_mois.'">&#171;</a>&nbsp;';
 
 	// Si on affiche un jour on ajoute le lien sur le mois
 	$html .= '<a href="?'.$qstring.'d='.$annee.'/'.$ce_mois.'">'.mois_en_lettres($ce_mois).' '.$annee.'</a>';
