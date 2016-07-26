@@ -203,7 +203,7 @@ else {
 					$sql_date = "bt_date LIKE ? ";
 					break;
 				case 'commentaires':
-					$sql_date = "c.bt_date LIKE ? ";
+					$sql_date = "c.bt_id LIKE ? ";
 					break;
 				default:
 					$sql_date = "bt_id LIKE ? ";
