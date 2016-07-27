@@ -306,24 +306,60 @@ function afficher_liste($tableau) {
 
 // Include Addons and converts {tags} to HTML (specified in addons)
 function conversion_theme_addons($texte) {
-	if (!is_dir(DIR_ADDONS)) return $texte;
+	// include all addons
+	$addons_status = list_addons();
 
-	// get the list of installed addons
-	$addons_list = rm_dots_dir(scandir(DIR_ADDONS));
-
-	// include the addons
-	foreach ($addons_list as $addon) {
-		if (pathinfo($addon, PATHINFO_EXTENSION) == 'php') {
-			include(DIR_ADDONS.'/'.$addon);
-		}
-	}
-
-	// parse the $texte and replace {tags} with html generated in addon.
+	// Parse the $texte and replace {tags} with html generated in addon.
+	// Generate CSS and JS includes too.
+	$css = "<style>\n\t\t@charset 'utf-8';";
+	$js = '';
+	$has_style = FALSE;
 	foreach ($GLOBALS['addons'] as $addon) {
-		if (strpos($texte, $addon['tag']) !== FALSE) {
-			$texte = str_replace($addon['tag'], call_user_func($addon['callback_function']), $texte);
+		$look_for = '{addon_'.$addon['tag'].'}';
+		if (strpos($texte, $look_for) !== FALSE) {
+			$callback = 'addon_'.$addon['tag'];
+			$to_replace = '';
+			if ($addons_status[$addon['tag']] && function_exists($callback)) {
+				$texte = str_replace($look_for, call_user_func($callback), $texte);
+			} else {
+				$texte = str_replace($look_for, '', $texte);
+			}
+
+		}
+
+		if (isset($addon['css'])) {
+			if (!is_array($addon['css'])) {
+				$addon['css'] = array($addon['css']);
+			}
+			foreach ($addon['css'] as $inc_file) {
+				$inc = sprintf('%s/%s/%s', DIR_ADDONS, $addon['tag'], $inc_file);
+				if (is_file($inc)) {
+					$has_style = TRUE;
+					$css .= sprintf("\n\t\t@import url('%s');", addslashes($inc));
+				}
+			}
+		}
+
+		if (isset($addon['js'])) {
+			if (!is_array($addon['js'])) {
+				$addon['js'] = array($addon['js']);
+			}
+			foreach ($addon['js'] as $inc_file) {
+				$inc = sprintf('%s/%s/%s', DIR_ADDONS, $addon['tag'], $inc_file);
+				if (is_file($inc)) {
+					$js .= sprintf("<script src=\"%s\"></script>;\n", $inc);
+				}
+			}
 		}
 	}
+
+	// CSS and JS inclusions
+	$css .= "\n\t</style>";
+	if (!$has_style) {
+		$css = '';
+	}
+	$texte = str_replace('{includes.css}', $css, $texte);
+	$texte = str_replace('{includes.js}', $js, $texte);
 
 	return $texte;
 }

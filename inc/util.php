@@ -257,7 +257,7 @@ function parse_search($q) {
 function debug($data) {
 	header('Content-Type: text/html; charset=utf-8');
 	echo '<pre>';
-	print_r($data);
+	var_dump($data);
 	die;
 }
 
@@ -267,4 +267,3 @@ function rm_dots_dir($array) {
 	if (($key = array_search('.', $array)) !== FALSE) { unset($array[$key]); }
 	return ($array);
 }
-

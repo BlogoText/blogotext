@@ -158,6 +158,20 @@ function valider_form_fichier($fichier) {
 	return $erreurs;
 }
 
+function valider_form_module($module) {
+	$erreurs = array();
+	if (!( isset($_POST['token']) and check_token($_POST['token'])) ) {
+		$erreurs[] = $GLOBALS['lang']['err_wrong_token'];
+	}
+	if (!isset($module['addon_id']) || preg_match('/^[\w\-]+$/', $module['addon_id']) === FALSE) {
+		$erreurs[] = $GLOBALS['lang']['err_addon_name'];
+	}
+	if (!isset($module['status'])) {
+		$erreurs[] = $GLOBALS['lang']['err_addon_status'];
+	}
+	return $erreurs;
+}
+
 function valider_form_rss() {
 	$erreurs = array();
 	if (!( isset($_POST['token']) and check_token($_POST['token'])) ) {
@@ -206,5 +220,3 @@ function valider_form_maintenance() {
 	}
 	return $erreurs;
 }
-
-
