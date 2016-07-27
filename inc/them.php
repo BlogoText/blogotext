@@ -25,6 +25,7 @@ $GLOBALS['boucles'] = array(
 $GLOBALS['balises'] = array(
 	'version' => '{version}',
 	'app_name' => '{app_name}',
+	'style' => '{style}',
 	'racine_du_site' => '{racine_du_site}',
 	'rss' => '{rss}',
 	'rss_comments' => '{rss_comments}',
@@ -85,6 +86,7 @@ $GLOBALS['balises'] = array(
 function conversions_theme($texte, $solo_art, $cnt_mode) {
 	$texte = str_replace($GLOBALS['balises']['version'], BLOGOTEXT_VERSION, $texte);
 	$texte = str_replace($GLOBALS['balises']['app_name'], BLOGOTEXT_NAME, $texte);
+	$texte = str_replace($GLOBALS['balises']['style'], $GLOBALS['theme_style'], $texte);
 	$texte = str_replace($GLOBALS['balises']['racine_du_site'], $GLOBALS['racine'], $texte);
 	$texte = str_replace($GLOBALS['balises']['blog_auteur'], $GLOBALS['auteur'], $texte);
 	$texte = str_replace($GLOBALS['balises']['blog_email'], $GLOBALS['email'], $texte);
@@ -309,8 +311,9 @@ function conversion_theme_addons($texte) {
 
 	// Parse the $texte and replace {tags} with html generated in addon.
 	// Generate CSS and JS includes too.
-	$css = sprintf("<style>\n\t\t@charset 'utf-8';\n\t\t@import url(%s/style.css);", $GLOBALS['theme_style']);
+	$css = "<style>\n\t\t@charset 'utf-8';";
 	$js = '';
+	$has_style = FALSE;
 	foreach ($GLOBALS['addons'] as $addon) {
 		$look_for = '{addon_'.$addon['tag'].'}';
 		if (strpos($texte, $look_for) !== FALSE) {
@@ -330,7 +333,10 @@ function conversion_theme_addons($texte) {
 			}
 			foreach ($addon['css'] as $inc_file) {
 				$inc = sprintf('%s/%s/%s', DIR_ADDONS, $addon['tag'], $inc_file);
-				$css .= sprintf("\n\t\t@import url(%s);", $inc);
+				if (is_file($inc)) {
+					$has_style = TRUE;
+					$css .= sprintf("\n\t\t@import url('%s');", addslashes($inc));
+				}
 			}
 		}
 
@@ -340,13 +346,18 @@ function conversion_theme_addons($texte) {
 			}
 			foreach ($addon['js'] as $inc_file) {
 				$inc = sprintf('%s/%s/%s', DIR_ADDONS, $addon['tag'], $inc_file);
-				$js .= sprintf("<script src=\"%s\"></script>;\n", $inc);
+				if (is_file($inc)) {
+					$js .= sprintf("<script src=\"%s\"></script>;\n", $inc);
+				}
 			}
 		}
 	}
 
 	// CSS and JS inclusions
 	$css .= "\n\t</style>";
+	if (!$has_style) {
+		$css = '';
+	}
 	$texte = str_replace('{includes.css}', $css, $texte);
 	$texte = str_replace('{includes.js}', $js, $texte);
 
