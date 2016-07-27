@@ -38,24 +38,34 @@
  * Keywords accepted:
  *
  * 'tag' => 'calendar'
+ * (required)
  * This is the addon ID. It must have the same name of this file without ".php".
  * The directory tree has to be "${addon ID}/${addon ID}.php".
  *
  * 'name' => 'Calendar'
+ * (required)
  * This is the displayed name into back office.
  *
  * 'desc' => 'Display a navigable HTML calendar.'
+ * (required)
  * This is the addon description.
  *
  * 'version' => '1.0.0'
+ * (required)
  * Addon version that should follow the SemVer notation: http://semver.org/.
+ *
+ * 'url' => 'http://example.org/bt-addons/calendar'
+ * (optional but highly recommended)
+ * Addon developer website, for addon support.
  *
  * 'css' => 'style.css'
  * 'css' => array('style1.css', 'style1.css')
+ * (optional)
  * CSS files to include. You can specifiy several files using an array of filenames.
  *
  * 'js' => 'script.js'
  * 'js' => array('script1.js', 'script.js')
+ * (optional)
  * JS files to include. You can specifiy several files using an array of filenames.
  */
 $GLOBALS['addons'][] = array(
@@ -70,13 +80,15 @@ $GLOBALS['addons'][] = array(
  * Second and last, you must declare the callback function as follow:
  *     function addon_${addon ID}() { ... }
  *
+ * Note: if your addon contains only CSS/JS files, no need to define such a function.
+ *
  * The function has to return valid HTML data.
  * In this addon, it returns a HTML <table> calendar.
  *
  * If you need more functions, you can declare how many as needed below this one.
  * You should suffix theme with an underscore.
  *
- * You can use BlogoText ones too.
+ * You can use BlogoText function and defines.
  */
 function addon_calendar()
 {
