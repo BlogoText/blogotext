@@ -11,22 +11,30 @@
 #
 # *** LICENSE ***
 
-$begin = microtime(TRUE);
 define('BT_ROOT', '../');
 
 require_once '../inc/inc.php';
 
 operate_session();
-
-$GLOBALS['db_handle'] = open_base();
+$begin = microtime(TRUE);
 
 // traitement d’une action sur le module
 $erreurs = array();
 if (isset($_POST['_verif_envoi'])) {
 	$module = init_post_module();
 	$erreurs = valider_form_module($module);
-	if (empty($erreurs)) {
-		$erreurs = traiter_form_module($module);
+
+	if ( isset($_POST['mod_activer']) ) {
+		if (!empty($erreurs) ) {
+			echo 'Error'.new_token();
+			echo implode("\n", $erreurs);
+			die();
+		}
+		else {
+			traiter_form_module($module); // FIXME: this should not return anything. Put a is_readable() in valider_form_module, or somewhere more appropriate.  Or simply die with error, since this is critical error that shouldn’t allow BT to run.
+		}
+	} else {
+		$erreurs = traiter_form_module($module); // FIXME: same here.
 	}
 }
 
@@ -58,7 +66,6 @@ echo '<div id="page">'."\n";
 // édition d'un module
 if (isset($_GET['addon_id']) && preg_match('/^[\w\-]+$/', $_GET['addon_id']) && isset($tableau[$_GET['addon_id']]) ) {
 	afficher_form_module($tableau, $_GET['addon_id']);
-	echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
 } else {
 	echo erreurs($erreurs);
 	// SUBNAV
@@ -71,5 +78,12 @@ if (isset($_GET['addon_id']) && preg_match('/^[\w\-]+$/', $_GET['addon_id']) && 
 
 	afficher_liste_modules($tableau, $filtre);
 }
+
+echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
+echo '<script type="text/javascript">';
+echo php_lang_to_js(0);
+echo 'var csrf_token = \''.new_token().'\'';
+echo '</script>';
+
 
 footer($begin);

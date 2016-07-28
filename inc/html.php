@@ -52,7 +52,6 @@ function afficher_topnav($titre) {
 	$html .=  "\t\t".'<li><a href="ecrire.php" id="lien-nouveau"'.(($tab == 'ecrire.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['nouveau'].'</a></li>'."\n";
 	$html .=  "\t\t".'<li><a href="commentaires.php" id="lien-lscom"'.(($tab == 'commentaires.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['titre_commentaires'].'</a></li>'."\n";
 	$html .=  "\t\t".'<li><a href="fichiers.php" id="lien-fichiers"'.(($tab == 'fichiers.php') ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_fichiers']).'</a></li>'."\n";
-	$html .=  "\t\t".'<li><a href="modules.php" id="lien-modules"'.(($tab == 'modules.php') ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_modules']).'</a></li>'."\n";
 	if ($GLOBALS['onglet_liens'])
 	$html .=  "\t\t".'<li><a href="links.php" id="lien-links"'.(($tab == 'links.php') ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_links']).'</a></li>'."\n";
 	if ($GLOBALS['onglet_rss'])
@@ -65,6 +64,7 @@ function afficher_topnav($titre) {
 	$html .=  '<div id="nav-acc">'."\n";
 	$html .=  "\t".'<ul>'."\n";
 	$html .=  "\t\t".'<li><a href="preferences.php" id="lien-preferences">'.$GLOBALS['lang']['preferences'].'</a></li>'."\n";
+	$html .=  "\t\t".'<li><a href="modules.php" id="lien-modules">'.ucfirst($GLOBALS['lang']['label_modules']).'</a></li>'."\n";
 	$html .=  "\t\t".'<li><a href="'.$GLOBALS['racine'].'" id="lien-site">'.$GLOBALS['lang']['lien_blog'].'</a></li>'."\n";
 	$html .=  "\t\t".'<li><a href="logout.php" id="lien-deconnexion">'.$GLOBALS['lang']['deconnexion'].'</a></li>'."\n";
 	$html .=  "\t".'</ul>'."\n";
@@ -336,7 +336,7 @@ function php_lang_to_js($a) {
 	$frontend_str['questionSupprArticle'] = $GLOBALS['lang']['question_suppr_article'];
 	$frontend_str['questionSupprFichier'] = $GLOBALS['lang']['question_suppr_fichier'];
 
-	$sc = 'var BTlang = '.json_encode($frontend_str).';';
+	$sc = 'var BTlang = '.json_encode($frontend_str).';'."\n";
 
 	if ($a == 1) {
 		$sc = "\n".'<script type="text/javascript">'."\n".$sc."\n".'</script>'."\n";

@@ -30,7 +30,7 @@
 
 @font-face {
   font-family: "icon";
-  src: url("icon.woff?15") format("woff");
+  src: url("icon.woff?16") format("woff");
 }
 
 /* ANIMATIONS
@@ -462,6 +462,7 @@ q, blockquote {
 #top > #nav-acc #lien-preferences:after { content: "\e914"; }
 #top > #nav-acc #lien-site:after        { content: "\e912"; }
 #top > #nav-acc #lien-deconnexion:after { content: "\e90e"; }
+#top > #nav-acc #lien-modules:after     { content: "\e943"; }
 
 
 
@@ -901,6 +902,7 @@ fieldset {
 #post-new-lien,
 .linkbloc,
 #billets,
+#modules,
 #auth, #install,
 #form-image, #image-section, #files-section,
 #preferences > div,

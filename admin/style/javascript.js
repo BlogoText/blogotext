@@ -292,6 +292,46 @@ function activate_comm(button) {
 
 
 /**************************************************************************************************************************************
+	ADD-ONS HANDLING
+**************************************************************************************************************************************/
+
+// hide/unhide a comm
+function activate_mod(button) {
+	var notifDiv = document.createElement('div');
+
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', 'modules.php', true);
+
+	xhr.onload = function() {
+		var resp = this.responseText;
+		if (resp.indexOf("Success") == 0) {
+			csrf_token = resp.substr(7, 40);
+		} else {
+			notifDiv.textContent = resp;
+			notifDiv.classList.add('no_confirmation');
+			document.getElementById('top').appendChild(notifDiv);
+		}
+	};
+	xhr.onerror = function(e) {
+		notifDiv.textContent = e.target.status + ' (#mod-activ-F38)';
+		notifDiv.classList.add('no_confirmation');
+		document.getElementById('top').appendChild(notifDiv);
+	};
+
+	// prepare and send FormData
+	var formData = new FormData();
+	formData.append('token', csrf_token);
+	formData.append('_verif_envoi', 1);
+
+	formData.append('addon_id', button.id.substr(7));
+	formData.append('statut', ((button.checked) ? 'on' : ''));
+	formData.append('mod_activer', button.id);
+
+	xhr.send(formData);
+
+}
+
+/**************************************************************************************************************************************
 	LINKS AND ARTICLE FORMS : TAGS HANDLING
 **************************************************************************************************************************************/
 

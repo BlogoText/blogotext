@@ -43,6 +43,9 @@ readfile('style-rss.css');
 echo '/* Prefs + maintainance pages */'."\n";
 readfile('style-preferences.css');
 
+echo '/* Add-ons managing page */'."\n";
+readfile('style-addons.css');
+
 echo '/* Media-queries < 1100px */'."\n";
 readfile('style-mobile-lt1100px.css');
 

@@ -36,19 +36,21 @@ function list_addons($is_admin=FALSE) {
 
 function afficher_liste_modules($tableau, $filtre) {
 	if (!empty($tableau)) {
-		$i = 0;
-		$out = '<ul id="billets">'."\n";
-		foreach ($tableau as $addon) {
+		$out = '<ul id="modules">'."\n";
+		foreach ($tableau as $i => $addon) {
 			// DESCRIPTION
 			$title = trim(htmlspecialchars(mb_substr(strip_tags($addon['desc']), 0, 249), ENT_QUOTES));
 			$out .= "\t".'<li title="'.$title.'">'."\n";
-			// ICÔNE SELON STATUT + NOM DU MODULE
-			$out .= "\t\t".'<span class="'.($addon['status'] ? 'on' : 'off').'"><a href="modules.php?addon_id='.$addon['tag'].'">'.$addon['name'].'</a></span>'."\n";
+			// CHECKBOX POUR ACTIVER
+			$out .= "\t\t".'<span><input type="checkbox" class="checkbox-toggle" name="module_'.$i.'" id="module_'.$i.'" '.(($addon['status']) ? 'checked' : '').' onchange="activate_mod(this);" /><label for="module_'.$i.'"></label></span>'."\n";
+
+			// NOM DU MODULE
+			$out .= "\t\t".'<span><a href="modules.php?addon_id='.$addon['tag'].'">'.$addon['name'].'</a></span>'."\n";
+
 			// VERSION
 			$out .= "\t\t".'<span>'.$addon['version'].'</span>'."\n";
 
 			$out .= "\t".'</li>'."\n";
-			$i++;
 		}
 		$out .= '</ul>'."\n\n";
 	} else {
@@ -58,6 +60,7 @@ function afficher_liste_modules($tableau, $filtre) {
 	echo $out;
 }
 
+// TODO: at the end, put this in "afficher_form_filtre()"
 function afficher_form_filtre_modules($filtre) {
 	$ret = '<div id="form-filtre">'."\n";
 	$ret .= '<form method="get" action="'.basename($_SERVER['SCRIPT_NAME']).'" onchange="this.submit();">'."\n";
@@ -114,12 +117,12 @@ function afficher_form_module($addons, $addon_id) { // affichage d'un module
 
 function traiter_form_module($module) {
 	$erreurs = array();
-	$path = '../'.DIR_ADDONS;
+	$path = BT_ROOT.DIR_ADDONS;
 	$check_file = sprintf('%s/%s/.disabled', $path, $module['addon_id']);
 	$is_enabled = !is_file($check_file);
 	$new_status = $module['status'];
 
-	if ($is_enabled !== $new_status) {
+	if ($is_enabled != $new_status) {
 		if ($new_status) {
 			// Module activé, on supprimer le fichier .disabled
 			if (unlink($check_file) === FALSE) {
@@ -127,9 +130,18 @@ function traiter_form_module($module) {
 			}
 		} else {
 			// Module désactivé, on créée le fichier .disabled
-			if (file_put_contents($check_file, '', LOCK_EX) === FALSE) {
+			if (fichier_module_disabled(BT_ROOT.DIR_ADDONS.'/'.$module['addon_id']) === FALSE) {
 				$erreurs[] = sprintf($GLOBALS['lang']['err_addon_disabled'], $module['addon_id']);
 			}
+		}
+	}
+
+	if (isset($_POST['mod_activer']) ) {
+		if (empty($erreurs)) {
+			die('Success'.new_token());
+		}
+		else {
+			die ('Error'.new_token().implode("\n", $erreurs));
 		}
 	}
 
@@ -139,6 +151,6 @@ function traiter_form_module($module) {
 function init_post_module() {
 	return array (
 		'addon_id' => htmlspecialchars($_POST['addon_id']),
-		'status' => (bool) $_POST['statut'],
+		'status' => (isset($_POST['statut']) and $_POST['statut'] == 'on') ? '1' : '0',
 	);
 }
