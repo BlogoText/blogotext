@@ -1,3 +1,8 @@
-!calendrier.php
-!readmore.php
+# Ignore everything:
 *
+
+# Except for those addons directories:
+!calendar/
+!calendar/*
+!readmore/
+!readmore/*
