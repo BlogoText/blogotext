@@ -208,9 +208,8 @@ function fichier_htaccess($dossier) {
 	}
 }
 
-function fichier_module_disabled($dossier) {
-	$content = $GLOBALS['lang']['err_addon_disabled'];
-	$file = $dossier.'/.disabled';
+function fichier_module_disabled($file) {
+	$content = $GLOBALS['lang']['label_disabled'];
 
 	if (file_put_contents($file, $content) === FALSE) {
 		return FALSE;

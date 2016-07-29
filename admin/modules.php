@@ -39,7 +39,7 @@ if (isset($_POST['_verif_envoi'])) {
 }
 
 $filtre = !empty($_GET['filtre']) ? htmlspecialchars($_GET['filtre']) : '';
-$addons_status = list_addons(TRUE);
+$addons_status = list_addons();
 // Filtrons la liste
 $tableau = array();
 foreach ($GLOBALS['addons'] as $addon) {
