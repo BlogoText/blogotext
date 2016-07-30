@@ -120,7 +120,7 @@ function operate_session() {
 }
 
 function fermer_session() {
-	unset($_SESSION['nom_utilisateur'], $_SESSION['user_id']);
+	unset($_SESSION['nom_utilisateur'], $_SESSION['user_id'], $_SESSION['tokens']);
 	setcookie('BT-admin-stay-logged', NULL);
 	session_destroy(); // destroy session
 	// Saving server-side the possible lost data (writing article for example)

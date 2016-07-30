@@ -160,8 +160,11 @@ function valider_form_fichier($fichier) {
 
 function valider_form_rss() {
 	$erreurs = array();
-	if (!( isset($_POST['token']) and check_token($_POST['token'])) ) {
-		$erreurs[] = $GLOBALS['lang']['err_wrong_token'];
+	// check unique-token only on critical actions (session ID check is still there)
+	if (isset($_POST['add-feed']) or isset($_POST['delete_old'])) {
+		if (!( isset($_POST['token']) and check_token($_POST['token'])) ) {
+			$erreurs[] = $GLOBALS['lang']['err_wrong_token'];
+		}
 	}
 	// on feed add: URL needs to be valid, not empty, and must not already be in DB
 	if (isset($_POST['add-feed'])) {
@@ -174,15 +177,12 @@ function valider_form_rss() {
 		if (array_key_exists($_POST['add-feed'], $GLOBALS['liste_flux'])) {
 			$erreurs[] = $GLOBALS['lang']['err_feed_exists'];
 		}
-
 	}
-
 	elseif (isset($_POST['mark-as-read'])) {
 		if ( !(in_array($_POST['mark-as-read'], array('all', 'site', 'post', 'folder', 'postlist'))) ) {
 			$erreurs[] = $GLOBALS['lang']['err_feed_wrong_param'];
 		}
 	}
-
 	return $erreurs;
 }
 
