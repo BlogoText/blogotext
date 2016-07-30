@@ -15,7 +15,7 @@ define('BT_ROOT', '../');
 require_once '../inc/inc.php';
 
 // Update all RSS feeds using GET (for cron jobs).
-	// only test here is on install UID.
+// only test here is on install UID.
 if (isset($_GET['refresh_all'], $_GET['guid']) and ($_GET['guid'] == BLOG_UID)) {
 	if ($_GET['guid'] == BLOG_UID) {
 		$GLOBALS['db_handle'] = open_base();
@@ -39,32 +39,16 @@ $GLOBALS['liste_flux'] = open_serialzd_file(FEEDS_DB);
 	It is not intended to be called directly in your browser.
 */
 
-// Update all RSS feeds using GET (for cron jobs).
-if (isset($_GET['refresh_all'])) {
-	$erreurs = valider_form_rss();
-	if (!empty($erreurs)) {
-		echo erreurs($erreurs);
-		die;
-	}
-
-	$nb_new = refresh_rss($GLOBALS['liste_flux']);
-	echo 'Success';
-	echo new_token();
-	echo $nb_new;
-}
-
 // retreive all RSS feeds from the sources, and save them in DB.
 if (isset($_POST['refresh_all'])) {
 	$erreurs = valider_form_rss();
 	if (!empty($erreurs)) {
-		echo erreurs($erreurs);
-		die;
+		die(erreurs($erreurs));
 	}
-
 	$nb_new = refresh_rss($GLOBALS['liste_flux']);
 	echo 'Success';
-	echo new_token();
 	echo $nb_new;
+	die;
 }
 
 
@@ -72,16 +56,14 @@ if (isset($_POST['refresh_all'])) {
 if (isset($_POST['delete_old'])) {
 	$erreurs = valider_form_rss();
 	if (!empty($erreurs)) {
-		echo erreurs($erreurs);
-		die;
+		die(erreurs($erreurs));
 	}
 
 	$query = 'DELETE FROM rss WHERE bt_statut=0';
 	try {
 		$req = $GLOBALS['db_handle']->prepare($query);
 		$req->execute(array());
-		echo 'Success';
-		echo new_token();
+		die('Success');
 	} catch (Exception $e) {
 		die('Error : Rss RM old entries AJAX: '.$e->getMessage());
 	}
@@ -93,8 +75,7 @@ if (isset($_POST['delete_old'])) {
 if (isset($_POST['add-feed'])) {
 	$erreurs = valider_form_rss();
 	if (!empty($erreurs)) {
-		echo erreurs($erreurs);
-		die;
+		die(erreurs($erreurs));
 	}
 
 	$new_feed = trim($_POST['add-feed']);
@@ -123,16 +104,14 @@ if (isset($_POST['add-feed'])) {
 
 	// Update DB
 	refresh_rss(array($new_feed => $GLOBALS['liste_flux'][$new_feed]));
-	echo 'Success';
-	echo new_token();
+	die('Success');
 }
 
 // mark some element(s) as read
 if (isset($_POST['mark-as-read'])) {
 	$erreurs = valider_form_rss();
 	if (!empty($erreurs)) {
-		echo erreurs($erreurs);
-		die;
+		die(erreurs($erreurs));
 	}
 
 	$what = $_POST['mark-as-read'];
@@ -169,19 +148,17 @@ if (isset($_POST['mark-as-read'])) {
 	try {
 		$req = $GLOBALS['db_handle']->prepare($query);
 		$req->execute($array);
-		echo 'Success';
-		echo new_token();
+		die('Success');
 	} catch (Exception $e) {
 		die('Error : Rss mark as read: '.$e->getMessage());
 	}
 }
 
-// mark so elements as fav 
+// mark some elements as fav
 if (isset($_POST['mark-as-fav'])) {
 	$erreurs = valider_form_rss();
 	if (!empty($erreurs)) {
-		echo erreurs($erreurs);
-		die;
+		die(erreurs($erreurs));
 	}
 
 	$url = $_POST['url'];
@@ -191,8 +168,7 @@ if (isset($_POST['mark-as-fav'])) {
 	try {
 		$req = $GLOBALS['db_handle']->prepare($query);
 		$req->execute($array);
-		echo 'Success';
-		echo new_token();
+		die('Success');
 	} catch (Exception $e) {
 		die('Error : Rss mark as fav: '.$e->getMessage());
 	}
@@ -200,4 +176,3 @@ if (isset($_POST['mark-as-fav'])) {
 }
 
 exit;
-

@@ -205,7 +205,6 @@ function suppr_comm(button) {
 		xhr.onload = function() {
 			var resp = this.responseText;
 			if (resp.indexOf("Success") == 0) {
-				csrf_token = resp.substr(7, 40);
 				div_bloc.classList.add('deleteFadeOut');
 				div_bloc.style.height = div_bloc.offsetHeight+'px';
 				div_bloc.addEventListener('animationend', function(event){event.target.parentNode.removeChild(event.target);}, false);
@@ -1221,11 +1220,11 @@ function refresh_all_feeds(refreshLink) {
 	}
 	xhr.onload = function() {
 		var resp = this.responseText;
+		alert(resp);
 
 		// update status
-		var nbNewFeeds = resp.substr(resp.indexOf("Success")+40+7);
+		var nbNewFeeds = resp.substr(resp.indexOf("Success")+7);
 		notifNode.textContent = nbNewFeeds+' new feeds (please reload page)';
-		token = resp.substr(resp.indexOf("Success")+7, 40);
 
 		// if new feeds, reload page.
 		refreshLink.dataset.refreshOngoing = 0;
@@ -1414,7 +1413,6 @@ function sendMarkReadRequest(what, url, async) {
 	xhr.onload = function() {
 		var resp = this.responseText;
 		if (resp.indexOf("Success") == 0) {
-			token = resp.substr(7, 40);
 			if (what !== 'postlist') {
 				markAsRead(what, url);
 			}
@@ -1459,7 +1457,6 @@ function sendMarkFavRequest(url) {
 	xhr.onload = function() {
 		var resp = this.responseText;
 		if (resp.indexOf("Success") == 0) {
-			token = resp.substr(7, 40);
 			loading_animation('off');
 			return true;
 		} else {
@@ -1605,7 +1602,6 @@ function cleanList() {
 	xhr.open('POST', '_rss.ajax.php', true);
 	xhr.onload = function() {
 		var resp = this.responseText;
-		token = resp.substr(7, 40);
 		if (resp.indexOf("Success") == 0) {
 			// rebuilt array with only unread items
 			var list = new Array();
