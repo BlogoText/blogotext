@@ -26,7 +26,7 @@ if (isset($_POST['_verif_envoi'])) {
 
 	if ( isset($_POST['mod_activer']) ) {
 		if (!empty($erreurs) ) {
-			echo 'Error'.new_token();
+			echo 'Error';
 			echo implode("\n", $erreurs);
 			die();
 		}

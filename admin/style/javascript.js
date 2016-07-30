@@ -304,7 +304,6 @@ function activate_mod(button) {
 	xhr.onload = function() {
 		var resp = this.responseText;
 		if (resp.indexOf("Success") == 0) {
-			csrf_token = resp.substr(7, 40);
 		} else {
 			notifDiv.textContent = resp.substr(45);
 			notifDiv.classList.add('no_confirmation');
