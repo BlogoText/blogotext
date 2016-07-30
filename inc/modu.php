@@ -12,9 +12,9 @@
 # *** LICENSE ***
 
 /* list all addons */
-function list_addons($is_admin=FALSE) {
+function list_addons() {
 	$addons = array();
-	$path = $is_admin ? '../'.DIR_ADDONS : DIR_ADDONS;
+	$path = BT_ROOT.DIR_ADDONS;
 
 	if (is_dir($path)) {
 		// get the list of installed addons
@@ -120,7 +120,7 @@ function traiter_form_module($module) {
 	$path = BT_ROOT.DIR_ADDONS;
 	$check_file = sprintf('%s/%s/.disabled', $path, $module['addon_id']);
 	$is_enabled = !is_file($check_file);
-	$new_status = $module['status'];
+	$new_status = (bool) $module['status'];
 
 	if ($is_enabled != $new_status) {
 		if ($new_status) {
@@ -130,7 +130,7 @@ function traiter_form_module($module) {
 			}
 		} else {
 			// Module désactivé, on créée le fichier .disabled
-			if (fichier_module_disabled(BT_ROOT.DIR_ADDONS.'/'.$module['addon_id']) === FALSE) {
+			if (fichier_module_disabled($check_file) === FALSE) {
 				$erreurs[] = sprintf($GLOBALS['lang']['err_addon_disabled'], $module['addon_id']);
 			}
 		}
