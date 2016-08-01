@@ -34,6 +34,13 @@ function list_addons() {
 	return $addons;
 }
 
+function addon_get_translation($info) {
+	if (is_array($info)) {
+		return $info[$GLOBALS['lang']['id']];
+	}
+	return $info;
+}
+
 function afficher_liste_modules($tableau, $filtre) {
 	if (!empty($tableau)) {
 		$out = '<ul id="modules">'."\n";
@@ -44,7 +51,7 @@ function afficher_liste_modules($tableau, $filtre) {
 			$out .= "\t\t".'<span><input type="checkbox" class="checkbox-toggle" name="module_'.$i.'" id="module_'.$i.'" '.(($addon['status']) ? 'checked' : '').' onchange="activate_mod(this);" /><label for="module_'.$i.'"></label></span>'."\n";
 
 			// NOM DU MODULE
-			$out .= "\t\t".'<span><a href="modules.php?addon_id='.$addon['tag'].'">'.$addon['name'].'</a></span>'."\n";
+			$out .= "\t\t".'<span><a href="modules.php?addon_id='.$addon['tag'].'">'.addon_get_translation($addon['name']).'</a></span>'."\n";
 
 			// VERSION
 			$out .= "\t\t".'<span>'.$addon['version'].'</span>'."\n";
@@ -54,7 +61,7 @@ function afficher_liste_modules($tableau, $filtre) {
 			// AUTRES INFOS
 			$url = '';
 			$out .= "\t".'<div>'."\n";
-			$out .= "\t\t".'<p><code title="'.$GLOBALS['lang']['label_code_theme'].'">'.'{addon_'.$addon['tag'].'}'.'</code>'.$addon['desc'].'</p>'."\n";
+			$out .= "\t\t".'<p><code title="'.$GLOBALS['lang']['label_code_theme'].'">'.'{addon_'.$addon['tag'].'}'.'</code>'.addon_get_translation($addon['desc']).'</p>'."\n";
 			if (!empty($addon['url'])) {
 				$out .= "\t\t".'<p><a href="'.$addon['url'].'">'.$GLOBALS['lang']['label_owner_url'].'</a>';
 			}
