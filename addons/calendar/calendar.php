@@ -72,6 +72,7 @@ $GLOBALS['addons'][] = array(
     'tag' => 'calendar',
     'name' => 'Calendar',
     'desc' => 'Display a navigable HTML calendar.',
+    'url' => 'http://www.example.org',
     'version' => '1.0.0',
     'css' => 'style.css',
 );

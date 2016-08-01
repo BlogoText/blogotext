@@ -39,8 +39,7 @@ function afficher_liste_modules($tableau, $filtre) {
 		$out = '<ul id="modules">'."\n";
 		foreach ($tableau as $i => $addon) {
 			// DESCRIPTION
-			$title = trim(htmlspecialchars(mb_substr(strip_tags($addon['desc']), 0, 249), ENT_QUOTES));
-			$out .= "\t".'<li title="'.$title.'">'."\n";
+			$out .= "\t".'<li>'."\n";
 			// CHECKBOX POUR ACTIVER
 			$out .= "\t\t".'<span><input type="checkbox" class="checkbox-toggle" name="module_'.$i.'" id="module_'.$i.'" '.(($addon['status']) ? 'checked' : '').' onchange="activate_mod(this);" /><label for="module_'.$i.'"></label></span>'."\n";
 
@@ -51,6 +50,15 @@ function afficher_liste_modules($tableau, $filtre) {
 			$out .= "\t\t".'<span>'.$addon['version'].'</span>'."\n";
 
 			$out .= "\t".'</li>'."\n";
+
+			// AUTRES INFOS
+			$url = '';
+			$out .= "\t".'<div>'."\n";
+			$out .= "\t\t".'<p><code title="'.$GLOBALS['lang']['label_code_theme'].'">'.'{addon_'.$addon['tag'].'}'.'</code>'.$addon['desc'].'</p>'."\n";
+			if (!empty($addon['url'])) {
+				$out .= "\t\t".'<p><a href="'.$addon['url'].'">'.$GLOBALS['lang']['label_owner_url'].'</a>';
+			}
+			$out .= '</div>'."\n";
 		}
 		$out .= '</ul>'."\n\n";
 	} else {
@@ -77,44 +85,6 @@ function afficher_form_filtre_modules($filtre) {
 	echo $ret;
 }
 
-function afficher_form_module($addons, $addon_id) { // affichage d'un module
-	$form = '<form id="form-image" class="bordered-formbloc" method="post" action="'.basename($_SERVER['SCRIPT_NAME']).'">'."\n";
-	$form .= '<div class="edit-fichier">'."\n";
-
-	// la partie listant les infos du module.
-	$form .= '<ul id="fichier-meta-info">'."\n";
-		$form .= "\t".'<li><b>'.$GLOBALS['lang']['label_dp_nom'].'</b> '.$addons[$addon_id]['name'].'</li>'."\n";
-		$form .= "\t".'<li><b>'.$GLOBALS['lang']['label_dp_description'].'</b> '.$addons[$addon_id]['desc'].'</li>'."\n";
-		$form .= "\t".'<li><b>'.$GLOBALS['lang']['label_dp_version'].'</b>'.$addons[$addon_id]['version'].'</li>'."\n";
-		$form .= "\t".'<li><b>'.$GLOBALS['lang']['label_dp_etat'].'</b>'.($addons[$addon_id]['status'] ? $GLOBALS['lang']['label_enabled'] : $GLOBALS['lang']['label_disabled']).'</li>'."\n";
-	$form .= '</ul>'."\n";
-
-	// la partie des codes d’intégration (bbcode, etc.)
-	$form .= '<div id="interg-codes">'."\n";
-	$form .= '<p><strong>'.$GLOBALS['lang']['label_codes'].'</strong></p>'."\n";
-	$form .= '<input onfocus="this.select()" class="text" type="text" value=\'{addon_'.$addon_id.'}\' />'."\n";
-
-	$form .= '</div>'."\n";
-
-	// la partie avec la possibilité de changer le statut du module.
-	$form .= '<div id="img-others-infos">'."\n";
-	$checked = $addons[$addon_id]['status'] ? 'checked ' : '';
-	$form .= "\t".'<p><input type="checkbox" id="statut" name="statut" '.$checked.' class="checkbox" /><label for="statut">'.$GLOBALS['lang']['label_addon_enabled'].'</label></p>';
-	$form .= "\t".'<p class="submit-bttns">'."\n";
-	$form .= "\t\t".'<button class="submit button-cancel" type="button" onclick="annuler(\'modules.php\');">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
-	$form .= "\t\t".'<button class="submit button-submit" type="submit" name="editer">'.$GLOBALS['lang']['envoyer'].'</button>'."\n";
-	$form .= "\t".'</p>'."\n";
-	$form .= '</div>'."\n";
-
-	$form .= hidden_input('_verif_envoi', '1');
-	$form .= hidden_input('addon_id', $addon_id);
-	$form .= hidden_input('token', new_token());
-	$form .= '</div>';
-	$form .= '</form>'."\n";
-
-	echo $form;
-}
-
 function traiter_form_module($module) {
 	$erreurs = array();
 	$path = BT_ROOT.DIR_ADDONS;
@@ -129,7 +99,7 @@ function traiter_form_module($module) {
 				$erreurs[] = sprintf($GLOBALS['lang']['err_addon_enabled'], $module['addon_id']);
 			}
 		} else {
-			// Module désactivé, on créée le fichier .disabled
+			// Module désactivé, on crée le fichier .disabled
 			if (fichier_module_disabled($check_file) === FALSE) {
 				$erreurs[] = sprintf($GLOBALS['lang']['err_addon_disabled'], $module['addon_id']);
 			}
