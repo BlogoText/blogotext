@@ -154,7 +154,6 @@ $GLOBALS['lang'] = array(
 'label_img_priv'					=> 'Image is private?',
 'label_file_priv'					=> 'File is private?',
 'label_comm_priv'					=> 'Comment is hidden?',
-'label_addon_enabled'				=> 'Addon is enabled?',
 'label_stay_logged'				=> 'Stay connected?',
 'label_resume'						=> 'Home',
 'label_type'						=> 'Type',
@@ -165,6 +164,8 @@ $GLOBALS['lang'] = array(
 'label_dl_fichier'				=> 'Also import file localy? ',
 'label_combien'					=> 'How much?',
 'label_all_comm_by_author'		=> 'All comments by this author',
+'label_owner_url'	        	=> 'Owner website',
+'label_code_theme'	       	=> 'Themes integration code',
 // Label avec ": "
 'label_dp_lien'					=> 'Link: ',
 'label_dp_fichier'				=> 'File: ',

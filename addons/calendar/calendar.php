@@ -44,11 +44,11 @@
  *
  * 'name' => 'Calendar'
  * (required)
- * This is the displayed name into back office.
+ * This is the displayed name into back office. You can add translations using an associative array.
  *
  * 'desc' => 'Display a navigable HTML calendar.'
  * (required)
- * This is the addon description.
+ * This is the addon description. You can add translations using an associative array.
  *
  * 'version' => '1.0.0'
  * (required)
@@ -70,8 +70,15 @@
  */
 $GLOBALS['addons'][] = array(
     'tag' => 'calendar',
-    'name' => 'Calendar',
-    'desc' => 'Display a navigable HTML calendar.',
+    'name' => array(
+        'en' => 'Calendar',
+        'fr' => 'Calendrier',
+    ),
+    'desc' => array(
+        'en' => 'Display a navigable HTML calendar.',
+        'fr' => 'Affiche un calendrier navigable.',
+    ),
+    'url' => 'http://www.example.org',
     'version' => '1.0.0',
     'css' => 'style.css',
 );

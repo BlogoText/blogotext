@@ -16,6 +16,13 @@
 	border-bottom: 1px solid rgba(0, 0, 0, .1);
 }
 
+#modules > li:hover + div,
+#modules > li + div:hover {
+	transition: box-shadow 0.5s ease 0s;
+	position: relative;
+	box-shadow: 0px 6px 20px 0px rgba(0, 0, 0, 0.19), 0px 8px 17px 0px rgba(0, 0, 0, 0.2);
+}
+
 #modules > li a {
 	color: inherit;
 	text-decoration: none;
@@ -32,4 +39,29 @@
 }
 
 #modules label {
+}
+
+#modules > li + div {
+	padding: 10px 20px;
+	background: rgba(0, 0, 0, .05);
+}
+
+#modules > li + div > p:nth-of-type(2) {
+	text-align: right;
+}
+
+#modules > li + div code {
+	display: inline-block;  /* for easy double-clic selection */
+	border: 1px outset #eee;
+	padding: 2px 5px;
+	margin-right: 10px;
+	font-size: .8em;
+}
+
+#modules > li + div code:hover{
+	cursor: help;
+}
+
+#modules > li + div:not(last-child) {
+	border-bottom: 1px solid rgba(0, 0, 0, .1);
 }
