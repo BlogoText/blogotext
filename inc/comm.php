@@ -59,7 +59,7 @@ function afficher_form_commentaire($article_id, $mode, $erreurs, $edit_comm) {
 	// parses the comment, but does not save it
 	if (isset($_POST['previsualiser'])) {
 		$p_comm = (isset($_POST['commentaire'])) ? protect($_POST['commentaire']) : '';
-		$comm['bt_content'] = formatage_commentaires($p_comm);
+		$comm['bt_content'] = markup($p_comm);
 		$comm['bt_id'] = date('YmdHis');
 		$comm['bt_author'] = $form_cont['author'];
 		$comm['bt_email'] = $form_cont['e_mail'];

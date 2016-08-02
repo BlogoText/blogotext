@@ -105,6 +105,12 @@ function displayMenu(e) {
 	button.classList.toggle('active');
 	menu.classList.toggle('shown');
 }
+
+if (document.getElementById('erreurs')) {
+	window.location.hash = 'erreurs';
+	window.scrollBy(0, -100);
+}
+
 </script>
 </body>
 </html>

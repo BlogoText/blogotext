@@ -1219,7 +1219,6 @@ function refresh_all_feeds(refreshLink) {
 	}
 	xhr.onload = function() {
 		var resp = this.responseText;
-		alert(resp);
 
 		// update status
 		var nbNewFeeds = resp.substr(resp.indexOf("Success")+7);
