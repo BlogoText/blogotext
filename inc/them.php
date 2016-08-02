@@ -320,8 +320,8 @@ function conversion_theme_addons($texte) {
 
 	// parse the $texte and replace {tags} with html generated in addon.
 	foreach ($GLOBALS['addons'] as $addon) {
-		if (strpos($texte, $addon['tag']) !== FALSE) {
-			$texte = str_replace($addon['tag'], call_user_func($addon['callback_function']), $texte);
+		while (($pos = strpos($texte, $addon['tag'] )) !== FALSE){
+			$texte = substr_replace($texte, call_user_func($addon['callback_function'] ), $pos , strlen($addon['tag']));
 		}
 	}
 
