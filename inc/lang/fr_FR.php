@@ -154,7 +154,6 @@ $GLOBALS['lang'] = array(
 'label_img_priv'					=> 'L’image est privée ?',
 'label_file_priv'					=> 'Le fichier est privé ?',
 'label_comm_priv'					=> 'Le commentaire est masqué ?',
-'label_addon_enabled'				=> 'Le module est activé ?',
 'label_stay_logged'				=> 'Rester connecté ?',
 'label_resume'						=> 'Résumé',
 'label_type'						=> 'Type',
@@ -165,6 +164,8 @@ $GLOBALS['lang'] = array(
 'label_dl_fichier'				=> 'Également importer le fichier ? ',
 'label_combien'					=> 'Combien ?',
 'label_all_comm_by_author'		=> 'Tous les commentaires de cet auteur',
+'label_owner_url'   	       	=> 'Site web de l’auteur',
+'label_code_theme'	    	    => 'Code d’intégration pour les thèmes',
 // Label avec " : "
 'label_dp_lien'					=> 'Lien : ',
 'label_dp_fichier'				=> 'Fichier : ',

@@ -63,21 +63,16 @@ echo '</div>'."\n";
 echo '<div id="axe">'."\n";
 echo '<div id="page">'."\n";
 
-// édition d'un module
-if (isset($_GET['addon_id']) && preg_match('/^[\w\-]+$/', $_GET['addon_id']) && isset($tableau[$_GET['addon_id']]) ) {
-	afficher_form_module($tableau, $_GET['addon_id']);
-} else {
-	echo erreurs($erreurs);
-	// SUBNAV
-	echo '<div id="subnav">'."\n";
-		afficher_form_filtre_modules($filtre);
-		echo '<div class="nombre-elem">'."\n";
-		echo ucfirst(nombre_objets(count($tableau), 'module')).' '.$GLOBALS['lang']['sur'].' '.count($addons);
-		echo '</div>'."\n";
+echo erreurs($erreurs);
+// SUBNAV
+echo '<div id="subnav">'."\n";
+	afficher_form_filtre_modules($filtre);
+	echo '<div class="nombre-elem">'."\n";
+	echo ucfirst(nombre_objets(count($tableau), 'module')).' '.$GLOBALS['lang']['sur'].' '.count($addons);
 	echo '</div>'."\n";
+echo '</div>'."\n";
 
-	afficher_liste_modules($tableau, $filtre);
-}
+afficher_liste_modules($tableau, $filtre);
 
 echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
 echo '<script type="text/javascript">';
