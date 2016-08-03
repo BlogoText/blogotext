@@ -320,7 +320,9 @@ function conversion_theme_addons($texte) {
 			$callback = 'addon_'.$addon['tag'];
 			$to_replace = '';
 			if ($addons_status[$addon['tag']] && function_exists($callback)) {
-				$texte = str_replace($look_for, call_user_func($callback), $texte);
+				while ( ($pos = strpos($texte, $look_for )) !== FALSE ) {
+					$texte = substr_replace($texte, call_user_func($callback ), $pos , strlen($look_for));
+				}
 			} else {
 				$texte = str_replace($look_for, '', $texte);
 			}
