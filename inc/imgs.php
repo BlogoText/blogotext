@@ -479,8 +479,8 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 		$form .= "\t".'<p><label for="nom_entree">'.$GLOBALS['lang']['label_dp_nom'].'</label><input type="text" id="nom_entree" name="nom_entree" placeholder="'.$GLOBALS['lang']['placeholder_nom_fichier'].'" value="" size="60" class="text" /></p>'."\n";
 		$form .= "\t".'<p><label for="description">'.$GLOBALS['lang']['label_dp_description'].'</label><textarea class="text" id="description" name="description" cols="60" rows="5" placeholder="'.$GLOBALS['lang']['placeholder_description'].'" ></textarea></p>'."\n";
 		$form .= "\t".'<p><label for="dossier">'.$GLOBALS['lang']['label_dp_dossier'].'</label><input type="text" id="dossier" name="dossier" placeholder="'.$GLOBALS['lang']['placeholder_folder'].'" value="" size="60" class="text" /></p>'."\n";
-		$form .= "\t".'<p><input type="checkbox" id="statut" name="statut" class="checkbox" /><label for="statut">'.$GLOBALS['lang']['label_file_priv'].'</label></p>';
 		$form .= hidden_input('token', new_token(), 'id');
+		$form .= "\t".'<p><input type="checkbox" id="statut" name="statut" class="checkbox" /><label for="statut">'.$GLOBALS['lang']['label_file_priv'].'</label></p>';
 		$form .= hidden_input('_verif_envoi', '1');
 
 		$form .= "\t".'<p class="submit-bttns"><button class="submit button-submit" type="submit" name="upload">'.$GLOBALS['lang']['img_upload'].'</button></p>'."\n";
@@ -530,9 +530,9 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 		$form .= '<p><strong>'.$GLOBALS['lang']['label_codes'].'</strong></p>'."\n";
 		$form .= '<input onfocus="this.select()" class="text" type="text" value=\''.$absolute_URI.'\' />'."\n";
 		if ($myfile['bt_type'] == 'image') { // si le fichier est une image, on ajout BBCode pour [IMG] et le code en <img/>
-			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'<img src="'.$absolute_URI.'" alt="i" width="'.$myfile['bt_dim_w'].'" height="'.$myfile['bt_dim_h'].'" style="max-width: 100%; height: auto;" />\' />'."\n";
-			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'<img src="/'.$absolute_path.'" alt="i" width="'.$myfile['bt_dim_w'].'" height="'.$myfile['bt_dim_h'].'" style="max-width: 100%; height: auto;" />\' />'."\n";
-			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'<img src="'.$absolute_path.'" alt="i" width="'.$myfile['bt_dim_w'].'" height="'.$myfile['bt_dim_h'].'" style="max-width: 100%; height: auto;" />\' />'."\n";
+			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'<img src="'.$absolute_URI.'" alt="i" width="'.$myfile['bt_dim_w'].'" height="'.$myfile['bt_dim_h'].'" />\' />'."\n";
+			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'<img src="/'.$absolute_path.'" alt="i" width="'.$myfile['bt_dim_w'].'" height="'.$myfile['bt_dim_h'].'" />\' />'."\n";
+			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'<img src="'.$absolute_path.'" alt="i" width="'.$myfile['bt_dim_w'].'" height="'.$myfile['bt_dim_h'].'" />\' />'."\n";
 			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'[img]'.$absolute_URI.'[/img]\' />'."\n";
 			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'[spoiler][img]'.$absolute_URI.'[/img][/spoiler]\' />'."\n";
 		} else {
