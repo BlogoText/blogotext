@@ -12,6 +12,12 @@
 # *** LICENSE ***
 
 function redirection($url) {
+	// RemRemDevNote : hookTrigger
+	$tmp_hook = hook_trigger('before_redirection',$url);
+	if (hook_check( 'before_redirection' , 2 , $tmp_hook)){
+		$url = $tmp_hook['1'];
+	}
+
 	header('Location: '.$url);
 	exit;
 }
@@ -155,9 +161,25 @@ function check_token($token) {
 }
 
 
+/**
+ * remove params from url
+ * 
+ * @param string $param
+ * @return string url
+ */
 function remove_url_param($param) {
 	if (isset($_GET[$param])) {
-		return str_replace('&'.$param.'='.$_GET[$param], '', $_SERVER['QUERY_STRING']);
+		return str_replace(
+					array(
+						'&'.$param.'='.$_GET[$param],
+						'?'.$param.'='.$_GET[$param],
+						'?&amp;',
+						'?&',
+						'?',
+					),
+					array('','?','?','?',''),
+					'?'.$_SERVER['QUERY_STRING']
+				);
 	} elseif (isset($_SERVER['QUERY_STRING'])) {
 		return $_SERVER['QUERY_STRING'];
 	}
@@ -257,7 +279,7 @@ function parse_search($q) {
 function debug($data) {
 	header('Content-Type: text/html; charset=utf-8');
 	echo '<pre>';
-	print_r($data);
+	var_dump($data);
 	die;
 }
 
@@ -267,4 +289,3 @@ function rm_dots_dir($array) {
 	if (($key = array_search('.', $array)) !== FALSE) { unset($array[$key]); }
 	return ($array);
 }
-

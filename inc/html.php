@@ -64,6 +64,7 @@ function afficher_topnav($titre) {
 	$html .=  '<div id="nav-acc">'."\n";
 	$html .=  "\t".'<ul>'."\n";
 	$html .=  "\t\t".'<li><a href="preferences.php" id="lien-preferences">'.$GLOBALS['lang']['preferences'].'</a></li>'."\n";
+	$html .=  "\t\t".'<li><a href="modules.php" id="lien-modules">'.ucfirst($GLOBALS['lang']['label_modules']).'</a></li>'."\n";
 	$html .=  "\t\t".'<li><a href="'.$GLOBALS['racine'].'" id="lien-site">'.$GLOBALS['lang']['lien_blog'].'</a></li>'."\n";
 	$html .=  "\t\t".'<li><a href="logout.php" id="lien-deconnexion">'.$GLOBALS['lang']['deconnexion'].'</a></li>'."\n";
 	$html .=  "\t".'</ul>'."\n";
@@ -154,6 +155,12 @@ function encart_commentaires() {
 	$query = "SELECT a.bt_title, c.bt_author, c.bt_id, c.bt_article_id, c.bt_content FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id WHERE c.bt_statut=1 AND a.bt_statut=1 ORDER BY c.bt_id DESC LIMIT 5";
 	$tableau = liste_elements($query, array(), 'commentaires');
 	if (isset($tableau)) {
+		// RemRemDevNote : hookTrigger
+		$tmp_hook = hook_trigger('encart_commentaires',$tableau);
+		if (hook_check( 'encart_commentaires' , 2 , $tmp_hook)){
+			$tableau = $tmp_hook['1'];
+		}
+
 		$listeLastComments = '<ul class="encart_lastcom">'."\n";
 		foreach ($tableau as $i => $comment) {
 			$comment['contenu_abbr'] = strip_tags($comment['bt_content']);
@@ -203,28 +210,38 @@ function encart_categories($mode) {
 function lien_pagination() {
 	if (!isset($GLOBALS['param_pagination']) or isset($_GET['d']) or isset($_GET['liste']) or isset($_GET['id']) ) {
 		return '';
-	}
-	else {
-		$nb = $GLOBALS['param_pagination']['nb'];
-		$nb_par_page = $GLOBALS['param_pagination']['nb_par_page'];
-	}
-	$page_courante = (isset($_GET['p']) and is_numeric($_GET['p'])) ? $_GET['p'] : 0;
-	$qstring = remove_url_param('p');
-//	debug($qstring);
-
-	if ($page_courante <=0) {
-		$lien_precede = '';
-		$lien_suivant = '<a href="?'.$qstring.'&amp;p=1" rel="next">'.$GLOBALS['lang']['label_suivant'].'</a>';
-		if ($nb < $nb_par_page) { // évite de pouvoir aller dans la passé s’il y a moins de 10 posts
-			$lien_suivant = '';
-		}
-	}
-	elseif ($nb < $nb_par_page) { // évite de pouvoir aller dans l’infini en arrière dans les pages, nottament pour les robots.
-		$lien_precede = '<a href="?'.$qstring.'&amp;p='.($page_courante-1).'" rel="prev">'.$GLOBALS['lang']['label_precedent'].'</a>';
-		$lien_suivant = '';
 	} else {
-		$lien_precede = '<a href="?'.$qstring.'&amp;p='.($page_courante-1).'" rel="prev">'.$GLOBALS['lang']['label_precedent'].'</a>';
-		$lien_suivant = '<a href="?'.$qstring.'&amp;p='.($page_courante+1).'" rel="next">'.$GLOBALS['lang']['label_suivant'].'</a>';
+		$nb_par_page = (int)$GLOBALS['param_pagination']['nb_par_page'];
+	}
+	$page_courante = (isset($_GET['p']) and is_numeric($_GET['p'])) ? (int)$_GET['p'] : 0;
+	$qstring = remove_url_param('p');
+	if (!empty($qstring)){$qstring .= '&amp;';}
+
+	if (isset($_GET['tag'])){
+		$nb = (int)liste_elements_count("SELECT count(ID) AS nbr FROM tag", array());
+	} else if (isset($_GET['mode']) && $_GET['mode'] == 'links'){
+		$nb = (int)liste_elements_count("SELECT count(ID) AS nbr FROM links", array());
+	} else {
+		$nb = (int)liste_elements_count("SELECT count(ID) AS nbr FROM articles", array());
+	}
+
+	$lien_precede = '';
+	$lien_suivant = '';
+	// -1 because ?p=0 is the first
+	$total_page = (int)ceil( $nb / $nb_par_page ) - 1;
+
+	// page sup ?
+	if ($page_courante < 0){
+		$lien_suivant = '<a href="?'.$qstring.'p=0" rel="next">'.$GLOBALS['lang']['label_suivant'].'</a>';
+	} else if ($page_courante < $total_page){
+		$lien_suivant = '<a href="?'.$qstring.'p='.($page_courante+1).'" rel="next">'.$GLOBALS['lang']['label_suivant'].'</a>';
+	}
+
+	// page inf ?
+	if ($page_courante > $total_page){
+		$lien_precede = '<a href="?'.$qstring.'p='.$total_page.'" rel="prev">'.$GLOBALS['lang']['label_precedent'].'</a>';
+	} else if ($page_courante <= $total_page && $page_courante > 0){
+		$lien_precede = '<a href="?'.$qstring.'p='.($page_courante-1).'" rel="prev">'.$GLOBALS['lang']['label_precedent'].'</a>';
 	}
 
 	return '<p class="pagination">'.$lien_precede.$lien_suivant.'</p>';
@@ -335,11 +352,10 @@ function php_lang_to_js($a) {
 	$frontend_str['questionSupprArticle'] = $GLOBALS['lang']['question_suppr_article'];
 	$frontend_str['questionSupprFichier'] = $GLOBALS['lang']['question_suppr_fichier'];
 
-	$sc = 'var BTlang = '.json_encode($frontend_str).';';
+	$sc = 'var BTlang = '.json_encode($frontend_str).';'."\n";
 
 	if ($a == 1) {
 		$sc = "\n".'<script type="text/javascript">'."\n".$sc."\n".'</script>'."\n";
 	}
 	return $sc;
 }
-
