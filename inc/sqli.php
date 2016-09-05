@@ -501,7 +501,7 @@ function bdd_lien($link, $what) {
 				bt_tags,
 				bt_statut
 			)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
 			$req->execute(array(
 				$link['bt_type'],
 				$link['bt_id'],
