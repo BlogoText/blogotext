@@ -205,6 +205,7 @@ function suppr_comm(button) {
 		xhr.onload = function() {
 			var resp = this.responseText;
 			if (resp.indexOf("Success") == 0) {
+				csrf_token = resp.substr(7, 40);
 				div_bloc.classList.add('deleteFadeOut');
 				div_bloc.style.height = div_bloc.offsetHeight+'px';
 				div_bloc.addEventListener('animationend', function(event){event.target.parentNode.removeChild(event.target);}, false);
@@ -282,7 +283,7 @@ function activate_comm(button) {
 	formData.append('_verif_envoi', 1);
 
 	formData.append('com_activer', button.dataset.commId);
-	formData.append('com_bt_id', button.dataset.commBtid);
+//	formData.append('com_bt_id', button.dataset.commBtid);
 	formData.append('com_article_id', button.dataset.commArtId);
 
 	xhr.send(formData);
