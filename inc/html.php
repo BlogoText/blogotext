@@ -345,7 +345,7 @@ function php_lang_to_js($a) {
 	$frontend_str['questionSupprArticle'] = $GLOBALS['lang']['question_suppr_article'];
 	$frontend_str['questionSupprFichier'] = $GLOBALS['lang']['question_suppr_fichier'];
 
-	$sc = 'var BTlang = '.json_encode($frontend_str).';
+	$sc = 'var BTlang = '.json_encode($frontend_str).';';
 
 	if ($a == 1) {
 		$sc = "\n".'<script type="text/javascript">'."\n".$sc."\n".'</script>'."\n";
