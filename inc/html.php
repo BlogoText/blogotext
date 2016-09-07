@@ -201,7 +201,7 @@ function encart_categories($mode) {
 }
 
 function lien_pagination() {
-	if (!isset($GLOBALS['param_pagination']) or isset($_GET['d']) or isset($_GET['liste']) or isset($_GET['id']) ) {
+	if (!isset($GLOBALS['param_pagination']) or isset($_GET['d']) or isset($_GET['liste']) or isset($_GET['id'])) {
 		return '';
 	} else {
 		$nb_par_page = (int)$GLOBALS['param_pagination']['nb_par_page'];
