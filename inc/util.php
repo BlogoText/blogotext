@@ -12,12 +12,6 @@
 # *** LICENSE ***
 
 function redirection($url) {
-	// RemRemDevNote : hookTrigger
-	$tmp_hook = hook_trigger('before_redirection',$url);
-	if (hook_check( 'before_redirection' , 2 , $tmp_hook)){
-		$url = $tmp_hook['1'];
-	}
-
 	header('Location: '.$url);
 	exit;
 }
