@@ -164,7 +164,6 @@ function encart_commentaires() {
 			if (strlen($comment['bt_author']) >= 30) {
 				$comment['bt_author'] = mb_substr($comment['bt_author'], 0, 29).'…';
 			}
-//			$listeLastComments .= '<li title="'.date_formate($comment['bt_id']).'"><b>'.$comment['bt_author'].'</b> '.$GLOBALS['lang']['sur'].' <b>'.$comment['article_title'].'</b><br/><a href="'.$comment['bt_link'].'">'.$comment['contenu_abbr'].'</a>'.'</li>'."\n";
 			$listeLastComments .= '<li title="'.date_formate($comment['bt_id']).'"><strong>'.$comment['bt_author'].' : </strong><a href="'.$comment['bt_link'].'">'.$comment['contenu_abbr'].'</a>'.'</li>'."\n";
 		}
 		$listeLastComments .= '</ul>'."\n";
@@ -211,11 +210,11 @@ function lien_pagination() {
 	if (!empty($qstring)){$qstring .= '&amp;';}
 
 	if (isset($_GET['tag'])){
-		$nb = (int)liste_elements_count("SELECT count(ID) AS nbr FROM tag", array());
+		$nb = (int)liste_elements_count("SELECT count(ID) AS nbr FROM tag WHERE bt_statut=1", array());
 	} else if (isset($_GET['mode']) && $_GET['mode'] == 'links'){
-		$nb = (int)liste_elements_count("SELECT count(ID) AS nbr FROM links", array());
+		$nb = (int)liste_elements_count("SELECT count(ID) AS nbr FROM links WHERE bt_statut=1", array());
 	} else {
-		$nb = (int)liste_elements_count("SELECT count(ID) AS nbr FROM articles", array());
+		$nb = (int)liste_elements_count("SELECT count(ID) AS nbr FROM articles WHERE bt_statut=1", array());
 	}
 
 	$lien_precede = '';
