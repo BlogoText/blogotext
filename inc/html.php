@@ -201,40 +201,30 @@ function encart_categories($mode) {
 }
 
 function lien_pagination() {
-	if (!isset($GLOBALS['param_pagination']) or isset($_GET['d']) or isset($_GET['liste']) or isset($_GET['id'])) {
+	if (!isset($GLOBALS['param_pagination']) or isset($_GET['d']) or isset($_GET['liste']) or isset($_GET['id']) ) {
 		return '';
-	} else {
-		$nb_par_page = (int)$GLOBALS['param_pagination']['nb_par_page'];
 	}
-	$page_courante = (isset($_GET['p']) and is_numeric($_GET['p'])) ? (int)$_GET['p'] : 0;
+	else {
+		$nb = $GLOBALS['param_pagination']['nb'];
+		$nb_par_page = $GLOBALS['param_pagination']['nb_par_page'];
+	}
+	$page_courante = (isset($_GET['p']) and is_numeric($_GET['p'])) ? $_GET['p'] : 0;
 	$qstring = remove_url_param('p');
-	if (!empty($qstring)){$qstring .= '&amp;';}
+//	debug($qstring);
 
-	if (isset($_GET['tag'])){
-		$nb = (int)liste_elements_count("SELECT count(ID) AS nbr FROM tag", array());
-	} else if (isset($_GET['mode']) && $_GET['mode'] == 'links'){
-		$nb = (int)liste_elements_count("SELECT count(ID) AS nbr FROM links", array());
+	if ($page_courante <=0) {
+		$lien_precede = '';
+		$lien_suivant = '<a href="?'.$qstring.'&amp;p=1" rel="next">'.$GLOBALS['lang']['label_suivant'].'</a>';
+		if ($nb < $nb_par_page) { // évite de pouvoir aller dans la passé s’il y a moins de 10 posts
+			$lien_suivant = '';
+		}
+	}
+	elseif ($nb < $nb_par_page) { // évite de pouvoir aller dans l’infini en arrière dans les pages, nottament pour les robots.
+		$lien_precede = '<a href="?'.$qstring.'&amp;p='.($page_courante-1).'" rel="prev">'.$GLOBALS['lang']['label_precedent'].'</a>';
+		$lien_suivant = '';
 	} else {
-		$nb = (int)liste_elements_count("SELECT count(ID) AS nbr FROM articles", array());
-	}
-
-	$lien_precede = '';
-	$lien_suivant = '';
-	// -1 because ?p=0 is the first
-	$total_page = (int)ceil( $nb / $nb_par_page ) - 1;
-
-	// page sup ?
-	if ($page_courante < 0){
-		$lien_suivant = '<a href="?'.$qstring.'p=0" rel="next">'.$GLOBALS['lang']['label_suivant'].'</a>';
-	} else if ($page_courante < $total_page){
-		$lien_suivant = '<a href="?'.$qstring.'p='.($page_courante+1).'" rel="next">'.$GLOBALS['lang']['label_suivant'].'</a>';
-	}
-
-	// page inf ?
-	if ($page_courante > $total_page){
-		$lien_precede = '<a href="?'.$qstring.'p='.$total_page.'" rel="prev">'.$GLOBALS['lang']['label_precedent'].'</a>';
-	} else if ($page_courante <= $total_page && $page_courante > 0){
-		$lien_precede = '<a href="?'.$qstring.'p='.($page_courante-1).'" rel="prev">'.$GLOBALS['lang']['label_precedent'].'</a>';
+		$lien_precede = '<a href="?'.$qstring.'&amp;p='.($page_courante-1).'" rel="prev">'.$GLOBALS['lang']['label_precedent'].'</a>';
+		$lien_suivant = '<a href="?'.$qstring.'&amp;p='.($page_courante+1).'" rel="next">'.$GLOBALS['lang']['label_suivant'].'</a>';
 	}
 
 	return '<p class="pagination">'.$lien_precede.$lien_suivant.'</p>';
@@ -352,3 +342,4 @@ function php_lang_to_js($a) {
 	}
 	return $sc;
 }
+
