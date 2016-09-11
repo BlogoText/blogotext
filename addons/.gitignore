@@ -6,7 +6,10 @@
 !calendar/*
 !readmore/
 !readmore/*
+!params_example/
+!params_example/*
 
 # Ignore addon state
 calendar/.disabled
 readmore/.disabled
+params_example/.disabled

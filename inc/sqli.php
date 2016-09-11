@@ -140,6 +140,7 @@ function create_tables() {
 }
 
 
+
 /* Open a base */
 function open_base() {
 	$handle = create_tables();
@@ -501,7 +502,7 @@ function bdd_lien($link, $what) {
 				bt_tags,
 				bt_statut
 			)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
 			$req->execute(array(
 				$link['bt_type'],
 				$link['bt_id'],
@@ -766,11 +767,14 @@ function list_all_tags($table, $statut) {
 }
 
 
-/* Enregistre le flux dans une BDD.
-   $flux est un Array avec les données dedans.
-	$flux ne contient que les entrées qui doivent être enregistrées
-	 (la recherche de doublons est fait en amont)
-*/
+
+/**
+ * Enregistre le flux dans une BDD.
+ * 
+ * @params array $flux , ne contient que les entrées qui doivent être enregistrées (la recherche de doublons est fait en amont)
+ * @params string $what, nom de l'action à effectuer
+ * @return bool||string, true ou message d'erreur
+ */
 function bdd_rss($flux, $what) {
 	if ($what == 'enregistrer-nouveau') {
 		try {
