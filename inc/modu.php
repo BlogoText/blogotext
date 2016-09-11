@@ -12,13 +12,26 @@
 # *** LICENSE ***
 
 
-
+/**
+ * get the config of an addon
+ * 
+ * @param string $addonName, the addon name
+ * @return array
+ */
 function addon_get_conf( $addonName ){
 	$infos = addon_get_infos( $addonName );
 	if ($infos === false){
 		return false;
 	}
-	$saved = db_addons_params_get( $addonName );
+	$saved = array();
+
+	$file_path = BT_ROOT.DIR_ADDONS.'/'.$addonName.'/params.ini';
+	if (is_file($file_path) and is_readable($file_path)) {
+		$t = parse_ini_file($file_path);
+		foreach ($t as $option => $value) {
+			$saved[$option] = $value;
+		}
+	}
 
 	if (isset($infos['config'])){
 		if (!is_array($saved)){
@@ -33,6 +46,12 @@ function addon_get_conf( $addonName ){
 	return array();
 }
 
+/**
+ * get addon informations
+ * 
+ * @param string $addonName, the addon name
+ * @return array||false, false if addon not found/loaded...
+ */
 function addon_get_infos( $addonName ){
 	foreach ($GLOBALS['addons'] as $k){
 		if ($k['tag'] == $addonName){
@@ -42,6 +61,15 @@ function addon_get_infos( $addonName ){
 	return false;
 }
 
+/**
+ * process (check) the submited config change for an addon
+ * 
+ * todo : 
+ *   - manage errors
+ * 
+ * @param string $addonName, the addon name
+ * @return bool
+ */
 function addon_edit_params_process( $addonName ){
 	$errors = array();
 
@@ -74,15 +102,35 @@ function addon_edit_params_process( $addonName ){
 			}
 		} else if ($param['type'] == 'text'){
 			$datas[$key] = htmlentities($_POST[$key],ENT_QUOTES);
+		} else if ($param['type'] == 'select'){
+			if (isset( $param['options'][$_POST[$key]] )){
+				$datas[$key] = htmlentities($_POST[$key],ENT_QUOTES);
+			} else {
+				$errors[$key][] = 'not a valid type';
+			}
 		} else {
 			// error
 			$errors[$key][] = 'not a valid type';
 		}
 	}
 
-	return db_addons_params_push( $addonName , $datas );
+	$conf  = '';
+	$conf .= '; <?php die(); /*'."\n\n";
+	$conf .= '; This file contains addons params, you can modify this file.'."\n\n";
+	foreach ($datas as $key => $value){
+		$conf .= $key .' = \''. $value .'\''."\n";
+	}
+	$conf .= '; */ ?>'."\n";
+
+	return file_put_contents(BT_ROOT.DIR_ADDONS.'/'.$addonName.'/params.ini', $conf) !== FALSE;
 }
 
+/**
+ * Get the addon config form
+ * 
+ * @param string $addonName, the addon name
+ * @return string, the html form
+ */
 function addon_edit_params_form( $addonName ){
 	$addons_status = list_addons();
 	$infos = addon_get_infos( $addonName );
@@ -104,7 +152,7 @@ function addon_edit_params_form( $addonName ){
 	$return .= "\t\t".'<div class=""><code title="'.$GLOBALS['lang']['label_code_theme'].'">'.'{addon_'.$infos['tag'].'}'.'</code>'.addon_get_translation($infos['desc']).'</div>'."\n";
 	$return .= "\t".'</ul>'."\n";
 
-	// params form
+	// build the config form
 	$return .= '<div class="form-lines">'."\n";
 	foreach ($params as $key => $param){
 		$return .= '<p>';
@@ -118,6 +166,15 @@ function addon_edit_params_form( $addonName ){
 		} else if ($param['type'] == 'text'){
 			$return .= "\t".'<label for="'.$key.'">'.$param['label'][ $GLOBALS['lang']['id'] ].'</label>'."\n";
 			$return .= "\t".'<input type="text" id="'.$key.'" name="'.$key.'" size="30" value="'.$param['value'].'" class="text" />'."\n";
+		} else if ($param['type'] == 'select'){
+			$return .= "\t".'<label for="'.$key.'">'.$param['label'][ $GLOBALS['lang']['id'] ].'</label>'."\n";
+			$return .= "\t".'<select id="'.$key.'" name="'.$key.'">'."\n";
+			// var_dump( $param['value'] );
+			foreach($param['options'] as $opt_key => $label_lang){
+				$selected = ($opt_key == $param['value']) ? ' selected' : '';
+				$return .= "\t\t".'<option value="'. $opt_key .'"'. $selected .'>'. $label_lang[ $GLOBALS['lang']['id'] ] .'</option>';
+			}
+			$return .= "\t".'</select>'."\n";
 		}
 		$return .= '</p>';
 	}
@@ -140,7 +197,11 @@ function addon_edit_params_form( $addonName ){
 }
 
 
-/* list all addons */
+/**
+ * list all addons
+ * 
+ * @return array
+ */
 function list_addons() {
 	$addons = array();
 	$path = BT_ROOT.DIR_ADDONS;
@@ -163,7 +224,10 @@ function list_addons() {
 	return $addons;
 }
 
-
+/**
+ * return a translation for a addon info
+ * 
+ */
 function addon_get_translation($info) {
 	if (is_array($info)) {
 		return $info[$GLOBALS['lang']['id']];
