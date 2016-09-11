@@ -23,12 +23,6 @@ function create_tables() {
 	$index_limit_size = (DBMS == 'mysql') ? '(15)' : ''; // MySQL needs a limit for indexes on TEXT fields.
 	$if_not_exists = (DBMS == 'sqlite') ? 'IF NOT EXISTS' : ''; // MySQL doesn’t know this statement for INDEXES
 
-	$dbase_structure['addons'] = "CREATE TABLE IF NOT EXISTS addons
-		(
-			bt_id CHAR(20),
-			bt_params TEXT
-		); CREATE INDEX $if_not_exists addonName ON addons ( bt_id$index_limit_size );";
-
 	$dbase_structure['links'] = "CREATE TABLE IF NOT EXISTS links
 		(
 			ID INTEGER PRIMARY KEY $auto_increment,
@@ -112,7 +106,7 @@ function create_tables() {
 					$db_handle->query("PRAGMA temp_store=MEMORY; PRAGMA synchronous=OFF; PRAGMA journal_mode=WAL;");
 
 
-					$wanted_tables = array('addons', 'commentaires', 'articles', 'links', 'rss');
+					$wanted_tables = array('commentaires', 'articles', 'links', 'rss');
 					foreach ($wanted_tables as $i => $name) {
 							$results = $db_handle->exec($dbase_structure[$name]);
 					}
@@ -131,7 +125,7 @@ function create_tables() {
 					$options_pdo[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
 					$db_handle = new PDO('mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DB.";charset=utf8;sql_mode=PIPES_AS_CONCAT;", MYSQL_LOGIN, MYSQL_PASS, $options_pdo);
 					// check each wanted table
-					$wanted_tables = array('addons', 'commentaires', 'articles', 'links', 'rss');
+					$wanted_tables = array('commentaires', 'articles', 'links', 'rss');
 					foreach ($wanted_tables as $i => $name) {
 							$results = $db_handle->query($dbase_structure[$name]."DEFAULT CHARSET=utf8");
 							$results->closeCursor();
@@ -146,71 +140,6 @@ function create_tables() {
 }
 
 
-/**
- * push/update params for an addon
- * 
- * @param string $addonName, the name of the addon
- * @param array||string $params, the param(s)
- * @return bool
- */
-function db_addons_params_push( $addonName , $params ){
-
-	if (is_array($params)){
-		$params = '[json]'. json_encode( $params );
-	}
-	if (!is_string($params)
-	 || !is_string($addonName)
-	){
-		return false;
-	}
-
-	if (!isset( $GLOBALS['db_handle'] ) || !is_object( $GLOBALS['db_handle'] )){
-		$GLOBALS['db_handle'] = open_base();
-	}
-
-	// check if isset
-	$action = ( empty( get_entry( $GLOBALS['db_handle'] , 'addons' , 'bt_id' , $addonName , 'return' ) ) ) ? 'push' : 'update';
-
-	if ($action == 'push'){
-		try {
-			$req = $GLOBALS['db_handle']->prepare('INSERT INTO addons (bt_id,bt_params) VALUES (?, ?)');
-			$t = $req->execute(array($addonName,$params));
-			return TRUE;
-		} catch (Exception $e) {
-			return 'Error addons db on push: '.$e->getMessage();
-		}
-	} else {
-		try {
-			$req = $GLOBALS['db_handle']->prepare('UPDATE addons SET bt_params=? WHERE bt_id=?');
-			$t = $req->execute(array($params,$addonName));
-			return TRUE;
-		} catch (Exception $e) {
-			return 'Error addons db on update: '.$e->getMessage();
-		}
-	}
-	return false;
-}
-
-/**
- * get params for an addon
- * 
- * @param string $addonName, the name of the addon
- * @return false||string||array, the datas
- */
-function db_addons_params_get( $addonName ){
-	if (!isset( $GLOBALS['db_handle'] ) || !is_object( $GLOBALS['db_handle'] )){
-		$GLOBALS['db_handle'] = open_base();
-	}
-	$result = get_entry( $GLOBALS['db_handle'] , 'addons' , 'bt_params' , $addonName , 'return' );
-
-	if (!is_string( $result )){
-		return false;
-	}
-	if (strpos($result,'[json]') === 0){
-		return json_decode( substr( $result , 6 ) , true );
-	}
-	return $result;
-}
 
 /* Open a base */
 function open_base() {
