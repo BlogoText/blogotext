@@ -42,6 +42,30 @@ $GLOBALS['addons'][] = array(
             ),
             'value' => 'There is an exemple.',
         ),
+		'exemple_config_4' => array(
+			'type' => 'select',
+			'label' => array(
+				'en' => 'label for select',
+				'fr' => 'label pour select'
+			),
+			// default value must be a key in 'options'
+			'value' => 'yes',
+			'options' => array(
+				// key => option lang
+				'yes' => array(
+							'fr' => 'Oui',
+							'en' => 'yes',
+						),
+				'no' => array(
+							'fr' => 'Non',
+							'en' => 'No',
+						),
+				'option3' => array(
+							'fr' => 'Peut-être',
+							'en' => 'Maybe',
+						),
+			),
+		),
     )
 );
 
