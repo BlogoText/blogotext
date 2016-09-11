@@ -155,9 +155,25 @@ function check_token($token) {
 }
 
 
+/**
+ * remove params from url
+ * 
+ * @param string $param
+ * @return string url
+ */
 function remove_url_param($param) {
 	if (isset($_GET[$param])) {
-		return str_replace('&'.$param.'='.$_GET[$param], '', $_SERVER['QUERY_STRING']);
+		return str_replace(
+					array(
+						'&'.$param.'='.$_GET[$param],
+						'?'.$param.'='.$_GET[$param],
+						'?&amp;',
+						'?&',
+						'?',
+					),
+					array('','?','?','?',''),
+					'?'.$_SERVER['QUERY_STRING']
+				);
 	} elseif (isset($_SERVER['QUERY_STRING'])) {
 		return $_SERVER['QUERY_STRING'];
 	}
@@ -267,4 +283,3 @@ function rm_dots_dir($array) {
 	if (($key = array_search('.', $array)) !== FALSE) { unset($array[$key]); }
 	return ($array);
 }
-
