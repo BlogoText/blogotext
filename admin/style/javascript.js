@@ -295,15 +295,6 @@ function activate_comm(button) {
 	LINKS AND ARTICLE FORMS : TAGS HANDLING
 **************************************************************************************************************************************/
 
-/* add tags ont links and articles, with HTML5/Datalist autocompletion support */
-function insertCatTag(inputId, tag) {
-	var field = document.getElementById(inputId);
-	if (field.value !== '') {
-		field.value += ', ';
-	}
-	field.value += tag;
-}
-
 /* Adds a tag to the list when we hit "enter" */
 /* validates the tag and move it to the list */
 function moveTag() {
@@ -315,6 +306,8 @@ function moveTag() {
 	if (iField.value.length != 0) {
 		oField.innerHTML += '<li class="tag"><span>'+iField.value+'</span><a href="javascript:void(0)" onclick="removeTag(this.parentNode)">×</a></li>';
 		iField.value = '';
+		iField.blur(); // blur+focus needed in Firefox 48 for some reason…
+		iField.focus();
 		return false;
 		}
 	// else : real submit : seek in the list of tags, extract the tags and submit these.

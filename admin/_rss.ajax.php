@@ -59,7 +59,7 @@ if (isset($_POST['delete_old'])) {
 		die(erreurs($erreurs));
 	}
 
-	$query = 'DELETE FROM rss WHERE bt_statut=0';
+	$query = 'DELETE FROM rss WHERE bt_statut=0 AND bt_bookmarked=0';
 	try {
 		$req = $GLOBALS['db_handle']->prepare($query);
 		$req->execute(array());
