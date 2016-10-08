@@ -525,18 +525,26 @@ function afficher_form_fichier($erreurs, $fichiers, $what) { // ajout d’un fic
 			$form .= "\t".'<li><b>'.$GLOBALS['lang']['label_dp_visibilite'].'</b>'.(($myfile['bt_statut'] == 1) ? 'Publique' : 'Privée').'</li>'."\n";
 		$form .= '</ul>'."\n";
 
-		// la partie des codes d’intégration (bbcode, etc.)
+		// Integration codes.
 		$form .= '<div id="interg-codes">'."\n";
 		$form .= '<p><strong>'.$GLOBALS['lang']['label_codes'].'</strong></p>'."\n";
 		$form .= '<input onfocus="this.select()" class="text" type="text" value=\''.$absolute_URI.'\' />'."\n";
-		if ($myfile['bt_type'] == 'image') { // si le fichier est une image, on ajout BBCode pour [IMG] et le code en <img/>
+		$form .= '<input onfocus="this.select()" class="text" type="text" value=\'<a href="'.$absolute_URI.'" />'.$myfile['bt_filename'].'</a>\' />'."\n";
+		// for images
+		if ($myfile['bt_type'] == 'image') {
 			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'<img src="'.$absolute_URI.'" alt="i" width="'.$myfile['bt_dim_w'].'" height="'.$myfile['bt_dim_h'].'" />\' />'."\n";
 			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'<img src="/'.$absolute_path.'" alt="i" width="'.$myfile['bt_dim_w'].'" height="'.$myfile['bt_dim_h'].'" />\' />'."\n";
 			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'<img src="'.$absolute_path.'" alt="i" width="'.$myfile['bt_dim_w'].'" height="'.$myfile['bt_dim_h'].'" />\' />'."\n";
 			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'[img]'.$absolute_URI.'[/img]\' />'."\n";
 			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'[spoiler][img]'.$absolute_URI.'[/img][/spoiler]\' />'."\n";
+		// video
+		} elseif ($myfile['bt_type'] == 'video') {
+			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'<video src="'.$absolute_URI.'" type="video/'.$myfile['bt_fileext'].'" load="" controls="controls"></video>\' />'."\n";
+		// audio
+		} elseif ($myfile['bt_type'] == 'music') {
+			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'<audio src="'.$absolute_URI.'" type="audio/'.$myfile['bt_fileext'].'" load="" controls="controls"></audio>\' />'."\n";
+
 		} else {
-			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'<a href="'.$absolute_URI.'" />'.$myfile['bt_filename'].'</a>\' />'."\n";
 			$form .= '<input onfocus="this.select()" class="text" type="text" value=\'[url]'.$absolute_URI.'[/url]\' />'."\n";
 		}
 
