@@ -6,10 +6,11 @@ php:
   - nightly
 
 install:
-  - curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar
+  - pyrus install pear/PHP_CodeSniffer
+  - phpenv rehash
 
 script:
-  - for f in $(find . -name "*.php"); do php phpcs.phar --standard=PSR2 -n "$f"; done
+  - php phpcs.phar --standard=PSR2 -np --extensions=php .
 
 matrix:
     fast_finish: true
