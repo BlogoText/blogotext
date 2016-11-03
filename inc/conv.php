@@ -338,7 +338,6 @@ function return_bytes($val)
             break;
         case 'k':
             $val *= 1024;
-            break;
     }
     return $val;
 }
