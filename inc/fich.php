@@ -208,6 +208,16 @@ function fichier_htaccess($dossier) {
 	}
 }
 
+function fichier_module_disabled($file) {
+	$content = $GLOBALS['lang']['label_disabled'];
+
+	if (file_put_contents($file, $content) === FALSE) {
+		return FALSE;
+	} else {
+		return TRUE;
+	}
+}
+
 
 // à partir de l’extension du fichier, trouve le "type" correspondant.
 // les "type" et le tableau des extensions est le $GLOBALS['files_ext'] dans conf.php

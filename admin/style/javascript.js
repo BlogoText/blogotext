@@ -292,6 +292,45 @@ function activate_comm(button) {
 
 
 /**************************************************************************************************************************************
+	ADD-ONS HANDLING
+**************************************************************************************************************************************/
+
+// hide/unhide a comm
+function activate_mod(button) {
+	var notifDiv = document.createElement('div');
+
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', 'modules.php', true);
+
+	xhr.onload = function() {
+		var resp = this.responseText;
+		if (resp.indexOf("Success") == 0) {
+		} else {
+			notifDiv.textContent = resp.substr(45);
+			notifDiv.classList.add('no_confirmation');
+			document.getElementById('top').appendChild(notifDiv);
+		}
+	};
+	xhr.onerror = function(e) {
+		notifDiv.textContent = e.target.status + ' (#mod-activ-F38)';
+		notifDiv.classList.add('no_confirmation');
+		document.getElementById('top').appendChild(notifDiv);
+	};
+
+	// prepare and send FormData
+	var formData = new FormData();
+	formData.append('token', csrf_token);
+	formData.append('_verif_envoi', 1);
+
+	formData.append('addon_id', button.id.substr(7));
+	formData.append('statut', ((button.checked) ? 'on' : ''));
+	formData.append('mod_activer', button.id);
+
+	xhr.send(formData);
+
+}
+
+/**************************************************************************************************************************************
 	LINKS AND ARTICLE FORMS : TAGS HANDLING
 **************************************************************************************************************************************/
 
@@ -647,7 +686,7 @@ function request_delete_form(id) {
 	};
 
 	// prepare and send FormData
-	var formData = new FormData();  
+	var formData = new FormData();
 	formData.append('supprimer', '1');
 	formData.append('file_id', id);
 	xhr.send(formData);
@@ -722,7 +761,7 @@ function handleDrop(event) {
 		var fsize = document.createElement('span');
 		    fsize.classList.add('filesize');
 		    fsize.textContent = '('+humanFileSize(filelist[i].size)+')';
-			
+
 		var fstat = document.createElement('span');
 		    fstat.classList.add('uploadstatus');
 		    fstat.textContent = 'Ready';
@@ -954,7 +993,7 @@ function openAllItems(button) {
 		}
 		openAllSwich = 'open';
 		button.classList.remove('unfold');
-	}	
+	}
 	return false;
 }
 
@@ -991,8 +1030,8 @@ function rss_feedlist(RssPosts) {
 		site.classList.add('site');
 		site.appendChild(document.createTextNode(item.sitename));
 		title.appendChild(site);
-		
-		// post title 
+
+		// post title
 		var titleLink = document.createElement("a");
 		titleLink.href = item.link;
 		titleLink.title = item.title;
@@ -1000,7 +1039,7 @@ function rss_feedlist(RssPosts) {
 		titleLink.appendChild(document.createTextNode(item.title));
 		titleLink.onclick = function(){ return openItem(this); };
 		title.appendChild(titleLink);
-		
+
 		// post date
 		var date = document.createElement("div");
 		date.classList.add('date');
@@ -1043,7 +1082,7 @@ function rss_feedlist(RssPosts) {
 		li.appendChild(hr);
 
 		postlist.appendChild(li);
-	}	
+	}
 
 	// displays the number of unread items (local counter)
 	var count = document.querySelector('#post-counter');
@@ -1166,7 +1205,7 @@ function refresh_all_feeds(refreshLink) {
 
 	xhr.onprogress = function() {
 		if (glLength != this.responseText.length) {
-			
+
 			var posSpace = (this.responseText.substr(0, this.responseText.length-1)).lastIndexOf(" ");
 			notifNode.textContent = this.responseText.substr(posSpace);
 			glLength = this.responseText.length;
@@ -1714,5 +1753,3 @@ function draw(container) {
 	ctx.fill();
 	ctx.closePath();
 }
-
-

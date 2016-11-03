@@ -1,0 +1,49 @@
+#calendrier {
+	margin: 0 auto;
+}
+#calendrier,
+#calendrier caption {
+	background: rgba(0, 0, 0, .02);
+}
+
+#calendrier caption {
+	padding: 15px 0 20px;
+}
+
+#calendrier caption > a {
+	padding: 5px 10px;
+}
+
+#calendrier td {
+	width: 30px;
+	height: 30px;
+	border-radius: 3px;
+	border: 1px solid transparent;
+	empty-cells: hide;
+	text-align: center;
+	line-height: 30px;
+	color: rgba(42, 42, 42, .3);
+	position: relative;
+}
+
+#calendrier td a {
+	color: rgba(42, 42, 42, .8);
+	display: inline-block;
+	width: 100%;
+	height: 100%;
+}
+
+#calendrier td a:hover {
+	color: #000;
+}
+
+#calendrier td a::before {
+	content: "";
+	background-color: #2196F3;
+	position: absolute;
+	width: 5px;
+	height: 5px;
+	border-radius: 50%;
+	left: 14px;
+	bottom: 2px;
+}
