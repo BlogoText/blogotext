@@ -16,84 +16,84 @@ define('BT_ROOT', '../');
 require_once '../inc/inc.php';
 
 operate_session();
-$begin = microtime(TRUE);
+$begin = microtime(true);
 
 $fichier = array();
 $GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);
 
 // recherche / tri
-if ( !empty($_GET['filtre']) ) {
-	// for "type" the requests is "type.$search" : here we split the type of search and what we search.
-	$type = substr($_GET['filtre'], 0, -strlen(strstr($_GET['filtre'], '.')));
-	$search = htmlspecialchars(ltrim(strstr($_GET['filtre'], '.'), '.'));
+if (!empty($_GET['filtre'])) {
+    // for "type" the requests is "type.$search" : here we split the type of search and what we search.
+    $type = substr($_GET['filtre'], 0, -strlen(strstr($_GET['filtre'], '.')));
+    $search = htmlspecialchars(ltrim(strstr($_GET['filtre'], '.'), '.'));
 
-	// selon date
-	if ( preg_match('#^\d{6}(\d{1,8})?$#', $_GET['filtre']) ) {
-		$fichiers = liste_base_files('date', $_GET['filtre'], '');
-	// brouillons
-	} elseif ($_GET['filtre'] == 'draft') {
-		$fichiers = liste_base_files('statut', '0', '');
-	// publiés
-	} elseif ($_GET['filtre'] == 'pub') {
-		$fichiers = liste_base_files('statut', '1', '');
-	// liste selon type de fichier
-	} elseif ($type == 'type' and $search != '') {
-		$fichiers = liste_base_files('type', $search, '');
-	} else {
-		$fichiers = $GLOBALS['liste_fichiers'];
-	}
+    // selon date
+    if (preg_match('#^\d{6}(\d{1,8})?$#', $_GET['filtre'])) {
+        $fichiers = liste_base_files('date', $_GET['filtre'], '');
+    // brouillons
+    } elseif ($_GET['filtre'] == 'draft') {
+        $fichiers = liste_base_files('statut', '0', '');
+    // publiés
+    } elseif ($_GET['filtre'] == 'pub') {
+        $fichiers = liste_base_files('statut', '1', '');
+    // liste selon type de fichier
+    } elseif ($type == 'type' and $search != '') {
+        $fichiers = liste_base_files('type', $search, '');
+    } else {
+        $fichiers = $GLOBALS['liste_fichiers'];
+    }
 // recheche par mot clé
 } elseif (!empty($_GET['q'])) {
-	$fichiers = liste_base_files('recherche', htmlspecialchars(urldecode($_GET['q'])), '');
+    $fichiers = liste_base_files('recherche', htmlspecialchars(urldecode($_GET['q'])), '');
 // par extension
 } elseif (!empty($_GET['extension'])) {
-	$fichiers = liste_base_files('extension', htmlspecialchars($_GET['extension']), '');
+    $fichiers = liste_base_files('extension', htmlspecialchars($_GET['extension']), '');
 // par fichier unique (id)
-} elseif (isset($_GET['file_id']) and preg_match('/\d{14}/',($_GET['file_id']))) {
-	foreach ($GLOBALS['liste_fichiers'] as $fich) {
-		if ($fich['bt_id'] == $_GET['file_id']) {
-			$fichier = $fich;
-			break;
-		}
-	}
-	if (!empty($fichier)) {
-		$fichiers[$_GET['file_id']] = $fichier;
-	}
+} elseif (isset($_GET['file_id']) and preg_match('/\d{14}/', ($_GET['file_id']))) {
+    foreach ($GLOBALS['liste_fichiers'] as $fich) {
+        if ($fich['bt_id'] == $_GET['file_id']) {
+            $fichier = $fich;
+            break;
+        }
+    }
+    if (!empty($fichier)) {
+        $fichiers[$_GET['file_id']] = $fichier;
+    }
 // aucun filtre, les affiche tous
 } else {
-	$fichiers = $GLOBALS['liste_fichiers'];
+    $fichiers = $GLOBALS['liste_fichiers'];
 }
 
 // traitement d’une action sur le fichier
 $erreurs = array();
 if (isset($_POST['_verif_envoi'])) {
-	$fichier = init_post_fichier();
-	$erreurs = valider_form_fichier($fichier);
-	if (empty($erreurs)) {
-		traiter_form_fichier($fichier);
-	}
+    $fichier = init_post_fichier();
+    $erreurs = valider_form_fichier($fichier);
+    if (empty($erreurs)) {
+        traiter_form_fichier($fichier);
+    }
 }
 
 afficher_html_head($GLOBALS['lang']['titre_fichier']);
 
 
 echo '<div id="header">'."\n";
-	echo '<div id="top">'."\n";
-	afficher_msg();
-	echo moteur_recherche();
-	afficher_topnav($GLOBALS['lang']['titre_fichier']);
-	echo '</div>'."\n";
+    echo '<div id="top">'."\n";
+    afficher_msg();
+    echo moteur_recherche();
+    afficher_topnav($GLOBALS['lang']['titre_fichier']);
+    echo '</div>'."\n";
 echo '</div>'."\n";
 
 echo '<div id="axe">'."\n";
 // SUBNAV
 echo '<div id="subnav">'."\n";
-	// Affichage formulaire filtrage liens
-	if (isset($_GET['filtre'])) {
-		afficher_form_filtre('fichiers', htmlspecialchars($_GET['filtre']));
-	} else {
-		afficher_form_filtre('fichiers', '');
-	}
+    // Affichage formulaire filtrage liens
+if (isset($_GET['filtre'])) {
+    afficher_form_filtre('fichiers', htmlspecialchars($_GET['filtre']));
+} else {
+    afficher_form_filtre('fichiers', '');
+}
 echo '</div>'."\n";
 
 echo '<div id="page">'."\n";
@@ -102,41 +102,39 @@ echo '<div id="page">'."\n";
 // vérifie que les fichiers de la liste sont bien présents sur le disque dur
 $real_fichiers = array();
 if (!empty($fichiers)) {
-	foreach ($fichiers as $i => $file) {
-		$folder = ($file['bt_type'] == 'image') ? DIR_IMAGES.$file['bt_path'] : DIR_DOCUMENTS;
-		if (is_file(BT_ROOT.'/'.$folder.'/'.$file['bt_filename']) and ($file['bt_filename'] != 'index.html') ) {
-			$real_fichiers[] = $file;
-		}
-	}
+    foreach ($fichiers as $i => $file) {
+        $folder = ($file['bt_type'] == 'image') ? DIR_IMAGES.$file['bt_path'] : DIR_DOCUMENTS;
+        if (is_file(BT_ROOT.'/'.$folder.'/'.$file['bt_filename']) and ($file['bt_filename'] != 'index.html')) {
+            $real_fichiers[] = $file;
+        }
+    }
 }
 
 // ajout d'un nouveau fichier : affichage formulaire, pas des anciens.
-if ( isset($_GET['ajout']) ) {
-	afficher_form_fichier('', '', 'fichier');
-}
-// édition d'un fichier
-elseif ( isset($_GET['file_id']) ) {
-	afficher_form_fichier($erreurs, $real_fichiers, 'fichier');
-}
-// affichage de la liste des fichiers.
+if (isset($_GET['ajout'])) {
+    afficher_form_fichier('', '', 'fichier');
+} // édition d'un fichier
+elseif (isset($_GET['file_id'])) {
+    afficher_form_fichier($erreurs, $real_fichiers, 'fichier');
+} // affichage de la liste des fichiers.
 else {
-	if (!isset($_GET['filtre']) or empty($_GET['filtre']) ) {
-		afficher_form_fichier($erreurs, '', 'fichier');
-	}
+    if (!isset($_GET['filtre']) or empty($_GET['filtre'])) {
+        afficher_form_fichier($erreurs, '', 'fichier');
+    }
 
-	// séparation des images des autres types de fichiers
-	$fichiers = array(); $images = array();
-	foreach ($real_fichiers as $file) {
-		if ($file['bt_type'] == 'image') {
-			$images[] = $file;
-		}
-		else {
-			$fichiers[] = $file;
-		}
-	}
+    // séparation des images des autres types de fichiers
+    $fichiers = array();
+    $images = array();
+    foreach ($real_fichiers as $file) {
+        if ($file['bt_type'] == 'image') {
+            $images[] = $file;
+        } else {
+            $fichiers[] = $file;
+        }
+    }
 
-	afficher_liste_images($images);
-	afficher_liste_fichiers($fichiers);
+    afficher_liste_images($images);
+    afficher_liste_fichiers($fichiers);
 }
 
 echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
@@ -164,4 +162,3 @@ echo "\n".'</script>'."\n";
 
 
 footer($begin);
-

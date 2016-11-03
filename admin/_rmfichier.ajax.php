@@ -21,25 +21,23 @@ define('BT_ROOT', '../');
 require_once '../inc/inc.php';
 
 operate_session();
-$begin = microtime(TRUE);
+$begin = microtime(true);
 
 $GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);
 
 
-if (isset($_POST['file_id']) and preg_match('#\d{14}#',($_POST['file_id'])) and isset($_POST['supprimer']) ) {
-
-	foreach ($GLOBALS['liste_fichiers'] as $fich) {
-		if ($fich['bt_id'] == $_POST['file_id']) {
-			$fichier = $fich;
-			break;
-		}
-	}
-	if (!empty($fichier)) {
-		$retour = bdd_fichier($fichier, 'supprimer-existant', '', $fichier['bt_id']);
-		echo $retour;
-		exit;
-	}
+if (isset($_POST['file_id']) and preg_match('#\d{14}#', ($_POST['file_id'])) and isset($_POST['supprimer'])) {
+    foreach ($GLOBALS['liste_fichiers'] as $fich) {
+        if ($fich['bt_id'] == $_POST['file_id']) {
+            $fichier = $fich;
+            break;
+        }
+    }
+    if (!empty($fichier)) {
+        $retour = bdd_fichier($fichier, 'supprimer-existant', '', $fichier['bt_id']);
+        echo $retour;
+        exit;
+    }
 }
 echo 'failure';
 exit;
-

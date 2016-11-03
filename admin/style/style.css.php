@@ -1,11 +1,10 @@
 <?php
 // gzip compression
 if (extension_loaded('zlib') and ob_get_length() > 0) {
-	ob_end_clean();
-	ob_start("ob_gzhandler");
-}
-else {
-	ob_start("ob_gzhandler");
+    ob_end_clean();
+    ob_start("ob_gzhandler");
+} else {
+    ob_start("ob_gzhandler");
 }
 
 header("Content-type: text/css; charset: UTF-8");
@@ -56,6 +55,6 @@ echo '/* Media-queries < 700px */'."\n";
 readfile('style-mobile-lt700px.css');
 
 if (is_file('../../config/custom-styles.css')) {
-	echo '/* User-Custom CSS */'."\n";
-	readfile('../../config/custom-styles.css');
+    echo '/* User-Custom CSS */'."\n";
+    readfile('../../config/custom-styles.css');
 }

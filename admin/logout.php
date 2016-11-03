@@ -17,5 +17,3 @@ require_once '../inc/inc.php';
 
 operate_session();
 fermer_session();
-
-?>

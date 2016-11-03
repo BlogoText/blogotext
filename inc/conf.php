@@ -48,20 +48,23 @@ $GLOBALS['form_commentaire'] = '';
 
 // IMPORT SEVERAL .ini CONFIG FILES
 // with this function
-function import_ini_file($file_path) {
-	if (is_file($file_path) and is_readable($file_path)) {
-		$options = parse_ini_file($file_path);
-		foreach ($options as $option => $value) {
-			if (!defined($option)) define($option, $value);
-		}
-		return TRUE;
-	}
-	return FALSE;
+function import_ini_file($file_path)
+{
+    if (is_file($file_path) and is_readable($file_path)) {
+        $options = parse_ini_file($file_path);
+        foreach ($options as $option => $value) {
+            if (!defined($option)) {
+                define($option, $value);
+            }
+        }
+        return true;
+    }
+    return false;
 }
 
 // ADVANCED CONFIG OPTIONS
 import_ini_file(BT_ROOT.DIR_CONFIG.'/'.'config-advanced.ini');
-	error_reporting(DISPLAY_PHP_ERRORS); // Error reporting
+    error_reporting(DISPLAY_PHP_ERRORS); // Error reporting
 
 // DATABASE OPTIONS + MySQL DB PARAMS
 import_ini_file(BT_ROOT.DIR_CONFIG.'/'.'mysql.ini');
@@ -71,39 +74,37 @@ import_ini_file(BT_ROOT.DIR_CONFIG.'/'.'user.ini');
 
 // regenerate captcha (always)
 if (!isset($GLOBALS['captcha'])) {
-	$ua = (isset($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : '';
-	$GLOBALS['captcha']['x'] = rand(4, 9);
-	$GLOBALS['captcha']['y'] = rand(1, 6);
-	$GLOBALS['captcha']['hash'] = sha1($ua.($GLOBALS['captcha']['x']+$GLOBALS['captcha']['y']));
+    $ua = (isset($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : '';
+    $GLOBALS['captcha']['x'] = rand(4, 9);
+    $GLOBALS['captcha']['y'] = rand(1, 6);
+    $GLOBALS['captcha']['hash'] = sha1($ua.($GLOBALS['captcha']['x']+$GLOBALS['captcha']['y']));
 }
 
 // THEMES FILES and PATHS
-if ( isset($GLOBALS['theme_choisi']) ) {
-	$GLOBALS['theme_style'] = DIR_THEMES.'/'.$GLOBALS['theme_choisi'];
-	$GLOBALS['theme_liste'] = $GLOBALS['theme_style'].'/list.html';
-	$GLOBALS['theme_post_artc'] = $GLOBALS['theme_style'].'/template/article.html';
-	$GLOBALS['theme_post_comm'] = $GLOBALS['theme_style'].'/template/commentaire.html';
-	$GLOBALS['theme_post_link'] = $GLOBALS['theme_style'].'/template/link.html';
-	$GLOBALS['theme_post_post'] = $GLOBALS['theme_style'].'/template/post.html';
+if (isset($GLOBALS['theme_choisi'])) {
+    $GLOBALS['theme_style'] = DIR_THEMES.'/'.$GLOBALS['theme_choisi'];
+    $GLOBALS['theme_liste'] = $GLOBALS['theme_style'].'/list.html';
+    $GLOBALS['theme_post_artc'] = $GLOBALS['theme_style'].'/template/article.html';
+    $GLOBALS['theme_post_comm'] = $GLOBALS['theme_style'].'/template/commentaire.html';
+    $GLOBALS['theme_post_link'] = $GLOBALS['theme_style'].'/template/link.html';
+    $GLOBALS['theme_post_post'] = $GLOBALS['theme_style'].'/template/post.html';
 
-	$GLOBALS['rss'] = $GLOBALS['racine'].'rss.php';
+    $GLOBALS['rss'] = $GLOBALS['racine'].'rss.php';
 }
 
 // table of recognized filetypes, for file-upload script.
 $GLOBALS['files_ext'] = array(
-	'archive'		=> array('zip', '7z', 'rar', 'tar', 'gz', 'bz', 'bz2', 'xz', 'lzma'),
-	'executable'	=> array('exe', 'e', 'bin', 'run'),
-	'android-apk'	=> array('apk'),
-	'html-xml'		=> array('html', 'htm', 'xml', 'mht'),
-	'image'			=> array('png', 'gif', 'bmp', 'jpg', 'jpeg', 'ico', 'svg', 'tif', 'tiff'),
-	'music'			=> array('mp3', 'wave', 'wav', 'ogg', 'wma', 'flac', 'aac', 'mid', 'midi', 'm4a'),
-	'presentation'	=> array('ppt', 'pptx', 'pps', 'ppsx', 'odp'),
-	'pdf'				=> array('pdf', 'ps', 'psd'),
-	'spreadsheet'	=> array('xls', 'xlsx', 'xlt', 'xltx', 'ods', 'ots', 'csv'),
-	'text_document'=> array('doc', 'docx', 'rtf', 'odt', 'ott'),
-	'text-code'		=> array('txt', 'css', 'py', 'c', 'cpp', 'dat', 'ini', 'inf', 'text', 'conf', 'sh'),
-	'video'			=> array('mp4', 'ogv', 'avi', 'mpeg', 'mpg', 'flv', 'webm', 'mov', 'divx', 'rm', 'rmvb', 'wmv'),
-	'other'			=> array(''), // par défaut
+    'archive'       => array('zip', '7z', 'rar', 'tar', 'gz', 'bz', 'bz2', 'xz', 'lzma'),
+    'executable'    => array('exe', 'e', 'bin', 'run'),
+    'android-apk'   => array('apk'),
+    'html-xml'      => array('html', 'htm', 'xml', 'mht'),
+    'image'             => array('png', 'gif', 'bmp', 'jpg', 'jpeg', 'ico', 'svg', 'tif', 'tiff'),
+    'music'             => array('mp3', 'wave', 'wav', 'ogg', 'wma', 'flac', 'aac', 'mid', 'midi', 'm4a'),
+    'presentation'  => array('ppt', 'pptx', 'pps', 'ppsx', 'odp'),
+    'pdf'               => array('pdf', 'ps', 'psd'),
+    'spreadsheet'   => array('xls', 'xlsx', 'xlt', 'xltx', 'ods', 'ots', 'csv'),
+    'text_document'=> array('doc', 'docx', 'rtf', 'odt', 'ott'),
+    'text-code'         => array('txt', 'css', 'py', 'c', 'cpp', 'dat', 'ini', 'inf', 'text', 'conf', 'sh'),
+    'video'             => array('mp4', 'ogv', 'avi', 'mpeg', 'mpg', 'flv', 'webm', 'mov', 'divx', 'rm', 'rmvb', 'wmv'),
+    'other'             => array(''), // par défaut
 );
-
-
