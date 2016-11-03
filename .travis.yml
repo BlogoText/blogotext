@@ -6,8 +6,7 @@ php:
   - nightly
 
 install:
-  - pyrus install pear/PHP_CodeSniffer
-  - phpenv rehash
+  - curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar
 
 script:
   - php phpcs.phar --standard=PSR2 -np --extensions=php .
