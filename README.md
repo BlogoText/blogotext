@@ -1,5 +1,7 @@
 # BLOGOTEXT
 
+[![Build Status](https://travis-ci.org/BoboTiG/blogotext.svg?branch=dev)](https://travis-ci.org/BoboTiG/blogotext)
+
 ---
 
 This is [Blogotext](http://lehollandaisvolant.net/blogotext/), the lightweight SQLite Blog-Engine.
