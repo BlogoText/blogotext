@@ -364,6 +364,7 @@ $GLOBALS['lang'] = array(
 'pref_comm_black_list'          => 'As soon as they are submited.',
 'pref_automatic_keywords'       => 'Let BlogoText select keywords: ',
 'pref_force_email'              => 'Email is required to comment: ',
+'pref_alert_author'              => 'Send mail to author when someone write a new comment : ',
 'pref_theme'                        => 'Theme: ',
 'pref_afficher_rss'                 => 'Show RSS tabs:',
 'pref_afficher_liens'           => 'Show links tab:',

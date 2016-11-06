@@ -921,6 +921,10 @@ function afficher_form_prefs($erreurs = '')
         $fld_cfg_blog .= '</p>'."\n";
 
         $fld_cfg_blog .= '<p>'."\n";
+        $fld_cfg_blog .= form_checkbox('alert_author', $GLOBALS['alert_author'], $GLOBALS['lang']['pref_alert_author']);
+        $fld_cfg_blog .= '</p>'."\n";
+
+        $fld_cfg_blog .= '<p>'."\n";
         $fld_cfg_blog .= form_select('comm_defaut_status', array('1' => $GLOBALS['lang']['pref_comm_black_list'], '0' => $GLOBALS['lang']['pref_comm_white_list']), $GLOBALS['comm_defaut_status'], $GLOBALS['lang']['pref_comm_BoW_list']);
         $fld_cfg_blog .= '</p>'."\n";
         $fld_cfg_blog .= '</div>'."\n";

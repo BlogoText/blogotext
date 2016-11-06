@@ -224,8 +224,10 @@ function send_emails($id_comment)
     }
 
     // Add the article author email
-    if ( $GLOBALS['email'] != $comm_author_email ) {
-        $to_send_mail[] = $GLOBALS['email'];
+    if ( $GLOBALS['alert_author'] ) {
+        if ( $GLOBALS['email'] != $comm_author_email ) {
+            $to_send_mail[] = $GLOBALS['email'];
+        }
     }
 
     unset($liste_comments);
