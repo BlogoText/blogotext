@@ -52,9 +52,9 @@ function chemin_thb_img_test($filepath)
 
 
 /*
-	Pour les vignettes dans le mur d’images.
-	Avec en entrée le tableau contenant les images, retourne le HTML + JSON du mur d’image.
-	Le JSON est parsé en JS du côté navigateur pour former le mur d’images.
+    Pour les vignettes dans le mur d’images.
+    Avec en entrée le tableau contenant les images, retourne le HTML + JSON du mur d’image.
+    Le JSON est parsé en JS du côté navigateur pour former le mur d’images.
 */
 function afficher_liste_images($images)
 {
@@ -121,27 +121,27 @@ function afficher_liste_images($images)
             //debug($im);
             $rel_thb_src = chemin_thb_img_test($dossier_relatif.$im['bt_path'].'/'.$im['bt_filename']);
             $out .= '
-			{
-				"index": "'.$i.'",
-				"filename":
-					[
-					"'.$dossier.$im['bt_path'].'/'.$im['bt_filename'].'",
-					"'.$im['bt_filename'].'",
-					"'.$rel_thb_src.'",
-					"'.$dossier_relatif.$im['bt_path'].'/'.$im['bt_filename'].'"
-					],
-				"id": "'.$im['bt_id'].'",
-				"desc": "'.addslashes(preg_replace('#(\n|\r|\n\r)#', '', nl2br($im['bt_content']))).'",
-				"dossier": "'.(isset($im['bt_dossier']) ? $im['bt_dossier'] : '').'",
-				"width": "'.$im['bt_dim_w'].'",
-				"height": "'.$im['bt_dim_h'].'",
-				"weight": "'.$im['bt_filesize'].'",
-				"date":
-					[
-					"'.date_formate($im['bt_id']).'",
-					"'.heure_formate($im['bt_id']).'"
-					]
-			},';
+            {
+                "index": "'.$i.'",
+                "filename":
+                    [
+                    "'.$dossier.$im['bt_path'].'/'.$im['bt_filename'].'",
+                    "'.$im['bt_filename'].'",
+                    "'.$rel_thb_src.'",
+                    "'.$dossier_relatif.$im['bt_path'].'/'.$im['bt_filename'].'"
+                    ],
+                "id": "'.$im['bt_id'].'",
+                "desc": "'.addslashes(preg_replace('#(\n|\r|\n\r)#', '', nl2br($im['bt_content']))).'",
+                "dossier": "'.(isset($im['bt_dossier']) ? $im['bt_dossier'] : '').'",
+                "width": "'.$im['bt_dim_w'].'",
+                "height": "'.$im['bt_dim_h'].'",
+                "weight": "'.$im['bt_filesize'].'",
+                "date":
+                    [
+                    "'.date_formate($im['bt_id']).'",
+                    "'.heure_formate($im['bt_id']).'"
+                    ]
+            },';
         }
             $out .= ']'."\n";
         $out .= '};'."\n";

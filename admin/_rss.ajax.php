@@ -35,8 +35,8 @@ $GLOBALS['db_handle'] = open_base();
 $GLOBALS['liste_flux'] = open_serialzd_file(FEEDS_DB);
 
 /*
-	This file is called by the other files. It is an underground working script,
-	It is not intended to be called directly in your browser.
+    This file is called by the other files. It is an underground working script,
+    It is not intended to be called directly in your browser.
 */
 
 // retreive all RSS feeds from the sources, and save them in DB.

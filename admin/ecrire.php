@@ -90,11 +90,11 @@ echo '<script type="text/javascript">';
 echo php_lang_to_js(0);
 echo 'var contenuLoad = document.getElementById("contenu").value;
 window.addEventListener("beforeunload", function (e) {
-	// From https://developer.mozilla.org/en-US/docs/Web/Reference/Events/beforeunload
-	var confirmationMessage = BTlang.questionQuitPage;
-	if(document.getElementById("contenu").value == contenuLoad) { return true; };
-	(e || window.event).returnValue = confirmationMessage || \'\' ;	//Gecko + IE
-	return confirmationMessage;													// Webkit : ignore this.
+    // From https://developer.mozilla.org/en-US/docs/Web/Reference/Events/beforeunload
+    var confirmationMessage = BTlang.questionQuitPage;
+    if(document.getElementById("contenu").value == contenuLoad) { return true; };
+    (e || window.event).returnValue = confirmationMessage || \'\' ; //Gecko + IE
+    return confirmationMessage;                                                 // Webkit : ignore this.
 });';
 
 echo '</script>';

@@ -500,7 +500,7 @@ function feed2array($feed_content, $feedlink)
                 if (!empty($item->link)) {
                     $flux['items'][$c]['bt_link'] = (string)$item->link;
                 }
-//				if (!empty($item->author->name)) {  $flux['items'][$c]['bt_author'] = (string)$item->author->name; }
+//              if (!empty($item->author->name)) {  $flux['items'][$c]['bt_author'] = (string)$item->author->name; }
 
                 if (!empty($item->guid)) {
                     $flux['items'][$c]['bt_id'] = (string)$item->guid;
