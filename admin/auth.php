@@ -30,7 +30,7 @@ if (isset($_POST['nom_utilisateur'])) {
     // Proxy IPs, if exists.
     $ip .= (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) ? '_'.htmlspecialchars($_SERVER['HTTP_X_FORWARDED_FOR']) : '';
     $curent_time = date('r'); // heure : Wed, 18 Jan 2012 20:42:12 +0100
-    $data = '<?php die(\'no.\'); // '.$curent_time.' - '.$ip.' - '.((check_session()===true) ? 'login succes' : 'login fail') ."?> \n";
+    $data = '<?php die(\'no.\'); // '.$curent_time.' - '.$ip.' - '.((check_session()===true) ? 'login succes' : 'login fail') ."\n";
     file_put_contents(BT_ROOT.DIR_CONFIG.'/'.'xauthlog.php', $data, FILE_APPEND);
 }
 
@@ -90,10 +90,7 @@ if (isset($_POST['_verif_envoi']) and valider_form() === true) { // OK : getting
 
 function valider_form()
 {
-    if (!password_verify($_POST['mot_de_passe'], USER_PWHASH) or $_POST['nom_utilisateur'] != USER_LOGIN) {
-        return false;
-    }
-    return true;
+    return password_verify($_POST['mot_de_passe'], USER_PWHASH) && $_POST['nom_utilisateur'] === USER_LOGIN;
 }
 
 echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";

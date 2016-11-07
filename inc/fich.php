@@ -156,7 +156,6 @@ function fichier_prefs()
     $prefs .= "\$GLOBALS['check_update']= '".$auto_check_updates."';\n";
     $prefs .= "\$GLOBALS['max_linx_admin']= '".$nombre_liens_admin."';\n";
     $prefs .= "\$GLOBALS['dl_link_to_files']= '".$auto_dl_liens_fichiers."';\n";
-    $prefs .= "?>";
 
     return file_put_contents($fichier_prefs, $prefs) !== false;
 }
