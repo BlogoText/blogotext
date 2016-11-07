@@ -70,9 +70,9 @@ if (!isset($_GET['config'])) {
     echo "\t\t".'<span id="message-return"></span>'."\n";
     echo "\t\t".'<ul class="rss-menu-buttons">'."\n";
     echo "\t\t\t".'<li><button type="button" onclick="refresh_all_feeds(this);" title="'.$GLOBALS['lang']['rss_label_refresh'].'"></button></li>'."\n";
-//		echo "\t\t\t".'<li><button type="button" onclick="sendMarkReadRequest(\'all\', \'\', true);" title="'.$GLOBALS['lang']['rss_label_markasread'].'"></button></li>'."\n";
-//		echo "\t\t\t".'<li><button type="button" onclick="openAllItems(this);" title="'.$GLOBALS['lang']['rss_label_unfoldall'].'"></button></li>'."\n";
-//		echo "\t\t\t".'<li><button type="button" onclick="addNewFeed();" title="'.$GLOBALS['lang']['rss_label_addfeed'].'"></button></li>'."\n";
+//      echo "\t\t\t".'<li><button type="button" onclick="sendMarkReadRequest(\'all\', \'\', true);" title="'.$GLOBALS['lang']['rss_label_markasread'].'"></button></li>'."\n";
+//      echo "\t\t\t".'<li><button type="button" onclick="openAllItems(this);" title="'.$GLOBALS['lang']['rss_label_unfoldall'].'"></button></li>'."\n";
+//      echo "\t\t\t".'<li><button type="button" onclick="addNewFeed();" title="'.$GLOBALS['lang']['rss_label_addfeed'].'"></button></li>'."\n";
     echo "\t\t\t".'<li><button type="button" onclick="window.location= \'?config\';" title="'.$GLOBALS['lang']['rss_label_config'].'"></button></li>'."\n";
     echo "\t\t\t".'<li><button type="button" onclick="window.location.href=\'maintenance.php#form_import\'" title="Import/export"></button></li>'."\n";
     echo "\t\t\t".'<li><button type="button" onclick="return cleanList();" title="'.$GLOBALS['lang']['rss_label_clean'].'"></button></li>'."\n";
@@ -107,8 +107,7 @@ if (isset($_GET['config'])) {
     $out_html .= "\t\t\t".'<p><span id="post-counter"></span> '.$GLOBALS['lang']['label_elements'].'</p>'."\n";
 
     $out_html .= "\t\t\t".'</div>'."\n";
-    
-    
+
     /* here comes (in JS) the <ul id="post-list"></ul> */
 
     if (empty($GLOBALS['liste_flux'])) {
@@ -128,25 +127,25 @@ if (isset($_GET['config'])) {
     echo 'var readQueue = {"count": "0", "urlList": []};'."\n";
     echo 'var Rss = rss_entries.list;'."\n";
     echo 'window.addEventListener(\'load\', function(){
-				rss_feedlist(Rss);
-				window.addEventListener(\'keydown\', keyboardNextPrevious);
-			});'."\n";
+                rss_feedlist(Rss);
+                window.addEventListener(\'keydown\', keyboardNextPrevious);
+            });'."\n";
 
     echo 'window.addEventListener("beforeunload", function (e) {
-			if (readQueue.count != 0) {
-				sendMarkReadRequest(\'postlist\', JSON.stringify(readQueue.urlList), false);
-				readQueue.urlList = [];
-				readQueue.count = 0;
-			}
-			else { return true; }
-		});'."\n";
+            if (readQueue.count != 0) {
+                sendMarkReadRequest(\'postlist\', JSON.stringify(readQueue.urlList), false);
+                readQueue.urlList = [];
+                readQueue.count = 0;
+            }
+            else { return true; }
+        });'."\n";
 
     echo 'var scrollPos = 0;'."\n";
     echo 'window.addEventListener(\'scroll\', function(){ scrollingFabHideShow() });'."\n";
 
     echo 'var list = document.querySelectorAll("a[data-feed-domain]");'."\n";
     echo 'for (var i = 0, len=list.length; i < len; i++) {'."\n";
-    echo '	list[i].style.backgroundImage="url(\'" + "cache/get.php?w=favicon&q="+ list[i].getAttribute(\'data-feed-domain\') + "\')";'."\n";
+    echo '  list[i].style.backgroundImage="url(\'" + "cache/get.php?w=favicon&q="+ list[i].getAttribute(\'data-feed-domain\') + "\')";'."\n";
     echo '}'."\n\n";
 
 

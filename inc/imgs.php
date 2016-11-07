@@ -52,9 +52,9 @@ function chemin_thb_img_test($filepath)
 
 
 /*
-	Pour les vignettes dans le mur d’images.
-	Avec en entrée le tableau contenant les images, retourne le HTML + JSON du mur d’image.
-	Le JSON est parsé en JS du côté navigateur pour former le mur d’images.
+    Pour les vignettes dans le mur d’images.
+    Avec en entrée le tableau contenant les images, retourne le HTML + JSON du mur d’image.
+    Le JSON est parsé en JS du côté navigateur pour former le mur d’images.
 */
 function afficher_liste_images($images)
 {
@@ -121,27 +121,27 @@ function afficher_liste_images($images)
             //debug($im);
             $rel_thb_src = chemin_thb_img_test($dossier_relatif.$im['bt_path'].'/'.$im['bt_filename']);
             $out .= '
-			{
-				"index": "'.$i.'",
-				"filename":
-					[
-					"'.$dossier.$im['bt_path'].'/'.$im['bt_filename'].'",
-					"'.$im['bt_filename'].'",
-					"'.$rel_thb_src.'",
-					"'.$dossier_relatif.$im['bt_path'].'/'.$im['bt_filename'].'"
-					],
-				"id": "'.$im['bt_id'].'",
-				"desc": "'.addslashes(preg_replace('#(\n|\r|\n\r)#', '', nl2br($im['bt_content']))).'",
-				"dossier": "'.(isset($im['bt_dossier']) ? $im['bt_dossier'] : '').'",
-				"width": "'.$im['bt_dim_w'].'",
-				"height": "'.$im['bt_dim_h'].'",
-				"weight": "'.$im['bt_filesize'].'",
-				"date":
-					[
-					"'.date_formate($im['bt_id']).'",
-					"'.heure_formate($im['bt_id']).'"
-					]
-			},';
+            {
+                "index": "'.$i.'",
+                "filename":
+                    [
+                    "'.$dossier.$im['bt_path'].'/'.$im['bt_filename'].'",
+                    "'.$im['bt_filename'].'",
+                    "'.$rel_thb_src.'",
+                    "'.$dossier_relatif.$im['bt_path'].'/'.$im['bt_filename'].'"
+                    ],
+                "id": "'.$im['bt_id'].'",
+                "desc": "'.addslashes(preg_replace('#(\n|\r|\n\r)#', '', nl2br($im['bt_content']))).'",
+                "dossier": "'.(isset($im['bt_dossier']) ? $im['bt_dossier'] : '').'",
+                "width": "'.$im['bt_dim_w'].'",
+                "height": "'.$im['bt_dim_h'].'",
+                "weight": "'.$im['bt_filesize'].'",
+                "date":
+                    [
+                    "'.date_formate($im['bt_id']).'",
+                    "'.heure_formate($im['bt_id']).'"
+                    ]
+            },';
         }
             $out .= ']'."\n";
         $out .= '};'."\n";
@@ -319,7 +319,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var)
             // ajout à la base.
             $GLOBALS['liste_fichiers'][] = $fichier;
             $GLOBALS['liste_fichiers'] = tri_selon_sous_cle($GLOBALS['liste_fichiers'], 'bt_id');
-            file_put_contents(FILES_DB, '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_fichiers']))).' */');
+            file_put_contents(FILES_DB, '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_fichiers'])), 76, "\n").' */'."\n");
     } // modification d’un fichier déjà existant
     elseif ($quoi == 'editer-existant') {
             $new_filename = $fichier['bt_filename'];
@@ -357,7 +357,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var)
         }
 
             $GLOBALS['liste_fichiers'] = tri_selon_sous_cle($GLOBALS['liste_fichiers'], 'bt_id');
-            file_put_contents(FILES_DB, '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_fichiers']))).' */'); // écrit dans le fichier, la liste
+            file_put_contents(FILES_DB, '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_fichiers'])), 76, "\n").' */'."\n"); // écrit dans le fichier, la liste
             redirection(basename($_SERVER['SCRIPT_NAME']).'?file_id='.$fichier['bt_id'].'&edit&msg=confirm_fichier_edit');
     } // suppression d’un fichier (de la BDD et du disque)
     elseif ($quoi == 'supprimer-existant') {
@@ -378,7 +378,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var)
                 }
                 unset($GLOBALS['liste_fichiers'][$tbl_id]); // efface le fichier dans la liste des fichiers.
                 $GLOBALS['liste_fichiers'] = tri_selon_sous_cle($GLOBALS['liste_fichiers'], 'bt_id');
-                file_put_contents(FILES_DB, '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_fichiers']))).' */'); // enregistre la liste
+                file_put_contents(FILES_DB, '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_fichiers'])), 76, "\n").' */'."\n"); // enregistre la liste
                 return 'success';
             } else { // erreur effacement fichier physique
                 return 'error_suppr_file_suppr_error';
@@ -390,7 +390,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var)
             unset($GLOBALS['liste_fichiers'][$tbl_id]); // remove entry from files-list.
         }
             $GLOBALS['liste_fichiers'] = tri_selon_sous_cle($GLOBALS['liste_fichiers'], 'bt_id');
-            file_put_contents(FILES_DB, '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_fichiers']))).' */'); // enregistre la liste
+            file_put_contents(FILES_DB, '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_fichiers'])), 76, "\n").' */'."\n"); // enregistre la liste
             return 'no_such_file_on_disk';
     }
 }

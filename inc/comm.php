@@ -80,9 +80,9 @@ function afficher_form_commentaire($article_id, $mode, $erreurs, $edit_comm)
     }
 
     // comm sent without errors and will be saved to DB
-/* 	elseif (isset($_POST['_verif_envoi'])) {
-		header('Location: ?'.$_SERVER['QUERY_STRING'].'#erreurs'); // redirection anti repostage;
-	}*/
+/*  elseif (isset($_POST['_verif_envoi'])) {
+        header('Location: ?'.$_SERVER['QUERY_STRING'].'#erreurs'); // redirection anti repostage;
+    }*/
 
     // prelim vars for Generation of comment Form
     $required = ($GLOBALS['require_email'] == 1) ? 'required=""' : '';

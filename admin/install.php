@@ -198,13 +198,13 @@ function afficher_form_3($erreurs = '')
     echo '<div id="mysql_vars" style="display:none;">'."\n";
     if (extension_loaded('pdo_mysql')) {
         echo '<p><label for="mysql_user">MySQL User: </label>
-					<input type="text" id="mysql_user" name="mysql_user" size="30" value="" class="text" placeholder="mysql_user" /></p>'."\n";
+                    <input type="text" id="mysql_user" name="mysql_user" size="30" value="" class="text" placeholder="mysql_user" /></p>'."\n";
         echo '<p><label for="mysql_password">MySQL Password: </label>
-					<input type="password" id="mysql_password" name="mysql_passwd" size="30" value="" class="text" placeholder="••••••••••••" autocomplete="off" /><button type="button" class="unveilmdp" onclick="return revealpass(\'mysql_password\');"></button></p>'."\n";
+                    <input type="password" id="mysql_password" name="mysql_passwd" size="30" value="" class="text" placeholder="••••••••••••" autocomplete="off" /><button type="button" class="unveilmdp" onclick="return revealpass(\'mysql_password\');"></button></p>'."\n";
         echo '<p><label for="mysql_db">MySQL Database: </label>
-					<input type="text" id="mysql_db" name="mysql_db" size="30" value="" class="text" placeholder="db_blogotext" /></p>'."\n";
+                    <input type="text" id="mysql_db" name="mysql_db" size="30" value="" class="text" placeholder="db_blogotext" /></p>'."\n";
         echo '<p><label for="mysql_host">MySQL Host: </label>
-					<input type="text" id="mysql_host" name="mysql_host" size="30" value="" class="text" placeholder="localhost" /></p>'."\n";
+                    <input type="text" id="mysql_host" name="mysql_host" size="30" value="" class="text" placeholder="localhost" /></p>'."\n";
     }
     echo '</div>'."\n";
 
@@ -381,29 +381,29 @@ function test_connection_mysql()
 
 echo '<script type="text/javascript">
 function getSelectSgdb() {
-	var selectElmt = document.getElementById("sgdb");
-	if (!selectElmt) return false;
-	return selectElmt.options[selectElmt.selectedIndex].value;
+    var selectElmt = document.getElementById("sgdb");
+    if (!selectElmt) return false;
+    return selectElmt.options[selectElmt.selectedIndex].value;
 }
 function show_mysql_form() {
-	var selected = getSelectSgdb();
-	if (selected) {
-		if (selected == "mysql") {
-			document.getElementById("mysql_vars").style.display = "block";
-		} else {
-			document.getElementById("mysql_vars").style.display = "none";
-		}
-	}
+    var selected = getSelectSgdb();
+    if (selected) {
+        if (selected == "mysql") {
+            document.getElementById("mysql_vars").style.display = "block";
+        } else {
+            document.getElementById("mysql_vars").style.display = "none";
+        }
+    }
 }
 show_mysql_form(); // needed if MySQL is only option.
 
 function revealpass(fieldId) {
-	var field = document.getElementById(fieldId);
-	if (field.type == "password") { field.type = "text"; }
-	else { field.type = "password"; }
-	field.focus();
-	field.setSelectionRange(field.value.length, field.value.length);
-	return false;
+    var field = document.getElementById(fieldId);
+    if (field.type == "password") { field.type = "text"; }
+    else { field.type = "password"; }
+    field.focus();
+    field.setSelectionRange(field.value.length, field.value.length);
+    return false;
 }
 
 </script>'."\n";

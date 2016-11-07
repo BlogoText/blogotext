@@ -184,7 +184,7 @@ if ($step == 1) {
     echo 'document.getElementById(\'url\').addEventListener(\'blur\', unHideFAB, false);'."\n";
 
     echo 'if (window.getComputedStyle(document.querySelector(\'#nav > ul\')).position != \'absolute\') {'."\n";
-    echo '	document.getElementById(\'url\').focus();'."\n";
+    echo '    document.getElementById(\'url\').focus();'."\n";
     echo '}'."\n";
 }
 echo 'var scrollPos = 0;'."\n";

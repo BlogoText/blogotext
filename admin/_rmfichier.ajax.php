@@ -12,8 +12,8 @@
 # *** LICENSE ***
 
 /*
-	This file is called by the files. It is an underground working script,
-	It is not intended to be called directly in your browser.
+    This file is called by the files. It is an underground working script,
+    It is not intended to be called directly in your browser.
 */
 
 define('BT_ROOT', '../');

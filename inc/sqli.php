@@ -25,73 +25,73 @@ function create_tables()
     $if_not_exists = (DBMS == 'sqlite') ? 'IF NOT EXISTS' : ''; // MySQL doesn’t know this statement for INDEXES
 
     $dbase_structure['links'] = "CREATE TABLE IF NOT EXISTS links
-		(
-			ID INTEGER PRIMARY KEY $auto_increment,
-			bt_type CHAR(20),
-			bt_id BIGINT,
-			bt_content TEXT,
-			bt_wiki_content TEXT,
-			bt_title TEXT,
-			bt_tags TEXT,
-			bt_link TEXT,
-			bt_statut TINYINT
-		); CREATE INDEX $if_not_exists dateL ON links ( bt_id );";
+        (
+            ID INTEGER PRIMARY KEY $auto_increment,
+            bt_type CHAR(20),
+            bt_id BIGINT,
+            bt_content TEXT,
+            bt_wiki_content TEXT,
+            bt_title TEXT,
+            bt_tags TEXT,
+            bt_link TEXT,
+            bt_statut TINYINT
+        ); CREATE INDEX $if_not_exists dateL ON links ( bt_id );";
 
     $dbase_structure['commentaires'] = "CREATE TABLE IF NOT EXISTS commentaires
-		(
-			ID INTEGER PRIMARY KEY $auto_increment,
-			bt_type CHAR(20),
-			bt_id BIGINT,
-			bt_article_id BIGINT,
-			bt_content TEXT,
-			bt_wiki_content TEXT,
-			bt_author TEXT,
-			bt_link TEXT,
-			bt_webpage TEXT,
-			bt_email TEXT,
-			bt_subscribe TINYINT,
-			bt_statut TINYINT
-		); CREATE INDEX $if_not_exists dateC ON commentaires ( bt_id );";
+        (
+            ID INTEGER PRIMARY KEY $auto_increment,
+            bt_type CHAR(20),
+            bt_id BIGINT,
+            bt_article_id BIGINT,
+            bt_content TEXT,
+            bt_wiki_content TEXT,
+            bt_author TEXT,
+            bt_link TEXT,
+            bt_webpage TEXT,
+            bt_email TEXT,
+            bt_subscribe TINYINT,
+            bt_statut TINYINT
+        ); CREATE INDEX $if_not_exists dateC ON commentaires ( bt_id );";
 
 
     $dbase_structure['articles'] = "CREATE TABLE IF NOT EXISTS articles
-		(
-			ID INTEGER PRIMARY KEY $auto_increment,
-			bt_type CHAR(20),
-			bt_id BIGINT,
-			bt_date BIGINT,
-			bt_title TEXT,
-			bt_abstract TEXT,
-			bt_notes TEXT,
-			bt_link TEXT,
-			bt_content TEXT,
-			bt_wiki_content TEXT,
-			bt_tags TEXT,
-			bt_keywords TEXT,
-			bt_nb_comments INTEGER,
-			bt_allow_comments TINYINT,
-			bt_statut TINYINT
-		); CREATE INDEX $if_not_exists dateidA ON articles ( bt_date, bt_id );";
+        (
+            ID INTEGER PRIMARY KEY $auto_increment,
+            bt_type CHAR(20),
+            bt_id BIGINT,
+            bt_date BIGINT,
+            bt_title TEXT,
+            bt_abstract TEXT,
+            bt_notes TEXT,
+            bt_link TEXT,
+            bt_content TEXT,
+            bt_wiki_content TEXT,
+            bt_tags TEXT,
+            bt_keywords TEXT,
+            bt_nb_comments INTEGER,
+            bt_allow_comments TINYINT,
+            bt_statut TINYINT
+        ); CREATE INDEX $if_not_exists dateidA ON articles ( bt_date, bt_id );";
 
     /* here bt_ID is a GUID, from the feed, not only a 'YmdHis' date string.*/
     $dbase_structure['rss'] = "CREATE TABLE IF NOT EXISTS rss
-		(
-			ID INTEGER PRIMARY KEY $auto_increment,
-			bt_id TEXT,
-			bt_date BIGINT,
-			bt_title TEXT,
-			bt_link TEXT,
-			bt_feed TEXT,
-			bt_content TEXT,
-			bt_statut TINYINT,
-			bt_bookmarked TINYINT,
-			bt_folder TEXT
-		); CREATE INDEX $if_not_exists dateidR ON rss ( bt_date, bt_id$index_limit_size );";
+        (
+            ID INTEGER PRIMARY KEY $auto_increment,
+            bt_id TEXT,
+            bt_date BIGINT,
+            bt_title TEXT,
+            bt_link TEXT,
+            bt_feed TEXT,
+            bt_content TEXT,
+            bt_statut TINYINT,
+            bt_bookmarked TINYINT,
+            bt_folder TEXT
+        ); CREATE INDEX $if_not_exists dateidR ON rss ( bt_date, bt_id$index_limit_size );";
 
     /*
-	* SQLite
-	*
-	*/
+    * SQLite
+    *
+    */
     switch (DBMS) {
         case 'sqlite':
             if (!is_file(BT_ROOT.DIR_DATABASES.'/database.sqlite')) {
@@ -117,9 +117,9 @@ function create_tables()
             break;
 
         /*
-		* MySQL
-		*
-		*/
+        * MySQL
+        *
+        */
         case 'mysql':
             try {
                 $options_pdo[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
@@ -236,7 +236,7 @@ function init_list_comments($comment)
 {
         $comment['auteur_lien'] = (!empty($comment['bt_webpage'])) ? '<a href="'.$comment['bt_webpage'].'" class="webpage">'.$comment['bt_author'].'</a>' : $comment['bt_author'] ;
         $comment['anchor'] = article_anchor($comment['bt_id']);
-//		$comment['article_title'] = get_entry($GLOBALS['db_handle'], 'articles', 'bt_title', $comment['bt_article_id'], 'return');
+//      $comment['article_title'] = get_entry($GLOBALS['db_handle'], 'articles', 'bt_title', $comment['bt_article_id'], 'return');
         $comment['bt_link'] = get_blogpath($comment['bt_article_id'], $comment['bt_title']).'#'.$comment['anchor'];
         $comment = array_merge($comment, decode_id($comment['bt_id']));
     return $comment;
@@ -389,22 +389,22 @@ function bdd_article($billet, $what)
     if ($what == 'enregistrer-nouveau') {
         try {
             $req = $GLOBALS['db_handle']->prepare('INSERT INTO articles
-				(	bt_type,
-					bt_id,
-					bt_date,
-					bt_title,
-					bt_abstract,
-					bt_link,
-					bt_notes,
-					bt_content,
-					bt_wiki_content,
-					bt_tags,
-					bt_keywords,
-					bt_allow_comments,
-					bt_nb_comments,
-					bt_statut
-				)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+                (   bt_type,
+                    bt_id,
+                    bt_date,
+                    bt_title,
+                    bt_abstract,
+                    bt_link,
+                    bt_notes,
+                    bt_content,
+                    bt_wiki_content,
+                    bt_tags,
+                    bt_keywords,
+                    bt_allow_comments,
+                    bt_nb_comments,
+                    bt_statut
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
             $req->execute(array(
                 'article',
                 $billet['bt_id'],
@@ -429,18 +429,18 @@ function bdd_article($billet, $what)
     } elseif ($what == 'modifier-existant') {
         try {
             $req = $GLOBALS['db_handle']->prepare('UPDATE articles SET
-				bt_date=?,
-				bt_title=?,
-				bt_link=?,
-				bt_abstract=?,
-				bt_notes=?,
-				bt_content=?,
-				bt_wiki_content=?,
-				bt_tags=?,
-				bt_keywords=?,
-				bt_allow_comments=?,
-				bt_statut=?
-				WHERE ID=?');
+                bt_date=?,
+                bt_title=?,
+                bt_link=?,
+                bt_abstract=?,
+                bt_notes=?,
+                bt_content=?,
+                bt_wiki_content=?,
+                bt_tags=?,
+                bt_keywords=?,
+                bt_allow_comments=?,
+                bt_statut=?
+                WHERE ID=?');
             $req->execute(array(
                     $billet['bt_date'],
                     $billet['bt_title'],
@@ -505,16 +505,16 @@ function bdd_lien($link, $what)
     if ($what == 'enregistrer-nouveau') {
         try {
             $req = $GLOBALS['db_handle']->prepare('INSERT INTO links
-			(	bt_type,
-				bt_id,
-				bt_content,
-				bt_wiki_content,
-				bt_title,
-				bt_link,
-				bt_tags,
-				bt_statut
-			)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+            (   bt_type,
+                bt_id,
+                bt_content,
+                bt_wiki_content,
+                bt_title,
+                bt_link,
+                bt_tags,
+                bt_statut
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
             $req->execute(array(
                 $link['bt_type'],
                 $link['bt_id'],
@@ -532,13 +532,13 @@ function bdd_lien($link, $what)
     } elseif ($what == 'modifier-existant') {
         try {
             $req = $GLOBALS['db_handle']->prepare('UPDATE links SET
-				bt_content=?,
-				bt_wiki_content=?,
-				bt_title=?,
-				bt_link=?,
-				bt_tags=?,
-				bt_statut=?
-				WHERE ID=?');
+                bt_content=?,
+                bt_wiki_content=?,
+                bt_title=?,
+                bt_link=?,
+                bt_tags=?,
+                bt_statut=?
+                WHERE ID=?');
             $req->execute(array(
                 $link['bt_content'],
                 $link['bt_wiki_content'],
@@ -630,19 +630,19 @@ function bdd_commentaire($commentaire, $what)
     if ($what == 'enregistrer-nouveau') {
         try {
             $req = $GLOBALS['db_handle']->prepare('INSERT INTO commentaires
-				(	bt_type,
-					bt_id,
-					bt_article_id,
-					bt_content,
-					bt_wiki_content,
-					bt_author,
-					bt_link,
-					bt_webpage,
-					bt_email,
-					bt_subscribe,
-					bt_statut
-				)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+                (   bt_type,
+                    bt_id,
+                    bt_article_id,
+                    bt_content,
+                    bt_wiki_content,
+                    bt_author,
+                    bt_link,
+                    bt_webpage,
+                    bt_email,
+                    bt_subscribe,
+                    bt_statut
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
             $req->execute(array(
                 'comment',
                 $commentaire['bt_id'],
@@ -669,16 +669,16 @@ function bdd_commentaire($commentaire, $what)
     // ÉDITION D'UN COMMENTAIRE DÉJÀ EXISTANT. (ou activation)
         try {
             $req = $GLOBALS['db_handle']->prepare('UPDATE commentaires SET
-				bt_article_id=?,
-				bt_content=?,
-				bt_wiki_content=?,
-				bt_author=?,
-				bt_link=?,
-				bt_webpage=?,
-				bt_email=?,
-				bt_subscribe=?,
-				bt_statut=?
-				WHERE ID=?');
+                bt_article_id=?,
+                bt_content=?,
+                bt_wiki_content=?,
+                bt_author=?,
+                bt_link=?,
+                bt_webpage=?,
+                bt_email=?,
+                bt_subscribe=?,
+                bt_statut=?
+                WHERE ID=?');
             $req->execute(array(
                 $commentaire['bt_article_id'],
                 $commentaire['bt_content'],
@@ -778,8 +778,8 @@ function list_all_tags($table, $statut)
 
 /* Enregistre le flux dans une BDD.
    $flux est un Array avec les données dedans.
-	$flux ne contient que les entrées qui doivent être enregistrées
-	 (la recherche de doublons est fait en amont)
+    $flux ne contient que les entrées qui doivent être enregistrées
+     (la recherche de doublons est fait en amont)
 */
 function bdd_rss($flux, $what)
 {
@@ -788,17 +788,17 @@ function bdd_rss($flux, $what)
             $GLOBALS['db_handle']->beginTransaction();
             foreach ($flux as $post) {
                 $req = $GLOBALS['db_handle']->prepare('INSERT INTO rss
-				(  bt_id,
-					bt_date,
-					bt_title,
-					bt_link,
-					bt_feed,
-					bt_content,
-					bt_statut,
-					bt_bookmarked,
-					bt_folder
-				)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
+                (  bt_id,
+                    bt_date,
+                    bt_title,
+                    bt_link,
+                    bt_feed,
+                    bt_content,
+                    bt_statut,
+                    bt_bookmarked,
+                    bt_folder
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
                 $req->execute(array(
                     $post['bt_id'],
                     $post['bt_date'],

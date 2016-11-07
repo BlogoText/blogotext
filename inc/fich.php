@@ -98,6 +98,7 @@ function fichier_prefs()
         $theme_choisi = addslashes(clean_txt(htmlspecialchars($_POST['theme'])));
         $comm_defaut_status = htmlspecialchars($_POST['comm_defaut_status']);
         $automatic_keywords = (isset($_POST['auto_keywords'])) ? '1' : '0';
+        $alert_author = (isset($_POST['alert_author'])) ? '1' : '0';
         $require_email = (isset($_POST['require_email'])) ? '1' : '0';
         $auto_check_updates = (isset($_POST['check_update'])) ? '1' : '0';
         $auto_dl_liens_fichiers = htmlspecialchars($_POST['dl_link_to_files']);
@@ -123,6 +124,7 @@ function fichier_prefs()
         $theme_choisi = 'default';
         $comm_defaut_status = '1';
         $automatic_keywords = '1';
+        $alert_author = '0';
         $require_email = '0';
         $auto_check_updates = 1;
         $auto_dl_liens_fichiers = '0';
@@ -149,16 +151,13 @@ function fichier_prefs()
     $prefs .= "\$GLOBALS['global_com_rule']= '".$global_com_rule."';\n";
     $prefs .= "\$GLOBALS['comm_defaut_status']= '".$comm_defaut_status."';\n";
     $prefs .= "\$GLOBALS['automatic_keywords']= '".$automatic_keywords."';\n";
+    $prefs .= "\$GLOBALS['alert_author']= '".$alert_author."';\n";
     $prefs .= "\$GLOBALS['require_email']= '".$require_email."';\n";
     $prefs .= "\$GLOBALS['check_update']= '".$auto_check_updates."';\n";
     $prefs .= "\$GLOBALS['max_linx_admin']= '".$nombre_liens_admin."';\n";
     $prefs .= "\$GLOBALS['dl_link_to_files']= '".$auto_dl_liens_fichiers."';\n";
-    $prefs .= "?>";
-    if (file_put_contents($fichier_prefs, $prefs) === false) {
-        return false;
-    } else {
-        return true;
-    }
+
+    return file_put_contents($fichier_prefs, $prefs) !== false;
 }
 
 function fichier_mysql($sgdb)
@@ -176,11 +175,7 @@ function fichier_mysql($sgdb)
         $data .= 'DBMS = \''.$sgdb.'\''."\n";
     }
 
-    if (file_put_contents($fichier_mysql, $data) === false) {
-        return false;
-    } else {
-        return true;
-    }
+    return file_put_contents($fichier_mysql, $data) !== false;
 }
 
 function fichier_index($dossier)
@@ -195,11 +190,7 @@ function fichier_index($dossier)
     $content .= '</html>';
     $index_html = $dossier.'/index.html';
 
-    if (file_put_contents($index_html, $content) === false) {
-        return false;
-    } else {
-        return true;
-    }
+    return file_put_contents($index_html, $content) !== false;
 }
 
 function fichier_htaccess($dossier)
@@ -210,22 +201,14 @@ function fichier_htaccess($dossier)
     $content .= '</Files>'."\n";
     $htaccess = $dossier.'/.htaccess';
 
-    if (file_put_contents($htaccess, $content) === false) {
-        return false;
-    } else {
-        return true;
-    }
+    return file_put_contents($htaccess, $content) !== false;
 }
 
 function fichier_module_disabled($file)
 {
     $content = $GLOBALS['lang']['label_disabled'];
 
-    if (file_put_contents($file, $content) === false) {
-        return false;
-    } else {
-        return true;
-    }
+    return file_put_contents($file, $content) !== false;
 }
 
 
@@ -500,7 +483,7 @@ function feed2array($feed_content, $feedlink)
                 if (!empty($item->link)) {
                     $flux['items'][$c]['bt_link'] = (string)$item->link;
                 }
-//				if (!empty($item->author->name)) {  $flux['items'][$c]['bt_author'] = (string)$item->author->name; }
+//              if (!empty($item->author->name)) {  $flux['items'][$c]['bt_author'] = (string)$item->author->name; }
 
                 if (!empty($item->guid)) {
                     $flux['items'][$c]['bt_id'] = (string)$item->guid;
