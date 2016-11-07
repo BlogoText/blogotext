@@ -222,6 +222,14 @@ function send_emails($id_comment)
             $to_send_mail[] = $comment['bt_email'];
         }
     }
+
+    // Add the article author email
+    if ($GLOBALS['alert_author']) {
+        if ($GLOBALS['email'] != $comm_author_email) {
+            $to_send_mail[] = $GLOBALS['email'];
+        }
+    }
+
     unset($liste_comments);
     if (empty($to_send_mail)) {
         return true;

@@ -650,6 +650,7 @@ function form_formatting_toolbar($extended = false)
                 .s_u('…').s_u('«').s_u('»').s_u('±').s_u('≠').s_u('×').s_u('÷').s_u('ß').s_u('®').s_u('©').s_u('↓').s_u('↑').s_u('←').s_u('→').s_u('ø').s_u('Ø')
                 .s_u('☠').s_u('☣').s_u('☢').s_u('☮').s_u('★').s_u('☯').s_u('☑').s_u('☒').s_u('☐').s_u('♫').s_u('♬').s_u('♪').s_u('♣').s_u('♠').s_u('♦').s_u('❤')
                 .s_u('♂').s_u('♀').s_u('☹').s_u('☺').s_u('☻').s_u('♲').s_u('⚐').s_u('⚠').s_u('☂').s_u('√').s_u('∑').s_u('λ').s_u('π').s_u('Ω').s_u('№').s_u('∞')
+                .s_u('✌').s_u('😃').s_u('😋').s_u('😕').s_u('😢').s_u('😮').s_u('😵').s_u('😇').s_u('😁').s_u('😘').s_u('😙').s_u('😴')
                 .'</span></span>'."\n";
 
         $html .= "\t".'<span class="spacer"></span>'."\n";
@@ -918,6 +919,10 @@ function afficher_form_prefs($erreurs = '')
 
         $fld_cfg_blog .= '<p>'."\n";
         $fld_cfg_blog .= form_checkbox('require_email', $GLOBALS['require_email'], $GLOBALS['lang']['pref_force_email']);
+        $fld_cfg_blog .= '</p>'."\n";
+
+        $fld_cfg_blog .= '<p>'."\n";
+        $fld_cfg_blog .= form_checkbox('alert_author', $GLOBALS['alert_author'], $GLOBALS['lang']['pref_alert_author']);
         $fld_cfg_blog .= '</p>'."\n";
 
         $fld_cfg_blog .= '<p>'."\n";
