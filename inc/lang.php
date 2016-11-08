@@ -17,11 +17,11 @@ if (empty($GLOBALS['lang'])) $GLOBALS['lang'] = '';
 
 switch ($GLOBALS['lang']) {
 	case 'fr':
-		include_once('lang/fr_fr.php');
+		include_once('lang/fr_FR.php');
 		break;
 	case 'en':
-		include_once('lang/en_en.php');
+		include_once('lang/en_EN.php');
 		break;
 	default:
-		include_once('lang/fr_fr.php');
+		include_once('lang/fr_FR.php');
 }
