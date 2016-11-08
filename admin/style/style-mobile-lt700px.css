@@ -76,8 +76,7 @@
 		display: none;
 	}
 	.commentbloc .comm-content blockquote {
-		padding: 5px;
-		margin: 5px;
+		margin: auto 5px;
 	}
 
 	/* links */
@@ -94,10 +93,6 @@
 	/* preferences */
 	#preferences p {
 		display: block;
-	}
-	#preferences .form-legend {
-		padding: 0;
-		margin-top: 20px;
 	}
 	#preferences label {
 		width: auto;

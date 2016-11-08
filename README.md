@@ -1,4 +1,6 @@
-# BLOGOTEXT 
+# BLOGOTEXT
+
+[![Build Status](https://travis-ci.org/BoboTiG/blogotext.svg?branch=dev)](https://travis-ci.org/BoboTiG/blogotext)
 
 ---
 

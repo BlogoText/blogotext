@@ -1,0 +1,12 @@
+# Ignore everything:
+*
+
+# Except for those addons directories:
+!calendar/
+!calendar/*
+!readmore/
+!readmore/*
+
+# Ignore addon state
+calendar/.disabled
+readmore/.disabled

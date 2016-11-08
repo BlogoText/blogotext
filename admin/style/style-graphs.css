@@ -2,18 +2,16 @@
 
 #graphs .graph {
 	padding-bottom: 20px;
-	margin-bottom: 40px;
+	margin-bottom: 60px;
+	margin-top: 40px;
 }
 
-#graphs .graph > .legend {
-	font-weight: 500;
-	font-size: 1.1em;
-	font-variant: small-caps;
-	padding: 15px 10px 30px;
+#graphs .graph .form-legend {
+	padding: 0;
 	font-weight: 500;
 	box-sizing: border-box;
-	color: #1e88e5;
-
+	transform: translate(-15px, -50px);
+	color: rgba(0, 0, 0, .5);
 }
 
 .graph-container {
