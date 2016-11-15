@@ -64,7 +64,10 @@ function import_ini_file($file_path)
 
 // ADVANCED CONFIG OPTIONS
 import_ini_file(BT_ROOT.DIR_CONFIG.'/'.'config-advanced.ini');
-    error_reporting(DISPLAY_PHP_ERRORS); // Error reporting
+
+// Error reporting
+ini_set('display_errors', (bool) DISPLAY_PHP_ERRORS);
+error_reporting((int) DISPLAY_PHP_ERRORS);
 
 // DATABASE OPTIONS + MySQL DB PARAMS
 import_ini_file(BT_ROOT.DIR_CONFIG.'/'.'mysql.ini');

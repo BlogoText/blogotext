@@ -23,9 +23,11 @@ $erreurs_form = array();
 if (isset($_POST['_verif_envoi'])) {
     $erreurs_form = valider_form_preferences();
     if (empty($erreurs_form)) {
-        if ((fichier_user() === true) and (fichier_prefs() === true)) {
+        if (fichier_user() and fichier_prefs()) {
             redirection(basename($_SERVER['SCRIPT_NAME']).'?msg=confirm_prefs_maj');
             exit();
+        } else {
+            $erreurs_form[] = $GLOBALS['lang']['err_prefs_write'];
         }
     }
 }

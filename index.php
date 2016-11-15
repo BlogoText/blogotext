@@ -23,7 +23,7 @@ if (strpos($_SERVER['REQUEST_URI'], $_SERVER['SCRIPT_NAME'].'/') === 0) {
 }
 
 // If no config: go to install process.
-if (!file_exists('config/user.ini') or !file_exists('config/prefs.php')) {
+if (!is_file('config/user.ini') or !is_file('config/prefs.php')) {
     header('Location: admin/install.php');
     die;
 }
@@ -40,7 +40,6 @@ header('Content-Type: text/html; charset=UTF-8');
 define('BT_ROOT', './');
 
 $begin = microtime(true);
-error_reporting(-1);
 
 session_start();
 
