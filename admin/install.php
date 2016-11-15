@@ -65,10 +65,10 @@ if ($GLOBALS['step'] == '1') {
                 afficher_form_2($err_2);
         } else {
             $config_dir = '../config';
-            creer_dossier($config_dir, 1);
-            creer_dossier('../'.DIR_IMAGES, 0);
-            creer_dossier('../'.DIR_DOCUMENTS, 0);
-            creer_dossier('../'.DIR_DATABASES, 1);
+            create_folder($config_dir, 1);
+            create_folder('../'.DIR_IMAGES, 0);
+            create_folder('../'.DIR_DOCUMENTS, 0);
+            create_folder('../'.DIR_DATABASES, 1);
             fichier_user();
             import_ini_file($config_dir.'/user.ini');
 

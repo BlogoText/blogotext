@@ -269,7 +269,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var)
         $dossier = BT_ROOT.DIR_DOCUMENTS;
         $rand_dir = '';
     }
-    if (false === creer_dossier($dossier, 0)) {
+    if (!create_folder($dossier, 0)) {
         die($GLOBALS['lang']['err_file_write']);
     }
     // ajout d’un nouveau fichier

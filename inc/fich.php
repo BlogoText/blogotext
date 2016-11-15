@@ -16,20 +16,19 @@
 // This file contains functions relative to search and list data posts.
 // It also contains functions about files : creating, deleting files, etc.
 
-function creer_dossier($dossier, $make_htaccess = '')
+function create_folder($dossier, $make_htaccess = '')
 {
-    if (!is_dir($dossier)) {
-        if (mkdir($dossier, 0777) === true) {
-            fichier_index($dossier); // fichier index.html pour éviter qu'on puisse lister les fihciers du dossier
-            if ($make_htaccess == 1) {
-                fichier_htaccess($dossier); // pour éviter qu'on puisse accéder aux fichiers du dossier directement
-            }
-            return true;
-        } else {
-            return false;
-        }
+    if (is_dir($dossier)) {
+        return true;
     }
-    return true; // si le dossier existe déjà.
+    if (mkdir($dossier, 0777) === true) {
+        fichier_index($dossier); // file index.html to prevent directory listing
+        if ($make_htaccess == 1) {
+            fichier_htaccess($dossier); // to prevent direct access to files
+        }
+        return true;
+    }
+    return false;
 }
 
 
@@ -295,7 +294,7 @@ function request_external_files($feeds, $timeout, $echo_progress = false)
 
 function rafraichir_cache_lv1()
 {
-    creer_dossier(BT_ROOT.DIR_CACHE, 1);
+    create_folder(BT_ROOT.DIR_CACHE, 1);
     $arr_a = liste_elements("SELECT * FROM articles WHERE bt_statut=1 ORDER BY bt_date DESC LIMIT 0, 20", array(), 'articles');
     $arr_c = liste_elements("SELECT c.*, a.bt_title FROM commentaires AS c, articles AS a WHERE c.bt_statut=1 AND c.bt_article_id=a.bt_id ORDER BY c.bt_id DESC LIMIT 0, 20", array(), 'commentaires');
     $arr_l = liste_elements("SELECT * FROM links WHERE bt_statut=1 ORDER BY bt_id DESC LIMIT 0, 20", array(), 'links');

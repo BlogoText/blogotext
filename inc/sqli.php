@@ -95,7 +95,7 @@ function create_tables()
     switch (DBMS) {
         case 'sqlite':
             if (!is_file(BT_ROOT.DIR_DATABASES.'/database.sqlite')) {
-                if (!creer_dossier(BT_ROOT.DIR_DATABASES)) {
+                if (!create_folder(BT_ROOT.DIR_DATABASES)) {
                     die('Impossible de creer le dossier databases (chmod?)');
                 }
             }

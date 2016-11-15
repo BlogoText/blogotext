@@ -35,7 +35,7 @@ echo '<div id="axe">'."\n";
 echo '<div id="page">'."\n";
 
 // création du dossier des backups
-creer_dossier(BT_ROOT.DIR_BACKUP, 0);
+create_folder(BT_ROOT.DIR_BACKUP, 0);
 
 /*
  * reconstruit la BDD des fichiers (qui n’est pas dans SQL, mais un fichier serializé à côte)
@@ -58,7 +58,6 @@ function rebuilt_file_db()
         $idir[$i] = '/'.$e;
     }
 
-    
     $fdir = rm_dots_dir(scandir(BT_ROOT.DIR_DOCUMENTS));
 
     // supprime les miniatures de la liste...
