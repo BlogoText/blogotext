@@ -1,0 +1,4 @@
+[submodule "addons"]
+	path = addons
+	url = https://github.com/BoboTiG/blogotext-addons.git
+	branch = master
