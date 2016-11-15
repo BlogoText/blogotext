@@ -9,6 +9,7 @@ error.log
 TODO
 MAJ.log
 DEMO.sqlite
-themes/default/gravatars/*.png
+themes/default/avatars/*.png
 admin/cache/favicons/*.png
-admin/cache/gravatar/*.png
+admin/cache/avatar/*.png
+*.phar
