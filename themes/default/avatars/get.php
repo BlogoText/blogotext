@@ -56,13 +56,13 @@ if (isset($_GET['g'])) {
         // request
         download_avatar($avatar_url, $newfile);
 
-        if (!file_exists($newfile)) {
+        if (!is_file($newfile)) {
             // try with gravatar
             $gravatar_url = 'http://www.gravatar.com/avatar/'.$hash.'?s='.$s.'&d='.$d;
             $success = download_avatar($avatar_url, $newfile);
         }
-            
-        if (!file_exists($newfile)) {
+
+        if (!is_file($newfile)) {
             // impossible request
             header("HTTP/1.0 404 Not Found");
             die('404');

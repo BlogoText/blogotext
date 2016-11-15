@@ -107,12 +107,12 @@ if (!is_file($target_file) or $force_new === true) {
     // request
     download_avatar($source_file, $target_file);
 
-    if (!file_exists($target_file)) {
+    if (!is_file($target_file)) {
         // try with gravatar
         $source_file = 'http://www.gravatar.com/avatar/'.$hash.'?s='.$s.'&d='.$d;
         $success = download_avatar($source_file, $target_file);
     }
-    if (!file_exists($target_file)) {
+    if (!is_file($target_file)) {
         // impossible request
         header("HTTP/1.0 404 Not Found");
         die('404');
