@@ -11,6 +11,28 @@
 #
 # *** LICENSE ***
 
+function download_avatar($avatar_url, $newfile)
+{
+    $curl_handle = curl_init();
+    curl_setopt($curl_handle, CURLOPT_URL, $avatar_url);
+    curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl_handle, CURLOPT_TIMEOUT, 5);
+    $file_content = curl_exec($curl_handle);
+    curl_close($curl_handle);
+
+    $fp = fopen($newfile, 'w+');
+    $ch = curl_init($avatar_url);
+    curl_setopt($ch, CURLOPT_FILE, $fp);
+    curl_setopt($ch, CURLOPT_ENCODING, 'gzip');
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0');
+    curl_exec($ch);
+
+    curl_close($ch);
+    fclose($fp);
+}
+
 if (!isset($_GET['w'], $_GET['q'])) {
     header("HTTP/1.0 400 Bad Request");
     exit;
@@ -35,9 +57,9 @@ if ($_GET['w'] == 'favicon') {
     $target_file = $target_dir.'/'.md5($domain).'.png';
     // expiration delay
     $expire = time() -60*60*24*7*365 ;  // default: 1 year
-} elseif ($_GET['w'] == 'gravatar') {
+} elseif ($_GET['w'] == 'avatar') {
     // target dir
-    $target_dir = 'gravatar';
+    $target_dir = 'avatars';
     // source file
     if (strlen($_GET['q']) !== 32) {
         header("HTTP/1.0 400 Bad Request");
@@ -51,7 +73,8 @@ if ($_GET['w'] == 'favicon') {
     $target_file = $hash.'.png';
     $s = (isset($_GET['s']) and is_numeric($_GET['s'])) ? htmlspecialchars($_GET['s']) : 48; // try to get size
     $d = (isset($_GET['d'])) ? htmlspecialchars($_GET['d']) : 'monsterid'; // try to get substitute image
-    $source_file = 'http://www.gravatar.com/avatar/'.$hash.'?s='.$s.'&d='.$d;
+    // First try with libravatar
+    $source_file = 'http://cdn.libravatar.org/avatar/'.$hash.'?s='.$s.'&d='.$d;
     // dest file
     $target_file = $target_dir.'/'.md5($hash).'.png';
     // expiration delay
@@ -77,29 +100,30 @@ if (is_file($target_file) and filemtime($target_file) < $expire) {
 
 // no cached file or expired
 if (!is_file($target_file) or $force_new === true) {
-    // request
-    $curl_handle = curl_init();
-    curl_setopt($curl_handle, CURLOPT_URL, $source_file);
-    curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
-    $file_content = curl_exec($curl_handle);
-    curl_close($curl_handle);
-    if ($file_content == null) { // impossible request
-        header("HTTP/1.0 404 Not Found");
-        exit;
-    }
-    // new request is a succes, delete old and save new file
-    if ($force_new === true) {
-        unlink($target_file);
-    }
     if (!is_dir($target_dir)) {
         mkdir($target_dir);
     }
-    file_put_contents($target_file, $file_content);
+
+    // request
+    download_avatar($source_file, $target_file);
+
+    if (!file_exists($target_file)) {
+        // try with gravatar
+        $source_file = 'http://www.gravatar.com/avatar/'.$hash.'?s='.$s.'&d='.$d;
+        $success = download_avatar($source_file, $target_file);
+    }
+    if (!file_exists($target_file)) {
+        // impossible request
+        header("HTTP/1.0 404 Not Found");
+        die('404');
+        exit;
+    }
 
     // testing format
     $imagecheck = getimagesize($target_file);
     if ($imagecheck['mime'] !== 'image/png') {
         imagepng(imagecreatefromjpeg($target_file), $target_file.'2');  // if not, creating PNG and replacing
+        unlink($target_file);
         rename($target_file.'2', $target_file);
     }
 }
