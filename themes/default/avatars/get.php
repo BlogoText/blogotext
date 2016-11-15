@@ -1,10 +1,33 @@
 <?php
 /*
-	Local-gravatar cacher
-	http://www.yoursite.com/gravatar_caching_folder/get.php?g={md5_from_email}&s={size}&d={substitute}
-	returns icon and saves is localy
+    Local-gravatar cacher
+    http://www.yoursite.com/gravatar_caching_folder/get.php?g={md5_from_email}&s={size}&d={substitute}
+    returns icon and saves is localy
 */
+
 $expire = time() -60*60*24*30 ;  // default: 30 days
+
+function download_avatar($avatar_url, $newfile)
+{
+    $curl_handle = curl_init();
+    curl_setopt($curl_handle, CURLOPT_URL, $avatar_url);
+    curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl_handle, CURLOPT_TIMEOUT, 5);
+    $file_content = curl_exec($curl_handle);
+    curl_close($curl_handle);
+
+    $fp = fopen($newfile, 'w+');
+    $ch = curl_init($avatar_url);
+    curl_setopt($ch, CURLOPT_FILE, $fp);
+    curl_setopt($ch, CURLOPT_ENCODING, 'gzip');
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0');
+    curl_exec($ch);
+
+    curl_close($ch);
+    fclose($fp);
+}
 
 // g given ? if yes...
 if (isset($_GET['g'])) {
@@ -27,25 +50,25 @@ if (isset($_GET['g'])) {
         $s = (isset($_GET['s']) and is_numeric($_GET['s'])) ? htmlspecialchars($_GET['s']) : 48;
         // try to get substitute image (d param)
         $d = (isset($_GET['d'])) ? htmlspecialchars($_GET['d']) : 'monsterid';
-        $gravatar_url = 'http://www.gravatar.com/avatar/'.$hash.'?s='.$s.'&d='.$d;
+        // First try with libravatar
+        $avatar_url = 'http://cdn.libravatar.org/avatar/'.$hash.'?s='.$s.'&d='.$d;
+
         // request
-        $curl_handle = curl_init();
+        download_avatar($avatar_url, $newfile);
 
-        curl_setopt($curl_handle, CURLOPT_ENCODING, 'gzip');
-        curl_setopt($curl_handle, CURLOPT_URL, $gravatar_url);
-        curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl_handle, CURLOPT_TIMEOUT, 5);
-        $file_content = curl_exec($curl_handle);
-        curl_close($curl_handle);
-
-        if ($file_content == null) { // impossible request
+        if (!file_exists($newfile)) {
+            // try with gravatar
+            $gravatar_url = 'http://www.gravatar.com/avatar/'.$hash.'?s='.$s.'&d='.$d;
+            $success = download_avatar($avatar_url, $newfile);
+        }
+            
+        if (!file_exists($newfile)) {
+            // impossible request
             header("HTTP/1.0 404 Not Found");
             die('404');
             exit;
         }
 
-        // saving
-        file_put_contents($newfile, $file_content);
 
         $imagecheck = getimagesize($newfile);
         if ($imagecheck['mime']!=='image/png') { // is it a PNG ?
