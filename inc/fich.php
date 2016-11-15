@@ -39,7 +39,7 @@ function fichier_user()
     if (strlen(trim($_POST['mdp'])) == 0) {
         $new_mdp = USER_PWHASH;
     } else {
-        $new_mdp = password_hash($_POST['mdp'], PASSWORD_BCRYPT);
+        $new_mdp = password_hash($_POST['mdp_rep'], PASSWORD_BCRYPT);
     }
     $content .= '; <?php die(); /*'."\n\n";
     $content .= '; This file contains user login + password hash.'."\n\n";
