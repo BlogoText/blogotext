@@ -48,11 +48,7 @@ function fichier_user()
     $content .= 'USER_LOGIN = \''.addslashes(clean_txt(htmlspecialchars($_POST['identifiant']))).'\''."\n";
     $content .= 'USER_PWHASH = \''.$new_mdp.'\''."\n";
 
-    if (file_put_contents($fichier_user, $content) === false) {
-        return false;
-    } else {
-        return true;
-    }
+    return file_put_contents($fichier_user, $content) !== false;
 }
 
 function fichier_adv_conf()
@@ -66,11 +62,7 @@ function fichier_adv_conf()
     $conf .= 'USE_IP_IN_SESSION = 0;'."\n\n\n";
     $conf .= '; */ ?>'."\n";
 
-    if (file_put_contents($fichier_advconf, $conf) === false) {
-        return false;
-    } else {
-        return true;
-    }
+    return file_put_contents($fichier_advconf, $conf) !== false;
 }
 
 
@@ -264,7 +256,7 @@ function request_external_files($feeds, $timeout, $echo_progress = false)
                     CURLOPT_USERAGENT => BLOGOTEXT_UA, // User-agent (uses the UA of browser)
                     CURLOPT_SSL_VERIFYPEER => false, // ignore SSL errors
                     CURLOPT_SSL_VERIFYHOST => false, // ignore SSL errors
-                    CURLOPT_ENCODING => "gzip", // take into account gziped pages
+                    CURLOPT_ENCODING => 'gzip', // take into account gziped pages
                     //CURLOPT_VERBOSE => 1,
                     CURLOPT_HEADER => 1, // also return header
                 ));
