@@ -229,7 +229,7 @@ function detection_type_fichier($extension)
 
 function open_serialzd_file($fichier)
 {
-    $liste  = (file_exists($fichier)) ? unserialize(base64_decode(substr(file_get_contents($fichier), strlen('<?php /* '), -strlen(' */')))) : array();
+    $liste  = (is_file($fichier)) ? unserialize(base64_decode(substr(file_get_contents($fichier), strlen('<?php /* '), -strlen(' */')))) : array();
     return $liste;
 }
 

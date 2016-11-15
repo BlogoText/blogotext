@@ -168,7 +168,7 @@ function liste_themes($chemin)
 {
     if ($ouverture = opendir($chemin)) {
         while ($dossiers = readdir($ouverture)) {
-            if (file_exists($chemin.'/'.$dossiers.'/list.html')) {
+            if (is_file($chemin.'/'.$dossiers.'/list.html')) {
                 $themes[$dossiers] = $dossiers;
             }
         }

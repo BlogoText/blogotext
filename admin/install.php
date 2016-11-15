@@ -12,14 +12,14 @@
 # *** LICENSE ***
 
 // install or reinstall with same config ?
-if (file_exists('../config/mysql.ini') and file_get_contents('../config/mysql.ini') == '') {
+if (is_file('../config/mysql.ini') and file_get_contents('../config/mysql.ini') == '') {
     $step3 = true;
 } else {
     $step3 = false;
 }
 
 // install is already done
-if ((file_exists('../config/user.ini')) and (file_exists('../config/prefs.php')) and $step3 === false) {
+if ((is_file('../config/user.ini')) and (is_file('../config/prefs.php')) and $step3 === false) {
     header('Location: auth.php');
     exit;
 }
@@ -90,7 +90,7 @@ if ($GLOBALS['step'] == '1') {
                 fichier_mysql('sqlite');
             }
             traiter_install_3();
-            if (!file_exists('../config/config-advanced.ini')) {
+            if (!is_file('../config/config-advanced.ini')) {
                 fichier_adv_conf(); // is done right after DB init
             }
             redirection('auth.php');

@@ -18,11 +18,11 @@ if (isset($_GET['g'])) {
     $newfile = $hash.'.png';
 
     // expired gravatar, out!
-    if (file_exists($newfile) and filemtime($newfile) < $expire) {
+    if (is_file($newfile) and filemtime($newfile) < $expire) {
         unlink($newfile);
     }
     // the gravatar doesn’t exists or has been removed : it needs refetching
-    if (!file_exists($newfile)) {
+    if (!is_file($newfile)) {
         // try to get size (s param)
         $s = (isset($_GET['s']) and is_numeric($_GET['s'])) ? htmlspecialchars($_GET['s']) : 48;
         // try to get substitute image (d param)
