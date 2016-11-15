@@ -122,7 +122,7 @@ function afficher_commentaire($comment, $with_link)
         echo (!empty($comment['bt_email'])) ? "\t\t".'<span class="email"><a href="mailto:'.$comment['bt_email'].'" title="'.$comment['bt_email'].'">'.$comment['bt_email'].'</a></span>'."\n" : '';
         echo "\t".'</div>'."\n";
     echo '</div>'."\n";
-    
+
     echo '<div class="comm-main-frame">'."\n";
 
     echo "\t".'<div class="comm-header">'."\n";
