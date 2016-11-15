@@ -40,7 +40,6 @@ header('Content-Type: text/html; charset=UTF-8');
 define('BT_ROOT', './');
 
 $begin = microtime(true);
-error_reporting(-1);
 
 session_start();
 
