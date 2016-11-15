@@ -34,7 +34,7 @@ function download_avatar($avatar_url, $newfile)
 }
 
 if (!isset($_GET['w'], $_GET['q'])) {
-    header("HTTP/1.0 400 Bad Request");
+    header('HTTP/1.0 400 Bad Request');
     exit;
 }
 
@@ -49,7 +49,7 @@ if ($_GET['w'] == 'favicon') {
         $domain = parse_url($_GET['q'], PHP_URL_PATH);
     } // or only domain name?
     if ($domain === null) {
-        header("HTTP/1.0 400 Bad Request");
+        header('HTTP/1.0 400 Bad Request');
         exit;
     } // or some unusable crap?
     $source_file = 'http://www.google.com/s2/favicons?domain='.$domain;
@@ -62,12 +62,12 @@ if ($_GET['w'] == 'favicon') {
     $target_dir = 'avatars';
     // source file
     if (strlen($_GET['q']) !== 32) {
-        header("HTTP/1.0 400 Bad Request");
+        header('HTTP/1.0 400 Bad Request');
         exit;
     }  // g is 32 character long ? if no, die.
-    $hash = preg_replace("[^a-f0-9]", "", $_GET['q']);  // strip out anything that doesn't belong in a md5 hash
+    $hash = preg_replace('[^a-f0-9]', '', $_GET['q']);  // strip out anything that doesn't belong in a md5 hash
     if (strlen($hash) != 32) {
-        header("HTTP/1.0 400 Bad Request");
+        header('HTTP/1.0 400 Bad Request');
         exit;
     }  // still 32 characters ? if no, given hash wasn't genuine. die.
     $target_file = $hash.'.png';
@@ -81,7 +81,7 @@ if ($_GET['w'] == 'favicon') {
     $expire = time() -60*60*24*30 ;  // default: 30 days
 } else {
     // wrong request: returning error 400.
-    header("HTTP/1.0 400 Bad Request");
+    header('HTTP/1.0 400 Bad Request');
     exit;
 }
 
@@ -114,7 +114,7 @@ if (!is_file($target_file) or $force_new === true) {
     }
     if (!is_file($target_file)) {
         // impossible request
-        header("HTTP/1.0 404 Not Found");
+        header('HTTP/1.0 404 Not Found');
         die('404');
         exit;
     }
