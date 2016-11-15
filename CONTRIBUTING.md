@@ -8,4 +8,4 @@ Always work on a dedicated branch:
 
 Before modifying code **and** pushing changes, stay up to date with the `dev` branch:
 
-    git pull --squash origin dev
+    git pull --squash upstream dev
