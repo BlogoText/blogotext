@@ -248,17 +248,17 @@ function request_external_files($feeds, $timeout, $echo_progress = false)
         foreach ($chunk as $i => $url) {
             $curl_arr[$url] = curl_init(trim($url));
             curl_setopt_array($curl_arr[$url], array(
-                    CURLOPT_RETURNTRANSFER => true, // force Curl to return data instead of displaying it
-                    CURLOPT_FOLLOWLOCATION => true, // follow 302 ans 301 redirects
-                    CURLOPT_CONNECTTIMEOUT => 100, // 0 = indefinately ; no connection-timeout (ruled out by "set_time_limit" hereabove)
-                    CURLOPT_TIMEOUT => $timeout, // downloading timeout
-                    CURLOPT_USERAGENT => BLOGOTEXT_UA, // User-agent (uses the UA of browser)
-                    CURLOPT_SSL_VERIFYPEER => false, // ignore SSL errors
-                    CURLOPT_SSL_VERIFYHOST => false, // ignore SSL errors
-                    CURLOPT_ENCODING => 'gzip', // take into account gziped pages
-                    //CURLOPT_VERBOSE => 1,
-                    CURLOPT_HEADER => 1, // also return header
-                ));
+                CURLOPT_RETURNTRANSFER => true, // force Curl to return data instead of displaying it
+                CURLOPT_FOLLOWLOCATION => true, // follow 302 ans 301 redirects
+                CURLOPT_CONNECTTIMEOUT => 100, // 0 = indefinately ; no connection-timeout (ruled out by "set_time_limit" hereabove)
+                CURLOPT_TIMEOUT => $timeout, // downloading timeout
+                CURLOPT_USERAGENT => BLOGOTEXT_UA, // User-agent (uses the UA of browser)
+                CURLOPT_SSL_VERIFYPEER => false, // ignore SSL errors
+                CURLOPT_SSL_VERIFYHOST => false, // ignore SSL errors
+                CURLOPT_ENCODING => 'gzip', // take into account gziped pages
+                //CURLOPT_VERBOSE => 1,
+                CURLOPT_HEADER => 1, // also return header
+            ));
             curl_multi_add_handle($master, $curl_arr[$url]);
         }
 
@@ -327,9 +327,9 @@ function refresh_rss($feeds)
                 if ((in_array($item['bt_id'], $guid_in_db)) or ($item['bt_date'] <= $feeds[$feed_url]['time'])) {
                     unset($feed_elmts['items'][$key]);
                 }
-                    // only save elements that are more recent
-                    // we save the date of the last element on that feed
-                    // we do not use the time of last retreiving, because it might not be correct due to different time-zones with the feeds date.
+                // only save elements that are more recent
+                // we save the date of the last element on that feed
+                // we do not use the time of last retreiving, because it might not be correct due to different time-zones with the feeds date.
                 if ($item['bt_date'] > $GLOBALS['liste_flux'][$feeds[$feed_url]['link']]['time']) {
                     $GLOBALS['liste_flux'][$feeds[$feed_url]['link']]['time'] = $item['bt_date'];
                 }
@@ -366,7 +366,7 @@ function retrieve_new_feeds($feedlinks, $md5 = '')
     foreach ($feeds as $url => $response) {
         if (!empty($response['body'])) {
             $new_md5 = md5($response['body']);
-            // if Feed has changed : parse it (otherwise, do nothing : no need)
+            // if feed has changed: parse it (otherwise, do nothing: no need)
             if ($md5 != $new_md5 or '' == $md5) {
                 $data_array = feed2array($response['body'], $url);
                 if ($data_array !== false) {
@@ -375,10 +375,8 @@ function retrieve_new_feeds($feedlinks, $md5 = '')
                     // update RSS last successfull update MD5
                     $GLOBALS['liste_flux'][$url]['checksum'] = $new_md5;
                     $GLOBALS['liste_flux'][$url]['iserror'] = 0;
-                } else {
-                    if (isset($GLOBALS['liste_flux'][$url])) { // error on feed update (else would be on adding new feed)
-                        $GLOBALS['liste_flux'][$url]['iserror'] += 1;
-                    }
+                } elseif (isset($GLOBALS['liste_flux'][$url])) { // error on feed update (else would be on adding new feed)
+                    $GLOBALS['liste_flux'][$url]['iserror'] += 1;
                 }
             }
         }
@@ -396,15 +394,13 @@ function feed2array($feed_content, $feedlink)
 {
     $flux = array('infos'=>array(),'items'=>array());
 
-    if (preg_match('#<rss(.*)</rss>#si', $feed_content)) {
+    if (preg_match('#<rss(.*)</rss>#si', $feed_content)) {  // RSS
         $flux['infos']['type'] = 'RSS';
-    } //RSS ?
-    elseif (preg_match('#<feed(.*)</feed>#si', $feed_content)) {
+    } elseif (preg_match('#<feed(.*)</feed>#si', $feed_content)) {  // ATOM
         $flux['infos']['type'] = 'ATOM';
-    } //ATOM ?
-    else {
+    } else {  // the feed isn't RSS nor ATOM
         return false;
-    } // the feed isn't rss nor atom
+    }
 
     try {
         if (@$feed_obj = new SimpleXMLElement($feed_content, LIBXML_NOCDATA)) {
@@ -534,7 +530,7 @@ function feed2array($feed_content, $feedlink)
                 // place le lien du flux (on a besoin de ça)
                 $flux['items'][$c]['bt_feed_url'] = $feedlink;
                 // place le dossier
-                $flux['items'][$c]['bt_folder'] = (isset($GLOBALS['liste_flux'][$feedlink]['folder']) ? $GLOBALS['liste_flux'][$feedlink]['folder'] : '' ) ;
+                $flux['items'][$c]['bt_folder'] = isset($GLOBALS['liste_flux'][$feedlink]['folder']) ? $GLOBALS['liste_flux'][$feedlink]['folder'] : '';
             }
         } else {
             return false;
@@ -548,8 +544,7 @@ function feed2array($feed_content, $feedlink)
     }
 }
 
-/* From the data out of DB, creates JSON, to send to browser
-*/
+/* From the data out of DB, creates JSON, to send to browser */
 function send_rss_json($rss_entries)
 {
     // send all the entries data in a JSON format
@@ -560,7 +555,7 @@ function send_rss_json($rss_entries)
     $out .= 'var rss_entries = {"list": ['."\n";
     $count = count($rss_entries)-1;
     foreach ($rss_entries as $i => $entry) {
-        // note : json_encode DOES add « " » on the data, so I use « encode() » and not '"'.encode().'"';
+        // Note: json_encode adds « " » on the data, so we use encode() and not '"'.encode().'"';
         $out .= '{'.
             '"id": '.json_encode($entry['bt_id']).','.
             '"date": '.json_encode(date_formate(date('YmdHis', $entry['bt_date']))).','.
