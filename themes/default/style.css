@@ -40,7 +40,7 @@ html, body {
 }
 
 
-/* GENERAL STUFF 
+/* GENERAL STUFF
 ------------------------------------------------------------------- */
 
 a {
@@ -93,7 +93,7 @@ q, blockquote {
 
 
 
-/* TOP 
+/* TOP
 ------------------------------------------------------------------------ */
 #top-bar {
 	display: flex;
@@ -258,56 +258,6 @@ q, blockquote {
 	height: 40px;
 }
 
-#calendrier {
-	margin: 0 auto;
-}
-#calendrier,
-#calendrier caption {
-	background: rgba(0, 0, 0, .02);
-}
-
-#calendrier caption {
-	padding: 15px 0 20px;
-}
-
-#calendrier caption > a {
-	padding: 5px 10px;
-}
-
-#calendrier td {
-	width: 30px;
-	height: 30px;
-	border-radius: 3px;
-	border: 1px solid transparent;
-	empty-cells: hide;
-	text-align: center;
-	line-height: 30px;
-	color: rgba(42, 42, 42, .3);
-	position: relative;
-}
-
-#calendrier td a {
-	color: rgba(42, 42, 42, .8);
-	display: inline-block;
-	width: 100%;
-	height: 100%;
-}
-
-#calendrier td a:hover {
-	color: #000;
-}
-
-#calendrier td a::before {
-	content: "";
-	background-color: #2196F3;
-	position: absolute;
-	width: 5px;
-	height: 5px;
-	border-radius: 50%;
-	left: 14px;
-	bottom: 2px;
-}
-
 #lastcom {
 	margin-top: 50px;
 }
@@ -408,6 +358,7 @@ q, blockquote {
 .article img {
 	border: none;
 	max-width: 100%;
+	height: auto;
 }
 
 .post-title {
@@ -449,24 +400,41 @@ q, blockquote {
 }
 
 
-.post-content pre,
-.post-content blockquote {
+.post-content blockquote,
+.link-content blockquote,
+.com-content blockquote {
 	padding: 10px 10px 10px 15px;
-	border-radius: 0 2px 2px 0;
-	box-shadow: 0 0 3px #111;
-	border-left: 5px transparent solid;
+	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
 }
 
-.post-content pre {
+.post-content pre,
+.link-content pre,
+.com-content pre {
+	padding: 0;
 	white-space: pre-wrap;
-	border-left-color: #E3922C;
-	background-color: #fafafa;
-	box-shadow: inset 0 0 2px #111;
 	font-size: .8em;
+	position: relative;
+	display: flex;
+	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
 }
 
-.post-content blockquote {
-	border-left-color: #2CABE3;
+.post-content pre[data-language]::before,
+.link-content pre[data-language]::before,
+.com-content pre[data-language]::before {
+	content: attr(data-language);
+	display: block;
+	padding: 15px 2px;
+	background: rgba(0, 0, 0, .1);
+	flex: 0 0 45px;
+	text-align: center;
+}
+
+.post-content pre > code,
+.link-content pre > code,
+.com-content pre > code {
+	flex: 1 1 auto;
+	display: block;
+	padding: 15px;
 }
 
 .article table {
@@ -579,7 +547,7 @@ q, blockquote {
 }
 
 .com-footer {
-	text-align: right;	
+	text-align: right;
 	padding: 15px 0 0
 }
 
@@ -619,7 +587,7 @@ q, blockquote {
 }
 
 
-/* Formulaire commentaires 
+/* Formulaire commentaires
 ------------------------------------------ */
 #postcom {
 	padding: 15px;
@@ -798,7 +766,7 @@ p.formatbut {
 	content: "« ";
 }
 
-/* PAGE FOOTER 
+/* PAGE FOOTER
 ------------------------------------------------------------------------ */
 body > footer {
 	padding: 15px 0 30px;
@@ -913,6 +881,3 @@ body > footer a {
 	}
 
 }
-
-
-

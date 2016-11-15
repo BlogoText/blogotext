@@ -30,7 +30,7 @@
 
 @font-face {
   font-family: "icon";
-  src: url("icon.woff?14") format("woff");
+  src: url("icon.woff?16") format("woff");
 }
 
 /* ANIMATIONS
@@ -46,7 +46,7 @@
 }
 
 /* bottom left popup in/out sliding */
-@keyframes popup-disapear {  
+@keyframes popup-disapear {
 	10% {
 		bottom: 30px;
 	}
@@ -74,7 +74,7 @@
 	100% { height: 0; opacity: 0; left: -1000px; }
 }
 
-/* elements slide smothlyto right / left */
+/* elements slide smothly to right / left */
 @keyframes slideright {
 	  0% { left: 50%; opacity: 1; }
 	100% { left: 60%; opacity: 0; }
@@ -86,18 +86,18 @@
 
 /* material design button-click "ripple" effect */
 @keyframes md-ripple {
-  0% {
-    transform: scale(0, 0);
-    opacity: 1;
-  }
-  20% {
-    transform: scale(25, 25);
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    transform: scale(40, 40);
-  }
+	0% {
+		transform: scale(0, 0);
+		opacity: 1;
+	}
+	50% {
+		transform: scale(25, 25);
+		opacity: .5;
+	}
+	100% {
+		opacity: 0;
+		transform: scale(25, 25);
+	}
 }
 
 
@@ -135,7 +135,7 @@ body {
 	top: 0;
 }
 
-#axe { /* the entire page without top bars (#header) and footer (#footer) */ 
+#axe { /* the entire page without top bars (#header) and footer (#footer) */
 	padding: 20px;
 }
 
@@ -159,7 +159,7 @@ body {
 	line-height: 1;
 	color: inherit;
 }
-/* GENERAL STUFF 
+/* GENERAL STUFF
 ------------------------------------------------------------------- */
 
 a {
@@ -257,7 +257,7 @@ q, blockquote {
 }
 
 
-/* TOP 
+/* TOP
 ------------------------------------------------------------------------ */
 #top {
 	display: flex;
@@ -462,6 +462,7 @@ q, blockquote {
 #top > #nav-acc #lien-preferences:after { content: "\e914"; }
 #top > #nav-acc #lien-site:after        { content: "\e912"; }
 #top > #nav-acc #lien-deconnexion:after { content: "\e90e"; }
+#top > #nav-acc #lien-modules:after     { content: "\e943"; }
 
 
 
@@ -716,8 +717,8 @@ select optgroup::before {
 	position: absolute;
 	top: 50%;
 	left: 50%;
-	width: 4px;
-	height: 4px;
+	width: 10px;
+	height: 10px;
 	background: rgba(255, 255, 255, .5);
 	opacity: 0;
 	border-radius: 100%;
@@ -780,10 +781,10 @@ select optgroup::before {
 	position: absolute;
 	box-sizing: border-box;
 	top: 50%;
-	left: -15px;
+	left: -16px;
 	transform: translate(-50%, -50%) scale(0);
-	width: 1.5px;
-	height: 1.5px;
+	width: 2px;
+	height: 2px;
 }
 
 .checkbox:focus+label::before {
@@ -849,8 +850,6 @@ select optgroup::before {
 
 legend {
 	padding: 0;
-	font-size: 1.1em;
-	font-variant: small-caps;
 }
 
 fieldset {
@@ -859,7 +858,7 @@ fieldset {
 	margin: 0;
 }
 
-/* ERREURS */ 
+/* ERREURS */
 #erreurs, .erreurs, #succes, .succes {
 	display: block;
 	clear: both;
@@ -903,6 +902,7 @@ fieldset {
 #post-new-lien,
 .linkbloc,
 #billets,
+#modules,
 #auth, #install,
 #form-image, #image-section, #files-section,
 #preferences > div,

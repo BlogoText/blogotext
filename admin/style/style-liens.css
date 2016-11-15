@@ -1,4 +1,4 @@
-/* MES LIENS 
+/* MES LIENS
 --------------------------------------------------------------------------- */
 #list-link {
 	-webkit-column-width: 700px;
@@ -153,7 +153,7 @@
 	display: inline-block; /* firefox bugfix for avoid collumn-break when single element */
 }
 
-/* LINKS : link header 
+/* LINKS : link header
 --------------------------------*/
 .linkbloc .titre-lien {
 	text-decoration: none;
@@ -193,7 +193,7 @@
 	text-decoration: none;
 }
 
-/* LINKS : link footer 
+/* LINKS : link footer
 --------------------------------*/
 .linkbloc .link-footer {
 	/*display: flex;*//* display block for muti-collum layout */

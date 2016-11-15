@@ -283,7 +283,7 @@ function activate_comm(button) {
 	formData.append('_verif_envoi', 1);
 
 	formData.append('com_activer', button.dataset.commId);
-	formData.append('com_bt_id', button.dataset.commBtid);
+//	formData.append('com_bt_id', button.dataset.commBtid);
 	formData.append('com_article_id', button.dataset.commArtId);
 
 	xhr.send(formData);
@@ -292,17 +292,47 @@ function activate_comm(button) {
 
 
 /**************************************************************************************************************************************
-	LINKS AND ARTICLE FORMS : TAGS HANDLING
+	ADD-ONS HANDLING
 **************************************************************************************************************************************/
 
-/* add tags ont links and articles, with HTML5/Datalist autocompletion support */
-function insertCatTag(inputId, tag) {
-	var field = document.getElementById(inputId);
-	if (field.value !== '') {
-		field.value += ', ';
-	}
-	field.value += tag;
+// hide/unhide a comm
+function activate_mod(button) {
+	var notifDiv = document.createElement('div');
+
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', 'modules.php', true);
+
+	xhr.onload = function() {
+		var resp = this.responseText;
+		if (resp.indexOf("Success") == 0) {
+		} else {
+			notifDiv.textContent = resp.substr(45);
+			notifDiv.classList.add('no_confirmation');
+			document.getElementById('top').appendChild(notifDiv);
+		}
+	};
+	xhr.onerror = function(e) {
+		notifDiv.textContent = e.target.status + ' (#mod-activ-F38)';
+		notifDiv.classList.add('no_confirmation');
+		document.getElementById('top').appendChild(notifDiv);
+	};
+
+	// prepare and send FormData
+	var formData = new FormData();
+	formData.append('token', csrf_token);
+	formData.append('_verif_envoi', 1);
+
+	formData.append('addon_id', button.id.substr(7));
+	formData.append('statut', ((button.checked) ? 'on' : ''));
+	formData.append('mod_activer', button.id);
+
+	xhr.send(formData);
+
 }
+
+/**************************************************************************************************************************************
+	LINKS AND ARTICLE FORMS : TAGS HANDLING
+**************************************************************************************************************************************/
 
 /* Adds a tag to the list when we hit "enter" */
 /* validates the tag and move it to the list */
@@ -315,6 +345,8 @@ function moveTag() {
 	if (iField.value.length != 0) {
 		oField.innerHTML += '<li class="tag"><span>'+iField.value+'</span><a href="javascript:void(0)" onclick="removeTag(this.parentNode)">×</a></li>';
 		iField.value = '';
+		iField.blur(); // blur+focus needed in Firefox 48 for some reason…
+		iField.focus();
 		return false;
 		}
 	// else : real submit : seek in the list of tags, extract the tags and submit these.
@@ -654,7 +686,7 @@ function request_delete_form(id) {
 	};
 
 	// prepare and send FormData
-	var formData = new FormData();  
+	var formData = new FormData();
 	formData.append('supprimer', '1');
 	formData.append('file_id', id);
 	xhr.send(formData);
@@ -729,7 +761,7 @@ function handleDrop(event) {
 		var fsize = document.createElement('span');
 		    fsize.classList.add('filesize');
 		    fsize.textContent = '('+humanFileSize(filelist[i].size)+')';
-			
+
 		var fstat = document.createElement('span');
 		    fstat.classList.add('uploadstatus');
 		    fstat.textContent = 'Ready';
@@ -873,7 +905,8 @@ function hideFolder(btn) {
 }
 
 /* open rss-item */
-function openItem(thisPost) {
+function openItem(thisPostLink) {
+	var thisPost = thisPostLink.parentNode.parentNode;
 	// on clic on open post : open link in new tab.
 	if (thisPost.classList.contains('open-post')) { return true; }
 	// on clic on item, close the previous opened item
@@ -897,15 +930,32 @@ function openItem(thisPost) {
 		window.scrollBy(0, -120);
 	}
 
+	// mark as read in DOM and saves for mark as read in DB
 	if (!thisPost.classList.contains('read')) {
-		// instead of marking an item as read every time an item is opened, 
-		// creates a queue of 10 and makes a request for all ten in once.
-
 		markAsRead('post', thisPost.id.substr(2));
 		addToReadQueue(thisPost.id.substr(2));
 	}
 
+	return false;
+}
 
+function favPost(thisPostLink) {
+	var favCount = document.querySelector('#favs-post-counter');
+
+	var thisPost = thisPostLink.parentNode.parentNode.parentNode;
+
+	sendMarkFavRequest(thisPost.id);
+	// mark as fav in DOM and on screen
+	thisPostLink.dataset.isFav = 1 - parseInt(thisPostLink.dataset.isFav);
+	favCount.dataset.nbrun = ( parseInt(favCount.dataset.nbrun) + ((thisPostLink.dataset.isFav == 1) ? 1 : -1 ) );
+	favCount.firstChild.nodeValue = '('+favCount.dataset.nbrun+')';
+	// mark as fav in var Rss
+	for (var i = 0, len = Rss.length ; i < len ; i++) {
+		if (Rss[i].id == thisPost.id.substr(2)) {
+			Rss[i].fav = thisPostLink.dataset.isFav;
+			break;
+		}
+	}
 	return false;
 }
 
@@ -913,8 +963,6 @@ function openItem(thisPost) {
 function addToReadQueue(elem) {
 	readQueue.count++;
 	readQueue.urlList.push(elem);
-
-	//console.log(JSON.stringify(readQueue.urlList));
 
 	// if 10 items in queue, send XHR request and reset list to zero.
 	if (readQueue.count == 10) {
@@ -945,7 +993,7 @@ function openAllItems(button) {
 		}
 		openAllSwich = 'open';
 		button.classList.remove('unfold');
-	}	
+	}
 	return false;
 }
 
@@ -971,7 +1019,6 @@ function rss_feedlist(RssPosts) {
 		li.id = 'i_'+item.id;
 		li.classList.add('li-post-bloc');
 		li.dataset.feedUrl = item.feed;
-		li.onclick = function(){ return openItem(this); };
 		if (item.statut == 0) { li.classList.add('read'); }
 
 		// li-head: title-block
@@ -983,15 +1030,16 @@ function rss_feedlist(RssPosts) {
 		site.classList.add('site');
 		site.appendChild(document.createTextNode(item.sitename));
 		title.appendChild(site);
-		
-		// post title 
+
+		// post title
 		var titleLink = document.createElement("a");
 		titleLink.href = item.link;
 		titleLink.title = item.title;
 		titleLink.target = "_blank";
 		titleLink.appendChild(document.createTextNode(item.title));
+		titleLink.onclick = function(){ return openItem(this); };
 		title.appendChild(titleLink);
-		
+
 		// post date
 		var date = document.createElement("div");
 		date.classList.add('date');
@@ -1001,7 +1049,7 @@ function rss_feedlist(RssPosts) {
 		date.appendChild(time);
 		title.appendChild(date);
 
-		// post share link
+		// post share link & fav link
 		var share = document.createElement("div");
 		share.classList.add('share');
 		var shareLink = document.createElement("a");
@@ -1009,6 +1057,14 @@ function rss_feedlist(RssPosts) {
 		shareLink.target = "_blank";
 		shareLink.classList.add("lien-share");
 		share.appendChild(shareLink);
+		var favLink = document.createElement("a");
+		favLink.href = '#';
+		favLink.target = "_blank";
+		favLink.classList.add("lien-fav");
+		favLink.dataset.isFav = item.fav;
+		favLink.onclick = function(){ favPost(this); return false; };
+		share.appendChild(favLink);
+
 		title.appendChild(share);
 
 
@@ -1026,7 +1082,7 @@ function rss_feedlist(RssPosts) {
 		li.appendChild(hr);
 
 		postlist.appendChild(li);
-	}	
+	}
 
 	// displays the number of unread items (local counter)
 	var count = document.querySelector('#post-counter');
@@ -1053,6 +1109,25 @@ function sortAll() {
 	openAllSwich = 'open';
 	document.getElementById('openallitemsbutton').classList.remove('unfold');
 	if (Rss.length != 0) window.location.hash = '';
+}
+
+/* Sort favorites */
+function sortFavs() {
+	// unhighlight previously selected site
+	if (document.querySelector('.active-site')) document.querySelector('.active-site').classList.remove('active-site');
+	var listpost = Rss;
+	var newList = new Array();
+
+	// create list of items that are favs
+	for (var i = 0, len = listpost.length ; i < len ; i++) {
+		var item = listpost[i];
+		if (listpost[i].fav == 1) {
+			newList.push(item);
+		}
+	}
+	rss_feedlist(newList);
+	openAllSwich = 'open';
+	document.getElementById('openallitemsbutton').classList.remove('unfold');
 }
 
 /* Sort rss entries from a site */
@@ -1130,7 +1205,7 @@ function refresh_all_feeds(refreshLink) {
 
 	xhr.onprogress = function() {
 		if (glLength != this.responseText.length) {
-			
+
 			var posSpace = (this.responseText.substr(0, this.responseText.length-1)).lastIndexOf(" ");
 			notifNode.textContent = this.responseText.substr(posSpace);
 			glLength = this.responseText.length;
@@ -1140,9 +1215,8 @@ function refresh_all_feeds(refreshLink) {
 		var resp = this.responseText;
 
 		// update status
-		var nbNewFeeds = resp.substr(resp.indexOf("Success")+40+7);
+		var nbNewFeeds = resp.substr(resp.indexOf("Success")+7);
 		notifNode.textContent = nbNewFeeds+' new feeds (please reload page)';
-		token = resp.substr(resp.indexOf("Success")+7, 40);
 
 		// if new feeds, reload page.
 		refreshLink.dataset.refreshOngoing = 0;
@@ -1318,7 +1392,7 @@ function markAsRead(what, url) {
 	return false;
 }
 
-/* sends the AJAX request */
+/* sends the AJAX "mark as read" request */
 function sendMarkReadRequest(what, url, async) {
 	loading_animation('on');
 	var notifDiv = document.createElement('div');
@@ -1331,7 +1405,6 @@ function sendMarkReadRequest(what, url, async) {
 	xhr.onload = function() {
 		var resp = this.responseText;
 		if (resp.indexOf("Success") == 0) {
-			token = resp.substr(7, 40);
 			if (what !== 'postlist') {
 				markAsRead(what, url);
 			}
@@ -1359,6 +1432,47 @@ function sendMarkReadRequest(what, url, async) {
 	formData.append('token', token);
 	formData.append('mark-as-read', what);
 	formData.append('url', url);
+	xhr.send(formData);
+
+}
+
+/* sends the AJAX "mark as read" request */
+function sendMarkFavRequest(url) {
+	loading_animation('on');
+	var notifDiv = document.createElement('div');
+	var notifNode = document.getElementById('message-return');
+
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', '_rss.ajax.php', true);
+
+	// onload
+	xhr.onload = function() {
+		var resp = this.responseText;
+		if (resp.indexOf("Success") == 0) {
+			loading_animation('off');
+			return true;
+		} else {
+			loading_animation('off');
+			notifNode.innerHTML = resp;
+			return false;
+		}
+	};
+
+	// onerror
+	xhr.onerror = function(e) {
+		loading_animation('off');
+		// adding notif
+		notifDiv.textContent = 'AJAX Error ' +e.target.status;
+		notifDiv.classList.add('no_confirmation');
+		document.getElementById('top').appendChild(notifDiv);
+		notifNode.innerHTML = resp;
+	};
+
+	// prepare and send FormData
+	var formData = new FormData();
+	formData.append('token', token);
+	formData.append('mark-as-fav', 1);
+	formData.append('url', url.substr(2));
 	xhr.send(formData);
 
 }
@@ -1480,7 +1594,6 @@ function cleanList() {
 	xhr.open('POST', '_rss.ajax.php', true);
 	xhr.onload = function() {
 		var resp = this.responseText;
-		token = resp.substr(7, 40);
 		if (resp.indexOf("Success") == 0) {
 			// rebuilt array with only unread items
 			var list = new Array();
@@ -1640,5 +1753,3 @@ function draw(container) {
 	ctx.fill();
 	ctx.closePath();
 }
-
-

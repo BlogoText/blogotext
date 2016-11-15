@@ -229,14 +229,6 @@
 	padding: 15px 5px;
 }
 
-.commentbloc .comm-content blockquote {
-	padding: 10px;
-	margin: 10px 5px;
-}
-.commentbloc:hover .comm-content blockquote {
-	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-}
-
 /* desactivated comments */
 .privatebloc .comm-main-frame {
 	background: rgba(0, 0, 0, .03);
