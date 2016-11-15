@@ -43,7 +43,7 @@ function chemin_thb_img($filepath)
 function chemin_thb_img_test($filepath)
 {
     $thb = chemin_thb_img($filepath);
-    if (file_exists($thb)) {
+    if (is_file($thb)) {
         return $thb;
     } else {
         return $filepath;
@@ -269,7 +269,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var)
         $dossier = BT_ROOT.DIR_DOCUMENTS;
         $rand_dir = '';
     }
-    if (false === creer_dossier($dossier, 0)) {
+    if (!create_folder($dossier, 0)) {
         die($GLOBALS['lang']['err_file_write']);
     }
     // ajout d’un nouveau fichier
@@ -283,7 +283,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var)
         }
 
             // éviter d’écraser un fichier existant
-        while (file_exists($dossier.'/'.$prefix.$fichier['bt_filename'])) {
+        while (is_file($dossier.'/'.$prefix.$fichier['bt_filename'])) {
             $prefix .= rand(0, 9);
         }
 
@@ -326,7 +326,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var)
             $old_filename = $sup_var;
         if ($new_filename != $old_filename) { // nom du fichier a changé ? on déplace le fichier.
             $prefix = '';
-            while (file_exists($dossier.'/'.$prefix.$new_filename)) { // évite d’avoir deux fichiers de même nom
+            while (is_file($dossier.'/'.$prefix.$new_filename)) { // évite d’avoir deux fichiers de même nom
                 $prefix .= rand(0, 9);
             }
             $new_filename = $prefix.$fichier['bt_filename'];

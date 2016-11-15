@@ -11,7 +11,7 @@
 #
 # *** LICENSE ***
 
-if (file_exists(BT_ROOT.'config/prefs.php')) {
+if (is_file(BT_ROOT.'config/prefs.php')) {
     require_once BT_ROOT.'/config/prefs.php';
 }
 require_once BT_ROOT.'/inc/conf.php';

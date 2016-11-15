@@ -17,7 +17,7 @@
 */
 function create_tables()
 {
-    if (file_exists(BT_ROOT.DIR_CONFIG.'/'.'mysql.php')) {
+    if (is_file(BT_ROOT.DIR_CONFIG.'/'.'mysql.php')) {
         include(BT_ROOT.DIR_CONFIG.'/'.'mysql.php');
     }
     $auto_increment = (DBMS == 'mysql') ? 'AUTO_INCREMENT' : ''; // SQLite doesn't need this, but MySQL does.
@@ -95,7 +95,7 @@ function create_tables()
     switch (DBMS) {
         case 'sqlite':
             if (!is_file(BT_ROOT.DIR_DATABASES.'/database.sqlite')) {
-                if (!creer_dossier(BT_ROOT.DIR_DATABASES)) {
+                if (!create_folder(BT_ROOT.DIR_DATABASES)) {
                     die('Impossible de creer le dossier databases (chmod?)');
                 }
             }

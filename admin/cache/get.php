@@ -63,20 +63,20 @@ if ($_GET['w'] == 'favicon') {
 }
 
 /* processing :
-	- testing cache file
-	- gathering source file
-	- converting to PNG and saving
-	- sending image to browser
+    - testing cache file
+    - gathering source file
+    - converting to PNG and saving
+    - sending image to browser
 */
 
 // cached file existing & expired : mark to remove it
 $force_new = false;
-if (file_exists($target_file) and filemtime($target_file) < $expire) {
+if (is_file($target_file) and filemtime($target_file) < $expire) {
     $force_new = true;
 }
 
 // no cached file or expired
-if (!file_exists($target_file) or $force_new === true) {
+if (!is_file($target_file) or $force_new === true) {
     // request
     $curl_handle = curl_init();
     curl_setopt($curl_handle, CURLOPT_URL, $source_file);

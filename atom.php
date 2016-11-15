@@ -17,7 +17,7 @@ header('Content-Type: application/atom+xml; charset=UTF-8');
 $lv2_cache_file = 'cache/c_atom_'.substr(md5(isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : ''), 0, 8).'.dat';
 
 // if cache file exists
-if (file_exists($lv2_cache_file)) {
+if (is_file($lv2_cache_file)) {
     // if cache not too old
     if (@filemtime($lv2_cache_file) > time()-(3600)) {
         readfile($lv2_cache_file);
@@ -106,13 +106,13 @@ else {
 
     $fcache = 'cache/cache_rss_array.dat';
     $liste = array();
-    if (!file_exists($fcache)) {
+    if (!is_file($fcache)) {
         require_all();
         $GLOBALS['db_handle'] = open_base();
         rafraichir_cache_lv1();
     }
     // this function exists in SQLI.PHP. It is replaced here, because including sqli.php and the other files takes 10x more cpu load than this
-    if (file_exists($fcache)) {
+    if (is_file($fcache)) {
         $liste = unserialize(base64_decode(substr(file_get_contents($fcache), strlen('<?php /* '), -strlen(' */'))));
         if (!is_array($liste)) {
             $liste = array();

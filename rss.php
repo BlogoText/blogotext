@@ -17,7 +17,7 @@ header('Content-Type: application/rss+xml; charset=UTF-8');
 $lv2_cache_file = 'cache/c_rss_'.substr(md5(isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : ''), 0, 8).'.dat';
 
 // if cache file exists
-if (file_exists($lv2_cache_file)) {
+if (is_file($lv2_cache_file)) {
     // if cache not too old
     if (@filemtime($lv2_cache_file) > time()-(3600)) {
         readfile($lv2_cache_file);
@@ -107,11 +107,11 @@ else {
 
     $fcache = 'cache/cache_rss_array.dat';
     $liste = array();
-    if (!file_exists($fcache) or !is_array($liste = @unserialize(base64_decode(substr(file_get_contents($fcache), strlen('<?php /* '), -strlen(' */')))))) {
+    if (!is_file($fcache) or !is_array($liste = @unserialize(base64_decode(substr(file_get_contents($fcache), strlen('<?php /* '), -strlen(' */')))))) {
         require_all();
         $GLOBALS['db_handle'] = open_base();
         rafraichir_cache_lv1();
-        if (file_exists($fcache)) { // file exists but reading it does not give an array: try again
+        if (is_file($fcache)) { // file exists but reading it does not give an array: try again
             $liste = unserialize(base64_decode(substr(file_get_contents($fcache), strlen('<?php /* '), -strlen(' */'))));
         }
     }
