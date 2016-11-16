@@ -292,15 +292,6 @@ function parse_search($q)
     return array_values(array_unique($array_q));
 }
 
-/* for testing/dev purpose: shows a variable. */
-function debug($data)
-{
-    header('Content-Type: text/html; charset=utf-8');
-    echo '<pre>';
-    var_dump($data);
-    die;
-}
-
 /* remove the folders "." and ".." from the list of files returned by scandir(). */
 function rm_dots_dir($array)
 {
