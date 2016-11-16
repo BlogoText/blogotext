@@ -1,81 +1,81 @@
 /* PRÉFÉRENCES
 ------------------------------------------------------------ */
 #preferences {
-	max-width: 900px;
-	margin: auto;
+    max-width: 900px;
+    margin: auto;
 }
 
 /* field sets */
 #preferences .pref {
-	padding-bottom: 20px;
-	margin-bottom: 60px;
-	margin-top: 40px;
+    padding-bottom: 20px;
+    margin-bottom: 60px;
+    margin-top: 40px;
 }
 
 #preferences .form-legend {
-	padding: 0;
-	font-weight: 500;
-	box-sizing: border-box;
-	transform: translate(-15px, -50px);
-	color: rgba(0, 0, 0, .5);
+    padding: 0;
+    font-weight: 500;
+    box-sizing: border-box;
+    transform: translate(-15px, -50px);
+    color: rgba(0, 0, 0, .5);
 }
 
 #preferences p {
-	max-width: 100%;
-	margin: 20px auto;
-	display: flex;
-	align-items: center;
+    max-width: 100%;
+    margin: 20px auto;
+    display: flex;
+    align-items: center;
 }
 
 #preferences label {
-	text-align: right;
-	padding-right: 5px;
-	margin: 10px 0;
-	flex: 0 1 45%;
+    text-align: right;
+    padding-right: 5px;
+    margin: 10px 0;
+    flex: 0 1 45%;
 }
 
 #preferences .text {
-	padding: 5px 5px 5px 1px;
+    padding: 5px 5px 5px 1px;
 }
 
 #preferences textarea.text {
-	padding-top: 1px;
-	width: auto;
+    padding-top: 1px;
+    width: auto;
 }
 
 /* MAINTENANCE */
 #maintenance-form form + form {
-	margin-top: 30px;
+    margin-top: 30px;
 }
 
 #maintenance-form fieldset {
-	padding-bottom: 20px;
-	margin-bottom: 20px;
-	margin: 0 auto;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    margin: 0 auto;
 }
 
 #maintenance-form legend {
-	font-weight: bold;
-	color: #1e88e5;
+    font-weight: bold;
+    color: #1e88e5;
 }
 
 #maintenance-form p {
 }
 
 #maintenance-form p > label {
-	display: inline-block;
-	width: 40%;
-	text-align: right;
-	padding-right: 5px;
+    display: inline-block;
+    width: 40%;
+    text-align: right;
+    padding-right: 5px;
 }
 
 #maintenance-form #nb-artic,
 #maintenance-form #nb-links {
-	display: none;
+    display: none;
 }
 
 #maintenance-form .submit-bttns {
-	margin: 0px auto 15px;
-	padding: 0px 20px;
-	max-width: 700px;
+    margin: 0px auto 15px;
+    padding: 0px 20px;
+    max-width: 700px;
 }

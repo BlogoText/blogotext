@@ -1,74 +1,74 @@
 /* RSS Reader CSS
 ------------------------------------------------------------ */
 #rss-list {
-	padding: 50px 0 1px
+    padding: 50px 0 1px
 }
 
 /* The frame with elements to read + menu */
 #posts-content {
-	min-height: 100%;
+    min-height: 100%;
 }
 
 /* the top menu of the list */
 #rss-menu {
-	min-height: 30px;
-	display: flex;
-	align-items: center;
-	padding: 0 30px;
-	background: #fefefe;
-	color: #333
+    min-height: 30px;
+    display: flex;
+    align-items: center;
+    padding: 0 30px;
+    background: #fefefe;
+    color: #333
 }
 
 #rss-menu #count-posts {
-	display: flex;
-	align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 #rss-menu #counter {
-	margin: 0 8px;
-	display: none;
-	height: 15px;
-	width: 15px;
-	border: 3px solid rgba(0, 0, 0, .1);
-	border-top-color: rgba(0, 0, 0, .5);
-	border-radius: 50%;
-	animation: spinnerLoading 0.6s infinite linear;
+    margin: 0 8px;
+    display: none;
+    height: 15px;
+    width: 15px;
+    border: 3px solid rgba(0, 0, 0, .1);
+    border-top-color: rgba(0, 0, 0, .5);
+    border-radius: 50%;
+    animation: spinnerLoading 0.6s infinite linear;
 }
 
 .rss-menu-buttons {
-	margin: 2px 0;
-	padding: 0;
-	display: inline-block;
-	vertical-align: middle;
-	text-align: right;
-	flex: 1;
+    margin: 2px 0;
+    padding: 0;
+    display: inline-block;
+    vertical-align: middle;
+    text-align: right;
+    flex: 1;
 }
 
 .rss-menu-buttons > li {
-	display: inline-block;
+    display: inline-block;
 }
 
 .rss-menu-buttons button {
-	background-color: transparent;
-	border: 1px solid transparent;
-	border-radius: 50%;
-	height: 40px;
-	width: 40px;
-	transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
-	padding: 0;
-	color: rgba(0, 0, 0, .6);
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+    padding: 0;
+    color: rgba(0, 0, 0, .6);
 }
 
 .rss-menu-buttons button::before {
-	font-size: 1.6em;
+    font-size: 1.6em;
 }
 
 .rss-menu-buttons li > button:focus,
 .rss-menu-buttons li > button::-moz-focus-inner {
-	background-color: rgba(0, 0, 0, .05);
-	transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+    background-color: rgba(0, 0, 0, .05);
+    transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0s;
    outline: none;
-	border-color: transparent;
+    border-color: transparent;
 }
 
 
@@ -80,187 +80,187 @@
 
 /* bloc with feed lists (sites) + feed posts (the actually posts) */
 #posts-wrapper {
-	display: flex;
-	align-items: flex-start;
+    display: flex;
+    align-items: flex-start;
 }
 
 /* the left sidebar, with the list of feeds */
 #feed-list {
-	background: #fefefe;
-	box-sizing: border-box;
-	flex: 0 0 260px;
-	margin: 0 40px 0 0;
-	padding: 0;
-	list-style-type: none;
-	overflow: hidden;
+    background: #fefefe;
+    box-sizing: border-box;
+    flex: 0 0 260px;
+    margin: 0 40px 0 0;
+    padding: 0;
+    list-style-type: none;
+    overflow: hidden;
 }
 
 #feed-list li {
-	min-height: 1.6em;
-	padding: 0;
-	display: flex;
-	position: relative;
-	border-bottom: 1px solid #eee;
-	align-items: center;
+    min-height: 1.6em;
+    padding: 0;
+    display: flex;
+    position: relative;
+    border-bottom: 1px solid #eee;
+    align-items: center;
 }
 
 #feed-list > li.all-feeds a,
 #feed-list > li.fav-feeds a {
-	padding-left: 15px;
-	text-align: center;
+    padding-left: 15px;
+    text-align: center;
 }
 
 
 #feed-list > li.all-feeds a::before {
-	display: inline-block;
-	vertical-align: middle;
-	content: "\e901";
-	font-size: 1.6em;
-	font-weight: normal;
-	padding-right: 5px;
-	color: rgba(0, 0, 0, .6);
+    display: inline-block;
+    vertical-align: middle;
+    content: "\e901";
+    font-size: 1.6em;
+    font-weight: normal;
+    padding-right: 5px;
+    color: rgba(0, 0, 0, .6);
 }
 
 #feed-list > li.fav-feeds a::before {
-	display: inline-block;
-	vertical-align: middle;
-	content: "\e90c";
-	font-size: 1.6em;
-	font-weight: normal;
-	padding-right: 5px;
-	color: rgba(0, 0, 0, .6);
+    display: inline-block;
+    vertical-align: middle;
+    content: "\e90c";
+    font-size: 1.6em;
+    font-weight: normal;
+    padding-right: 5px;
+    color: rgba(0, 0, 0, .6);
 }
 
 
 #feed-list > li.feed-folder {
-	display: block;
+    display: block;
 }
 
 #feed-list > li > span,
 #feed-list > li > ul > li > span {
-	padding: 10px 25px 10px 0
+    padding: 10px 25px 10px 0
 }
 
 #feed-list li a {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	text-decoration: none;
-	color: inherit;
-	flex: 1;
-	padding: 15px 20px 15px 40px;
-	background-repeat: no-repeat;
-	background-position: 15px center;
-	display: block;
-	align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-decoration: none;
+    color: inherit;
+    flex: 1;
+    padding: 15px 20px 15px 40px;
+    background-repeat: no-repeat;
+    background-position: 15px center;
+    display: block;
+    align-items: center;
 }
 
 #feed-list > li > a > span:last-of-type,
 #feed-list > li li > a > span:last-of-type {
-	flex: 1;
-	text-align: right;
+    flex: 1;
+    text-align: right;
 }
 
 #feed-list > li.feed-folder > .feed-folder-title > a {
-	padding-left: 15px;
+    padding-left: 15px;
 }
 
 #feed-list > li.feed-folder > .feed-folder-title > a:first-of-type::before {
-	content: "\e93e";
-	font-size: 1.2em;
-	width: 25px;
-	display: inline-block;
-	color: rgba(0, 0, 0, .4);
+    content: "\e93e";
+    font-size: 1.2em;
+    width: 25px;
+    display: inline-block;
+    color: rgba(0, 0, 0, .4);
 }
 
 #feed-list > li.feed-folder > .feed-folder-title {
-	display: flex;
-	padding: 0;
-	align-items: center;
+    display: flex;
+    padding: 0;
+    align-items: center;
 }
 
 #feed-list > li.feed-folder > .feed-folder-title span {
-	padding-left: 5px;
+    padding-left: 5px;
 }
 
 #feed-list > li.feed-folder > ul {
-	font-weight: normal;
-	padding-left: 0;
-	margin-left: 0px;
-	height: 0;
-	overflow: hidden;
+    font-weight: normal;
+    padding-left: 0;
+    margin-left: 0px;
+    height: 0;
+    overflow: hidden;
 }
 
 #feed-list > li.feed-folder.open > ul {
-	height: auto;
-	overflow: visible;
+    height: auto;
+    overflow: visible;
 }
 
 #feed-list > li.feed-folder > ul > li > a {
-	padding-left: 50px;
-	background-position: 25px center;
+    padding-left: 50px;
+    background-position: 25px center;
 }
 
 #feed-list > li:first-of-type::before {
-	background-position: -158px -170px;
+    background-position: -158px -170px;
 }
 
 #feed-list li.feed-folder a.unfold {
-	flex: 0;
-	padding: 0 0 0 40px;
-	margin-right: 10px;
-	overflow: hidden;
-	transition: transform ease .2s;
+    flex: 0;
+    padding: 0 0 0 40px;
+    margin-right: 10px;
+    overflow: hidden;
+    transition: transform ease .2s;
 }
 
 #feed-list li.feed-folder a.unfold::before {
-	content: "\e92d";
-	position: relative;
-	left: -35px;
-	font-size: 2em;
-	color: rgba(0, 0, 0, .6);
+    content: "\e92d";
+    position: relative;
+    left: -35px;
+    font-size: 2em;
+    color: rgba(0, 0, 0, .6);
 }
 
 #feed-list li.feed-folder.open a.unfold {
-	transform: rotate(90deg);
+    transform: rotate(90deg);
 }
 
 #feed-list li a.feed-error {
-	color: red;
+    color: red;
 }
 
 #feed-list li.active-site,
 #feed-list > li.feed-folder.active-site {
-	background-color: #eee;
-	box-shadow: 3px 0 0 gray inset;
-	transition: box-shadow 0.2s ease 0s
+    background-color: #eee;
+    box-shadow: 3px 0 0 gray inset;
+    transition: box-shadow 0.2s ease 0s
 }
 
 #feed-list li.feed-folder:hover > span,
 #feed-list li:not(.feed-folder):hover,
 #feed-list > li.feed-folder li:hover {
-	box-shadow: 3px 0 0 gray inset;
-	transition: box-shadow 0.2s ease 0s
+    box-shadow: 3px 0 0 gray inset;
+    transition: box-shadow 0.2s ease 0s
 }
 
 #feed-list li:not([data-nbrun="0"]) {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 
 /* <UL> list with elements to read */
 #post-list-wrapper {
-	flex: 1;
-	min-width: 0;
+    flex: 1;
+    min-width: 0;
 }
 
 #post-list-title {
-	padding: 5px 20px;
-	display: flex;
+    padding: 5px 20px;
+    display: flex;
 }
 
 #post-list-title ul {
-	text-align: left;
+    text-align: left;
 }
 
 #post-list-title ul > li:nth-of-type(1) > button::before        { content: "\e91c"; }
@@ -269,230 +269,230 @@
 
 
 #post-list {
-	box-sizing: border-box;
-	list-style-type: none;
-	padding: 0;
-	margin: 0;
+    box-sizing: border-box;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
 }
 
 #post-list > li {
-	padding: 0px 20px 0px;
-	border-bottom: #F9F9F9 solid 1px;
-	background: white;
+    padding: 0px 20px 0px;
+    border-bottom: #F9F9F9 solid 1px;
+    background: white;
 }
 
 #post-list > li:hover {
-	box-shadow: 4px 0px 0px gray inset;
+    box-shadow: 4px 0px 0px gray inset;
 }
 
 #post-list > li.read:not(.open-post) {
-	color: gray;
+    color: gray;
 }
 
 #post-list > li img,
 #post-list > li table {
-	max-width: 100%;
-	height: auto;
+    max-width: 100%;
+    height: auto;
 }
 
 #post-list > li iframe[src="^https://www.youtube.com/"] {
-	max-width: 100%;
-	height: auto;
+    max-width: 100%;
+    height: auto;
 }
 
 /* rss entry title */
 #post-list > li .post-title {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	margin: 0;
-	display: flex;
-	min-width: 0;
-	align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+    display: flex;
+    min-width: 0;
+    align-items: center;
 }
 #post-list > li .post-title > a {
-	font-weight: bold;
-	text-decoration: none;
-	color: inherit;
-	flex: 1 1 auto;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	padding: 17px 10px 15px 0;
+    font-weight: bold;
+    text-decoration: none;
+    color: inherit;
+    flex: 1 1 auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 17px 10px 15px 0;
 }
 
 #post-list > li .post-title a:hover {
-	text-decoration: underline;
-	flex: 1 0 auto;
+    text-decoration: underline;
+    flex: 1 0 auto;
 }
 
 #post-list > li:not(.open-post) .post-title a:hover {
-	text-decoration: none;
+    text-decoration: none;
 }
 
 #post-list > li .post-title .site {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	flex: 0 0 125px;
-	padding-right: 10px;
-	color: rgba(0, 0, 0, .5);
-	font-size: .9em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 0 0 125px;
+    padding-right: 10px;
+    color: rgba(0, 0, 0, .5);
+    font-size: .9em;
 }
 
 #post-list > li .post-title .date {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	display: flex;
-	align-items: center;
-	flex: 0 0 auto;
-	min-width: 0;
-	font-size: .9em;
-	color: rgba(0, 0, 0, .5);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    min-width: 0;
+    font-size: .9em;
+    color: rgba(0, 0, 0, .5);
 }
 
 #post-list > li .rss-item-content {
-	height: 0;
-	overflow: hidden;
-	opacity: 0;
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
 }
 
 #post-list > li .rss-item-content * {
-	max-width: 100%;
+    max-width: 100%;
 }
 
 #post-list > li hr.clearboth {
-	clear: both;
-	margin: 0;
-	height: 0;
-	padding: 0;
-	border: none;
+    clear: both;
+    margin: 0;
+    height: 0;
+    padding: 0;
+    border: none;
 }
 
 #rss-list > .keyshortcut {
-	clear: both;
-	font-size: .9em;
-	color: gray;
-	margin-top: 20px;
-	text-align: center;
+    clear: both;
+    font-size: .9em;
+    color: gray;
+    margin-top: 20px;
+    text-align: center;
 }
 
 /* opened post */
 #post-list > li.open-post {
-	box-shadow: 4px 0px 0px #808080 inset;
-	color: inherit;
-	cursor: auto;
-	position: relative;
-	padding: 15px 20px;
+    box-shadow: 4px 0px 0px #808080 inset;
+    color: inherit;
+    cursor: auto;
+    position: relative;
+    padding: 15px 20px;
 }
 
 #post-list > li.open-post .post-title > a {
-	padding: 0 10px 0 0;
+    padding: 0 10px 0 0;
 }
 
 #post-list > li.open-post .rss-item-content {
-	margin-top: 15px;
-	transition: opacity .7s cubic-bezier(0.175, 0.585, 0.32, 1);
-	opacity: 1;
-	height: auto;
+    margin-top: 15px;
+    transition: opacity .7s cubic-bezier(0.175, 0.585, 0.32, 1);
+    opacity: 1;
+    height: auto;
 }
 
 #post-list > li .post-title .share a {
-	margin-left: 5px;
-	text-decoration: none;
+    margin-left: 5px;
+    text-decoration: none;
 }
 #post-list > li .post-title .lien-share::before {
-	content: "\e91f";
-	font-size: 1.3em;
-	color: rgba(0, 0, 0, .4);
+    content: "\e91f";
+    font-size: 1.3em;
+    color: rgba(0, 0, 0, .4);
 }
 
 #post-list > li .post-title .lien-fav::before {
-	content: "\e942";
-	font-size: 1.5em;
-	color: rgba(0, 0, 0, .4);
+    content: "\e942";
+    font-size: 1.5em;
+    color: rgba(0, 0, 0, .4);
 }
 
 #post-list > li .post-title .lien-fav[data-is-fav="1"]::before {
-	content: "\e90c";
-	color: gold;
+    content: "\e90c";
+    color: gold;
 }
 
 
 /* RSS Config Page -------------------- */
 #form-rss-config,
 #form-rss-add {
-	margin-bottom: 30px;
+    margin-bottom: 30px;
 }
 
 #form-rss-config ul {
-//	text-align: center;
-	padding: 0;
-	margin: 0;
-	list-style: none;
+//  text-align: center;
+    padding: 0;
+    margin: 0;
+    list-style: none;
 }
 
 #form-rss-config li {
-	display: flex;
-	margin-bottom: 25px;
-	text-align: left;
-	line-height: 1.6em;
+    display: flex;
+    margin-bottom: 25px;
+    text-align: left;
+    line-height: 1.6em;
 }
 
 #form-rss-config li span {
-	display: flex;
+    display: flex;
 }
 
 #form-rss-config li span.feed-error {
-	color: red;
+    color: red;
 }
 
 #form-rss-config li span:first-of-type { /* name */
-	flex: 1;
+    flex: 1;
 }
 #form-rss-config li span:first-of-type input { /* name */
-	font-weight: bold;
-	-moz-appearance: none;
+    font-weight: bold;
+    -moz-appearance: none;
 }
 
 #form-rss-config li span:nth-of-type(2) {
-	flex: 0 0 20%;
+    flex: 0 0 20%;
 }
 #form-rss-config li span:nth-of-type(2) input { /* url */
-	text-overflow: ellipsis;
+    text-overflow: ellipsis;
 }
 #form-rss-config li span:nth-of-type(3) { /* folder */
-	flex: 0 0 20%;
+    flex: 0 0 20%;
 }
 
 #form-rss-config li span:nth-of-type(4) { /* suppr+annuler buttons */
-	flex: 0 0 auto;
+    flex: 0 0 auto;
 }
 
 #form-rss-config li .button-cancel {
-	display: none;
+    display: none;
 }
 
 #form-rss-add label {
-	text-align: right;
-	display: inline-block;
-	height: 24px;
+    text-align: right;
+    display: inline-block;
+    height: 24px;
 }
 
 #form-rss-config li label,
 #form-rss-add label {
-	height: 38px;
-	width: 24px;
-	overflow: hidden;
-	line-height: 38px;
+    height: 38px;
+    width: 24px;
+    overflow: hidden;
+    line-height: 38px;
 }
 
 #form-rss-config li label::before,
 #form-rss-add label::before {
-	content: "\e901";
-	font-size: 1.3em;
-	color: rgba(0, 0, 0, .5);
+    content: "\e901";
+    font-size: 1.3em;
+    color: rgba(0, 0, 0, .5);
 }
 
 #form-rss-config label[for^="i_"]::before { content: "\e903"; }
@@ -501,42 +501,42 @@
 
 #form-rss-config li input.text,
 #form-rss-add input.text {
-	text-align: left;
-	width: 60%;
+    text-align: left;
+    width: 60%;
 }
 
 #form-rss-config li input.text {
-	width: 100%;
-	border-bottom-color: transparent;
+    width: 100%;
+    border-bottom-color: transparent;
 }
 
 #form-rss-config li button.button-delete {
-	margin-left: 10px;
-	margin-top: 0;
-	vertical-align: middle;
-	background: none;
-	color: #f44336;
-	box-shadow: none;
+    margin-left: 10px;
+    margin-top: 0;
+    vertical-align: middle;
+    background: none;
+    color: #f44336;
+    box-shadow: none;
 }
 #form-rss-config li button.button-delete:hover {
-	border: 1px solid #ddd;
-	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    border: 1px solid #ddd;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 #form-rss-config li button.button-delete:active {
-	box-shadow: none;
+    box-shadow: none;
 }
 
 #form-rss-config li.to-remove > p {
-	text-decoration: line-through;
+    text-decoration: line-through;
 }
 
 #form-rss-config li.to-remove .button-cancel {
-	display: inline;
+    display: inline;
 }
 
 #form-rss-config li.to-remove label,
 #form-rss-config li.to-remove input,
 #form-rss-config li.to-remove .button-delete {
-	opacity: .2;
-	
+    opacity: .2;
+    
 }

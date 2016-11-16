@@ -1,170 +1,170 @@
 @media (max-width: 700px) {
-	#axe {
-		padding: 10px;
-	}
-	#subnav form select {
-		max-width: 35px;
-		padding-right: 30px;
-		margin-right: 0;
-		position: relative;
-		background: transparent;
-		box-shadow: none;
-	}
+    #axe {
+        padding: 10px;
+    }
+    #subnav form select {
+        max-width: 35px;
+        padding-right: 30px;
+        margin-right: 0;
+        position: relative;
+        background: transparent;
+        box-shadow: none;
+    }
 
-	#subnav form {
-		flex: 0 0 50px;
-	}
+    #subnav form {
+        flex: 0 0 50px;
+    }
 
-	#subnav #form-filtre {
-		display: inline-block;
-		background: #fafafa;
-		margin-right: 5px;
-		box-shadow: 0px 0px 2px rgba(0, 0, 0, .2);
-	}
+    #subnav #form-filtre {
+        display: inline-block;
+        background: #fafafa;
+        margin-right: 5px;
+        box-shadow: 0px 0px 2px rgba(0, 0, 0, .2);
+    }
 
-	#subnav #form-filtre::before {
-		content: "\e941";
-		position: relative;
-		font-size: 2em;
-		display: inline-block;
-		width: 0;
-		left: 5px;
-	}
-
-
-	/* page billets */
-	#billets {
-	}
-
-	/* page écrire */
-	#tag_bloc, #date-and-opts {
-		display: block;
-	}
-	#formdate, #formheure, #formstatut, #formallowcomment {
-		display: block;
-		margin: 8px 5px;
-	}
-	#opts {
-		text-align: left;
-	}
-
-	.submit-bttns {
-		padding: 0;
-	}
-	.button-delete, .button-submit, .button-cancel {
-		min-width: 0;
-		padding: 5px;
-	}
-
-	/* comms */
-	.commentbloc .comm-options,
-	.commentbloc .webpage a,
-	.commentbloc .email a,
-	.commentbloc .reply {
-		visibility: visible;
-	}
-	.commentbloc .comm-header {
-		display: block;
-	}
-	.commentbloc .comm-side-icon {
-		flex: 0 0 75px;
-	}
-	.commentbloc .comm-side-icon .date {
-		font-size: .6em;
-	}
-	.commentbloc.foreground .comm-side-icon {
-		display: none;
-	}
-	.commentbloc .comm-content blockquote {
-		margin: auto 5px;
-	}
-
-	/* links */
-	.linkbloc .link-header, .linkbloc .link-footer {
-		display: block;
-	}
-	/* file edit */
-	#fichier-meta-info {
-		margin: 20px 0;
-		word-wrap: break-word;
-		word-break: break-all;
-	}
-
-	/* preferences */
-	#preferences p {
-		display: block;
-	}
-	#preferences label {
-		width: auto;
-		text-align: left;
-	}
-	#preferences .text,
-	#preferences textarea.text {
-		width: 100%;
-		display: block;
-	}
-
-	/* maintenance */
-	#maintenance-form fieldset {
-		max-width: 100%;
-	}
-	#maintenance-form p > label {
-		display: inline;
-		width: auto;
-		text-align: left;
-		padding-right: 0;
-	}
+    #subnav #form-filtre::before {
+        content: "\e941";
+        position: relative;
+        font-size: 2em;
+        display: inline-block;
+        width: 0;
+        left: 5px;
+    }
 
 
-	/* paged des RSS */
-	#rss-menu {
-		padding: 0 10px;
-	}
-	#post-list-title {
-		padding: 5px;
-	}
-	#posts-menu {
-		text-align: left;
-		border-left: none;
-		display: block;
-	}
-	#posts-menu ul {
-		margin: 7px 0px;
-	}
-	#posts-menu button {
-		margin: 0px;
-	}
-	#message-return {
-		display: block;
-		margin: 10px auto;
-	}
+    /* page billets */
+    #billets {
+    }
 
-	#feed-list {
-		transform: translateX(-100%) translateX(10px);
-		padding-right: 12px;
-		position: absolute;
-		z-index: 1;
-		left: 0;
-		max-width: 80%;
-		overflow: visible;
-		transition: transform .5s ease-in-out .15s;
-		
-	}
-	#feed-list:hover {
-		transform: translateX(0);
-	}
-	#rss-list {
-		padding-right: 0%;
-		padding-left: 25px;
-		margin: auto 0;
-	}
-	#post-list > li {
-		padding: 10px;
-	}
+    /* page écrire */
+    #tag_bloc, #date-and-opts {
+        display: block;
+    }
+    #formdate, #formheure, #formstatut, #formallowcomment {
+        display: block;
+        margin: 8px 5px;
+    }
+    #opts {
+        text-align: left;
+    }
 
-	/* page fichiers */
-	#file-list td:nth-of-type(3),
-	#file-list th:nth-of-type(3) {
-		display: none;
-	}
+    .submit-bttns {
+        padding: 0;
+    }
+    .button-delete, .button-submit, .button-cancel {
+        min-width: 0;
+        padding: 5px;
+    }
+
+    /* comms */
+    .commentbloc .comm-options,
+    .commentbloc .webpage a,
+    .commentbloc .email a,
+    .commentbloc .reply {
+        visibility: visible;
+    }
+    .commentbloc .comm-header {
+        display: block;
+    }
+    .commentbloc .comm-side-icon {
+        flex: 0 0 75px;
+    }
+    .commentbloc .comm-side-icon .date {
+        font-size: .6em;
+    }
+    .commentbloc.foreground .comm-side-icon {
+        display: none;
+    }
+    .commentbloc .comm-content blockquote {
+        margin: auto 5px;
+    }
+
+    /* links */
+    .linkbloc .link-header, .linkbloc .link-footer {
+        display: block;
+    }
+    /* file edit */
+    #fichier-meta-info {
+        margin: 20px 0;
+        word-wrap: break-word;
+        word-break: break-all;
+    }
+
+    /* preferences */
+    #preferences p {
+        display: block;
+    }
+    #preferences label {
+        width: auto;
+        text-align: left;
+    }
+    #preferences .text,
+    #preferences textarea.text {
+        width: 100%;
+        display: block;
+    }
+
+    /* maintenance */
+    #maintenance-form fieldset {
+        max-width: 100%;
+    }
+    #maintenance-form p > label {
+        display: inline;
+        width: auto;
+        text-align: left;
+        padding-right: 0;
+    }
+
+
+    /* paged des RSS */
+    #rss-menu {
+        padding: 0 10px;
+    }
+    #post-list-title {
+        padding: 5px;
+    }
+    #posts-menu {
+        text-align: left;
+        border-left: none;
+        display: block;
+    }
+    #posts-menu ul {
+        margin: 7px 0px;
+    }
+    #posts-menu button {
+        margin: 0px;
+    }
+    #message-return {
+        display: block;
+        margin: 10px auto;
+    }
+
+    #feed-list {
+        transform: translateX(-100%) translateX(10px);
+        padding-right: 12px;
+        position: absolute;
+        z-index: 1;
+        left: 0;
+        max-width: 80%;
+        overflow: visible;
+        transition: transform .5s ease-in-out .15s;
+        
+    }
+    #feed-list:hover {
+        transform: translateX(0);
+    }
+    #rss-list {
+        padding-right: 0%;
+        padding-left: 25px;
+        margin: auto 0;
+    }
+    #post-list > li {
+        padding: 10px;
+    }
+
+    /* page fichiers */
+    #file-list td:nth-of-type(3),
+    #file-list th:nth-of-type(3) {
+        display: none;
+    }
 }

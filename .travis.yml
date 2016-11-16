@@ -9,7 +9,7 @@ install:
   - curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar
 
 script:
-  - php phpcs.phar --standard=PSR2 -np --extensions=php --tab-width=4 --encoding=utf-8 .
+  - php phpcs.phar --standard=PSR2 -np --tab-width=4 --encoding=utf-8 .
 
 matrix:
     fast_finish: true
