@@ -180,7 +180,6 @@ function liste_themes($chemin)
 }
 
 // Posts forms
-
 function afficher_form_filtre($type, $filtre)
 {
     $ret = '<form method="get" action="'.basename($_SERVER['SCRIPT_NAME']).'" onchange="this.submit();">'."\n";
@@ -448,7 +447,6 @@ function afficher_form_link($step, $erreurs, $editlink = '')
 }
 
 // Post form
-
 function afficher_form_billet($article, $erreurs)
 {
     $html = '';
@@ -774,7 +772,6 @@ function afficher_form_rssconf($errors = '')
 }
 
 // Preferences form
-
 function afficher_form_prefs($erreurs = '')
 {
     $submit_box = '<div class="submit-bttns">'."\n";
@@ -937,7 +934,7 @@ function afficher_form_prefs($erreurs = '')
         $fld_cfg_blog .= '</p>'."\n";
 
         $fld_cfg_blog .= '<p>'."\n";
-        $fld_cfg_blog .= form_select('comm_defaut_status', array('1' => $GLOBALS['lang']['pref_comm_black_list'], '0' => $GLOBALS['lang']['pref_comm_white_list']), $GLOBALS['comm_defaut_status'], $GLOBALS['lang']['pref_comm_BoW_list']);
+        $fld_cfg_blog .= form_select('comm_defaut_status', array($GLOBALS['lang']['pref_comm_white_list'], $GLOBALS['lang']['pref_comm_black_list']), $GLOBALS['comm_defaut_status'], $GLOBALS['lang']['pref_comm_BoW_list']);
         $fld_cfg_blog .= '</p>'."\n";
         $fld_cfg_blog .= '</div>'."\n";
 

@@ -66,7 +66,7 @@ function fichier_prefs()
 {
     $fichier_prefs = '../'.DIR_CONFIG.'/prefs.php';
     if (!empty($_POST['_verif_envoi'])) {
-        $lang = (isset($_POST['langue']) and preg_match('#^[a-z]{2}$#', $_POST['langue'])) ? $_POST['langue'] : 'fr';
+        $lang = isset($_POST['langue']) and preg_match('#^[a-z]{2}$#', $_POST['langue']) ? $_POST['langue'] : 'fr';
         $auteur = addslashes(clean_txt(htmlspecialchars($_POST['auteur'])));
         $email = addslashes(clean_txt(htmlspecialchars($_POST['email'])));
         $nomsite = addslashes(clean_txt(htmlspecialchars($_POST['nomsite'])));
@@ -74,23 +74,23 @@ function fichier_prefs()
         $keywords = addslashes(clean_txt(htmlspecialchars($_POST['keywords'])));
         $racine = addslashes(trim(htmlspecialchars($_POST['racine'])));
         $max_bill_acceuil = htmlspecialchars($_POST['nb_maxi']);
-        $max_bill_admin = htmlspecialchars($_POST['nb_list']);
-        $max_comm_admin = htmlspecialchars($_POST['nb_list_com']);
-        $format_date = htmlspecialchars($_POST['format_date']);
-        $format_heure = htmlspecialchars($_POST['format_heure']);
+        $max_bill_admin = (int) $_POST['nb_list'];
+        $max_comm_admin = (int) $_POST['nb_list_com'];
+        $format_date = (int) $_POST['format_date'];
+        $format_heure = (int) $_POST['format_heure'];
         $fuseau_horaire = addslashes(clean_txt(htmlspecialchars($_POST['fuseau_horaire'])));
         $global_com_rule = (int) isset($_POST['global_comments']);
         $activer_categories = (int) isset($_POST['activer_categories']);
         $afficher_rss = (int) isset($_POST['aff_onglet_rss']);
         $afficher_liens = (int) isset($_POST['aff_onglet_liens']);
         $theme_choisi = addslashes(clean_txt(htmlspecialchars($_POST['theme'])));
-        $comm_defaut_status = htmlspecialchars($_POST['comm_defaut_status']);
+        $comm_defaut_status = (int) $_POST['comm_defaut_status'];
         $automatic_keywords = (int) isset($_POST['auto_keywords']);
         $alert_author = (int) isset($_POST['alert_author']);
         $require_email = (int) isset($_POST['require_email']);
         $auto_check_updates = (int) isset($_POST['check_update']);
-        $auto_dl_liens_fichiers = htmlspecialchars($_POST['dl_link_to_files']);
-        $nombre_liens_admin = htmlspecialchars($_POST['nb_list_linx']);
+        $auto_dl_liens_fichiers = (int) $_POST['dl_link_to_files'];
+        $nombre_liens_admin = (int) $_POST['nb_list_linx'];
     } else {
         $lang = (isset($_POST['langue']) and preg_match('#^[a-z]{2}$#', $_POST['langue'])) ? $_POST['langue'] : 'fr';
         $auteur = addslashes(clean_txt(htmlspecialchars(USER_LOGIN)));
