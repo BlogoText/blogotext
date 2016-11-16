@@ -57,8 +57,8 @@ function fichier_adv_conf()
     $conf .= '; <?php die(); /*'."\n\n";
     $conf .= '; This file contains some more advanced configuration features.'."\n\n";
     $conf .= 'BLOG_UID = \''.sha1(uniqid(mt_rand(), true)).'\''."\n";
-    $conf .= 'DISPLAY_PHP_ERRORS = -1;'."\n";
-    $conf .= 'USE_IP_IN_SESSION = 0;'."\n\n\n";
+    $conf .= 'DISPLAY_PHP_ERRORS = 0;'."\n";
+    $conf .= 'USE_IP_IN_SESSION = 1;'."\n\n\n";
     $conf .= '; */ ?>'."\n";
 
     return file_put_contents($fichier_advconf, $conf) !== false;
