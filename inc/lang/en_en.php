@@ -203,7 +203,7 @@ $GLOBALS['lang'] = array(
 // Titles - liens
 'post_link' => 'See online',
 'post_share' => 'Share',
-'lien_blog' => 'Watch online',
+'blog_link' => 'Watch online',
 'go_to_pref' => 'Go to the settings to change description.',
 // Mois
 'janvier' => 'January',

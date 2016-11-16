@@ -204,7 +204,7 @@ $GLOBALS['lang'] = array(
 // Titles - liens
 'post_link' => 'Voir en ligne',
 'post_share' => 'Partager',
-'lien_blog' => 'Voir le blog',
+'blog_link' => 'Voir le blog',
 'go_to_pref' => 'Allez dans les préférences pour changer le titre.',
 // Mois
 'janvier' => 'janvier',
