@@ -11,7 +11,7 @@
 #
 # *** LICENSE ***
 
-/// formulaires GENERIQUES //////////
+# Generic forms
 
 function form_select($id, $choix, $defaut, $label)
 {
@@ -37,23 +37,23 @@ function form_select_no_label($id, $choix, $defaut)
 
 function hidden_input($nom, $valeur, $id = 0)
 {
-    $id = ($id === 0) ? '' : ' id="'.$nom.'"';
+    $id = $id === 0 ? '' : ' id="'.$nom.'"';
     $form = '<input type="hidden" name="'.$nom.'"'.$id.' value="'.$valeur.'" />'."\n";
     return $form;
 }
 
-/// formulaires PREFERENCES //////////
+# Preferences forms
 
 function select_yes_no($name, $defaut, $label)
 {
     $choix = array(
-        '1' => $GLOBALS['lang']['oui'],
-        '0' => $GLOBALS['lang']['non']
+        $GLOBALS['lang']['non'],
+        $GLOBALS['lang']['oui']
     );
     $form = '<label for="'.$name.'" >'.$label.'</label>'."\n";
     $form .= '<select id="'.$name.'" name="'.$name.'">'."\n" ;
     foreach ($choix as $option => $label) {
-        $form .= "\t".'<option value="'.htmlentities($option).'"'.(($option == $defaut) ? ' selected="selected" ' : '').'>'.htmlentities($label).'</option>'."\n";
+        $form .= "\t".'<option value="'.htmlentities($option).'"'.($option == $defaut ? ' selected="selected" ' : '').'>'.htmlentities($label).'</option>'."\n";
     }
     $form .= '</select>'."\n";
     return $form;
@@ -61,7 +61,7 @@ function select_yes_no($name, $defaut, $label)
 
 function form_checkbox($name, $checked, $label)
 {
-    $checked = ($checked) ? "checked " : '';
+    $checked = $checked ? "checked " : '';
     $form = '<input type="checkbox" id="'.$name.'" name="'.$name.'" '.$checked.' class="checkbox-toggle" />'."\n" ;
     $form .= '<label for="'.$name.'" >'.$label.'</label>'."\n";
     return $form;
@@ -73,20 +73,20 @@ function form_format_date($defaut)
     $jour_l = jour_en_lettres(date('d'), date('m'), date('Y'));
     $mois_l = mois_en_lettres(date('m'));
     $formats = array (
-        '0' => date('d').'/'.date('m').'/'.date('Y'),             // 05/07/2011
-        '1' => date('m').'/'.date('d').'/'.date('Y'),             // 07/05/2011
-        '2' => date('d').' '.$mois_l.' '.date('Y'),               // 05 juillet 2011
-        '3' => $jour_l.' '.date('d').' '.$mois_l.' '.date('Y'),   // mardi 05 juillet 2011
-        '4' => $jour_l.' '.date('d').' '.$mois_l,                 // mardi 05 juillet
-        '5' => $mois_l.' '.date('d').', '.date('Y'),              // juillet 05, 2011
-        '6' => $jour_l.', '.$mois_l.' '.date('d').', '.date('Y'), // mardi, juillet 05, 2011
-        '7' => date('Y').'-'.date('m').'-'.date('d'),             // 2011-07-05
-        '8' => substr($jour_l, 0, 3).'. '.date('d').' '.$mois_l,    // ven. 14 janvier
+        date('d').'/'.date('m').'/'.date('Y'),              // 05/07/2011
+        date('m').'/'.date('d').'/'.date('Y'),              // 07/05/2011
+        date('d').' '.$mois_l.' '.date('Y'),                // 05 juillet 2011
+        $jour_l.' '.date('d').' '.$mois_l.' '.date('Y'),    // mardi 05 juillet 2011
+        $jour_l.' '.date('d').' '.$mois_l,                  // mardi 05 juillet
+        $mois_l.' '.date('d').', '.date('Y'),               // juillet 05, 2011
+        $jour_l.', '.$mois_l.' '.date('d').', '.date('Y'),  // mardi, juillet 05, 2011
+        date('Y').'-'.date('m').'-'.date('d'),              // 2011-07-05
+        substr($jour_l, 0, 3).'. '.date('d').' '.$mois_l,   // ven. 14 janvier
     );
     $form = "\t".'<label>'.$GLOBALS['lang']['pref_format_date'].'</label>'."\n";
     $form .= "\t".'<select name="format_date">'."\n";
     foreach ($formats as $option => $label) {
-        $form .= "\t\t".'<option value="'.htmlentities($option).'"'.(($defaut == $option) ? ' selected="selected" ' : '').'>'.$label.'</option>'."\n";
+        $form .= "\t\t".'<option value="'.htmlentities($option).'"'.($defaut == $option ? ' selected="selected" ' : '').'>'.$label.'</option>'."\n";
     }
     $form .= "\t".'</select>'."\n";
     return $form;
@@ -128,15 +128,15 @@ function form_fuseau_horaire($defaut)
 function form_format_heure($defaut)
 {
     $formats = array (
-        '0' => date('H\:i\:s'),         // 23:56:04
-        '1' => date('H\:i'),            // 23:56
-        '2' => date('h\:i\:s A'),   // 11:56:04 PM
-        '3' => date('h\:i A'),      // 11:56 PM
+        date('H:i:s'),    // 23:56:04
+        date('H:i'),       // 23:56
+        date('h:i:s A'),  // 11:56:04 PM
+        date('h:i A'),     // 11:56 PM
     );
     $form = '<label>'.$GLOBALS['lang']['pref_format_heure'].'</label>'."\n";
     $form .= '<select name="format_heure">'."\n";
     foreach ($formats as $option => $label) {
-        $form .= "\t".'<option value="'.htmlentities($option).'"'.(($defaut == $option) ? ' selected="selected" ' : '').'>'.htmlentities($label).'</option>'."\n";
+        $form .= "\t".'<option value="'.htmlentities($option).'"'.($defaut == $option ? ' selected="selected" ' : '').'>'.htmlentities($label).'</option>'."\n";
     }
     $form .= "\t".'</select>'."\n";
     return $form;
@@ -147,7 +147,7 @@ function form_langue($defaut)
     $form = '<label>'.$GLOBALS['lang']['pref_langue'].'</label>'."\n";
     $form .= '<select name="langue">'."\n";
     foreach ($GLOBALS['langs'] as $option => $label) {
-        $form .= "\t".'<option value="'.htmlentities($option).'"'.(($defaut == $option) ? ' selected="selected" ' : '').'>'.$label.'</option>'."\n";
+        $form .= "\t".'<option value="'.htmlentities($option).'"'.($defaut == $option ? ' selected="selected" ' : '').'>'.$label.'</option>'."\n";
     }
     $form .= '</select>'."\n";
     return $form;
@@ -179,8 +179,7 @@ function liste_themes($chemin)
     }
 }
 
-
-// formulaires ARTICLES //////////
+// Posts forms
 
 function afficher_form_filtre($type, $filtre)
 {
@@ -194,29 +193,34 @@ function afficher_form_filtre($type, $filtre)
 
 function filtre($type, $filtre)
 {
- // cette fonction est très gourmande en ressources.
+    // WARNING: this is a resources heavy consuming function.
     $liste_des_types = array();
     $ret = '';
     $ret .= "\n".'<select name="filtre">'."\n" ;
-    // Articles
     if ($type == 'articles') {
         $ret .= '<option value="">'.$GLOBALS['lang']['label_article_derniers'].'</option>'."\n";
-        $query = "SELECT DISTINCT substr(bt_date, 1, 6) AS date FROM articles ORDER BY date DESC";
+        $query = '
+            SELECT DISTINCT substr(bt_date, 1, 6) AS date
+              FROM articles
+             ORDER BY date DESC';
         $tab_tags = list_all_tags('articles', false);
         $BDD = 'sqlite';
-    // Commentaires
     } elseif ($type == 'commentaires') {
         $ret .= '<option value="">'.$GLOBALS['lang']['label_comment_derniers'].'</option>'."\n";
         $tab_auteur = nb_entries_as('commentaires', 'bt_author');
-        $query = "SELECT DISTINCT substr(bt_id, 1, 6) AS date FROM commentaires ORDER BY bt_id DESC";
+        $query = '
+            SELECT DISTINCT substr(bt_id, 1, 6) AS date
+              FROM commentaires
+             ORDER BY bt_id DESC';
         $BDD = 'sqlite';
-    // Liens
     } elseif ($type == 'links') {
         $ret .= '<option value="">'.$GLOBALS['lang']['label_link_derniers'].'</option>'."\n";
         $tab_tags = list_all_tags('links', false);
-        $query = "SELECT DISTINCT substr(bt_id, 1, 6) AS date FROM links ORDER BY bt_id DESC";
+        $query = '
+            SELECT DISTINCT substr(bt_id, 1, 6) AS date
+              FROM links
+             ORDER BY bt_id DESC';
         $BDD = 'sqlite';
-    // Fichiers
     } elseif ($type == 'fichiers') {
         // crée un tableau où les clé sont les types de fichiers et les valeurs, le nombre de fichiers de ce type.
         $files = $GLOBALS['liste_fichiers'];
@@ -246,7 +250,7 @@ function filtre($type, $filtre)
                 $tableau_mois[$row['date']] = mois_en_lettres(substr($row['date'], 4, 2)).' '.substr($row['date'], 0, 4);
             }
         } catch (Exception $x) {
-            die('Erreur affichage form_filtre() : '.$x->getMessage());
+            die('Erreur affichage filtre() : '.$x->getMessage());
         }
     } elseif ($BDD == 'fichier_txt_files') {
         foreach ($GLOBALS['liste_fichiers'] as $e) {
@@ -258,48 +262,48 @@ function filtre($type, $filtre)
         krsort($tableau_mois);
     }
 
-    /// BROUILLONS
+    // Drafts
     $ret .= '<option value="draft"'.(($filtre == 'draft') ? ' selected="selected"' : '').'>'.$GLOBALS['lang']['label_invisibles'].'</option>'."\n";
 
-    /// PUBLIES
+    // Public
     $ret .= '<option value="pub"'.(($filtre == 'pub') ? ' selected="selected"' : '').'>'.$GLOBALS['lang']['label_publies'].'</option>'."\n";
 
-    /// PAR DATE
+    // By date
     if (!empty($tableau_mois)) {
         $ret .= '<optgroup label="'.$GLOBALS['lang']['label_date'].'">'."\n";
         foreach ($tableau_mois as $mois => $label) {
-            $ret .= "\t".'<option value="' . htmlentities($mois) . '"'.((substr($filtre, 0, 6) == $mois) ? ' selected="selected"' : '').'>'.$label.'</option>'."\n";
+            $ret .= "\t".'<option value="' . htmlentities($mois) . '"'.(substr($filtre, 0, 6) == $mois ? ' selected="selected"' : '').'>'.$label.'</option>'."\n";
         }
         $ret .= '</optgroup>'."\n";
     }
 
-    /// PAR AUTEUR S'IL S'AGIT DES COMMENTAIRES
+    // By author (for comments)
     if (!empty($tab_auteur)) {
         $ret .= '<optgroup label="'.$GLOBALS['lang']['pref_auteur'].'">'."\n";
         foreach ($tab_auteur as $nom) {
             if (!empty($nom['nb'])) {
-                $ret .= "\t".'<option value="auteur.'.$nom['bt_author'].'"'.(($filtre == 'auteur.'.$nom['bt_author']) ? ' selected="selected"' : '').'>'.$nom['bt_author'].' ('.$nom['nb'].')'.'</option>'."\n";
+                $ret .= "\t".'<option value="auteur.'.$nom['bt_author'].'"'.($filtre == 'auteur.'.$nom['bt_author'] ? ' selected="selected"' : '').'>'.$nom['bt_author'].' ('.$nom['nb'].')'.'</option>'."\n";
             }
         }
         $ret .= '</optgroup>'."\n";
     }
 
-    /// PAR TYPE S'IL S'AGIT DES FICHIERS
+    // By type (for files)
     if (!empty($liste_des_types)) {
         $ret .= '<optgroup label="'.'Type'.'">'."\n";
         foreach ($liste_des_types as $type => $nb) {
             if (!empty($type)) {
-                $ret .= "\t".'<option value="type.'.$type.'"'.(($filtre == 'type.'.$type) ? ' selected="selected"' : '').'>'.$type.' ('.$nb.')'.'</option>'."\n";
+                $ret .= "\t".'<option value="type.'.$type.'"'.($filtre == 'type.'.$type ? ' selected="selected"' : '').'>'.$type.' ('.$nb.')'.'</option>'."\n";
             }
         }
         $ret .= '</optgroup>'."\n";
     }
 
-    ///PAR TAGS POUR LES LIENS & ARTICLES
+    // By tag (for posts and links)
     if (!empty($tab_tags)) {
         $ret .= '<optgroup label="'.'Tags'.'">'."\n";
         foreach ($tab_tags as $tag => $nb) {
-            $ret .= "\t".'<option value="tag.'.$tag.'"'.(($filtre == 'tag.'.$tag) ? ' selected="selected"' : '').'>'.$tag.' ('.$nb.')</option>'."\n";
+            $ret .= "\t".'<option value="tag.'.$tag.'"'.($filtre == 'tag.'.$tag ? ' selected="selected"' : '').'>'.$tag.' ('.$nb.')</option>'."\n";
         }
         $ret .= '</optgroup>'."\n";
     }
@@ -308,10 +312,9 @@ function filtre($type, $filtre)
     return $ret;
 }
 
+// Admin forms
 
-
-
-/// Formulaire pour ajouter un lien dans Links côté Admin
+// Add a link from BO
 function afficher_form_link($step, $erreurs, $editlink = '')
 {
     if ($erreurs) {
@@ -350,8 +353,8 @@ function afficher_form_link($step, $erreurs, $editlink = '')
             $response = request_external_files(array($url), 15, false);
             $ext_file = $response[$url];
             $rep_hdr = $ext_file['headers'];
-            $cnt_type = (isset($rep_hdr['content-type'])) ? (is_array($rep_hdr['content-type']) ? $rep_hdr['content-type'][count($rep_hdr['content-type'])-1] : $rep_hdr['content-type']) : 'text/';
-            $cnt_type = (is_array($cnt_type)) ? $cnt_type[0] : $cnt_type;
+            $cnt_type = isset($rep_hdr['content-type']) ? (is_array($rep_hdr['content-type']) ? $rep_hdr['content-type'][count($rep_hdr['content-type'])-1] : $rep_hdr['content-type']) : 'text/';
+            $cnt_type = is_array($cnt_type) ? $cnt_type[0] : $cnt_type;
 
             // Image
             if (strpos($cnt_type, 'image/') === 0) {
@@ -376,7 +379,7 @@ function afficher_form_link($step, $erreurs, $editlink = '')
                     $charset = $meta_charset[2];
                 }
                 // get title in the proper encoding
-                $ext_file = html_entity_decode(((strtolower($charset) == 'iso-8859-1') ? utf8_encode($ext_file['body']) : $ext_file['body']), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                $ext_file = html_entity_decode((strtolower($charset) == 'iso-8859-1' ? utf8_encode($ext_file['body']) : $ext_file['body']), ENT_QUOTES | ENT_HTML5, 'UTF-8');
                 preg_match('#<title ?[^>]*>(.*)</title>#Usi', $ext_file, $titles);
                 if (!empty($titles[1])) {
                     $title = trim($titles[1]);
@@ -446,8 +449,8 @@ function afficher_form_link($step, $erreurs, $editlink = '')
     return $form;
 }
 
+// Post form
 
-/// formulaires BILLET //////////
 function afficher_form_billet($article, $erreurs)
 {
     $html = '';
@@ -460,14 +463,22 @@ function afficher_form_billet($article, $erreurs)
     function form_mois($mois_affiche)
     {
         $mois = array(
-            "01" => $GLOBALS['lang']['janvier'],    "02" => $GLOBALS['lang']['fevrier'],    "03" => $GLOBALS['lang']['mars'],
-            "04" => $GLOBALS['lang']['avril'],      "05" => $GLOBALS['lang']['mai'],            "06" => $GLOBALS['lang']['juin'],
-            "07" => $GLOBALS['lang']['juillet'],    "08" => $GLOBALS['lang']['aout'],       "09" => $GLOBALS['lang']['septembre'],
-            "10" => $GLOBALS['lang']['octobre'],    "11" => $GLOBALS['lang']['novembre'],   "12" => $GLOBALS['lang']['decembre']
+            $GLOBALS['lang']['janvier'],
+            $GLOBALS['lang']['fevrier'],
+            $GLOBALS['lang']['mars'],
+            $GLOBALS['lang']['avril'],
+            $GLOBALS['lang']['mai'],
+            $GLOBALS['lang']['juin'],
+            $GLOBALS['lang']['juillet'],
+            $GLOBALS['lang']['aout'],
+            $GLOBALS['lang']['septembre'],
+            $GLOBALS['lang']['octobre'],
+            $GLOBALS['lang']['novembre'],
+            $GLOBALS['lang']['decembre']
         );
         $ret = '<select name="mois">'."\n" ;
         foreach ($mois as $option => $label) {
-            $ret .= "\t".'<option value="'.htmlentities($option).'"'.(($mois_affiche == $option) ? ' selected="selected"' : '').'>'.$label.'</option>'."\n";
+            $ret .= "\t".'<option value="'.htmlentities($option).'"'.($mois_affiche == $option ? ' selected="selected"' : '').'>'.$label.'</option>'."\n";
         }
         $ret .= '</select>'."\n";
         return $ret;
@@ -475,13 +486,12 @@ function afficher_form_billet($article, $erreurs)
 
     function form_jour($jour_affiche)
     {
-        for ($jour=1; $jour <=31;
-        $jour++) {
+        for ($jour = 1; $jour <= 31; ++$jour) {
             $jours[str2($jour)] = $jour;
         }
         $ret = '<select name="jour">'."\n";
         foreach ($jours as $option => $label) {
-            $ret .= "\t".'<option value="'.htmlentities($option).'"'.(($jour_affiche == $option) ? ' selected="selected"' : '').'>'.htmlentities($label).'</option>'."\n";
+            $ret .= "\t".'<option value="'.htmlentities($option).'"'.($jour_affiche == $option ? ' selected="selected"' : '').'>'.htmlentities($label).'</option>'."\n";
         }
         $ret .= '</select>'."\n";
         return $ret;
@@ -489,13 +499,19 @@ function afficher_form_billet($article, $erreurs)
 
     function form_statut($etat)
     {
-        $choix = array('1' => $GLOBALS['lang']['label_publie'], '0' => $GLOBALS['lang']['label_invisible']);
+        $choix = array(
+            $GLOBALS['lang']['label_invisible'],
+            $GLOBALS['lang']['label_publie']
+        );
         return form_select('statut', $choix, $etat, $GLOBALS['lang']['label_dp_etat']);
     }
 
     function form_allow_comment($etat)
     {
-        $choix= array('1' => $GLOBALS['lang']['ouverts'], '0' => $GLOBALS['lang']['fermes']);
+        $choix= array(
+            $GLOBALS['lang']['fermes'],
+            $GLOBALS['lang']['ouverts']
+        );
         return form_select('allowcomment', $choix, $etat, $GLOBALS['lang']['label_dp_commentaires']);
     }
 
@@ -528,8 +544,8 @@ function afficher_form_billet($article, $erreurs)
         $tagsdefaut = '';
         $titredefaut = '';
         $notesdefaut = '';
-        $statutdefaut = '1';
-        $allowcommentdefaut = '1';
+        $statutdefaut = 1;
+        $allowcommentdefaut = 1;
     }
     if ($erreurs) {
         $html .= erreurs($erreurs);
@@ -550,7 +566,7 @@ function afficher_form_billet($article, $erreurs)
 
     $html .= '<textarea id="contenu" name="contenu" rows="20" cols="60" required="" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_contenu']).'" tabindex="55" class="text">'.$contenudefaut.'</textarea>'."\n" ;
 
-    if ($GLOBALS['activer_categories'] == '1') {
+    if ($GLOBALS['activer_categories'] == 1) {
         $html .= "\t".'<div id="tag_bloc">'."\n";
         $html .= form_categories_links('articles', $tagsdefaut);
         $html .= "\t\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'" tabindex="65"/>'."\n";
@@ -603,25 +619,25 @@ function afficher_form_billet($article, $erreurs)
     $html .= '</form>'."\n";
     echo $html;
 }
-// FIN AFFICHER_FORM_BILLET
-
 
 function s_color($color)
 {
     return '<button type="button" onclick="insertTag(this, \'[color='.$color.']\',\'[/color]\');"><span style="background:'.$color.';"></span></button>';
 }
+
 function s_size($size)
 {
     return '<button type="button" onclick="insertTag(this, \'[size='.$size.']\',\'[/size]\');"><span style="font-size:'.$size.'pt;">'.$size.'. Ipsum</span></button>';
 }
+
 function s_u($char)
 {
     return '<button type="button" onclick="insertChar(this, \''.$char.'\');"><span>'.$char.'</span></button>';
 }
+
 function form_formatting_toolbar($extended = false)
 {
     $html = '';
-
     $html .= '<p class="formatbut">'."\n";
     $html .= "\t".'<button id="button01" class="but" type="button" title="'.$GLOBALS['lang']['bouton-gras'].'" onclick="insertTag(this, \'[b]\',\'[/b]\');"><span></span></button>'."\n";
     $html .= "\t".'<button id="button02" class="but" type="button" title="'.$GLOBALS['lang']['bouton-ital'].'" onclick="insertTag(this, \'[i]\',\'[/i]\');"><span></span></button>'."\n";
@@ -688,7 +704,6 @@ function form_categories_links($where, $tags_post)
     $html .= '<ul id="selected">'."\n";
     $list_tags = explode(',', $tags_post);
 
-
     // remove diacritics and reindexes so that "ééé" does not passe after "zzz"
     foreach ($list_tags as $i => $tag) {
         $list_tags[$i] = array('t' => trim($tag), 'tt' => diacritique(trim($tag)));
@@ -704,7 +719,7 @@ function form_categories_links($where, $tags_post)
     return $html;
 }
 
-/* form config RSS feeds: allow changing feeds (title, url) or remove a feed */
+// RSS feeds form: allow changing feeds (title, url) or remove a feed
 function afficher_form_rssconf($errors = '')
 {
     if (!empty($errors)) {
@@ -760,8 +775,8 @@ function afficher_form_rssconf($errors = '')
     return $out;
 }
 
+// Preferences form
 
-/* FORMULAIRE NORMAL DES PRÉFÉRENCES */
 function afficher_form_prefs($erreurs = '')
 {
     $submit_box = '<div class="submit-bttns">'."\n";
@@ -770,7 +785,6 @@ function afficher_form_prefs($erreurs = '')
     $submit_box .= '<button class="submit button-cancel" type="button" onclick="annuler(\'preferences.php\');" >'.$GLOBALS['lang']['annuler'].'</button>'."\n";
     $submit_box .= '<button class="submit button-submit" type="submit" name="enregistrer">'.$GLOBALS['lang']['enregistrer'].'</button>'."\n";
     $submit_box .= '</div>'."\n";
-
 
     echo '<form id="preferences" method="post" action="'.basename($_SERVER['SCRIPT_NAME']).'" >' ;
         echo erreurs($erreurs);
@@ -967,7 +981,6 @@ function afficher_form_prefs($erreurs = '')
         echo $fld_cfg_linx;
     }
 
-
     if ($GLOBALS['onglet_rss']) {
         /* TODO
         - Open=read ? + button to mark as read in HTML
@@ -998,27 +1011,26 @@ function afficher_form_prefs($erreurs = '')
         echo $fld_cfg_rss;
     }
 
+    $fld_maintenance = '<div role="group" class="pref">';
+    $fld_maintenance .= '<div class="form-legend"><legend class="legend-sweep">'.$GLOBALS['lang']['titre_maintenance'].'</legend></div>'."\n";
 
-        $fld_maintenance = '<div role="group" class="pref">';
-        $fld_maintenance .= '<div class="form-legend"><legend class="legend-sweep">'.$GLOBALS['lang']['titre_maintenance'].'</legend></div>'."\n";
+    $fld_maintenance .= '<div class="form-lines">'."\n";
+    $fld_maintenance .= '<p>'."\n";
+    $fld_maintenance .= form_checkbox('check_update', $GLOBALS['check_update'], $GLOBALS['lang']['pref_check_update']);
+    $fld_maintenance .= '</p>'."\n";
 
-        $fld_maintenance .= '<div class="form-lines">'."\n";
-        $fld_maintenance .= '<p>'."\n";
-        $fld_maintenance .= form_checkbox('check_update', $GLOBALS['check_update'], $GLOBALS['lang']['pref_check_update']);
-        $fld_maintenance .= '</p>'."\n";
+    $fld_maintenance .= '<p>'."\n";
+    $fld_maintenance .= "\t".'<label>'.$GLOBALS['lang']['pref_go_to_maintenance'].'</label>'."\n";
+    $fld_maintenance .= "\t".'<a href="maintenance.php">Maintenance</a>'."\n";
+    $fld_maintenance .= '</p>'."\n";
+    $fld_maintenance .= '</div>'."\n";
 
-        $fld_maintenance .= '<p>'."\n";
-        $fld_maintenance .= "\t".'<label>'.$GLOBALS['lang']['pref_go_to_maintenance'].'</label>'."\n";
-        $fld_maintenance .= "\t".'<a href="maintenance.php">Maintenance</a>'."\n";
-        $fld_maintenance .= '</p>'."\n";
-        $fld_maintenance .= '</div>'."\n";
+    $fld_maintenance .= $submit_box;
 
-        $fld_maintenance .= $submit_box;
-
-        $fld_maintenance .= '</div>';
+    $fld_maintenance .= '</div>';
     echo $fld_maintenance;
 
-    // check if a new Blogotext version is available (code from Shaarli, by Sebsauvage).
+    // Check if a new Blogotext version is available (code from Shaarli, by Sebsauvage).
     // Get latest version number at most once a day.
     if ($GLOBALS['check_update'] == 1) {
         $version_file = '../config/version.txt';
@@ -1034,18 +1046,18 @@ function afficher_form_prefs($erreurs = '')
             }
         }
 
-        // Compare versions:
+        // Compare versions
         $newestversion = file_get_contents($version_file);
         if (version_compare($newestversion, BLOGOTEXT_VERSION) == 1) {
-                $fld_update = '<div role="group" class="pref">';
-                $fld_update .= '<div class="form-legend"><legend class="legend-update">'.$GLOBALS['lang']['maint_chk_update'].'</legend></div>'."\n";
-                $fld_update .= '<div class="form-lines">'."\n";
-                $fld_update .= '<p>'."\n";
-                $fld_update .= "\t".'<label>'.$GLOBALS['lang']['maint_update_youisbad'].' ('.$newestversion.'). '.$GLOBALS['lang']['maint_update_go_dl_it'].'</label>'."\n";
-                $fld_update .= "\t".'<a href="http://lehollandaisvolant.net/blogotext/">lehollandaisvolant.net/blogotext</a>.';
-                $fld_update .= '</p>'."\n";
-                $fld_update .= '</div>'."\n";
-                $fld_update .= '</div>'."\n";
+            $fld_update = '<div role="group" class="pref">';
+            $fld_update .= '<div class="form-legend"><legend class="legend-update">'.$GLOBALS['lang']['maint_chk_update'].'</legend></div>'."\n";
+            $fld_update .= '<div class="form-lines">'."\n";
+            $fld_update .= '<p>'."\n";
+            $fld_update .= "\t".'<label>'.$GLOBALS['lang']['maint_update_youisbad'].' ('.$newestversion.'). '.$GLOBALS['lang']['maint_update_go_dl_it'].'</label>'."\n";
+            $fld_update .= "\t".'<a href="http://lehollandaisvolant.net/blogotext/">lehollandaisvolant.net/blogotext</a>.';
+            $fld_update .= '</p>'."\n";
+            $fld_update .= '</div>'."\n";
+            $fld_update .= '</div>'."\n";
             echo $fld_update;
         }
     }
