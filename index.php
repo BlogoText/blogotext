@@ -87,8 +87,10 @@ if (isset($_GET['unsub'], $_GET['mail'], $_GET['article']) and $_GET['unsub'] ==
 if (isset($_GET['d']) and preg_match('#^\d{4}/\d{2}/\d{2}/\d{2}/\d{2}/\d{2}#', $_GET['d'])) {
     $tab = explode('/', $_GET['d']);
     $id = substr($tab['0'].$tab['1'].$tab['2'].$tab['3'].$tab['4'].$tab['5'], '0', '14');
-    // 'admin' connected is allowed to see draft articles, but not 'public'. Same for article posted with a date in the future.
-    if (empty($_SESSION['user_id'])) {
+    // 'admin' connected is allowed to see draft articles, but not 'public'.
+    // Same for article posted with a date in the future.
+    // Same for shared drafts or private pages (append '&share' to the URL.
+    if (empty($_SESSION['user_id']) and !isset($_GET['share'])) {
         $query = "SELECT * FROM articles WHERE bt_id=? AND bt_date <=? AND bt_statut=1 LIMIT 1";
         $billets = liste_elements($query, array($id, date('YmdHis')), 'articles');
     } else {

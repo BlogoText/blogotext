@@ -17,15 +17,10 @@ require_once '../inc/inc.php';
 
 operate_session();
 $begin = microtime(true);
-
-// OPEN BASE
 $GLOBALS['db_handle'] = open_base();
 
-// TRAITEMENT
+// Traitment
 $erreurs_form = array();
-
-//
-
 if (isset($_POST['_verif_envoi'])) {
     $billet = init_post_article();
     $erreurs_form = valider_form_billet($billet);
@@ -34,7 +29,7 @@ if (isset($_POST['_verif_envoi'])) {
     }
 }
 
-// RECUP INFOS ARTICLE SI DONNÉ
+// Retrieve post's informations if ID
 $post = '';
 $article_id = '';
 if (isset($_GET['post_id'])) {
@@ -46,7 +41,7 @@ if (isset($_GET['post_id'])) {
     }
 }
 
-// TITRE PAGE
+// Page's title
 if (!empty($post)) {
     $titre_ecrire_court = $GLOBALS['lang']['titre_maj'];
     $titre_ecrire = $titre_ecrire_court.' : '.$post['bt_title'];
@@ -56,9 +51,8 @@ if (!empty($post)) {
     $titre_ecrire = $titre_ecrire_court;
 }
 
-// DEBUT PAGE
+// Start page
 afficher_html_head($titre_ecrire);
-
 echo '<div id="header">'."\n";
     echo '<div id="top">'."\n";
     afficher_msg();
@@ -66,12 +60,13 @@ echo '<div id="header">'."\n";
     echo '</div>'."\n";
 echo '</div>'."\n";
 
+// Subnav
 echo '<div id="axe">'."\n";
-// SUBNAV
 if ($post != '') {
     echo '<div id="subnav">'."\n";
         echo '<div class="nombre-elem">';
         echo '<a href="'.$post['bt_link'].'">'.$GLOBALS['lang']['lien_article'].'</a> &nbsp; – &nbsp; ';
+        echo '<a href="'.$post['bt_link'].'&share">'.$GLOBALS['lang']['post_share'].'</a> &nbsp; – &nbsp; ';
         echo '<a href="commentaires.php?post_id='.$article_id.'">'.ucfirst(nombre_objets($post['bt_nb_comments'], 'commentaire')).'</a>';
         echo '</div>'."\n";
     echo '</div>'."\n";
@@ -79,7 +74,7 @@ if ($post != '') {
 
 echo '<div id="page">'."\n";
 
-// EDIT
+// Show the post
 if ($post != '') {
     apercu($post);
 }
