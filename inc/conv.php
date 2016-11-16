@@ -278,21 +278,21 @@ function markup($texte)
 
 function date_formate($id, $format_force = '')
 {
-    $retour ='';
-    $date= decode_id($id);
+    $retour = '';
+    $date = decode_id($id);
         $jour_l = jour_en_lettres($date['jour'], $date['mois'], $date['annee']);
         $mois_l = mois_en_lettres($date['mois']);
-            $format = array (
-                '0' => $date['jour'].'/'.$date['mois'].'/'.$date['annee'],          // 14/01/1983
-                '1' => $date['mois'].'/'.$date['jour'].'/'.$date['annee'],          // 01/14/1983
-                '2' => $date['jour'].' '.$mois_l.' '.$date['annee'],                // 14 janvier 1983
-                '3' => $jour_l.' '.$date['jour'].' '.$mois_l.' '.$date['annee'],    // vendredi 14 janvier 1983
-                '4' => $jour_l.' '.$date['jour'].' '.$mois_l,                       // vendredi 14 janvier
-                '5' => $mois_l.' '.$date['jour'].', '.$date['annee'],               // janvier 14, 1983
-                '6' => $jour_l.', '.$mois_l.' '.$date['jour'].', '.$date['annee'],  // vendredi, janvier 14, 1983
-                '7' => $date['annee'].'-'.$date['mois'].'-'.$date['jour'],          // 1983-01-14
-                '8' => substr($jour_l, 0, 3).'. '.$date['jour'].' '.$mois_l,        // ven. 14 janvier
-            );
+        $format = array (
+            $date['jour'].'/'.$date['mois'].'/'.$date['annee'],          // 14/01/1983
+            $date['mois'].'/'.$date['jour'].'/'.$date['annee'],          // 01/14/1983
+            $date['jour'].' '.$mois_l.' '.$date['annee'],                // 14 janvier 1983
+            $jour_l.' '.$date['jour'].' '.$mois_l.' '.$date['annee'],    // vendredi 14 janvier 1983
+            $jour_l.' '.$date['jour'].' '.$mois_l,                       // vendredi 14 janvier
+            $mois_l.' '.$date['jour'].', '.$date['annee'],               // janvier 14, 1983
+            $jour_l.', '.$mois_l.' '.$date['jour'].', '.$date['annee'],  // vendredi, janvier 14, 1983
+            $date['annee'].'-'.$date['mois'].'-'.$date['jour'],          // 1983-01-14
+            substr($jour_l, 0, 3).'. '.$date['jour'].' '.$mois_l,        // ven. 14 janvier
+        );
 
     if ($format_force != '') {
         $retour = $format[$format_force];
@@ -307,13 +307,12 @@ function heure_formate($id)
     $date = decode_id($id);
     $timestamp = mktime($date['heure'], $date['minutes'], $date['secondes'], $date['mois'], $date['jour'], $date['annee']);
     $format = array (
-        '0' => date('H\:i\:s', $timestamp),  // 23:56:04
-        '1' => date('H\:i', $timestamp),         // 23:56
-        '2' => date('h\:i\:s A', $timestamp),    // 11:56:04 PM
-        '3' => date('h\:i A', $timestamp),       // 11:56 PM
+        'H:i:s',    // 23:56:04
+        'H:i',      // 23:56
+        'h:i:s A',  // 11:56:04 PM
+        'h:i A',    // 11:56 PM
     );
-    $valeur = $format[$GLOBALS['format_heure']];
-    return $valeur;
+    return date($format[$GLOBALS['format_heure']], $timestamp);
 }
 
 function date_formate_iso($id)
@@ -347,11 +346,11 @@ function return_bytes($val)
 function taille_formate($taille)
 {
     $prefixe = array (
-        '0' => $GLOBALS['lang']['byte_symbol'],   // 2^00 o
-        '1' => 'ki'.$GLOBALS['lang']['byte_symbol'], // 2^10 o
-        '2' => 'Mi'.$GLOBALS['lang']['byte_symbol'], // 2^20 o
-        '3' => 'Gi'.$GLOBALS['lang']['byte_symbol'],
-        '4' => 'Ti'.$GLOBALS['lang']['byte_symbol'],
+             $GLOBALS['lang']['byte_symbol'],
+        'ki'.$GLOBALS['lang']['byte_symbol'],
+        'Mi'.$GLOBALS['lang']['byte_symbol'],
+        'Gi'.$GLOBALS['lang']['byte_symbol'],
+        'Ti'.$GLOBALS['lang']['byte_symbol'],
     );
     $dix = 0;
     while ($taille / (pow(2, 10*$dix)) > 1024) {
