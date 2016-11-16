@@ -160,68 +160,68 @@ function markup_articles($texte)
 {
     $texte = preg_replace("/(\r\n|\r\n\r|\n|\n\r|\r)/", "\r", $texte);
     $tofind = array(
-        // replace \r with \n when following HTML elements
+        // Replace \r with \n when following HTML elements
         '#<(.*?)>\r#',
 
-        // css block elements
-        '#\[left\](.*?)\[/left\]#s',            // left align
-        '#\[center\](.*?)\[/center\]#s',        // center align
-        '#\[right\](.*?)\[/right\]#s',      // right align
-        '#\[justify\](.*?)\[/justify\]#s',  // justify
+        // Jusitifications
+        /* left    */ '#\[left\](.*?)\[/left\]#s',
+        /* center  */ '#\[center\](.*?)\[/center\]#s',
+        /* right   */ '#\[right\](.*?)\[/right\]#s',
+        /* justify */ '#\[justify\](.*?)\[/justify\]#s',
 
-        // misc
-        '#([^"\[\]|])((http|ftp)s?://([^"\'\[\]<>\s]+))#i',             // Regex URL
-        '#\[([^[]+)\|([^[]+)\]#',                                               // a href
-        '#\[(https?://)([^[]+)\]#',                                             // url
-        '#\[img\](.*?)(\|(.*?))?\[/img\]#s',                                // [img]
-        '#\[b\](.*?)\[/b\]#s',                                                  // strong
-        '#\[i\](.*?)\[/i\]#s',                                                  // italic
-        '#\[s\](.*?)\[/s\]#s',                                                  // strike
-        '#\[u\](.*?)\[/u\]#s',                                                  // souligne
-        '#\*\*(.*?)(\r|$)#s',                                                   // ul/li (br because of prev replace)
-        '#</ul>\r<ul>#s',                                                           // ul/li
-        '#\#\#(.*?)(\r|$)#s',                                                   // ol/li
-        '#</ol>\r<ol>#s',                                                           // ol/li
-        '#\[quote\](.*?)\[/quote\]#s',                                      // citation
-        '#\[code\]\[/code\]#s',                                                     // code
-        '#\[code=(\w+)\]\[/code\]#s',                                           // code=language
-        '#\[color=(?:")?(\w+|\#(?:[0-9a-fA-F]{3}){1,2})(?:")?\](.*?)\[/color\]#s',          // color
-        '#\[size=(\\\?")?([0-9]{1,})(\\\?")?\](.*?)\[/size\]#s',        // size
+        // Misc
+        /* regex URL     */ '#([^"\[\]|])((http|ftp)s?://([^"\'\[\]<>\s]+))#i',
+        /* a href        */ '#\[([^[]+)\|([^[]+)\]#',
+        /* url           */ '#\[(https?://)([^[]+)\]#',
+        /* [img]         */ '#\[img\](.*?)(\|(.*?))?\[/img\]#s',
+        /* strong        */ '#\[b\](.*?)\[/b\]#s',
+        /* italic        */ '#\[i\](.*?)\[/i\]#s',
+        /* strike        */ '#\[s\](.*?)\[/s\]#s',
+        /* underline     */ '#\[u\](.*?)\[/u\]#s',
+        /* ul/li         */ '#\*\*(.*?)(\r|$)#s',  // br because of prev replace
+        /* ul/li         */ '#</ul>\r<ul>#s',
+        /* ol/li         */ '#\#\#(.*?)(\r|$)#s',  // br because of prev replace
+        /* ol/li         */ '#</ol>\r<ol>#s',
+        /* quote         */ '#\[quote\](.*?)\[/quote\]#s',
+        /* code          */ '#\[code\]\[/code\]#s',
+        /* code=language */ '#\[code=(\w+)\]\[/code\]#s',
+        /* color         */ '#\[color=(?:")?(\w+|\#(?:[0-9a-fA-F]{3}){1,2})(?:")?\](.*?)\[/color\]#s',
+        /* size          */ '#\[size=(\\\?")?([0-9]{1,})(\\\?")?\](.*?)\[/size\]#s',
 
-        // adding some &nbsp
+        // Adding some &nbsp;
         '# (»|!|:|\?|;)#',
         '#« #',
     );
     $toreplace = array(
-        //  replace \r with \n
+        // Replace \r with \n
         '<$1>'."\n",
 
-        // css block elements
-        '<div style="text-align:left;">$1</div>',       // left align
-        '<div style="text-align:center;">$1</div>',     // center align
-        '<div style="text-align:right;">$1</div>',  // right align
-        '<div style="text-align:justify;">$1</div>',    // justify
+        // Jusitifications
+        /* left    */ '<div style="text-align:left;">$1</div>',
+        /* center  */ '<div style="text-align:center;">$1</div>',
+        /* right   */ '<div style="text-align:right;">$1</div>',
+        /* justify */ '<div style="text-align:justify;">$1</div>',
 
-        // misc
-        '$1<a href="$2">$2</a>',                                                // url regex
-        '<a href="$2">$1</a>',                                                  // a href
-        '<a href="$1$2">$2</a>',                                                // url
-        '<img src="$1" alt="$3" />',                                            // img
-        '<strong>$1</strong>',                                                  // strong
-        '<em>$1</em>',                                                              // italic
-        '<del>$1</del>',                                                            // barre
-        '<u>$1</u>',                                                                // souligne
-        '<ul><li>$1</li></ul>'."\r",                                            // ul/li
-        "\r",                                                                           // ul/li
-        '<ol><li>$1</li></ol>'."\r",                                            // ol/li
-        '',                                                                             // ol/li
-        '<blockquote>$1</blockquote>'."\r",                                     // citation
-        '<prebtcode></prebtcode>'."\r",                                         // code
-        '<prebtcode data-language="$1"></prebtcode>'."\r",              // code=language
-        '<span style="color:$1;">$2</span>',                                // color
-        '<span style="font-size:$2pt;">$4</span>',                      // text-size
+        // Misc
+        /* regex URL     */ '$1<a href="$2">$2</a>',
+        /* a href        */ '<a href="$2">$1</a>',
+        /* url           */ '<a href="$1$2">$2</a>',
+        /* [img]         */ '<img src="$1" alt="$3" />',
+        /* strong        */ '<b>$1</b>',
+        /* italic        */ '<em>$1</em>',
+        /* strike        */ '<del>$1</del>',
+        /* underline     */ '<u>$1</u>',
+        /* ul/li         */ '<ul><li>$1</li></ul>'."\r",
+        /* ul/li         */ "\r",
+        /* ol/li         */ '<ol><li>$1</li></ol>'."\r",
+        /* ol/li         */ '',
+        /* quote         */ '<blockquote>$1</blockquote>'."\r",
+        /* code          */ '<prebtcode></prebtcode>'."\r",
+        /* code=language */ '<prebtcode data-language="$1"></prebtcode>'."\r",
+        /* color         */ '<span style="color:$1;">$2</span>',
+        /* size          */ '<span style="font-size:$2pt;">$4</span>',
 
-        // adding some &nbsp
+        // Adding some &nbsp;
         ' $1',
         '« ',
     );
@@ -245,26 +245,26 @@ function markup($texte)
     $texte = preg_replace('#\[([^|]+)\|(\s*javascript.*)\]#i', '$1', $texte);
     $texte = preg_replace("/(\r\n|\r\n\r|\n|\n\r|\r)/", "\r", $texte);
     $tofind = array(
-        '#([^"\[\]|])((http|ftp)s?://([^"\'\[\]<>\s\)\(]+))#i',     // Regex URL
-        '#\[([^[]+)\|([^[]+)\]#',                                           // a href
-        '#\[b\](.*?)\[/b\]#s',                                              // strong
-        '#\[i\](.*?)\[/i\]#s',                                              // italic
-        '#\[s\](.*?)\[/s\]#s',                                              // strike
-        '#\[u\](.*?)\[/u\]#s',                                              // souligne
-        '#\[quote\](.*?)\[/quote\]#s',                                  // citation
-        '#\[code\]\[/code\]#s',                                                 // code
-        '#\[code=(\w+)\]\[/code\]#s',                                       // code=language
+        /* regex URL     */ '#([^"\[\]|])((http|ftp)s?://([^"\'\[\]<>\s\)\(]+))#i',
+        /* a href        */ '#\[([^[]+)\|([^[]+)\]#',
+        /* strong        */ '#\[b\](.*?)\[/b\]#s',
+        /* italic        */ '#\[i\](.*?)\[/i\]#s',
+        /* strike        */ '#\[s\](.*?)\[/s\]#s',
+        /* underline     */ '#\[u\](.*?)\[/u\]#s',
+        /* quote         */ '#\[quote\](.*?)\[/quote\]#s',
+        /* code          */ '#\[code\]\[/code\]#s',
+        /* code=language */ '#\[code=(\w+)\]\[/code\]#s',
     );
     $toreplace = array(
-        '$1<a href="$2">$2</a>',                                            // url
-        '<a href="$2">$1</a>',                                              // a href
-        '<strong>$1</strong>',                                              // strong
-        '<em>$1</em>',                                                          // italic
-        '<del>$1</del>',                                                        // barre
-        '<u>$1</u>',                                                            // souligne
-        '<blockquote>$1</blockquote>'."\r",                                 // citation
-        '<prebtcode></prebtcode>'."\r",                                     // code
-        '<prebtcode data-language="$1"></prebtcode>'."\r",          // code=language
+        /* regex URL     */ '$1<a href="$2">$2</a>',
+        /* a href        */ '<a href="$2">$1</a>',
+        /* strong        */ '<b>$1</b>',
+        /* italic        */ '<em>$1</em>',
+        /* strike        */ '<del>$1</del>',
+        /* underline     */ '<u>$1</u>',
+        /* quote         */ '<blockquote>$1</blockquote>'."\r",
+        /* code          */ '<prebtcode></prebtcode>'."\r",
+        /* code=language */ '<prebtcode data-language="$1"></prebtcode>'."\r",
     );
 
     preg_match_all('#\[code(=(\w+))?\](.*?)\[/code\]#s', $texte, $code_contents, PREG_SET_ORDER);
@@ -283,15 +283,15 @@ function date_formate($id, $format_force = '')
         $jour_l = jour_en_lettres($date['jour'], $date['mois'], $date['annee']);
         $mois_l = mois_en_lettres($date['mois']);
             $format = array (
-                '0' => $date['jour'].'/'.$date['mois'].'/'.$date['annee'],         // 14/01/1983
-                '1' => $date['mois'].'/'.$date['jour'].'/'.$date['annee'],         // 01/14/1983
-                '2' => $date['jour'].' '.$mois_l.' '.$date['annee'],               // 14 janvier 1983
-                '3' => $jour_l.' '.$date['jour'].' '.$mois_l.' '.$date['annee'],   // vendredi 14 janvier 1983
-                '4' => $jour_l.' '.$date['jour'].' '.$mois_l,                      // vendredi 14 janvier
-                '5' => $mois_l.' '.$date['jour'].', '.$date['annee'],              // janvier 14, 1983
-                '6' => $jour_l.', '.$mois_l.' '.$date['jour'].', '.$date['annee'], // vendredi, janvier 14, 1983
-                '7' => $date['annee'].'-'.$date['mois'].'-'.$date['jour'],         // 1983-01-14
-                '8' => substr($jour_l, 0, 3).'. '.$date['jour'].' '.$mois_l,         // ven. 14 janvier
+                '0' => $date['jour'].'/'.$date['mois'].'/'.$date['annee'],          // 14/01/1983
+                '1' => $date['mois'].'/'.$date['jour'].'/'.$date['annee'],          // 01/14/1983
+                '2' => $date['jour'].' '.$mois_l.' '.$date['annee'],                // 14 janvier 1983
+                '3' => $jour_l.' '.$date['jour'].' '.$mois_l.' '.$date['annee'],    // vendredi 14 janvier 1983
+                '4' => $jour_l.' '.$date['jour'].' '.$mois_l,                       // vendredi 14 janvier
+                '5' => $mois_l.' '.$date['jour'].', '.$date['annee'],               // janvier 14, 1983
+                '6' => $jour_l.', '.$mois_l.' '.$date['jour'].', '.$date['annee'],  // vendredi, janvier 14, 1983
+                '7' => $date['annee'].'-'.$date['mois'].'-'.$date['jour'],          // 1983-01-14
+                '8' => substr($jour_l, 0, 3).'. '.$date['jour'].' '.$mois_l,        // ven. 14 janvier
             );
 
     if ($format_force != '') {
@@ -359,7 +359,7 @@ function taille_formate($taille)
     }
     $taille = $taille / (pow(2, 10*$dix));
     if ($dix != 0) {
-        $taille = sprintf("%.1f", $taille);
+        $taille = sprintf('%.1f', $taille);
     }
 
     return $taille.' '.$prefixe[$dix];
@@ -496,9 +496,10 @@ function nombre_objets($nb, $type)
 
 function str2($nb)
 {
-    return str_pad($nb, 2, "0", STR_PAD_LEFT);
+    return str_pad($nb, 2, '0', STR_PAD_LEFT);
 }
+
 function str4($nb)
 {
-    return str_pad($nb, 4, "0", STR_PAD_LEFT);
+    return str_pad($nb, 4, '0', STR_PAD_LEFT);
 }
