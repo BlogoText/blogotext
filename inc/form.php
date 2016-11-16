@@ -18,7 +18,7 @@ function form_select($id, $choix, $defaut, $label)
     $form = '<label for="'.$id.'">'.$label.'</label>'."\n";
     $form .= "\t".'<select id="'.$id.'" name="'.$id.'">'."\n";
     foreach ($choix as $valeur => $mot) {
-        $form .= "\t\t".'<option value="'.$valeur.'"'.(($defaut == $valeur) ? ' selected="selected" ' : '').'>'.$mot.'</option>'."\n";
+        $form .= "\t\t".'<option value="'.$valeur.'"'.($defaut == $valeur ? ' selected="selected" ' : '').'>'.$mot.'</option>'."\n";
     }
     $form .= "\t".'</select>'."\n";
     $form .= "\n";
@@ -311,8 +311,6 @@ function filtre($type, $filtre)
 
     return $ret;
 }
-
-// Admin forms
 
 // Add a link from BO
 function afficher_form_link($step, $erreurs, $editlink = '')
@@ -862,10 +860,10 @@ function afficher_form_prefs($erreurs = '')
         $fld_apparence .= '</p>'."\n";
 
         $fld_apparence .= '<p>'."\n";
-        $fld_apparence .= form_select('nb_maxi', array('5'=>'5', '10'=>'10', '15'=>'15', '20'=>'20', '25'=>'25', '50'=>'50'), $GLOBALS['max_bill_acceuil'], $GLOBALS['lang']['pref_nb_maxi']);
+        $fld_apparence .= form_select('nb_maxi', array(5 => 5, 10 => 10, 15 => 15, 20 => 20,  25 => 25, 50 => 50), $GLOBALS['max_bill_acceuil'], $GLOBALS['lang']['pref_nb_maxi']);
         $fld_apparence .= '</p>'."\n";
 
-        $nbs = array('10'=>'10', '25'=>'25', '50'=>'50', '100'=>'100', '300'=>'300', '-1' => $GLOBALS['lang']['pref_all']);
+        $nbs = array(10 => 10, 25 => 25, 50 => 50, 100 => 100, 300 => 300, -1 => $GLOBALS['lang']['pref_all']);
         $fld_apparence .= '<p>'."\n";
         $fld_apparence .= form_select('nb_list', $nbs, $GLOBALS['max_bill_admin'], $GLOBALS['lang']['pref_nb_list']);
         $fld_apparence .= '</p>'."\n";
@@ -954,7 +952,7 @@ function afficher_form_prefs($erreurs = '')
 
         $fld_cfg_linx .= '<div class="form-lines">'."\n";
         // nb liens côté admin
-        $nbs = array('50'=>'50', '100'=>'100', '200'=>'200', '300'=>'300', '500'=>'500', '-1' => $GLOBALS['lang']['pref_all']);
+        $nbs = array(50 => 50, 100 => 100, 200 => 200, 300 => 300, 500 => 500, -1 => $GLOBALS['lang']['pref_all']);
 
         $fld_cfg_linx .= '<p>'."\n";
         $fld_cfg_linx .= form_select('nb_list_linx', $nbs, $GLOBALS['max_linx_admin'], $GLOBALS['lang']['pref_nb_list_linx']);

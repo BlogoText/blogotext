@@ -11,7 +11,6 @@
 #
 # *** LICENSE ***
 
-
 function afficher_html_head($titre)
 {
     $html = '<!DOCTYPE html>'."\n";
@@ -159,7 +158,6 @@ function moteur_recherche()
     }
     $return = '<form action="?" method="get" id="search">'."\n";
     $return .= '<input id="q" name="q" type="search" size="20" value="'.$requete.'" placeholder="'.$GLOBALS['lang']['placeholder_search'].'" accesskey="f" />'."\n";
-//  $return .= '<label for="q">'.'</label>'."\n";
     $return .= '<button id="input-rechercher" type="submit">'.$GLOBALS['lang']['rechercher'].'</button>'."\n";
     if (isset($_GET['mode'])) {
         $return .= '<input id="mode" name="mode" type="hidden" value="'.htmlspecialchars(stripslashes($_GET['mode'])).'"/>'."\n";
@@ -183,7 +181,6 @@ function encart_commentaires()
             if (strlen($comment['bt_author']) >= 30) {
                 $comment['bt_author'] = mb_substr($comment['bt_author'], 0, 29).'…';
             }
-//          $listeLastComments .= '<li title="'.date_formate($comment['bt_id']).'"><b>'.$comment['bt_author'].'</b> '.$GLOBALS['lang']['sur'].' <b>'.$comment['article_title'].'</b><br/><a href="'.$comment['bt_link'].'">'.$comment['contenu_abbr'].'</a>'.'</li>'."\n";
             $listeLastComments .= '<li title="'.date_formate($comment['bt_id']).'"><strong>'.$comment['bt_author'].' : </strong><a href="'.$comment['bt_link'].'">'.$comment['contenu_abbr'].'</a>'.'</li>'."\n";
         }
         $listeLastComments .= '</ul>'."\n";
@@ -209,7 +206,7 @@ function encart_categories($mode)
         $liste = array_reverse(tri_selon_sous_cle($liste, 0));
         $uliste = '<ul>'."\n";
 
-        // create the <UL> with "tags (nb) "
+        // create the <ul> with "tags (nb) "
         foreach ($liste as $tag => $nb) {
             if ($tag != '' and $nb[1] > 1) {
                 $uliste .= "\t".'<li><a href="?tag='.urlencode(trim($tag)).$ampmode.'" rel="tag">'.ucfirst($tag).' ('.$nb[1].')</a><a href="rss.php?tag='.urlencode($tag).$ampmode.'" rel="alternate"></a></li>'."\n";
@@ -230,7 +227,6 @@ function lien_pagination()
     }
     $page_courante = (isset($_GET['p']) and is_numeric($_GET['p'])) ? $_GET['p'] : 0;
     $qstring = remove_url_param('p');
-//  debug($qstring);
     if ($page_courante <=0) {
         $lien_precede = '';
         $lien_suivant = '<a href="?'.$qstring.'&amp;p=1" rel="next">'.$GLOBALS['lang']['label_suivant'].'</a>';
@@ -333,7 +329,6 @@ function feed_list_html()
     }
     return $html;
 }
-
 
 function php_lang_to_js($a)
 {

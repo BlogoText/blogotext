@@ -32,7 +32,6 @@ if (isset($_POST['_verif_envoi'])) {
     }
 }
 
-
 afficher_html_head($GLOBALS['lang']['preferences']);
     echo '<div id="header">'."\n";
         echo '<div id="top">'."\n";
@@ -45,8 +44,6 @@ echo '<div id="page">'."\n";
 
 afficher_form_prefs($erreurs_form);
 
-
 echo "\n".'<script src="style/javascript.js"></script>'."\n";
-
 
 footer($begin);
