@@ -19,12 +19,12 @@ $lv2_cache_file = 'cache/c_atom_'.substr(md5(isset($_SERVER['QUERY_STRING']) ? $
 // if cache file exists
 if (is_file($lv2_cache_file)) {
     // if cache not too old
-    if (@filemtime($lv2_cache_file) > time()-(3600)) {
+    if (filemtime($lv2_cache_file) > time()-(3600)) {
         readfile($lv2_cache_file);
         die;
     }
     // file too old: delete it and go on (and create new file)
-    @unlink($lv2_cache_file);
+    unlink($lv2_cache_file);
 }
 
 $xml = '<?xml version="1.0" encoding="UTF-8"?>'."\n";

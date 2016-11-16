@@ -457,7 +457,7 @@ function feed2array($feed_content, $feedlink)
             }
 
             foreach ($items as $item) {
-                $c=count($flux['items']);
+                $c = count($flux['items']);
                 if (!empty($item->title)) {
                     //$flux['items'][$c]['bt_title'] = (string)$item->title;
                     $flux['items'][$c]['bt_title'] = html_entity_decode((string)$item->title, ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -470,7 +470,12 @@ function feed2array($feed_content, $feedlink)
                 if (!empty($item->link)) {
                     $flux['items'][$c]['bt_link'] = (string)$item->link;
                 }
-//              if (!empty($item->author->name)) {  $flux['items'][$c]['bt_author'] = (string)$item->author->name; }
+
+                /*
+                if (!empty($item->author->name)) {
+                    $flux['items'][$c]['bt_author'] = (string)$item->author->name;
+                }
+                */
 
                 if (!empty($item->guid)) {
                     $flux['items'][$c]['bt_id'] = (string)$item->guid;

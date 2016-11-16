@@ -19,12 +19,12 @@ $lv2_cache_file = 'cache/c_rss_'.substr(md5(isset($_SERVER['QUERY_STRING']) ? $_
 // if cache file exists
 if (is_file($lv2_cache_file)) {
     // if cache not too old
-    if (@filemtime($lv2_cache_file) > time()-(3600)) {
+    if (filemtime($lv2_cache_file) > time()-(3600)) {
         readfile($lv2_cache_file);
         die;
     }
     // file too old: delete it and go on (and create new file)
-    @unlink($lv2_cache_file);
+    unlink($lv2_cache_file);
 }
 
 $xml = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
@@ -50,7 +50,6 @@ function require_all()
     require_once 'inc/veri.php';
     require_once 'inc/sqli.php';
 }
-
 
 $xml .= '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">'."\n";
 $xml .= '<channel>'."\n";
@@ -93,17 +92,15 @@ if (isset($_GET['id']) and preg_match('#^[0-9]{14}$#', $_GET['id'])) {
 } /* sinon, fil rss sur les articles (par défaut) ou sur les liens ou les Commentaires */
 /* Ici, on utilise la petite BDD placée en cache. */
 else {
-
     function rel2abs($article)
     {
- // convertit les URL relatives en absolues
+        // convertit les URL relatives en absolues
         $article = str_replace(' src="/', ' src="http://'.$_SERVER['HTTP_HOST'].'/', $article);
         $article = str_replace(' href="/', ' href="http://'.$_SERVER['HTTP_HOST'].'/', $article);
         $base = $GLOBALS['racine'];
         $article = preg_replace('#(src|href)=\"(?!http)#i', '$1="'.$base, $article);
         return $article;
     }
-
 
     $fcache = 'cache/cache_rss_array.dat';
     $liste = array();

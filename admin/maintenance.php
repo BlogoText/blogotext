@@ -687,8 +687,9 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
         // token : ok, go on !
         if (isset($_GET['do'])) {
             if ($_GET['do'] == 'export') {
+                $format = !empty($_GET['exp-format']) ? $_GET['exp-format'] : '';
                 // Export in JSON file
-                if (@$_GET['exp-format'] == 'json') {
+                if ($format == 'json') {
                     $data_array = array('articles' => array(), 'liens' => array(), 'commentaires' => array());
                     // list links (nth last)
                     if ($_GET['incl-links'] == 1) {
@@ -716,15 +717,16 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
                     $file_archive = creer_fichier_json($data_array);
 
                 // Export links in HTML format
-                } elseif (@$_GET['exp-format'] == 'html') {
+                } elseif ($format == 'html') {
                     $nb = htmlspecialchars($_GET['nb-links2']);
                     $limit = (is_numeric($nb) and $nb != -1 ) ? $nb : '';
                     $file_archive = creer_fich_html($limit);
 
                 // Export a ZIP archive
-                } elseif (@$_GET['exp-format'] == 'zip') {
+                } elseif ($format == 'zip') {
                     $dossiers = array();
-                    if (@$_GET['incl-sqlit'] == 1) {
+                    $sqlite = !empty($_GET['incl-sqlit']) ? $_GET['incl-sqlit'] + 0 : 0;
+                    if ($sqlite == 1) {
                         $dossiers[] = BT_ROOT.DIR_DATABASES;
                     }
                     if ($_GET['incl-files'] == 1) {
@@ -740,7 +742,7 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
                     $file_archive = creer_fichier_zip($dossiers);
 
                 // Export a OPML rss lsit
-                } elseif (@$_GET['exp-format'] == 'opml') {
+                } elseif ($format == 'opml') {
                     $file_archive = creer_fichier_opml();
                 } else {
                     echo 'nothing to do';

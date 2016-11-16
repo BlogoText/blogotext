@@ -372,9 +372,13 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var)
             // remove physical file on disk if it exists
         if (is_file($dossier.'/'.$fichier['bt_filename']) and isset($tbl_id)) {
             $liste_fichiers = rm_dots_dir(scandir($dossier)); // liste les fichiers réels dans le dossier
-            if (true === unlink($dossier.'/'.$fichier['bt_filename'])) { // fichier physique effacé
-                if ($fichier['bt_type'] == 'image') { // supprimer aussi la miniature si elle existe.
-                    @unlink(chemin_thb_img($dossier.'/'.$fichier['bt_filename'])); // supprime la thumbnail si y’a
+            if (unlink($dossier.'/'.$fichier['bt_filename'])) { // fichier physique effacé
+                if ($fichier['bt_type'] == 'image') {
+                    // Delete the preview picture if any
+                    $img = chemin_thb_img($dossier.'/'.$fichier['bt_filename']);
+                    if (is_file($img)) {
+                        unlink($img);
+                    }
                 }
                 unset($GLOBALS['liste_fichiers'][$tbl_id]); // efface le fichier dans la liste des fichiers.
                 $GLOBALS['liste_fichiers'] = tri_selon_sous_cle($GLOBALS['liste_fichiers'], 'bt_id');
