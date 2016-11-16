@@ -11,7 +11,6 @@
 #
 # *** LICENSE ***
 
-// THIS FILE
 //
 // This file contains functions relative to search and list data posts.
 // It also contains functions about files : creating, deleting files, etc.
@@ -30,7 +29,6 @@ function create_folder($dossier, $make_htaccess = '')
     }
     return false;
 }
-
 
 function fichier_user()
 {
@@ -63,7 +61,6 @@ function fichier_adv_conf()
 
     return file_put_contents($fichier_advconf, $conf) !== false;
 }
-
 
 function fichier_prefs()
 {
@@ -198,10 +195,8 @@ function fichier_htaccess($dossier)
 function fichier_module_disabled($file)
 {
     $content = $GLOBALS['lang']['label_disabled'];
-
     return file_put_contents($file, $content) !== false;
 }
-
 
 // à partir de l’extension du fichier, trouve le "type" correspondant.
 // les "type" et le tableau des extensions est le $GLOBALS['files_ext'] dans conf.php
@@ -216,7 +211,6 @@ function detection_type_fichier($extension)
     }
     return $good_type;
 }
-
 
 function open_serialzd_file($fichier)
 {
@@ -277,7 +271,6 @@ function request_external_files($feeds, $timeout, $echo_progress = false)
             usleep(100000);
         } while ($running > 0);
 
-
         // multi select contents
         foreach ($chunk as $i => $url) {
             $response = curl_multi_getcontent($curl_arr[$url]);
@@ -291,7 +284,6 @@ function request_external_files($feeds, $timeout, $echo_progress = false)
     return $results;
 }
 
-
 function rafraichir_cache_lv1()
 {
     create_folder(BT_ROOT.DIR_CACHE, 1);
@@ -302,7 +294,6 @@ function rafraichir_cache_lv1()
     return file_put_contents($file, '<?php /* '.chunk_split(base64_encode(serialize(array('c' => $arr_c, 'a' => $arr_a, 'l' => $arr_l)))).' */');
 }
 
-
 /* retrieve all the feeds, returns the amount of new elements */
 function refresh_rss($feeds)
 {
@@ -312,7 +303,6 @@ function refresh_rss($feeds)
     $total_feed = count($feeds);
 
     $retrieved_elements = retrieve_new_feeds(array_keys($feeds));
-
     if (!$retrieved_elements) {
         return 0;
     }
@@ -355,8 +345,6 @@ function refresh_rss($feeds)
     return $count_new;
 }
 
-
-
 function retrieve_new_feeds($feedlinks, $md5 = '')
 {
     if (!$feeds = request_external_files($feedlinks, 25, true)) { // timeout = 25s
@@ -387,7 +375,6 @@ function retrieve_new_feeds($feedlinks, $md5 = '')
     }
     return false;
 }
-
 
 # Based upon Feed-2-array, by bronco@warriordudimanche.net
 function feed2array($feed_content, $feedlink)
@@ -573,7 +560,7 @@ function send_rss_json($rss_entries)
             '"content": '.json_encode($entry['bt_content']).','.
             '"statut": '.$entry['bt_statut'].','.
             '"fav": '.$entry['bt_bookmarked'].''.
-        '}'.(($count==$i) ? '' :',')."\n";
+        '}'.($count == $i ? '' :',')."\n";
     }
     $out .= ']'."\n".'}';
     $out .=  '</script>'."\n";
@@ -581,17 +568,14 @@ function send_rss_json($rss_entries)
     return $out;
 }
 
-
 if (!function_exists('http_parse_headers')) {
     function http_parse_headers($raw_headers)
     {
         $headers = array();
-
         $array_headers = (is_array($raw_headers) ? $raw_headers : explode("\n", $raw_headers));
 
         foreach ($array_headers as $i => $h) {
             $h = explode(':', $h, 2);
-
             if (isset($h[1])) {
                 $headers[$h[0]] = trim($h[1]);
             }
