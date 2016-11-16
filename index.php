@@ -11,21 +11,15 @@
 #
 # *** LICENSE ***
 
-/*****************************************************************************
- some misc routines
-******************************************************************************/
-// anti XSS : /index.php/%22onmouseover=prompt(971741)%3E or /index.php/ redirects all on index.php
-// if there is a slash after the "index.php", the file is considered as a folder, but the code inside it still executed.
-
+// Anti XSS : /index.php/%22onmouseover=prompt(971741)%3E or /index.php/ redirects all on index.php
+// If there is a slash after the "index.php", the file is considered as a folder, but the code inside it still executed.
 if (strpos($_SERVER['REQUEST_URI'], $_SERVER['SCRIPT_NAME'].'/') === 0) {
-    header('Location: '.$_SERVER['SCRIPT_NAME']);
-    exit;
+    exit(header('Location: '.$_SERVER['SCRIPT_NAME']));
 }
 
 // If no config: go to install process.
 if (!is_file('config/user.ini') or !is_file('config/prefs.php')) {
-    header('Location: admin/install.php');
-    die;
+    exit(header('Location: admin/install.php'));
 }
 
 // gzip compression
@@ -55,28 +49,38 @@ $GLOBALS['db_handle'] = open_base();
 if (isset($_GET['random'])) {
     try {
         // getting nb articles, gen random num, then select one article is much faster than "sql(order by rand limit 1)"
-        $result = $GLOBALS['db_handle']->query("SELECT count(ID) FROM articles WHERE bt_statut=1 AND bt_date <= ".date('YmdHis'))->fetch();
+        $sql = '
+            SELECT count(ID)
+              FROM articles
+             WHERE bt_statut = 1
+                   AND bt_date <= '.date('YmdHis');
+        $result = $GLOBALS['db_handle']->query($sql)->fetch();
         if ($result[0] == 0) {
-            header('Location: '.$_SERVER['SCRIPT_NAME']);
+            exit(header('Location: '.$_SERVER['SCRIPT_NAME']));
         }
+
         $rand = mt_rand(0, $result[0] - 1);
-        $tableau = liste_elements("SELECT * FROM articles WHERE bt_statut=1  AND bt_date <= ".date('YmdHis')." LIMIT $rand, 1", array(), 'articles');
+        $sql = '
+            SELECT *
+              FROM articles
+             WHERE bt_statut = 1
+                   AND bt_date <= '.date('YmdHis').'
+             LIMIT '.($rand + 0).', 1';
+        $tableau = liste_elements($sql, array(), 'articles');
     } catch (Exception $e) {
         die('Erreur rand: '.$e->getMessage());
     }
 
-    header('Location: '.$tableau[0]['bt_link']);
-    exit;
+    exit(header('Location: '.$tableau[0]['bt_link']));
 }
 
 // unsubscribe request from comments-newsletter and redirect on main page
 if (isset($_GET['unsub'], $_GET['mail'], $_GET['article']) and $_GET['unsub'] == 1) {
     $res = unsubscribe(htmlspecialchars($_GET['mail']), htmlspecialchars($_GET['article']), (isset($_GET['all']) ? 1 : 0));
     if ($res == true) {
-        header('Location: '.basename($_SERVER['SCRIPT_NAME']).'?unsubscriben=yes');
-    } else {
-        header('Location: '.basename($_SERVER['SCRIPT_NAME']).'?unsubscriben=no');
+        exit(header('Location: '.basename($_SERVER['SCRIPT_NAME']).'?unsubscriben=yes'));
     }
+    exit(header('Location: '.basename($_SERVER['SCRIPT_NAME']).'?unsubscriben=no'));
 }
 
 

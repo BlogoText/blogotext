@@ -52,7 +52,6 @@ function afficher_form_commentaire($article_id, $mode, $erreurs, $edit_comm)
         $form_cont['comment'] = protect($_POST['commentaire']);
     }
 
-
     // WORK ON REQUEST
     // preview ? submission ? validation ?
 
@@ -78,11 +77,6 @@ function afficher_form_commentaire($article_id, $mode, $erreurs, $edit_comm)
         $GLOBALS['form_commentaire'] .=  implode('</li><li>', $erreurs);
         $GLOBALS['form_commentaire'] .=  '</li></ul></div>'."\n";
     }
-
-    // comm sent without errors and will be saved to DB
-/*  elseif (isset($_POST['_verif_envoi'])) {
-        header('Location: ?'.$_SERVER['QUERY_STRING'].'#erreurs'); // redirection anti repostage;
-    }*/
 
     // prelim vars for Generation of comment Form
     $required = ($GLOBALS['require_email'] == 1) ? 'required=""' : '';

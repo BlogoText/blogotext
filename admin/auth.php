@@ -12,8 +12,7 @@
 # *** LICENSE ***
 
 if (!is_file('../config/user.ini') || !is_file('../config/prefs.php')) {
-    header('Location: install.php');
-    exit;
+    exit(header('Location: install.php'));
 }
 
 define('BT_ROOT', '../');
@@ -34,10 +33,8 @@ if (isset($_POST['nom_utilisateur'])) {
     file_put_contents(BT_ROOT.DIR_CONFIG.'/'.'xauthlog.php', $data, FILE_APPEND);
 }
 
-
 if (check_session() === true) { // return to index if session is already open.
-    header('Location: index.php');
-    exit;
+    exit(header('Location: index.php'));
 }
 
 // Auth checking :
@@ -70,7 +67,7 @@ if (isset($_POST['_verif_envoi']) and valider_form() === true) { // OK : getting
         $_SESSION['BT-post-token'] = new_token();
     }
 
-    header('Location: '.$location);
+    exit(header('Location: '.$location));
 } else { // On sort…
         // …et affiche la page d'auth
         afficher_html_head('Identification');

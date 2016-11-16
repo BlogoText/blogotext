@@ -63,12 +63,9 @@ if (isset($_GET['g'])) {
         }
 
         if (!is_file($newfile)) {
-            // impossible request
-            header('HTTP/1.0 404 Not Found');
-            die('404');
-            exit;
+            // Impossible request
+            exit(header('HTTP/1.0 404 Not Found'));
         }
-
 
         $imagecheck = getimagesize($newfile);
         if ($imagecheck['mime']!=='image/png') { // is it a PNG ?
@@ -84,8 +81,7 @@ if (isset($_GET['g'])) {
     header('Cache-Control: public, max-age=2592000');
     readfile($newfile);
     exit;
-} // g not given, return error.
-else {
-    header('HTTP/1.0 404 Not Found');
-    exit;
 }
+
+// g not given, return error.
+exit(header('HTTP/1.0 404 Not Found'));

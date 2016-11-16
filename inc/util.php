@@ -13,8 +13,7 @@
 
 function redirection($url)
 {
-    header('Location: '.$url);
-    exit;
+    exit(header('Location: '.$url));
 }
 
 /// DECODAGES //////////

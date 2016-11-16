@@ -12,8 +12,7 @@
 # *** LICENSE ***
 
 if (!is_file('../config/user.ini') || !is_file('../config/prefs.php')) {
-    header('Location: install.php');
-    exit;
+    exit(header('Location: install.php'));
 }
 
 $begin = microtime(true);

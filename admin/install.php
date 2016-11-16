@@ -20,8 +20,7 @@ if (is_file('../config/mysql.ini') and file_get_contents('../config/mysql.ini') 
 
 // install is already done
 if ((is_file('../config/user.ini')) and (is_file('../config/prefs.php')) and $step3 === false) {
-    header('Location: auth.php');
-    exit;
+    exit(header('Location: auth.php'));
 }
 
 // some constants definition
@@ -172,11 +171,9 @@ function afficher_form_2($erreurs = '')
     echo '</form>'."\n";
 }
 
-
 // form choix SGBD
 function afficher_form_3($erreurs = '')
 {
-
     afficher_html_head('Install');
     echo '<div id="axe">'."\n";
     echo '<div id="pageauth">'."\n";
@@ -311,7 +308,6 @@ function traiter_install_3()
     }
 }
 
-
 function valid_install_1()
 {
     $erreurs = array();
@@ -377,7 +373,6 @@ function test_connection_mysql()
         return false;
     }
 }
-
 
 echo '<script type="text/javascript">
 function getSelectSgdb() {

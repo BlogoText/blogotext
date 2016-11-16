@@ -11,4 +11,4 @@
 #
 # *** LICENSE ***
 
-header('Location: ../');
+exit(header('Location: ../'));
