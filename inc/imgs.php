@@ -114,7 +114,7 @@ function afficher_liste_images($images)
         $out .= '</div><!--end slider-->'."\n";
 
         // send all the images their info in JSON
-        $out .= '<script type="text/javascript">';
+        $out .= '<script>';
         $out .=  'var imgs = {"list": ['."\n";
 
         foreach ($images as $i => $im) {

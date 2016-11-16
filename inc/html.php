@@ -357,7 +357,7 @@ function php_lang_to_js($a)
     $sc = 'var BTlang = '.json_encode($frontend_str).';'."\n";
 
     if ($a == 1) {
-        $sc = "\n".'<script type="text/javascript">'."\n".$sc."\n".'</script>'."\n";
+        $sc = "\n".'<script>'."\n".$sc."\n".'</script>'."\n";
     }
     return $sc;
 }

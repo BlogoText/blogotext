@@ -374,7 +374,7 @@ function test_connection_mysql()
     }
 }
 
-echo '<script type="text/javascript">
+echo '<script>
 function getSelectSgdb() {
     var selectElmt = document.getElementById("sgdb");
     if (!selectElmt) return false;

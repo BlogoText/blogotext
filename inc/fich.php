@@ -554,7 +554,7 @@ function send_rss_json($rss_entries)
 {
     // send all the entries data in a JSON format
     $out = '';
-    $out .= '<script type="text/javascript">';
+    $out .= '<script>';
 
     // RSS entries
     $out .= 'var rss_entries = {"list": ['."\n";

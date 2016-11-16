@@ -90,5 +90,5 @@ function valider_form()
     return password_verify($_POST['mot_de_passe'], USER_PWHASH) && $_POST['nom_utilisateur'] === USER_LOGIN;
 }
 
-echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
+echo "\n".'<script src="style/javascript.js"></script>'."\n";
 footer();

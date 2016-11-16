@@ -137,8 +137,8 @@ else {
     afficher_liste_fichiers($fichiers);
 }
 
-echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
-echo "\n".'<script type="text/javascript">'."\n";
+echo "\n".'<script src="style/javascript.js"></script>'."\n";
+echo "\n".'<script>'."\n";
 echo 'var curr_img = (typeof imgs != \'undefined\') ? imgs.list.slice(0, 25) : \'\';'."\n";
 echo 'var counter = 0;'."\n";
 echo 'var nbDraged = false;'."\n";

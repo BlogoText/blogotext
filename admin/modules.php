@@ -73,8 +73,8 @@ echo '</div>'."\n";
 
 afficher_liste_modules($tableau, $filtre);
 
-echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
-echo '<script type="text/javascript">';
+echo "\n".'<script src="style/javascript.js"></script>'."\n";
+echo '<script>';
 echo php_lang_to_js(0);
 echo 'var csrf_token = \''.new_token().'\'';
 echo '</script>';

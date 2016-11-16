@@ -197,8 +197,8 @@ else {
 }
 
 echo '</div>'."\n";
-echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
-echo "\n".'<script type="text/javascript">'."\n";
+echo "\n".'<script src="style/javascript.js"></script>'."\n";
+echo "\n".'<script>'."\n";
 echo '\'use strict\''."\n";
 echo 'var canvas = document.querySelectorAll(".graph-container canvas");'."\n";
 echo 'var containers = document.querySelectorAll(".graph-container");'."\n";

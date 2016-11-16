@@ -214,8 +214,8 @@ if ($param_makeup['menu_theme'] == 'for_article') {
     echo '</div>'."\n";
 }
 
-echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
-echo '<script type="text/javascript">'."\n";
+echo "\n".'<script src="style/javascript.js"></script>'."\n";
+echo '<script>'."\n";
 echo php_lang_to_js(0);
 echo 'var csrf_token = \''.new_token().'\'';
 echo '</script>'."\n";

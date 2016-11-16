@@ -88,7 +88,7 @@ echo '<div id="page">'."\n";
 
 if (isset($_GET['config'])) {
     echo afficher_form_rssconf($erreurs);
-    echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
+    echo "\n".'<script src="style/javascript.js"></script>'."\n";
 } else {
     // get list of posts from DB
     // send to browser
@@ -120,8 +120,8 @@ if (isset($_GET['config'])) {
 
     echo $out_html;
 
-    echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
-    echo "\n".'<script type="text/javascript">'."\n";
+    echo "\n".'<script src="style/javascript.js"></script>'."\n";
+    echo "\n".'<script>'."\n";
     echo 'var token = \''.new_token().'\';'."\n";
     echo 'var openAllSwich = \'open\';'."\n";
     echo 'var readQueue = {"count": "0", "urlList": []};'."\n";

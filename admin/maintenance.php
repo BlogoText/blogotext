@@ -842,8 +842,8 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 echo '</div>'."\n";
 
 
-echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
-echo '<script type="text/javascript">';
+echo "\n".'<script src="style/javascript.js"></script>'."\n";
+echo '<script>';
 echo 'var ia = document.getElementById(\'incl-artic\');';
 echo "ia.addEventListener('change', function() { document.getElementById('nb-artic').style.display = ( ia.value == 1 ? 'inline-block' : 'none'); });";
 

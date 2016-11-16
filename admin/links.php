@@ -175,8 +175,8 @@ if ($step == 'edit' and !empty($tableau[0])) { // edit un lien : affiche le lien
     echo '</div>'."\n";
 }
 
-echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
-echo '<script type="text/javascript">'."\n";
+echo "\n".'<script src="style/javascript.js"></script>'."\n";
+echo '<script>'."\n";
 echo php_lang_to_js(0)."\n";
 
 if ($step == 1) {
