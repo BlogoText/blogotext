@@ -202,7 +202,7 @@ $GLOBALS['lang'] = array(
 'link_is_public' => 'Le lien est public',
 'link_is_private' => 'Le lien est privée (invisible)',
 // Titles - liens
-'lien_article' => 'Voir en ligne',
+'post_link' => 'Voir en ligne',
 'post_share' => 'Partager',
 'lien_blog' => 'Voir le blog',
 'go_to_pref' => 'Allez dans les préférences pour changer le titre.',

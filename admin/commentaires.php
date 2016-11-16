@@ -180,7 +180,7 @@ if ($param_makeup['menu_theme'] == 'for_article') {
     $article_link = $GLOBALS['racine'].'?d='.$dec_id['annee'].'/'.$dec_id['mois'].'/'.$dec_id['jour'].'/'.$dec_id['heure'].'/'.$dec_id['minutes'].'/'.$dec_id['secondes'].'-'.titre_url($article_title);
     echo '<ul>'."\n";
     echo "\t".'<li><a href="ecrire.php?post_id='.$article_id.'">'.$GLOBALS['lang']['ecrire'].$article_title.'</a></li>'."\n";
-    echo "\t".'<li><a href="'.$article_link.'">'.$GLOBALS['lang']['lien_article'].'</a></li>'."\n";
+    echo "\t".'<li><a href="'.$article_link.'">'.$GLOBALS['lang']['post_link'].'</a></li>'."\n";
     echo '</ul>'."\n";
     echo '– &nbsp; '.ucfirst(nombre_objets(count($commentaires), 'commentaire'));
 } elseif ($param_makeup['menu_theme'] == 'for_comms') {

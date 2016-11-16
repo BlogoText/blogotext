@@ -201,7 +201,7 @@ $GLOBALS['lang'] = array(
 'link_is_public' => 'Link is public',
 'link_is_private' => 'Link is private',
 // Titles - liens
-'lien_article' => 'See online',
+'post_link' => 'See online',
 'post_share' => 'Share',
 'lien_blog' => 'Watch online',
 'go_to_pref' => 'Go to the settings to change description.',

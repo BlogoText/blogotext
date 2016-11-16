@@ -67,7 +67,7 @@ function afficher_liste_articles($tableau)
             // NOMBRE COMMENTS
             $out .= "\t\t".'<span><a href="commentaires.php?post_id='.$article['bt_id'].'">'.$article['bt_nb_comments'].'</a></span>'."\n";
             // STATUT
-            $out .= "\t\t".'<span><a href="'.$article['bt_link'].'" title="'.$GLOBALS['lang'][(( $article['bt_statut'] == '1')?'lien_article':'preview')].'"></a></span>'."\n";
+            $out .= "\t\t".'<span><a href="'.$article['bt_link'].'" title="'.$GLOBALS['lang'][(( $article['bt_statut'] == '1')?'post_link':'preview')].'"></a></span>'."\n";
 
             $out .= "\t".'</li>'."\n";
             $i++;
