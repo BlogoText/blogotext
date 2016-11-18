@@ -427,7 +427,7 @@
 }
 
 #form-rss-config ul {
-//  text-align: center;
+    /*text-align: center;*/
     padding: 0;
     margin: 0;
     list-style: none;
@@ -538,5 +538,5 @@
 #form-rss-config li.to-remove input,
 #form-rss-config li.to-remove .button-delete {
     opacity: .2;
-    
+
 }
