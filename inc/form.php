@@ -18,7 +18,7 @@ function form_select($id, $choix, $defaut, $label)
     $form = '<label for="'.$id.'">'.$label.'</label>'."\n";
     $form .= "\t".'<select id="'.$id.'" name="'.$id.'">'."\n";
     foreach ($choix as $valeur => $mot) {
-        $form .= "\t\t".'<option value="'.$valeur.'"'.($defaut == $valeur ? ' selected="selected" ' : '').'>'.$mot.'</option>'."\n";
+        $form .= "\t\t".'<option value="'.$valeur.'"'.(($defaut == $valeur) ? ' selected="selected" ' : '').'>'.$mot.'</option>'."\n";
     }
     $form .= "\t".'</select>'."\n";
     $form .= "\n";
@@ -37,7 +37,7 @@ function form_select_no_label($id, $choix, $defaut)
 
 function hidden_input($nom, $valeur, $id = 0)
 {
-    $id = $id === 0 ? '' : ' id="'.$nom.'"';
+    $id = ($id === 0) ? '' : ' id="'.$nom.'"';
     $form = '<input type="hidden" name="'.$nom.'"'.$id.' value="'.$valeur.'" />'."\n";
     return $form;
 }
@@ -53,7 +53,7 @@ function select_yes_no($name, $defaut, $label)
     $form = '<label for="'.$name.'" >'.$label.'</label>'."\n";
     $form .= '<select id="'.$name.'" name="'.$name.'">'."\n" ;
     foreach ($choix as $option => $label) {
-        $form .= "\t".'<option value="'.htmlentities($option).'"'.($option == $defaut ? ' selected="selected" ' : '').'>'.htmlentities($label).'</option>'."\n";
+        $form .= "\t".'<option value="'.htmlentities($option).'"'.(($option == $defaut) ? ' selected="selected" ' : '').'>'.htmlentities($label).'</option>'."\n";
     }
     $form .= '</select>'."\n";
     return $form;
@@ -61,7 +61,7 @@ function select_yes_no($name, $defaut, $label)
 
 function form_checkbox($name, $checked, $label)
 {
-    $checked = $checked ? "checked " : '';
+    $checked = ($checked) ? "checked " : '';
     $form = '<input type="checkbox" id="'.$name.'" name="'.$name.'" '.$checked.' class="checkbox-toggle" />'."\n" ;
     $form .= '<label for="'.$name.'" >'.$label.'</label>'."\n";
     return $form;
@@ -86,7 +86,7 @@ function form_format_date($defaut)
     $form = "\t".'<label>'.$GLOBALS['lang']['pref_format_date'].'</label>'."\n";
     $form .= "\t".'<select name="format_date">'."\n";
     foreach ($formats as $option => $label) {
-        $form .= "\t\t".'<option value="'.htmlentities($option).'"'.($defaut == $option ? ' selected="selected" ' : '').'>'.$label.'</option>'."\n";
+        $form .= "\t\t".'<option value="'.htmlentities($option).'"'.(($defaut == $option) ? ' selected="selected" ' : '').'>'.$label.'</option>'."\n";
     }
     $form .= "\t".'</select>'."\n";
     return $form;
@@ -136,7 +136,7 @@ function form_format_heure($defaut)
     $form = '<label>'.$GLOBALS['lang']['pref_format_heure'].'</label>'."\n";
     $form .= '<select name="format_heure">'."\n";
     foreach ($formats as $option => $label) {
-        $form .= "\t".'<option value="'.htmlentities($option).'"'.($defaut == $option ? ' selected="selected" ' : '').'>'.htmlentities($label).'</option>'."\n";
+        $form .= "\t".'<option value="'.htmlentities($option).'"'.(($defaut == $option) ? ' selected="selected" ' : '').'>'.htmlentities($label).'</option>'."\n";
     }
     $form .= "\t".'</select>'."\n";
     return $form;
@@ -147,7 +147,7 @@ function form_langue($defaut)
     $form = '<label>'.$GLOBALS['lang']['pref_langue'].'</label>'."\n";
     $form .= '<select name="langue">'."\n";
     foreach ($GLOBALS['langs'] as $option => $label) {
-        $form .= "\t".'<option value="'.htmlentities($option).'"'.($defaut == $option ? ' selected="selected" ' : '').'>'.$label.'</option>'."\n";
+        $form .= "\t".'<option value="'.htmlentities($option).'"'.(($defaut == $option) ? ' selected="selected" ' : '').'>'.$label.'</option>'."\n";
     }
     $form .= '</select>'."\n";
     return $form;
@@ -271,7 +271,7 @@ function filtre($type, $filtre)
     if (!empty($tableau_mois)) {
         $ret .= '<optgroup label="'.$GLOBALS['lang']['label_date'].'">'."\n";
         foreach ($tableau_mois as $mois => $label) {
-            $ret .= "\t".'<option value="' . htmlentities($mois) . '"'.(substr($filtre, 0, 6) == $mois ? ' selected="selected"' : '').'>'.$label.'</option>'."\n";
+            $ret .= "\t".'<option value="' . htmlentities($mois) . '"'.((substr($filtre, 0, 6) == $mois) ? ' selected="selected"' : '').'>'.$label.'</option>'."\n";
         }
         $ret .= '</optgroup>'."\n";
     }
@@ -281,7 +281,7 @@ function filtre($type, $filtre)
         $ret .= '<optgroup label="'.$GLOBALS['lang']['pref_auteur'].'">'."\n";
         foreach ($tab_auteur as $nom) {
             if (!empty($nom['nb'])) {
-                $ret .= "\t".'<option value="auteur.'.$nom['bt_author'].'"'.($filtre == 'auteur.'.$nom['bt_author'] ? ' selected="selected"' : '').'>'.$nom['bt_author'].' ('.$nom['nb'].')'.'</option>'."\n";
+                $ret .= "\t".'<option value="auteur.'.$nom['bt_author'].'"'.(($filtre == 'auteur.'.$nom['bt_author']) ? ' selected="selected"' : '').'>'.$nom['bt_author'].' ('.$nom['nb'].')'.'</option>'."\n";
             }
         }
         $ret .= '</optgroup>'."\n";
@@ -292,7 +292,7 @@ function filtre($type, $filtre)
         $ret .= '<optgroup label="'.'Type'.'">'."\n";
         foreach ($liste_des_types as $type => $nb) {
             if (!empty($type)) {
-                $ret .= "\t".'<option value="type.'.$type.'"'.($filtre == 'type.'.$type ? ' selected="selected"' : '').'>'.$type.' ('.$nb.')'.'</option>'."\n";
+                $ret .= "\t".'<option value="type.'.$type.'"'.(($filtre == 'type.'.$type) ? ' selected="selected"' : '').'>'.$type.' ('.$nb.')'.'</option>'."\n";
             }
         }
         $ret .= '</optgroup>'."\n";
@@ -302,7 +302,7 @@ function filtre($type, $filtre)
     if (!empty($tab_tags)) {
         $ret .= '<optgroup label="'.'Tags'.'">'."\n";
         foreach ($tab_tags as $tag => $nb) {
-            $ret .= "\t".'<option value="tag.'.$tag.'"'.($filtre == 'tag.'.$tag ? ' selected="selected"' : '').'>'.$tag.' ('.$nb.')</option>'."\n";
+            $ret .= "\t".'<option value="tag.'.$tag.'"'.(($filtre == 'tag.'.$tag) ? ' selected="selected"' : '').'>'.$tag.' ('.$nb.')</option>'."\n";
         }
         $ret .= '</optgroup>'."\n";
     }
@@ -350,8 +350,8 @@ function afficher_form_link($step, $erreurs, $editlink = '')
             $response = request_external_files(array($url), 15, false);
             $ext_file = $response[$url];
             $rep_hdr = $ext_file['headers'];
-            $cnt_type = isset($rep_hdr['content-type']) ? (is_array($rep_hdr['content-type']) ? $rep_hdr['content-type'][count($rep_hdr['content-type'])-1] : $rep_hdr['content-type']) : 'text/';
-            $cnt_type = is_array($cnt_type) ? $cnt_type[0] : $cnt_type;
+            $cnt_type = (isset($rep_hdr['content-type'])) ? (is_array($rep_hdr['content-type']) ? $rep_hdr['content-type'][count($rep_hdr['content-type'])-1] : $rep_hdr['content-type']) : 'text/';
+            $cnt_type = (is_array($cnt_type)) ? $cnt_type[0] : $cnt_type;
 
             // Image
             if (strpos($cnt_type, 'image/') === 0) {
@@ -376,7 +376,7 @@ function afficher_form_link($step, $erreurs, $editlink = '')
                     $charset = $meta_charset[2];
                 }
                 // get title in the proper encoding
-                $ext_file = html_entity_decode((strtolower($charset) == 'iso-8859-1' ? utf8_encode($ext_file['body']) : $ext_file['body']), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                $ext_file = html_entity_decode(((strtolower($charset) == 'iso-8859-1') ? utf8_encode($ext_file['body']) : $ext_file['body']), ENT_QUOTES | ENT_HTML5, 'UTF-8');
                 preg_match('#<title ?[^>]*>(.*)</title>#Usi', $ext_file, $titles);
                 if (!empty($titles[1])) {
                     $title = trim($titles[1]);
@@ -474,7 +474,7 @@ function afficher_form_billet($article, $erreurs)
         );
         $ret = '<select name="mois">'."\n" ;
         foreach ($mois as $option => $label) {
-            $ret .= "\t".'<option value="'.htmlentities($option).'"'.($mois_affiche == $option ? ' selected="selected"' : '').'>'.$label.'</option>'."\n";
+            $ret .= "\t".'<option value="'.htmlentities($option).'"'.(($mois_affiche == $option) ? ' selected="selected"' : '').'>'.$label.'</option>'."\n";
         }
         $ret .= '</select>'."\n";
         return $ret;
@@ -487,7 +487,7 @@ function afficher_form_billet($article, $erreurs)
         }
         $ret = '<select name="jour">'."\n";
         foreach ($jours as $option => $label) {
-            $ret .= "\t".'<option value="'.htmlentities($option).'"'.($jour_affiche == $option ? ' selected="selected"' : '').'>'.htmlentities($label).'</option>'."\n";
+            $ret .= "\t".'<option value="'.htmlentities($option).'"'.(($jour_affiche == $option) ? ' selected="selected"' : '').'>'.htmlentities($label).'</option>'."\n";
         }
         $ret .= '</select>'."\n";
         return $ret;
@@ -789,7 +789,7 @@ function afficher_form_prefs($erreurs = '')
         $fld_user .= '<div class="form-lines">'."\n";
         $fld_user .= '<p>'."\n";
         $fld_user .= "\t".'<label for="auteur">'.$GLOBALS['lang']['pref_auteur'].'</label>'."\n";
-        $fld_user .= "\t".'<input type="text" id="auteur" name="auteur" size="30" value="'.(empty($GLOBALS['auteur']) ? htmlspecialchars(USER_LOGIN) : $GLOBALS['auteur']).'" class="text" />'."\n";
+        $fld_user .= "\t".'<input type="text" id="auteur" name="auteur" size="30" value="'.((empty($GLOBALS['auteur'])) ? htmlspecialchars(USER_LOGIN) : $GLOBALS['auteur']).'" class="text" />'."\n";
         $fld_user .= '</p>'."\n";
 
         $fld_user .= '<p>'."\n";
@@ -1033,7 +1033,7 @@ function afficher_form_prefs($erreurs = '')
             $version_hit_url = 'https://raw.githubusercontent.com/BoboTiG/blogotext/master/VERSION';
             $response = request_external_files(array($version_hit_url), 6);
             $version = trim($response[$version_hit_url]['body']);
-            $last_version = is_valid_version($version) ? $version : BLOGOTEXT_VERSION;
+            $last_version = (is_valid_version($version)) ? $version : BLOGOTEXT_VERSION;
             file_put_contents($version_file, $last_version);
         }
 

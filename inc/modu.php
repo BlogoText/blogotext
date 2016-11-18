@@ -85,11 +85,11 @@ function afficher_form_filtre_modules($filtre)
     $ret .= '<form method="get" action="'.basename($_SERVER['SCRIPT_NAME']).'" onchange="this.submit();">'."\n";
     $ret .= "\n".'<select name="filtre">'."\n" ;
     // TOUS
-    $ret .= '<option value="all"'.($filtre == '' ? ' selected="selected"' : '').'>'.$GLOBALS['lang']['label_all'].'</option>'."\n";
+    $ret .= '<option value="all"'.(($filtre == '') ? ' selected="selected"' : '').'>'.$GLOBALS['lang']['label_all'].'</option>'."\n";
     // ACTIVÉS
-    $ret .= '<option value="enabled"'.($filtre == 'enabled' ? ' selected="selected"' : '').'>'.$GLOBALS['lang']['label_enabled'].'</option>'."\n";
+    $ret .= '<option value="enabled"'.(($filtre == 'enabled') ? ' selected="selected"' : '').'>'.$GLOBALS['lang']['label_enabled'].'</option>'."\n";
     // DÉSACTIVÉS
-    $ret .= '<option value="disabled"'.($filtre == 'disabled' ? ' selected="selected"' : '').'>'.$GLOBALS['lang']['label_disabled'].'</option>'."\n";
+    $ret .= '<option value="disabled"'.(($filtre == 'disabled') ? ' selected="selected"' : '').'>'.$GLOBALS['lang']['label_disabled'].'</option>'."\n";
     $ret .= '</select> '."\n\n";
     $ret .= '</form>'."\n";
     $ret .= '</div>'."\n";

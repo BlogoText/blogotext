@@ -35,7 +35,7 @@ if (isset($_GET['l'])) {
 
 require_once BT_ROOT.'/inc/inc.php';
 
-$GLOBALS['step'] = isset($_GET['s']) and is_numeric($_GET['s']) ? $_GET['s'] + 0 : 1;
+$GLOBALS['step'] = (isset($_GET['s']) and is_numeric($_GET['s'])) ? $_GET['s'] + 0 : 1;
 
 if ($GLOBALS['step'] == 1) {
     // LANGUE
