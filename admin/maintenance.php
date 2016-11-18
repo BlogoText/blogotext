@@ -165,7 +165,7 @@ function creer_fich_html($nb_links)
     // génération du code HTML.
     $html = '<!DOCTYPE NETSCAPE-Bookmark-file-1><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">'."\n";
     $html .= '<!--This is an automatically generated file. Do Not Edit! -->'."\n";
-    $html .= '<TITLE>Blogotext links export '.date('Y-M-D').'</TITLE><H1>Blogotext links export</H1>'."\n";
+    $html .= '<TITLE>BlogoText links export '.date('Y-M-D').'</TITLE><H1>BlogoText links export</H1>'."\n";
     foreach ($list as $n => $link) {
         $dec = decode_id($link['bt_id']);
         $timestamp = mktime($dec['heure'], $dec['minutes'], $dec['secondes'], $dec['mois'], $dec['jour'], $dec['annee']); // HISMDY : wtf!
@@ -404,7 +404,7 @@ function creer_fichier_opml()
 function importer_wordpress($xml)
 {
 
-    /* transforms some HTML elements to Blogotext's BBCode */
+    /* transforms some HTML elements to BlogoText's BBCode */
     function reverse_wiki($texte)
     {
         $tofind = array(
@@ -421,7 +421,7 @@ function importer_wordpress($xml)
         return $texte;
     }
 
-    /* Transforms Blogotext's BBCode tags to HTML elements. */
+    /* Transforms BlogoText's BBCode tags to HTML elements. */
     function wiki($texte)
     {
         $texte = " ".$texte;

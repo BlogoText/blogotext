@@ -1,24 +1,19 @@
-# BLOGOTEXT
+# BlogoText
 
-[![Build Status](https://travis-ci.org/BoboTiG/blogotext.svg?branch=dev)](https://travis-ci.org/BoboTiG/blogotext)
+[![Build status](https://travis-ci.org/BoboTiG/blogotext.svg?branch=dev)](https://travis-ci.org/BoboTiG/blogotext)
 
----
-
-This is [Blogotext](http://lehollandaisvolant.net/blogotext/), the lightweight SQLite Blog-Engine.
-
-(by Timo van Neerden, since 2010)
+This is BlogoText, the lightweight SQLite Blog-Engine.
 
 ---
 
 ## Features
-
  * Blog with comments and RSS feeds
  * Links sharing
  * RSS Reader
  * Images/Files uploading and sharing
- * JSON/ZIP/HTML import-export; Wordpress import
+ * JSON/ZIP/HTML import-export; WordPress import
 
-![alt tag](http://lehollandaisvolant.net/blogotext/blogotext-screen.png?3)
+![BlogoText screenshot](https://raw.githubusercontent.com/BoboTiG/blogotext/dev/preview.png)
 
 ---
 
@@ -28,7 +23,7 @@ This is [Blogotext](http://lehollandaisvolant.net/blogotext/), the lightweight S
  * A CSS3 / HTML5 compatible Browser (Firefox, Chrome…)
  * min 1 Mo disk space (more data = more space needed)
 
-## Recommended PHP-libraries
+## Recommended PHP libraries
  * GD (for comments icons / favicons);
  * cURL (for RSS reader, links sharing, comments icons)
  * LibXML (for RSS reader)
@@ -36,6 +31,6 @@ This is [Blogotext](http://lehollandaisvolant.net/blogotext/), the lightweight S
 
 ## Installation
  * Unzip the downloaded archive file
- * Upload folder to your site (eg: to `http://example.com/blog`)
+ * Upload folder to your site (eg: to `https://example.com/blog`)
  * Use your browser to go to your site
  * Follow the few steps

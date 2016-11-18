@@ -107,11 +107,11 @@ function afficher_form_1($erreurs = '')
     }
     // pdo_sqlite and pdo_mysql (minimum one is required)
     if (!extension_loaded('pdo_sqlite') and !extension_loaded('pdo_mysql')) {
-        $conferrors[] = "\t".'<li>Neither <b>pdo_sqlite</b> or <b>pdo_mysql</b> PHP-modules are loaded. Blogotext needs at least one.</li>'."\n";
+        $conferrors[] = "\t".'<li>Neither <b>pdo_sqlite</b> or <b>pdo_mysql</b> PHP-modules are loaded. BlogoText needs at least one.</li>'."\n";
     }
     // check directory readability
     if (!is_writable('../')) {
-        $conferrors[] = "\t".'<li>Blogotext has no write rights (chmod of home folder must be 644 at least, 777 recommended).</li>'."\n";
+        $conferrors[] = "\t".'<li>BlogoText has no write rights (chmod of home folder must be 644 at least, 777 recommended).</li>'."\n";
     }
     if (!empty($conferrors)) {
         echo '<ol class="erreurs">'."\n";
@@ -261,7 +261,7 @@ function traiter_install_3()
         $link_ar = array(
                 'bt_type' => 'link',
                 'bt_id' => date('YmdHis', $time + 1),
-                'bt_content' => 'Blog du Hollandais Volant, développeur de Blogotext',
+                'bt_content' => 'Blog du Hollandais Volant, développeur de BlogoText',
                 'bt_wiki_content' => 'Blog du Hollandais Volant, développeur de BlogoText.',
                 'bt_title' => 'Le Hollandais Volant',
                 'bt_link' => 'http://lehollandaisvolant.net/',
@@ -287,7 +287,7 @@ function traiter_install_3()
             'bt_article_id' => date('YmdHis', $time),
             'bt_content' => '<p>Ceci est un commentaire.</p>',
             'bt_wiki_content' => 'Ceci est un commentaire.',
-            'bt_author' => 'Blogotext',
+            'bt_author' => 'BlogoText',
             'bt_link' => '',
             'bt_webpage' => 'http://lehollandaisvolant.net/blogotext/',
             'bt_email' => 'mail@example.com',

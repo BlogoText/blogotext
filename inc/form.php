@@ -1025,7 +1025,7 @@ function afficher_form_prefs($erreurs = '')
     $fld_maintenance .= '</div>';
     echo $fld_maintenance;
 
-    // Check if a new Blogotext version is available (code from Shaarli, by Sebsauvage).
+    // Check if a new BlogoText version is available (code from Shaarli, by Sebsauvage).
     // Get latest version number at most once a day.
     if ($GLOBALS['check_update'] == 1) {
         $version_file = '../VERSION';

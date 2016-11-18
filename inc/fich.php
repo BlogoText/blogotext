@@ -95,7 +95,7 @@ function fichier_prefs()
         $lang = (isset($_POST['langue']) and preg_match('#^[a-z]{2}$#', $_POST['langue'])) ? $_POST['langue'] : 'fr';
         $auteur = addslashes(clean_txt(htmlspecialchars(USER_LOGIN)));
         $email = 'mail@example.com';
-        $nomsite = 'Blogotext';
+        $nomsite = 'BlogoText';
         $description = addslashes(clean_txt($GLOBALS['lang']['go_to_pref']));
         $keywords = 'blog, blogotext';
         $racine = addslashes(clean_txt(trim(htmlspecialchars($_POST['racine']))));
