@@ -76,7 +76,6 @@ if (isset($_POST['_verif_envoi'])) {
 
 afficher_html_head($GLOBALS['lang']['titre_fichier']);
 
-
 echo '<div id="header">'."\n";
     echo '<div id="top">'."\n";
     afficher_msg();
@@ -98,12 +97,11 @@ echo '</div>'."\n";
 
 echo '<div id="page">'."\n";
 
-
 // vérifie que les fichiers de la liste sont bien présents sur le disque dur
 $real_fichiers = array();
-if (!empty($fichiers)) {
+if ($fichiers) {
     foreach ($fichiers as $i => $file) {
-        $folder = ($file['bt_type'] == 'image') ? DIR_IMAGES.$file['bt_path'] : DIR_DOCUMENTS;
+        $folder = $file['bt_type'] == 'image' ? DIR_IMAGES.$file['bt_path'] : DIR_DOCUMENTS;
         if (is_file(BT_ROOT.'/'.$folder.'/'.$file['bt_filename']) and ($file['bt_filename'] != 'index.html')) {
             $real_fichiers[] = $file;
         }
@@ -159,6 +157,5 @@ echo 'document.body.addEventListener(\'dragend\', handleDragEnd, false);'."\n";
 
 echo php_lang_to_js(0);
 echo "\n".'</script>'."\n";
-
 
 footer($begin);

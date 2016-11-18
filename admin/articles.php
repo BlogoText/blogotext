@@ -23,8 +23,12 @@ $GLOBALS['db_handle'] = open_base();
 $tableau = array();
 if (!empty($_GET['q'])) {
     $arr = parse_search($_GET['q']);
-    $sql_where = implode(array_fill(0, count($arr), '( bt_content || bt_title ) LIKE ? '), 'AND '); // AND operator between words
-    $query = "SELECT * FROM articles WHERE ".$sql_where."ORDER BY bt_date DESC";
+    $sql_where = implode(array_fill(0, count($arr), '( bt_content || bt_title ) LIKE ?'), 'AND'); // AND operator between words
+    $query = '
+        SELECT *
+          FROM articles
+         WHERE '.$sql_where.'
+         ORDER BY bt_date DESC';
     $tableau = liste_elements($query, $arr, 'articles');
 } elseif (!empty($_GET['filtre'])) {
     // for "tags" the requests is "tag.$search" : here we split the type of search and what we search.
@@ -32,24 +36,43 @@ if (!empty($_GET['q'])) {
     $search = htmlspecialchars(ltrim(strstr($_GET['filtre'], '.'), '.'));
 
     if (preg_match('#^\d{6}(\d{1,8})?$#', $_GET['filtre'])) {
-        $query = "SELECT * FROM articles WHERE bt_date LIKE ? ORDER BY bt_date DESC";
+        $query = '
+            SELECT *
+              FROM articles
+             WHERE bt_date LIKE ?
+             ORDER BY bt_date DESC';
         $tableau = liste_elements($query, array($_GET['filtre'].'%'), 'articles');
     } elseif ($_GET['filtre'] == 'draft' or $_GET['filtre'] == 'pub') {
-        $query = "SELECT * FROM articles WHERE bt_statut=? ORDER BY bt_date DESC";
+        $query = '
+            SELECT *
+              FROM articles
+             WHERE bt_statut = ?
+             ORDER BY bt_date DESC';
         $tableau = liste_elements($query, array((($_GET['filtre'] == 'draft') ? 0 : 1)), 'articles');
     } elseif ($type == 'tag' and $search != '') {
-        $query = "SELECT * FROM articles WHERE bt_tags LIKE ? OR bt_tags LIKE ? OR bt_tags LIKE ? OR bt_tags LIKE ? ORDER BY bt_date DESC";
-
+        $query = '
+            SELECT *
+              FROM articles
+             WHERE bt_tags LIKE ?
+                   OR bt_tags LIKE ?
+                   OR bt_tags LIKE ?
+                   OR bt_tags LIKE ?
+             ORDER BY bt_date DESC';
         $tableau = liste_elements($query, array($search, $search.',%', '%, '.$search, '%, '.$search.', %'), 'articles');
     } else {
-        $query = "SELECT * FROM articles ORDER BY bt_date DESC LIMIT 0, ".$GLOBALS['max_bill_admin'];
+        $query = '
+            SELECT *
+              FROM articles
+             ORDER BY bt_date DESC LIMIT 0, '.$GLOBALS['max_bill_admin'];
         $tableau = liste_elements($query, array(), 'articles');
     }
 } else {
-        $query = "SELECT * FROM articles ORDER BY bt_date DESC LIMIT 0, ".$GLOBALS['max_bill_admin'];
-        $tableau = liste_elements($query, array(), 'articles');
+    $query = '
+        SELECT *
+          FROM articles
+         ORDER BY bt_date DESC LIMIT 0, '.$GLOBALS['max_bill_admin'];
+    $tableau = liste_elements($query, array(), 'articles');
 }
-
 
 function afficher_liste_articles($tableau)
 {
@@ -82,7 +105,6 @@ function afficher_liste_articles($tableau)
 
     echo $out;
 }
-
 
 afficher_html_head($GLOBALS['lang']['mesarticles']);
 

@@ -12,14 +12,10 @@
 # *** LICENSE ***
 
 // install or reinstall with same config ?
-if (is_file('../config/mysql.ini') and file_get_contents('../config/mysql.ini') == '') {
-    $step3 = true;
-} else {
-    $step3 = false;
-}
+$step3 = is_file('../config/mysql.ini') and file_get_contents('../config/mysql.ini') != '';
 
 // install is already done
-if ((is_file('../config/user.ini')) and (is_file('../config/prefs.php')) and $step3 === false) {
+if (is_file('../config/user.ini') and is_file('../config/prefs.php') and !$step3) {
     exit(header('Location: auth.php'));
 }
 
@@ -27,7 +23,6 @@ if ((is_file('../config/user.ini')) and (is_file('../config/prefs.php')) and $st
 define('BT_ROOT', '../');
 define('DISPLAY_PHP_ERRORS', '-1');
 $GLOBALS['fuseau_horaire'] = 'UTC';
-
 
 if (isset($_GET['l'])) {
     $lang = $_GET['l'];
@@ -40,28 +35,24 @@ if (isset($_GET['l'])) {
 
 require_once BT_ROOT.'/inc/inc.php';
 
-if (isset($_GET['s']) and is_numeric($_GET['s'])) {
-    $GLOBALS['step'] = $_GET['s'];
-} else {
-    $GLOBALS['step'] = '1';
-}
+$GLOBALS['step'] = isset($_GET['s']) and is_numeric($_GET['s']) ? $_GET['s'] + 0 : 1;
 
-if ($GLOBALS['step'] == '1') {
+if ($GLOBALS['step'] == 1) {
     // LANGUE
     if (isset($_POST['verif_envoi_1'])) {
         if ($err_1 = valid_install_1()) {
-                afficher_form_1($err_1);
+            afficher_form_1($err_1);
         } else {
             redirection('install.php?s=2&l='.$_POST['langue']);
         }
     } else {
         afficher_form_1();
     }
-} elseif ($GLOBALS['step'] == '2') {
+} elseif ($GLOBALS['step'] == 2) {
     // ID + MOT DE PASSE
     if (isset($_POST['verif_envoi_2'])) {
         if ($err_2 = valid_install_2()) {
-                afficher_form_2($err_2);
+            afficher_form_2($err_2);
         } else {
             $config_dir = '../config';
             create_folder($config_dir, 1);
@@ -77,7 +68,7 @@ if ($GLOBALS['step'] == '1') {
     } else {
         afficher_form_2();
     }
-} elseif ($GLOBALS['step'] == '3') {
+} elseif ($GLOBALS['step'] == 3) {
     // CHOIX DB
     if (isset($_POST['verif_envoi_3'])) {
         if ($err_3 = valid_install_3()) {
@@ -135,7 +126,7 @@ function afficher_form_1($erreurs = '')
     echo '<div id="install">'."\n";
     echo '<p>';
     form_langue_install('Choisissez votre langue / Choose your language: ');
-    echo hidden_input('verif_envoi_1', '1');
+    echo hidden_input('verif_envoi_1', 1);
     echo '</p>';
     echo '<button class="submit button-submit" type="submit" name="enregistrer">Ok</button>'."\n";
     echo '<div>'."\n";
@@ -163,9 +154,9 @@ function afficher_form_2($erreurs = '')
     echo '<p>';
     echo '<label for="racine">'.$GLOBALS['lang']['pref_racine'].' </label><input type="text" name="racine" id="racine" size="30" value="'.$lien.'" class="text"  placeholder="'.$lien.'" required />'."\n";
     echo '</p>'."\n";
-    echo hidden_input('comm_defaut_status', '1');
+    echo hidden_input('comm_defaut_status', 1);
     echo hidden_input('langue', $GLOBALS['lang']['id']);
-    echo hidden_input('verif_envoi_2', '1');
+    echo hidden_input('verif_envoi_2', 1);
     echo '<button class="submit button-submit" type="submit" name="enregistrer">Ok</button>'."\n";
     echo '</div>'."\n";
     echo '</form>'."\n";
@@ -206,7 +197,7 @@ function afficher_form_3($erreurs = '')
     echo '</div>'."\n";
 
     echo hidden_input('langue', $GLOBALS['lang']['id']);
-    echo hidden_input('verif_envoi_3', '1');
+    echo hidden_input('verif_envoi_3', 1);
     echo '<button class="submit button-submit" type="submit" name="enregistrer">Ok</button>'."\n";
 
     echo '</div>'."\n";
@@ -226,7 +217,7 @@ function traiter_install_3()
 {
     import_ini_file(BT_ROOT.DIR_CONFIG.'/'.'mysql.ini');
     $GLOBALS['db_handle'] = open_base();
-    $total_articles = liste_elements_count("SELECT count(ID) AS nbr FROM articles", array());
+    $total_articles = liste_elements_count('SELECT count(ID) AS nbr FROM articles', array());
     if ($total_articles != 0) {
         return;
     }
@@ -244,23 +235,23 @@ function traiter_install_3()
             'bt_tags' => '',
             'bt_link' => '',
             'bt_notes' => '',
-            'bt_statut' => '1',
-            'bt_allow_comments' => '1'
+            'bt_statut' => 1,
+            'bt_allow_comments' => 1
         );
         $readme_post = array (
             'bt_notes' => '',
             'bt_link' => '',
             'bt_tags' => '',
             'bt_link' => '',
-            'bt_id' => date('YmdHis', $time+2),
-            'bt_date' => date('YmdHis', $time+2),
+            'bt_id' => date('YmdHis', $time + 2),
+            'bt_date' => date('YmdHis', $time + 2),
             'bt_title' => 'README / LISEZ-MOI',
             'bt_abstract' => 'Instructions / Instructions',
             'bt_content' => gzinflate(base64_decode('rVPLjtQwELzPV7T2MoDC7A+sVgIE0t5WYuHecXoSC8c9+JHs7NdwJELiB7htfoxuJwOzB+DCSGNZdruqq7qyuesoEmAgiNwTWB9TyCZZ9hH2HCB1coN7SkfgPRw5B6gdt7urOlxeb248cGhIyhgOgROZtNQcKET26EoxYIsKDJgSmk+xgtdyKtX3cuQcj1EfKcZVfR3IozSivBfY9NZfSB9OOK4u6+sdfIjWt+X23d0tGPaeSrf6ujCPVL/sOCYpqwps7Di7BgIJ1RH+CK8AY4eJBtnruxF92mlHN2kbwXNSPww1FdQ5gU0wWufEMCPIYmFHOFghKIYloWlTp5adSX3qQtGz2HjrFKIC3KeVfGmzKWhrf89s8R8afl7JfU99Tct8PI1QVNVkMEdVh2t7nkc5PYdRiA4HUr0t62rPhojGUIylvrgDB/TknujYbZamX/zH34K4rB/ZGgufMzn5Rx1xJOsiHHS6DiHOk8nBpnmChmBg8fo8kq/20rVcaBznqRVZv0sUTPfNdp4G8kk4nFDoQJTrPJcD56gp7ikp2hJM7nvBcwLAMVrZPn5bbXr8scTzrYecrLNRwqPNloDeaz41rvOXtRmKBzTaRzdPMsVWpulTtZA2NARLD/APPiCh8oBZ8aRSHVsAZGkCPZTsviHx0m9JYnfACFw722JiK296tOIuSZPYz5OzHCigau3R2/mr2hRQviPF/YvtJ0/PjdypGcs43m+tW810OH9XkZQlmUVgIm+LPs95IMxPdTTq3YMoPMmvwGAAU9SYk2jF36MoxtV5scmocb9MO33nJUAS8HnSsAtsyfZus/kJ')),
             'bt_wiki_content' => 'Once read, you should delete this post / Une fois que vous avez lu ceci, vous pouvez supprimer l\'article',
             'bt_keywords' => '',
-            'bt_statut' => '0',
-            'bt_allow_comments' => '0'
+            'bt_statut' => 0,
+            'bt_allow_comments' => 0
         );
         if (true !== bdd_article($first_post, 'enregistrer-nouveau')) {
             die('ERROR SQL posting first article..'); // billet "Mon premier article"
@@ -269,30 +260,30 @@ function traiter_install_3()
 
         $link_ar = array(
                 'bt_type' => 'link',
-                'bt_id' => date('YmdHis', $time+1),
+                'bt_id' => date('YmdHis', $time + 1),
                 'bt_content' => 'Blog du Hollandais Volant, développeur de Blogotext',
                 'bt_wiki_content' => 'Blog du Hollandais Volant, développeur de BlogoText.',
                 'bt_title' => 'Le Hollandais Volant',
                 'bt_link' => 'http://lehollandaisvolant.net/',
                 'bt_tags' => 'blog, timo',
-                'bt_statut' => '1'
+                'bt_statut' => 1
             );
         $link_ar2 = array(
                 'bt_type' => 'note',
-                'bt_id' => date('YmdHis', $time+5),
+                'bt_id' => date('YmdHis', $time + 5),
                 'bt_content' => 'Ceci est un lien privé. Vous seuls pouvez le voir.',
                 'bt_wiki_content' => 'Ceci est un lien privé. Vous seul pouvez le voir.',
                 'bt_title' => 'Note : lien privé',
-                'bt_link' => $GLOBALS['racine'].'index.php?mode=links&amp;id='.date('YmdHis', $time+5),
+                'bt_link' => $GLOBALS['racine'].'index.php?mode=links&amp;id='.date('YmdHis', $time + 5),
                 'bt_tags' => '',
-                'bt_statut' => '0'
+                'bt_statut' => 0
             );
         bdd_lien($link_ar, 'enregistrer-nouveau'); // lien
         bdd_lien($link_ar2, 'enregistrer-nouveau'); // lien
 
         $comm_ar = array(
             'bt_type' => 'comment',
-            'bt_id' => date('YmdHis', $time+6),
+            'bt_id' => date('YmdHis', $time + 6),
             'bt_article_id' => date('YmdHis', $time),
             'bt_content' => '<p>Ceci est un commentaire.</p>',
             'bt_wiki_content' => 'Ceci est un commentaire.',
@@ -300,8 +291,8 @@ function traiter_install_3()
             'bt_link' => '',
             'bt_webpage' => 'http://lehollandaisvolant.net/blogotext/',
             'bt_email' => 'mail@example.com',
-            'bt_subscribe' => '0',
-            'bt_statut' => '1'
+            'bt_subscribe' => 0,
+            'bt_statut' => 1
         );
 
         bdd_commentaire($comm_ar, 'enregistrer-nouveau'); // commentaire sur l’article

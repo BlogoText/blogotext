@@ -34,7 +34,7 @@ $post = '';
 $article_id = '';
 if (isset($_GET['post_id'])) {
     $article_id = htmlspecialchars($_GET['post_id']);
-    $query = "SELECT * FROM articles WHERE bt_id LIKE ?";
+    $query = 'SELECT * FROM articles WHERE bt_id LIKE ?';
     $posts = liste_elements($query, array($article_id), 'articles');
     if (isset($posts[0])) {
         $post = $posts[0];
@@ -93,6 +93,5 @@ window.addEventListener("beforeunload", function (e) {
 });';
 
 echo '</script>';
-
 
 footer($begin);

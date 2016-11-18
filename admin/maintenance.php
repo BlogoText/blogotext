@@ -62,7 +62,7 @@ function rebuilt_file_db()
 
     // supprime les miniatures de la liste...
     $idir = array_filter($idir, function ($file) {
-        return (!((preg_match('#-thb\.jpg$#', $file)) or (strpos($file, 'index.html') == 4)));
+        return !(preg_match('#-thb\.jpg$#', $file) or strpos($file, 'index.html') == 4);
     });
 
     $files_disk = array_merge($idir, $fdir);
@@ -87,7 +87,8 @@ function rebuilt_file_db()
             while (array_key_exists($id, $files_db_id)) {
                 $time--;
                 $id = date('YmdHis', $time);
-            } $files_db_id[] = $id;
+            }
+            $files_db_id[] = $id;
 
             $new_img = array(
                 'bt_id' => $id,
@@ -100,7 +101,7 @@ function rebuilt_file_db()
                 'bt_dossier' => 'default',
                 'bt_checksum' => sha1_file($filepath),
                 'bt_statut' => 0,
-                'bt_path' => (preg_match('#^/[0-9a-f]{2}/#', $file)) ? (substr($file, 0, 3)) : '',
+                'bt_path' => preg_match('#^/[0-9a-f]{2}/#', $file) ? substr($file, 0, 3) : '',
             );
             list($new_img['bt_dim_w'], $new_img['bt_dim_h']) = getimagesize($filepath);
             // l’ajoute au tableau
@@ -120,7 +121,8 @@ function rebuilt_file_db()
             while (array_key_exists($id, $files_db_id)) {
                 $time--;
                 $id = date('YmdHis', $time);
-            } $files_db_id[] = $id;
+            }
+            $files_db_id[] = $id;
             $ext = strtolower(pathinfo($filepath, PATHINFO_EXTENSION));
             $new_file = array(
                 'bt_id' => $id,
@@ -153,7 +155,12 @@ function creer_fich_html($nb_links)
     // nom du fichier de sortie
     $path = BT_ROOT.DIR_BACKUP.'/backup-links-'.date('Ymd-His').'.html';
     // récupère les liens
-    $query = "SELECT * FROM links ORDER BY bt_id DESC ".((!empty($nb_links)) ? 'LIMIT 0, '.$nb_links : '');
+    $limit = !empty($nb_links) ? 'LIMIT 0, '.$nb_links : '';
+    $query = '
+        SELECT *
+          FROM links
+         ORDER BY bt_id DESC '.
+         $limit;
     $list = liste_elements($query, array(), 'links');
     // génération du code HTML.
     $html = '<!DOCTYPE NETSCAPE-Bookmark-file-1><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">'."\n";
@@ -167,7 +174,6 @@ function creer_fich_html($nb_links)
     }
     return (file_put_contents($path, $html) === false) ? false : $path; // écriture du fichier
 }
-
 
 /*
  * liste une table (ex: les commentaires) et comparre avec un tableau de commentaires trouvées dans l’archive
@@ -203,7 +209,9 @@ function insert_table_links($tableau)
     try {
         $GLOBALS['db_handle']->beginTransaction();
         foreach ($table_diff as $f) {
-            $query = 'INSERT INTO links (bt_type, bt_id, bt_link, bt_content, bt_wiki_content, bt_statut, bt_title, bt_tags ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? ) ';
+            $query = '
+                INSERT INTO links (bt_type, bt_id, bt_link, bt_content, bt_wiki_content, bt_statut, bt_title, bt_tags)
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
             $req = $GLOBALS['db_handle']->prepare($query);
             $req->execute(array($f['bt_type'], $f['bt_id'], $f['bt_link'], $f['bt_content'], $f['bt_wiki_content'], $f['bt_statut'], $f['bt_title'], $f['bt_tags']));
         }
@@ -222,7 +230,9 @@ function insert_table_articles($tableau)
     try {
         $GLOBALS['db_handle']->beginTransaction();
         foreach ($table_diff as $art) {
-            $query = 'INSERT INTO articles ( bt_type, bt_id, bt_date, bt_title, bt_abstract, bt_notes, bt_link, bt_content, bt_wiki_content, bt_tags, bt_keywords, bt_nb_comments, bt_allow_comments, bt_statut ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )';
+            $query = '
+                INSERT INTO articles (bt_type, bt_id, bt_date, bt_title, bt_abstract, bt_notes, bt_link, bt_content, bt_wiki_content, bt_tags, bt_keywords, bt_nb_comments, bt_allow_comments, bt_statut)
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
             $req = $GLOBALS['db_handle']->prepare($query);
             $req->execute(array( $art['bt_type'], $art['bt_id'], $art['bt_date'], $art['bt_title'], $art['bt_abstract'], $art['bt_notes'], $art['bt_link'], $art['bt_content'], $art['bt_wiki_content'], (isset($art['bt_tags']) ? $art['bt_tags'] : $art['bt_categories']), $art['bt_keywords'], $art['bt_nb_comments'], $art['bt_allow_comments'], $art['bt_statut'] ));
         }
@@ -241,7 +251,9 @@ function insert_table_commentaires($tableau)
     try {
         $GLOBALS['db_handle']->beginTransaction();
         foreach ($table_diff as $com) {
-            $query = 'INSERT INTO commentaires (bt_type, bt_id, bt_article_id, bt_content, bt_wiki_content, bt_author, bt_link, bt_webpage, bt_email, bt_subscribe, bt_statut) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+            $query = '
+                INSERT INTO commentaires (bt_type, bt_id, bt_article_id, bt_content, bt_wiki_content, bt_author, bt_link, bt_webpage, bt_email, bt_subscribe, bt_statut)
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
             $req = $GLOBALS['db_handle']->prepare($query);
             $req->execute(array($com['bt_type'], $com['bt_id'], $com['bt_article_id'], $com['bt_content'], $com['bt_wiki_content'], $com['bt_author'], $com['bt_link'], $com['bt_webpage'], $com['bt_email'], $com['bt_subscribe'], $com['bt_statut']));
         }
@@ -258,9 +270,21 @@ function recompte_commentaires()
 {
     try {
         if (DBMS == 'sqlite') {
-            $query = "UPDATE articles SET bt_nb_comments = COALESCE((SELECT count(a.bt_id) FROM articles a INNER JOIN commentaires c ON (c.bt_article_id = a.bt_id) WHERE articles.bt_id = a.bt_id AND c.bt_statut=1 GROUP BY a.bt_id), 0)";
+            $query = '
+                UPDATE articles
+                   SET bt_nb_comments = COALESCE((SELECT count(a.bt_id)
+                                                    FROM articles a
+                                                   INNER JOIN commentaires c
+                                                           ON c.bt_article_id = a.bt_id
+                                                   WHERE articles.bt_id = a.bt_id
+                                                         AND c.bt_statut = 1
+                                                   GROUP BY a.bt_id), 0)';
         } elseif (DBMS == 'mysql') {
-            $query = "UPDATE articles SET bt_nb_comments = COALESCE((SELECT count(articles.bt_id) FROM commentaires WHERE commentaires.bt_article_id = articles.bt_id), 0)";
+            $query = '
+                UPDATE articles
+                   SET bt_nb_comments = COALESCE((SELECT count(articles.bt_id)
+                                                    FROM commentaires
+                                                   WHERE commentaires.bt_article_id = articles.bt_id), 0)';
         }
         $req = $GLOBALS['db_handle']->prepare($query);
         $req->execute();
@@ -294,13 +318,12 @@ function importer_json($json)
     return $return;
 }
 
-
 /* AJOUTE TOUS LES DOSSIERS DU TABLEAU $dossiers DANS UNE ARCHIVE ZIP */
 function addFolder2zip($zip, $folder)
 {
     if ($handle = opendir($folder)) {
         while (false !== ($entry = readdir($handle))) {
-            if ($entry != "." and $entry != ".." and is_readable($folder.'/'.$entry)) {
+            if ($entry != '.' and $entry != '..' and is_readable($folder.'/'.$entry)) {
                 if (is_dir($folder.'/'.$entry)) {
                     addFolder2zip($zip, $folder.'/'.$entry);
                 } else {
@@ -324,16 +347,15 @@ function creer_fichier_zip($dossiers)
         if (is_file($zipfile)) {
             return $zipfile;
         }
-    } else {
-        return false;
     }
+    return false;
 }
 
 /* FABRIQUE LE FICHIER JSON (très simple en fait) */
 function creer_fichier_json($data_array)
 {
     $path = BT_ROOT.DIR_BACKUP.'/backup-data-'.date('Ymd-His').'.json';
-    return (file_put_contents($path, json_encode($data_array)) === false) ? false : $path;
+    return file_put_contents($path, json_encode($data_array)) === false ? false : $path;
 }
 
 /* Crée la liste des RSS et met tout ça dans un fichier OPML */
@@ -375,7 +397,7 @@ function creer_fichier_opml()
 
     $html .= "\t".'</body>'."\n".'</opml>';
 
-    return (file_put_contents($path, $html) === false) ? false : $path;
+    return file_put_contents($path, $html) === false ? false : $path;
 }
 
 /* CONVERTI UN FICHIER AU FORMAT xml DE WORDPRESS en un tableau (sans enregistrer le fichier BT) */
@@ -393,8 +415,8 @@ function importer_wordpress($xml)
             array('#<em>(.*)</em>#', '[i]$1[/i]'),
             array('#<u>(.*)</u>#', '[u]$1[/u]')
         );
-        for ($i=0, $length = sizeof($tofind); $i < $length; $i++) {
-            $texte = preg_replace($tofind["$i"][0], $tofind["$i"][1], $texte);
+        for ($i = 0, $length = sizeof($tofind); $i < $length; ++$i) {
+            $texte = preg_replace($tofind[$i][0], $tofind[$i][1], $texte);
         }
         return $texte;
     }
@@ -411,8 +433,8 @@ function importer_wordpress($xml)
             array('`\[i\](.*?)\[/i\]`s', '<span style="font-style: italic;">$1</span>'),
             array('`\[u\](.*?)\[/u\]`s', '<span style="text-decoration: underline;">$1</span>')
         );
-        for ($i=0, $length = sizeof($tofind); $i < $length; $i++) {
-            $texte = preg_replace($tofind["$i"][0], $tofind["$i"][1], $texte);
+        for ($i = 0, $length = sizeof($tofind); $i < $length; ++$i) {
+            $texte = preg_replace($tofind[$i][0], $tofind[$i][1], $texte);
         }
         return $texte;
     }
@@ -430,7 +452,7 @@ function importer_wordpress($xml)
         $new_article['bt_title'] = (string) $value[0]->title;
         $new_article['bt_notes'] = '';
         $new_article['bt_link'] = (string) $value[0]->link;
-        $new_article['bt_wiki_content'] = reverse_wiki($value->children("content", true)->encoded);
+        $new_article['bt_wiki_content'] = reverse_wiki($value->children('content', true)->encoded);
         $new_article['bt_content'] = wiki($new_article['bt_wiki_content']);
         $new_article['bt_abstract'] = '';
         // get categories
@@ -438,11 +460,11 @@ function importer_wordpress($xml)
         foreach ($value->category as $tag) {
             $new_article['bt_tags'] .= (string) $tag . ',';
         }
-            $new_article['bt_tags'] = trim($new_article['bt_tags'], ',');
+        $new_article['bt_tags'] = trim($new_article['bt_tags'], ',');
         $new_article['bt_keywords'] = '';
         $new_article['bt_nb_comments'] = 0;
-        $new_article['bt_allow_comments'] = ( ($value->children("wp", true)->comment_status) == 'open' ) ? 1 : 0;
-        $new_article['bt_statut'] = ( ($value->children("wp", true)->status) == 'publish' ) ? 1 : 0;
+        $new_article['bt_allow_comments'] = (int) $value->children('wp', true)->comment_status == 'open';
+        $new_article['bt_statut'] = (int) $value->children("wp", true)->status == 'publish';
         // parse comments
         foreach ($value->children('wp', true)->comment as $comment) {
             $new_comment = array();
@@ -450,13 +472,13 @@ function importer_wordpress($xml)
             $new_comment['bt_link'] = '';
             $new_comment['bt_webpage'] = (string) $comment[0]->comment_author_url;
             $new_comment['bt_email'] = (string) $comment[0]->comment_author_email;
-            $new_comment['bt_subscribe'] = '0';
+            $new_comment['bt_subscribe'] = 0;
             $new_comment['bt_type'] = 'comment';
             $new_comment['bt_id'] = date('YmdHis', strtotime($comment->comment_date));
             $new_comment['bt_article_id'] = $new_article['bt_id'];
             $new_comment['bt_wiki_content'] = reverse_wiki($comment->comment_content);
             $new_comment['bt_content'] = '<p>'.wiki($new_comment['bt_wiki_content']).'</p>';
-            $new_comment['bt_statut'] = ( ($comment->comment_approved) == '1' ) ? '1' : '0';
+            $new_comment['bt_statut'] = (int) $comment->comment_approved;
             $data['commentaires'][] = $new_comment;
         }
         $data['articles'][] = $new_article;
@@ -491,14 +513,14 @@ function importer_opml($opml_content)
         foreach ($xmlObj->children() as $child) {
             if (!empty($child['xmlUrl'])) {
                 $url = (string)$child['xmlUrl'];
-                $title = ( !empty($child['text']) ) ? (string)$child['text'] : (string)$child['title'];
+                $title = !empty($child['text']) ? (string) $child['text'] : (string) $child['title'];
                 $GLOBALS['array_new'][$url] = array(
                     'link' => $url,
                     'title' => ucfirst($title),
                     'favicon' => 'style/rss-feed-icon.png',
-                    'checksum' => '0',
-                    'time' => '0',
-                    'folder' => (string)$folder,
+                    'checksum' => 0,
+                    'time' => 0,
+                    'folder' => (string) $folder,
                     'iserror' => 0,
                 );
             }
@@ -529,10 +551,10 @@ function parse_html($content)
             $link = array('bt_id' => '', 'bt_title' => '', 'bt_link' => '', 'bt_content' => '', 'bt_wiki_content' => '', 'bt_tags' => '', 'bt_statut' => 1, 'bt_type' => 'link');
             $d = explode('<DD>', $dt);
             if (strcmp(substr($d[0], 0, strlen('<A ')), '<A ') === 0) {
-                $link['bt_content'] = (isset($d[1]) ? html_entity_decode(trim($d[1]), ENT_QUOTES, 'utf-8') : '');  // Get description (optional)
+                $link['bt_content'] = isset($d[1]) ? html_entity_decode(trim($d[1]), ENT_QUOTES, 'utf-8') : '';  // Get description (optional)
                 $link['bt_wiki_content'] = $link['bt_content'];
                 preg_match('!<A .*?>(.*?)</A>!i', $d[0], $matches);
-                $link['bt_title'] = (isset($matches[1]) ? trim($matches[1]) : '');  // Get title
+                $link['bt_title'] = isset($matches[1]) ? trim($matches[1]) : '';  // Get title
                 $link['bt_title'] = html_entity_decode($link['bt_title'], ENT_QUOTES, 'utf-8');
                 preg_match_all('# ([A-Z_]+)=\"(.*?)"#i', $dt, $matches, PREG_SET_ORDER); // Get all other attributes
                 $raw_add_date = 0;
@@ -551,7 +573,7 @@ function parse_html($content)
                     }
                 }
                 if ($link['bt_link'] != '') {
-                    $raw_add_date = (empty($raw_add_date)) ? time() : $raw_add_date; // In case of shitty bookmark file with no ADD_DATE
+                    $raw_add_date = empty($raw_add_date) ? time() : $raw_add_date; // In case of shitty bookmark file with no ADD_DATE
                     while (in_array(date('YmdHis', $raw_add_date), $ids_array)) {
                         $raw_add_date--; // avoids duplicate IDs
                     }
@@ -573,7 +595,7 @@ function parse_html($content)
 echo '<div id="maintenance-form">'."\n";
 if (!isset($_GET['do']) and !isset($_FILES['file'])) {
     $token = new_token();
-    $nbs = array('10'=>'10', '20'=>'20', '50'=>'50', '100'=>'100', '200'=>'200', '500'=>'500', '-1' => $GLOBALS['lang']['pref_all']);
+    $nbs = array(10 => 10, 20 => 20, 50 => 50, 100 => 100, 200 => 200, 500 => 500, -1 => $GLOBALS['lang']['pref_all']);
 
     echo '<form action="maintenance.php" method="get" class="bordered-formbloc" id="form_todo">'."\n";
     echo '<label for="select_todo">'.$GLOBALS['lang']['maintenance_ask_do_what'].'</label>'."\n";
@@ -630,10 +652,10 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 
     // Form import
     $importformats = array(
-            'jsonbak' => $GLOBALS['lang']['bak_import_btjson'],
-            'xmlwp' => $GLOBALS['lang']['bak_import_wordpress'],
-            'htmllinks' => $GLOBALS['lang']['bak_import_netscape'],
-            'rssopml' => $GLOBALS['lang']['bak_import_rssopml'] );
+        'jsonbak' => $GLOBALS['lang']['bak_import_btjson'],
+        'xmlwp' => $GLOBALS['lang']['bak_import_wordpress'],
+        'htmllinks' => $GLOBALS['lang']['bak_import_netscape'],
+        'rssopml' => $GLOBALS['lang']['bak_import_rssopml'] );
     echo '<form action="maintenance.php" method="post" enctype="multipart/form-data" class="bordered-formbloc" id="form_import">'."\n";
         echo '<fieldset class="pref valid-center">';
         echo '<legend class="legend-backup">'.$GLOBALS['lang']['maintenance_import'].'</legend>';
@@ -696,18 +718,33 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
                         $nb = htmlspecialchars($_GET['nb-links']);
                         $limit = (is_numeric($nb) and $nb != -1 ) ? 'LIMIT 0, ?' : '';
                         $array = (empty($limit)) ? array() : array($nb);
-                        $data_array['liens'] = liste_elements('SELECT * FROM links ORDER BY bt_id DESC '.$limit, $array, 'links');
+                        $sql = '
+                            SELECT *
+                              FROM links
+                             ORDER BY bt_id DESC '.
+                             $limit;
+                        $data_array['liens'] = liste_elements($sql, $array, 'links');
                     }
                     // get articles (nth last)
                     if ($_GET['incl-artic'] == 1) {
                         $nb = htmlspecialchars($_GET['nb-artic']);
                         $limit = (is_numeric($nb) and $nb != -1 ) ? 'LIMIT 0, ?' : '';
                         $array = (empty($limit)) ? array() : array($nb);
-                        $data_array['articles'] = liste_elements('SELECT * FROM articles ORDER BY bt_id DESC '.$limit, $array, 'articles');
+                        $sql = '
+                            SELECT *
+                              FROM articles
+                             ORDER BY bt_id DESC '.
+                             $limit;
+                        $data_array['articles'] = liste_elements($sql, $array, 'articles');
                         // get list of comments (comments that belong to selected articles only)
                         if ($_GET['incl-comms'] == 1) {
                             foreach ($data_array['articles'] as $article) {
-                                $comments = liste_elements('SELECT c.*, a.bt_title FROM commentaires AS c, articles AS a WHERE c.bt_article_id = ? AND c.bt_article_id=a.bt_id', array($article['bt_id']), 'commentaires');
+                                $sql = '
+                                    SELECT c.*, a.bt_title
+                                      FROM commentaires AS c, articles AS a
+                                     WHERE c.bt_article_id = ?
+                                           AND c.bt_article_id = a.bt_id';
+                                $comments = liste_elements($sql, array($article['bt_id']), 'commentaires');
                                 if (!empty($comments)) {
                                     $data_array['commentaires'] = array_merge($data_array['commentaires'], $comments);
                                 }
@@ -780,7 +817,7 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
                     // delete old RSS entries
                 if ($_GET['opti-rss'] == 1) {
                     try {
-                        $req = $GLOBALS['db_handle']->prepare('DELETE FROM rss WHERE bt_statut=0');
+                        $req = $GLOBALS['db_handle']->prepare('DELETE FROM rss WHERE bt_statut = 0');
                         $req->execute(array());
                     } catch (Exception $e) {
                         die('Erreur : 7873 : rss delete old entries : '.$e->getMessage());
@@ -840,7 +877,6 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
 }
 
 echo '</div>'."\n";
-
 
 echo "\n".'<script src="style/javascript.js"></script>'."\n";
 echo '<script>';

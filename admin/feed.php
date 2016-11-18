@@ -46,14 +46,21 @@ if (!empty($_GET['q'])) {
     $arr = parse_search($q_query);
 
 
-    $sql_where = implode(array_fill(0, count($arr), '( bt_content || bt_title ) LIKE ? '), 'AND '); // AND operator between words
-    $query = "SELECT * FROM rss WHERE ".$sql_where.$sql_where_status."ORDER BY bt_date DESC";
+    $sql_where = implode(array_fill(0, count($arr), '( bt_content || bt_title ) LIKE ?'), 'AND'); // AND operator between words
+    $query = '
+        SELECT * FROM rss
+         WHERE '.$sql_where.$sql_where_status.'
+         ORDER BY bt_date DESC';
     //debug($query);
     $tableau = liste_elements($query, $arr, 'rss');
 } else {
-    $tableau = liste_elements('SELECT * FROM rss WHERE bt_statut=1 OR bt_bookmarked=1 ORDER BY bt_date DESC', array(), 'rss');
+    $sql = '
+        SELECT * FROM rss
+         WHERE bt_statut = 1
+               OR bt_bookmarked = 1
+         ORDER BY bt_date DESC';
+    $tableau = liste_elements($sql, array(), 'rss');
 }
-
 
 afficher_html_head($GLOBALS['lang']['mesabonnements']);
 
@@ -70,9 +77,6 @@ if (!isset($_GET['config'])) {
     echo "\t\t".'<span id="message-return"></span>'."\n";
     echo "\t\t".'<ul class="rss-menu-buttons">'."\n";
     echo "\t\t\t".'<li><button type="button" onclick="refresh_all_feeds(this);" title="'.$GLOBALS['lang']['rss_label_refresh'].'"></button></li>'."\n";
-//      echo "\t\t\t".'<li><button type="button" onclick="sendMarkReadRequest(\'all\', \'\', true);" title="'.$GLOBALS['lang']['rss_label_markasread'].'"></button></li>'."\n";
-//      echo "\t\t\t".'<li><button type="button" onclick="openAllItems(this);" title="'.$GLOBALS['lang']['rss_label_unfoldall'].'"></button></li>'."\n";
-//      echo "\t\t\t".'<li><button type="button" onclick="addNewFeed();" title="'.$GLOBALS['lang']['rss_label_addfeed'].'"></button></li>'."\n";
     echo "\t\t\t".'<li><button type="button" onclick="window.location= \'?config\';" title="'.$GLOBALS['lang']['rss_label_config'].'"></button></li>'."\n";
     echo "\t\t\t".'<li><button type="button" onclick="window.location.href=\'maintenance.php#form_import\'" title="Import/export"></button></li>'."\n";
     echo "\t\t\t".'<li><button type="button" onclick="return cleanList();" title="'.$GLOBALS['lang']['rss_label_clean'].'"></button></li>'."\n";
@@ -147,7 +151,6 @@ if (isset($_GET['config'])) {
     echo 'for (var i = 0, len=list.length; i < len; i++) {'."\n";
     echo '  list[i].style.backgroundImage="url(\'" + "cache/get.php?w=favicon&q="+ list[i].getAttribute(\'data-feed-domain\') + "\')";'."\n";
     echo '}'."\n\n";
-
 
     echo php_lang_to_js(0);
     echo "\n".'</script>'."\n";

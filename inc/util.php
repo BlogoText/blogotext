@@ -20,8 +20,7 @@ function redirection($url)
 
 function get_id($file)
 {
-    $retour = substr($file, 0, 14);
-    return $retour;
+    return substr($file, 0, 14);
 }
 
 function decode_id($id)
@@ -47,8 +46,7 @@ function get_blogpath($id, $titre)
 
 function article_anchor($id)
 {
-    $anchor = 'id'.substr(md5($id), 0, 6);
-    return $anchor;
+    return 'id'.substr(md5($id), 0, 6);
 }
 
 function traiter_tags($tags)
@@ -71,12 +69,10 @@ function tri_selon_sous_cle($table, $cle)
     return $table;
 }
 
-
 function get_ip()
 {
     return (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) ? htmlspecialchars($_SERVER['HTTP_X_FORWARDED_FOR']) : htmlspecialchars($_SERVER['REMOTE_ADDR']);
 }
-
 
 function check_session()
 {
@@ -109,7 +105,6 @@ function check_session()
         return true;
     }
 }
-
 
 // This will look if session expired and kill it, otherwise restore it
 function operate_session()
@@ -144,14 +139,13 @@ function fermer_session()
         $_SESSION['BT-saved-url'] = $_SERVER['REQUEST_URI'];
     }
     redirection('auth.php');
-    exit();
 }
 
 // Code from Shaarli. Generate an unique sess_id, usable only once.
 function new_token()
 {
     $rnd = sha1(uniqid('', true).mt_rand());  // We generate a random string.
-    $_SESSION['tokens'][$rnd]=1;  // Store it on the server side.
+    $_SESSION['tokens'][$rnd] = 1;  // Store it on the server side.
     return $rnd;
 }
 
@@ -166,7 +160,6 @@ function check_token($token)
     return false; // Wrong token, or already used.
 }
 
-
 /**
  * remove params from url
  *
@@ -178,12 +171,12 @@ function remove_url_param($param)
     if (isset($_GET[$param])) {
         return str_replace(
             array(
-                        '&'.$param.'='.$_GET[$param],
-                        '?'.$param.'='.$_GET[$param],
-                        '?&amp;',
-                        '?&',
-                        '?',
-                    ),
+                '&'.$param.'='.$_GET[$param],
+                '?'.$param.'='.$_GET[$param],
+                '?&amp;',
+                '?&',
+                '?',
+            ),
             array('','?','?','?',''),
             '?'.$_SERVER['QUERY_STRING']
         );
@@ -192,7 +185,6 @@ function remove_url_param($param)
     }
     return '';
 }
-
 
 // Having a comment ID, sends emails to the other comments that are subscriben to the same article.
 function send_emails($id_comment)
@@ -206,7 +198,14 @@ function send_emails($id_comment)
     // retreiving all subscriben email, except that has just been posted.
     $liste_comments = array();
     try {
-        $query = "SELECT DISTINCT bt_email FROM commentaires WHERE bt_statut=1 AND bt_article_id=? AND bt_email!=? AND bt_subscribe=1 ORDER BY bt_id";
+        $query = '
+            SELECT DISTINCT bt_email
+              FROM commentaires
+             WHERE bt_statut = 1
+                   AND bt_article_id = ?
+                   AND bt_email != ?
+                   AND bt_subscribe = 1
+             ORDER BY bt_i';
         $req = $GLOBALS['db_handle']->prepare($query);
         $req->execute(array($article_id, $comm_author_email));
         $liste_comments = $req->fetchAll(PDO::FETCH_ASSOC);
@@ -230,7 +229,7 @@ function send_emails($id_comment)
     }
 
     unset($liste_comments);
-    if (empty($to_send_mail)) {
+    if (!$to_send_mail) {
         return true;
     }
 
@@ -261,11 +260,18 @@ function unsubscribe($email_b64, $article_id, $all)
     try {
         if ($all == 1) {
             // update all comments having $email
-            $query = "UPDATE commentaires SET bt_subscribe=0 WHERE bt_email=?";
+            $query = '
+                UPDATE commentaires
+                   SET bt_subscribe = 0
+                 WHERE bt_email = ?';
             $array = array($email);
         } else {
             // update all comments having $email on $article
-            $query = "UPDATE commentaires SET bt_subscribe=0 WHERE bt_email=? AND bt_article_id=?";
+            $query = '
+                UPDATE commentaires
+                   SET bt_subscribe = 0
+                 WHERE bt_email = ?
+                       AND bt_article_id = ?';
             $array = array($email, $article_id);
         }
         $req = $GLOBALS['db_handle']->prepare($query);

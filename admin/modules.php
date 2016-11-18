@@ -79,5 +79,4 @@ echo php_lang_to_js(0);
 echo 'var csrf_token = \''.new_token().'\'';
 echo '</script>';
 
-
 footer($begin);

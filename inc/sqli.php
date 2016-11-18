@@ -18,11 +18,11 @@
 function create_tables()
 {
     if (is_file(BT_ROOT.DIR_CONFIG.'/'.'mysql.php')) {
-        include(BT_ROOT.DIR_CONFIG.'/'.'mysql.php');
+        include BT_ROOT.DIR_CONFIG.'/'.'mysql.php';
     }
-    $auto_increment = (DBMS == 'mysql') ? 'AUTO_INCREMENT' : ''; // SQLite doesn't need this, but MySQL does.
-    $index_limit_size = (DBMS == 'mysql') ? '(15)' : ''; // MySQL needs a limit for indexes on TEXT fields.
-    $if_not_exists = (DBMS == 'sqlite') ? 'IF NOT EXISTS' : ''; // MySQL doesn’t know this statement for INDEXES
+    $auto_increment = DBMS == 'mysql' ? 'AUTO_INCREMENT' : ''; // SQLite doesn't need this, but MySQL does.
+    $index_limit_size = DBMS == 'mysql' ? '(15)' : ''; // MySQL needs a limit for indexes on TEXT fields.
+    $if_not_exists = DBMS == 'sqlite' ? 'IF NOT EXISTS' : ''; // MySQL doesn’t know this statement for INDEXES
 
     $dbase_structure['links'] = "CREATE TABLE IF NOT EXISTS links
         (
@@ -99,17 +99,16 @@ function create_tables()
                     die('Impossible de creer le dossier databases (chmod?)');
                 }
             }
-                $file = BT_ROOT.DIR_DATABASES.'/database.sqlite';
-                // open tables
+            $file = BT_ROOT.DIR_DATABASES.'/database.sqlite';
+            // open tables
             try {
                 $db_handle = new PDO('sqlite:'.$file);
                 $db_handle->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 $db_handle->query("PRAGMA temp_store=MEMORY; PRAGMA synchronous=OFF; PRAGMA journal_mode=WAL;");
 
-
                 $wanted_tables = array('commentaires', 'articles', 'links', 'rss');
                 foreach ($wanted_tables as $i => $name) {
-                        $results = $db_handle->exec($dbase_structure[$name]);
+                    $results = $db_handle->exec($dbase_structure[$name]);
                 }
             } catch (Exception $e) {
                 die('Erreur 1: '.$e->getMessage());
@@ -127,8 +126,8 @@ function create_tables()
                 // check each wanted table
                 $wanted_tables = array('commentaires', 'articles', 'links', 'rss');
                 foreach ($wanted_tables as $i => $name) {
-                        $results = $db_handle->query($dbase_structure[$name]."DEFAULT CHARSET=utf8");
-                        $results->closeCursor();
+                    $results = $db_handle->query($dbase_structure[$name]."DEFAULT CHARSET=utf8");
+                    $results->closeCursor();
                 }
             } catch (Exception $e) {
                 die('Erreur 2: '.$e->getMessage());
@@ -139,7 +138,6 @@ function create_tables()
     return $db_handle;
 }
 
-
 /* Open a base */
 function open_base()
 {
@@ -147,7 +145,6 @@ function open_base()
     $handle->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
     return $handle;
 }
-
 
 /* lists articles with search criterias given in $array. Returns an array containing the data*/
 function liste_elements($query, $array, $data_type)
@@ -219,12 +216,10 @@ function get_entry($base_handle, $table, $entry, $id, $retour_mode)
     return '';
 }
 
-
-
 // from an array given by SQLite's requests, this function adds some more stuf to data stored by DB.
 function init_list_articles($article)
 {
-    if (!empty($article)) {
+    if ($article) {
         $dec_id = decode_id($article['bt_id']);
         $article = array_merge($article, decode_id($article['bt_date']));
         $article['bt_link'] = $GLOBALS['racine'].'?d='.$dec_id['annee'].'/'.$dec_id['mois'].'/'.$dec_id['jour'].'/'.$dec_id['heure'].'/'.$dec_id['minutes'].'/'.$dec_id['secondes'].'-'.titre_url($article['bt_title']);
@@ -234,14 +229,12 @@ function init_list_articles($article)
 
 function init_list_comments($comment)
 {
-        $comment['auteur_lien'] = (!empty($comment['bt_webpage'])) ? '<a href="'.$comment['bt_webpage'].'" class="webpage">'.$comment['bt_author'].'</a>' : $comment['bt_author'] ;
-        $comment['anchor'] = article_anchor($comment['bt_id']);
-//      $comment['article_title'] = get_entry($GLOBALS['db_handle'], 'articles', 'bt_title', $comment['bt_article_id'], 'return');
-        $comment['bt_link'] = get_blogpath($comment['bt_article_id'], $comment['bt_title']).'#'.$comment['anchor'];
-        $comment = array_merge($comment, decode_id($comment['bt_id']));
+    $comment['auteur_lien'] = (!empty($comment['bt_webpage'])) ? '<a href="'.$comment['bt_webpage'].'" class="webpage">'.$comment['bt_author'].'</a>' : $comment['bt_author'] ;
+    $comment['anchor'] = article_anchor($comment['bt_id']);
+    $comment['bt_link'] = get_blogpath($comment['bt_article_id'], $comment['bt_title']).'#'.$comment['anchor'];
+    $comment = array_merge($comment, decode_id($comment['bt_id']));
     return $comment;
 }
-
 
 // POST ARTICLE
 /*
@@ -253,7 +246,7 @@ function init_list_comments($comment)
 
 function init_post_article()
 {
- //no $mode : it's always admin.
+    //no $mode : it's always admin.
     $formated_contenu = markup_articles(clean_txt($_POST['contenu']));
     if ($GLOBALS['automatic_keywords'] == '0') {
         $keywords = protect($_POST['mots_cles']);
@@ -265,18 +258,18 @@ function init_post_article()
     $id = (isset($_POST['article_id']) and preg_match('#\d{14}#', $_POST['article_id'])) ? $_POST['article_id'] : $date;
 
     $article = array (
-        'bt_id'                 => $id,
+        'bt_id'             => $id,
         'bt_date'           => $date,
         'bt_title'          => protect($_POST['titre']),
-        'bt_abstract'       => (empty($_POST['chapo']) ? '' : clean_txt($_POST['chapo'])),
+        'bt_abstract'       => empty($_POST['chapo']) ? '' : clean_txt($_POST['chapo']),
         'bt_notes'          => protect($_POST['notes']),
         'bt_content'        => $formated_contenu,
         'bt_wiki_content'   => clean_txt($_POST['contenu']),
         'bt_link'           => '', // this one is not needed yet. Maybe in the futur. I dunno why it is still in the DB…
         'bt_keywords'       => $keywords,
-        'bt_tags'           => (isset($_POST['categories']) ? htmlspecialchars(traiter_tags($_POST['categories'])) : ''), // htmlSpecialChars() nedded to escape the (") since tags are put in a <input/>. (') are escaped in form_categories(), with addslashes – not here because of JS problems :/
-        'bt_statut'             => $_POST['statut'],
-        'bt_allow_comments'     => $_POST['allowcomment'],
+        'bt_tags'           => isset($_POST['categories']) ? htmlspecialchars(traiter_tags($_POST['categories'])) : '', // htmlSpecialChars() nedded to escape the (") since tags are put in a <input/>. (') are escaped in form_categories(), with addslashes – not here because of JS problems :/
+        'bt_statut'         => $_POST['statut'],
+        'bt_allow_comments' => $_POST['allowcomment'],
     );
 
     if (isset($_POST['ID']) and is_numeric($_POST['ID'])) { // ID only added on edit.
@@ -308,22 +301,22 @@ function init_post_comment($id, $mode)
 
         // verif url.
         if (!empty($_POST['webpage'])) {
-            $url = protect((strpos($_POST['webpage'], 'http://')===0 or strpos($_POST['webpage'], 'https://')===0)? $_POST['webpage'] : 'http://'.$_POST['webpage']);
+            $url = protect((strpos($_POST['webpage'], 'http://') === 0 or strpos($_POST['webpage'], 'https://') === 0)? $_POST['webpage'] : 'http://'.$_POST['webpage']);
         } else {
             $url = $_POST['webpage'];
         }
 
         $comment = array (
-            'bt_id'                 => $comment_id,
-            'bt_article_id'     => $id,
-            'bt_content'        => markup(htmlspecialchars(clean_txt($_POST['commentaire']), ENT_NOQUOTES)),
-            'bt_wiki_content'   => clean_txt($_POST['commentaire']),
-            'bt_author'             => protect($_POST['auteur']),
-            'bt_email'          => protect($_POST['email']),
-            'bt_link'           => '', // this is empty, 'cause bt_link is created on reading of DB, not written in DB (useful if we change server or site name some day).
-            'bt_webpage'        => $url,
-            'bt_subscribe'      => (isset($_POST['subscribe']) and $_POST['subscribe'] == 'on') ? '1' : '0',
-            'bt_statut'             => $status,
+            'bt_id'           => $comment_id,
+            'bt_article_id'   => $id,
+            'bt_content'      => markup(htmlspecialchars(clean_txt($_POST['commentaire']), ENT_NOQUOTES)),
+            'bt_wiki_content' => clean_txt($_POST['commentaire']),
+            'bt_author'       => protect($_POST['auteur']),
+            'bt_email'        => protect($_POST['email']),
+            'bt_link'         => '', // this is empty, 'cause bt_link is created on reading of DB, not written in DB (useful if we change server or site name some day).
+            'bt_webpage'      => $url,
+            'bt_subscribe'    => (isset($_POST['subscribe']) and $_POST['subscribe'] == 'on') ? '1' : '0',
+            'bt_statut'       => $status,
         );
     }
     if (isset($_POST['ID']) and is_numeric($_POST['ID'])) { // ID only added on edit.
@@ -336,17 +329,17 @@ function init_post_comment($id, $mode)
 // POST LINK
 function init_post_link2()
 {
- // second init : the whole link data needs to be stored
+    // second init : the whole link data needs to be stored
     $id = protect($_POST['bt_id']);
     $link = array (
-        'bt_id'                 => $id,
-        'bt_type'           => htmlspecialchars($_POST['type']),
-        'bt_content'        => markup(htmlspecialchars(clean_txt($_POST['description']), ENT_NOQUOTES)),
-        'bt_wiki_content'   => protect($_POST['description']),
-        'bt_title'          => protect($_POST['title']),
-        'bt_link'           => (empty($_POST['url'])) ? $GLOBALS['racine'].'?mode=links&amp;id='.$id : protect($_POST['url']),
-        'bt_tags'           => htmlspecialchars(traiter_tags($_POST['categories'])),
-        'bt_statut'             => (isset($_POST['statut'])) ? 0 : 1
+        'bt_id'           => $id,
+        'bt_type'         => htmlspecialchars($_POST['type']),
+        'bt_content'      => markup(htmlspecialchars(clean_txt($_POST['description']), ENT_NOQUOTES)),
+        'bt_wiki_content' => protect($_POST['description']),
+        'bt_title'        => protect($_POST['title']),
+        'bt_link'         => empty($_POST['url']) ? $GLOBALS['racine'].'?mode=links&amp;id='.$id : protect($_POST['url']),
+        'bt_tags'         => htmlspecialchars(traiter_tags($_POST['categories'])),
+        'bt_statut'       => isset($_POST['statut']) ? 0 : 1
     );
     if (isset($_POST['ID']) and is_numeric($_POST['ID'])) { // ID only added on edit.
         $link['ID'] = $_POST['ID'];
@@ -367,7 +360,10 @@ function traiter_form_billet($billet)
     } elseif (isset($_POST['supprimer']) and isset($_POST['ID']) and is_numeric($_POST['ID'])) {
         $result = bdd_article($billet, 'supprimer-existant');
         try {
-            $req = $GLOBALS['db_handle']->prepare('DELETE FROM commentaires WHERE bt_article_id=?');
+            $sql = '
+                DELETE FROM commentaires
+                 WHERE bt_article_id=?';
+            $req = $GLOBALS['db_handle']->prepare($sql);
             $req->execute(array($_POST['article_id']));
         } catch (Exception $e) {
             die('Erreur Suppr Comm associés: '.$e->getMessage());
@@ -442,18 +438,18 @@ function bdd_article($billet, $what)
                 bt_statut=?
                 WHERE ID=?');
             $req->execute(array(
-                    $billet['bt_date'],
-                    $billet['bt_title'],
-                    $billet['bt_link'],
-                    $billet['bt_abstract'],
-                    $billet['bt_notes'],
-                    $billet['bt_content'],
-                    $billet['bt_wiki_content'],
-                    $billet['bt_tags'],
-                    $billet['bt_keywords'],
-                    $billet['bt_allow_comments'],
-                    $billet['bt_statut'],
-                    $_POST['ID']
+                $billet['bt_date'],
+                $billet['bt_title'],
+                $billet['bt_link'],
+                $billet['bt_abstract'],
+                $billet['bt_notes'],
+                $billet['bt_content'],
+                $billet['bt_wiki_content'],
+                $billet['bt_tags'],
+                $billet['bt_keywords'],
+                $billet['bt_allow_comments'],
+                $billet['bt_statut'],
+                $_POST['ID']
             ));
             return true;
         } catch (Exception $e) {
@@ -470,8 +466,6 @@ function bdd_article($billet, $what)
         }
     }
 }
-
-
 
 // traiter un ajout de lien prend deux étapes :
 //  1) on donne le lien > il donne un form avec lien+titre
@@ -498,7 +492,6 @@ function traiter_form_link($link)
         die($result);
     }
 }
-
 
 function bdd_lien($link, $what)
 {
@@ -554,7 +547,10 @@ function bdd_lien($link, $what)
         }
     } elseif ($what == 'supprimer-existant') {
         try {
-            $req = $GLOBALS['db_handle']->prepare('DELETE FROM links WHERE ID=?');
+            $sql = '
+                DELETE FROM links
+                 WHERE ID=?';
+            $req = $GLOBALS['db_handle']->prepare($sql);
             $req->execute(array($link['ID']));
             return true;
         } catch (Exception $e) {
@@ -566,7 +562,6 @@ function bdd_lien($link, $what)
 // Called when a new comment is posted (public side or admin side) or on edit/activating/removing
 //  when adding, redirects with message after processing
 //  when edit/activating/removing, dies with message after processing (message is then caught with AJAX)
-
 function traiter_form_commentaire($commentaire, $admin)
 {
     $msg_param_to_trim = (isset($_GET['msg'])) ? '&msg='.$_GET['msg'] : '';
@@ -608,7 +603,7 @@ function traiter_form_commentaire($commentaire, $admin)
             } else {
                 echo 'Error'.new_token();
             }
-                exit;
+            exit;
         }
     } // do nothing & die (admin + public)
     else {
@@ -625,7 +620,6 @@ function traiter_form_commentaire($commentaire, $admin)
 
 function bdd_commentaire($commentaire, $what)
 {
-
     // ENREGISTREMENT D'UN NOUVEAU COMMENTAIRE.
     if ($what == 'enregistrer-nouveau') {
         try {
@@ -657,8 +651,18 @@ function bdd_commentaire($commentaire, $what)
                 $commentaire['bt_statut']
             ));
             // remet à jour le nombre de commentaires associés à l’article.
-            $nb_comments_art = liste_elements_count("SELECT count(*) AS nbr FROM commentaires WHERE bt_article_id=? and bt_statut=1", array($commentaire['bt_article_id']));
-            $req2 = $GLOBALS['db_handle']->prepare('UPDATE articles SET bt_nb_comments=? WHERE bt_id=?');
+            $sql = '
+                SELECT count(*) AS nbr
+                  FROM commentaires
+                 WHERE bt_article_id = ?
+                       AND bt_statut = 1';
+            $nb_comments_art = liste_elements_count($sql, array($commentaire['bt_article_id']));
+
+            $sql2 = '
+                UPDATE articles
+                   SET bt_nb_comments = ?
+                 WHERE bt_id = ?';
+            $req2 = $GLOBALS['db_handle']->prepare($sql2);
             $req2->execute(array($nb_comments_art, $commentaire['bt_article_id']));
 
             return true;
@@ -693,9 +697,17 @@ function bdd_commentaire($commentaire, $what)
             ));
 
             // remet à jour le nombre de commentaires associés à l’article.
-            $nb_comments_art = liste_elements_count("SELECT count(*) AS nbr FROM commentaires WHERE bt_article_id=? and bt_statut=1", array($commentaire['bt_article_id']));
+            $sql = '
+                SELECT count(*) AS nbr FROM commentaires
+                 WHERE bt_article_id = ?
+                       AND bt_statut = 1';
+            $nb_comments_art = liste_elements_count($sql, array($commentaire['bt_article_id']));
 
-            $req2 = $GLOBALS['db_handle']->prepare('UPDATE articles SET bt_nb_comments=? WHERE bt_id=?');
+            $sql2 = '
+                UPDATE articles
+                   SET bt_nb_comments = ?
+                 WHERE bt_id = ?';
+            $req2 = $GLOBALS['db_handle']->prepare($sql2);
             $req2->execute(array($nb_comments_art, $commentaire['bt_article_id']));
             return true;
         } catch (Exception $e) {
@@ -708,9 +720,18 @@ function bdd_commentaire($commentaire, $what)
             $req->execute(array($commentaire['ID']));
 
             // remet à jour le nombre de commentaires associés à l’article.
-            $nb_comments_art = liste_elements_count("SELECT count(*) AS nbr FROM commentaires WHERE bt_article_id=? and bt_statut=1", array($commentaire['bt_article_id']));
-            $req2 = $GLOBALS['db_handle']->prepare('UPDATE articles SET bt_nb_comments=? WHERE bt_id=?');
+            $sql = '
+                SELECT count(*) AS nbr
+                  FROM commentaires
+                 WHERE bt_article_id = ?
+                       AND bt_statut = 1';
+            $nb_comments_art = liste_elements_count($sql, array($commentaire['bt_article_id']));
 
+            $sql2 = '
+                UPDATE articles
+                   SET bt_nb_comments = ?
+                 WHERE bt_id = ?';
+            $req2 = $GLOBALS['db_handle']->prepare($sql2);
             $req2->execute(array($nb_comments_art, $commentaire['bt_article_id']));
             return true;
         } catch (Exception $e) {
@@ -719,12 +740,26 @@ function bdd_commentaire($commentaire, $what)
     } // CHANGEMENT STATUS COMMENTAIRE
     elseif ($what == 'activer-existant') {
         try {
-            $req = $GLOBALS['db_handle']->prepare('UPDATE commentaires SET bt_statut=ABS(bt_statut-1) WHERE ID=?');
+            $sql = '
+                UPDATE commentaires
+                   SET bt_statut = ABS(bt_statut - 1)
+                 WHERE ID = ?';
+            $req = $GLOBALS['db_handle']->prepare($sql);
             $req->execute(array($commentaire['ID']));
 
             // remet à jour le nombre de commentaires associés à l’article.
-            $nb_comments_art = liste_elements_count("SELECT count(*) AS nbr FROM commentaires WHERE bt_article_id=? and bt_statut=1", array($commentaire['bt_article_id']));
-            $req2 = $GLOBALS['db_handle']->prepare('UPDATE articles SET bt_nb_comments=? WHERE bt_id=?');
+            $sql = '
+                SELECT count(*) AS nbr
+                  FROM commentaires
+                 WHERE bt_article_id = ?
+                       AND bt_statut = 1';
+            $nb_comments_art = liste_elements_count($sql, array($commentaire['bt_article_id']));
+
+            $sql2 = '
+                UPDATE articles
+                   SET bt_nb_comments = ?
+                 WHERE bt_id = ?';
+            $req2 = $GLOBALS['db_handle']->prepare($sql2);
             $req2->execute(array($nb_comments_art, $commentaire['bt_article_id']));
             return true;
         } catch (Exception $e) {
@@ -733,11 +768,15 @@ function bdd_commentaire($commentaire, $what)
     }
 }
 
-/* FOR COMMENTS : RETUNS nb_com per author */
+// FOR COMMENTS : RETUNS nb_com per author
 function nb_entries_as($table, $what)
 {
     $result = array();
-    $query = "SELECT count($what) AS nb, $what FROM $table GROUP BY $what ORDER BY nb DESC";
+    $query = "
+        SELECT count($what) AS nb, $what
+          FROM $table
+         GROUP BY $what
+         ORDER BY nb DESC";
     try {
         $result = $GLOBALS['db_handle']->query($query)->fetchAll(PDO::FETCH_ASSOC);
         return $result;
@@ -746,15 +785,17 @@ function nb_entries_as($table, $what)
     }
 }
 
-
 function list_all_tags($table, $statut)
 {
     try {
         if ($statut !== false) {
-            $res = $GLOBALS['db_handle']->query("SELECT bt_tags FROM $table WHERE bt_statut = $statut");
+            $sql = "
+                SELECT bt_tags FROM $table
+                 WHERE bt_statut = $statut";
         } else {
-            $res = $GLOBALS['db_handle']->query("SELECT bt_tags FROM $table");
+            $sql = "SELECT bt_tags FROM $table";
         }
+        $res = $GLOBALS['db_handle']->query($sql);
         $liste_tags = '';
         // met tous les tags de tous les articles bout à bout
         while ($entry = $res->fetch()) {
@@ -774,7 +815,6 @@ function list_all_tags($table, $statut)
     unset($tab_tags['']);
     return array_count_values($tab_tags);
 }
-
 
 /* Enregistre le flux dans une BDD.
    $flux est un Array avec les données dedans.
@@ -819,11 +859,11 @@ function bdd_rss($flux, $what)
     }
 }
 
-/* FOR RSS : RETUNS list of GUID in whole DB */
+// FOR RSS : RETUNS list of GUID in whole DB
 function rss_list_guid()
 {
     $result = array();
-    $query = "SELECT bt_id FROM rss";
+    $query = 'SELECT bt_id FROM rss';
     try {
         $result = $GLOBALS['db_handle']->query($query)->fetchAll(PDO::FETCH_COLUMN, 0);
         return $result;
@@ -832,11 +872,14 @@ function rss_list_guid()
     }
 }
 
-/* FOR RSS : RETUNS nb of articles per feed */
+// FOR RSS : RETUNS nb of articles per feed
 function rss_count_feed()
 {
     $result = array();
-    $query = "SELECT bt_feed, SUM(bt_statut) AS nbrun, SUM(bt_bookmarked) AS nbfav FROM rss GROUP BY bt_feed";
+    $query = '
+        SELECT bt_feed, SUM(bt_statut) AS nbrun, SUM(bt_bookmarked) AS nbfav
+          FROM rss
+         GROUP BY bt_feed';
     try {
         $result = $GLOBALS['db_handle']->query($query)->fetchAll(PDO::FETCH_ASSOC);
         return $result;
@@ -845,10 +888,10 @@ function rss_count_feed()
     }
 }
 
-/* FOR RSS : get $_POST and update feeds (title, url…) for feeds.php?config */
+// FOR RSS : get $_POST and update feeds (title, url…) for feeds.php?config
 function traiter_form_rssconf()
 {
-    $msg_param_to_trim = (isset($_GET['msg'])) ? '&msg='.$_GET['msg'] : '';
+    $msg_param_to_trim = isset($_GET['msg']) ? '&msg='.$_GET['msg'] : '';
     $query_string = str_replace($msg_param_to_trim, '', $_SERVER['QUERY_STRING']);
     // traitement
     $GLOBALS['db_handle']->beginTransaction();

@@ -43,18 +43,16 @@ echo moteur_recherche();
 afficher_topnav($GLOBALS['lang']['label_resume']);
 echo '</div>'."\n";
 echo '</div>'."\n";
-$total_artic = liste_elements_count("SELECT count(ID) AS nbr FROM articles", array());
-$total_links = liste_elements_count("SELECT count(ID) AS nbr FROM links", array());
-$total_comms = liste_elements_count("SELECT count(ID) AS nbr FROM commentaires", array());
-$total_rss = liste_elements_count("SELECT count(ID) AS nbr FROM rss", array());
+$total_artic = liste_elements_count('SELECT count(ID) AS nbr FROM articles', array());
+$total_links = liste_elements_count('SELECT count(ID) AS nbr FROM links', array());
+$total_comms = liste_elements_count('SELECT count(ID) AS nbr FROM commentaires', array());
+$total_rss = liste_elements_count('SELECT count(ID) AS nbr FROM rss', array());
 
 $total_nb_fichiers = sizeof($GLOBALS['liste_fichiers']);
-
 
 echo '<div id="axe">'."\n";
 echo '<div id="page">'."\n";
 echo '<div id="graphs">'."\n";
-
 
 // transforme les valeurs numériques d’un tableau pour les ramener la valeur max du tableau à $maximum. Les autres valeurs du tableau sont à l’échelle
 function scaled_size($tableau, $maximum)
@@ -72,11 +70,8 @@ function scaled_size($tableau, $maximum)
     return $return;
 }
 
-// compte le nombre d’éléments dans la base, pour chaque mois les 12 derniers mois.
-/*
+/* compte le nombre d’éléments dans la base, pour chaque mois les 12 derniers mois.
  * retourne un tableau YYYYMM => nb;
- *
-*
 */
 function get_tableau_date($data_type)
 {
@@ -90,7 +85,12 @@ function get_tableau_date($data_type)
     $min = min(array_keys($table_months)).'00000000';
     $bt_date = ($data_type == 'articles') ? 'bt_date' : 'bt_id';
 
-    $query = "SELECT substr($bt_date, 1, 6) AS date, count(*) AS idbydate FROM $data_type WHERE $bt_date BETWEEN $min AND $max GROUP BY date ORDER BY date";
+    $query = '
+        SELECT substr('.$bt_date.', 1, 6) AS date, count(*) AS idbydate
+          FROM '.$data_type.'
+         WHERE '.$bt_date.' BETWEEN '.$min.' AND '.$max.'
+         GROUP BY date
+         ORDER BY date';
 
     try {
         $req = $GLOBALS['db_handle']->prepare($query);
@@ -110,10 +110,10 @@ function get_tableau_date($data_type)
 /* Une recherche a été faite : affiche la recherche */
 if (!empty($_GET['q'])) {
     $q = htmlspecialchars($_GET['q']);
-    $nb_articles = liste_elements_count("SELECT count(ID) AS nbr FROM articles WHERE ( bt_content || bt_title ) LIKE ?", array('%'.$q.'%'));
-    $nb_liens = liste_elements_count("SELECT count(ID) AS nbr FROM links WHERE ( bt_content || bt_title || bt_link ) LIKE ?", array('%'.$q.'%'));
-    $nb_commentaires = liste_elements_count("SELECT count(ID) AS nbr FROM commentaires WHERE bt_content LIKE ?", array('%'.$q.'%'));
-    $nb_feeds = liste_elements_count("SELECT count(ID) AS nbr FROM rss WHERE ( bt_content || bt_title ) LIKE ?", array('%'.$q.'%'));
+    $nb_articles = liste_elements_count('SELECT count(ID) AS nbr FROM articles WHERE ( bt_content || bt_title ) LIKE ?', array('%'.$q.'%'));
+    $nb_liens = liste_elements_count('SELECT count(ID) AS nbr FROM links WHERE ( bt_content || bt_title || bt_link ) LIKE ?', array('%'.$q.'%'));
+    $nb_commentaires = liste_elements_count('SELECT count(ID) AS nbr FROM commentaires WHERE bt_content LIKE ?', array('%'.$q.'%'));
+    $nb_feeds = liste_elements_count('SELECT count(ID) AS nbr FROM rss WHERE ( bt_content || bt_title ) LIKE ?', array('%'.$q.'%'));
     $nb_files = sizeof(liste_base_files('recherche', urldecode($_GET['q']), ''));
 
     echo '<div class="graph">'."\n";
@@ -131,7 +131,7 @@ if (!empty($_GET['q'])) {
 else {
     $nothingyet = 0;
 
-    if (!$total_artic == 0) {
+    if ($total_artic > 0) {
         echo '<div class="graph">'."\n";
         // print sur chaque div pour les articles.
         echo '<div class="form-legend">'.ucfirst($GLOBALS['lang']['label_articles']).'</div>'."\n";
@@ -151,7 +151,7 @@ else {
         $nothingyet++;
     }
 
-    if (!$total_comms == 0) {
+    if ($total_comms > 0) {
         echo '<div class="graph">'."\n";
         // print sur chaque div pour les com.
         echo '<div class="form-legend">'.ucfirst($GLOBALS['lang']['label_commentaires']).'</div>'."\n";
@@ -171,7 +171,7 @@ else {
         $nothingyet++;
     }
 
-    if (!$total_links == 0) {
+    if ($total_links > 0) {
         echo '<div class="graph">'."\n";
         // print sur chaque div pour les liens.
         echo '<div class="form-legend">'.ucfirst($GLOBALS['lang']['label_links']).'</div>'."\n";

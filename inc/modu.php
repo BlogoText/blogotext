@@ -27,7 +27,7 @@ function list_addons()
             $is_enabled = !is_file(sprintf('%s/%s/.disabled', $path, $addon));
             if (is_file($inc)) {
                 $addons[$addon] = $is_enabled;
-                include $inc;
+                include_once $inc;
             }
         }
     }

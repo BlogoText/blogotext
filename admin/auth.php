@@ -27,7 +27,7 @@ if (isset($_POST['nom_utilisateur'])) {
     // IP
     $ip = htmlspecialchars($_SERVER["REMOTE_ADDR"]);
     // Proxy IPs, if exists.
-    $ip .= (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) ? '_'.htmlspecialchars($_SERVER['HTTP_X_FORWARDED_FOR']) : '';
+    $ip .= isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? '_'.htmlspecialchars($_SERVER['HTTP_X_FORWARDED_FOR']) : '';
     $curent_time = date('r'); // heure : Wed, 18 Jan 2012 20:42:12 +0100
     $data = '<?php die(\'no.\'); // '.$curent_time.' - '.$ip.' - '.((check_session()===true) ? 'login succes' : 'login fail') ."\n";
     file_put_contents(BT_ROOT.DIR_CONFIG.'/'.'xauthlog.php', $data, FILE_APPEND);
@@ -69,20 +69,20 @@ if (isset($_POST['_verif_envoi']) and valider_form() === true) { // OK : getting
 
     exit(header('Location: '.$location));
 } else { // On sort…
-        // …et affiche la page d'auth
-        afficher_html_head('Identification');
-        echo '<div id="axe">'."\n";
-        echo '<div id="pageauth">'."\n";
-        echo '<h1>'.BLOGOTEXT_NAME.'</h1>'."\n";
-        echo '<form method="post" action="auth.php">'."\n";
-        echo '<div id="auth">'."\n";
-        echo '<p><label for="user">'.ucfirst($GLOBALS['lang']['label_dp_identifiant']).'</label><input class="text" type="text"  autocomplete="off" id="user" name="nom_utilisateur" placeholder="John Doe" value="" /></p>'."\n";
-        echo '<p><label for="password">'.ucfirst($GLOBALS['lang']['label_dp_motdepasse']).'</label><input class="text" id="password" type="password" placeholder="••••••••••••" name="mot_de_passe" value="" /></p>'."\n";
-        echo '<p><input type="checkbox" id="stay_logged" name="stay_logged" checked class="checkbox" /><label for="stay_logged">'.$GLOBALS['lang']['label_stay_logged'].'</label></p>'."\n";
-        echo '<button class="submit button-submit" type="submit" name="submit">'.$GLOBALS['lang']['connexion'].'</button>'."\n";
-        echo '<input type="hidden" name="_verif_envoi" value="1" />'."\n";
-        echo '</div>'."\n";
-        echo '</form>'."\n";
+    // …et affiche la page d'auth
+    afficher_html_head('Identification');
+    echo '<div id="axe">'."\n";
+    echo '<div id="pageauth">'."\n";
+    echo '<h1>'.BLOGOTEXT_NAME.'</h1>'."\n";
+    echo '<form method="post" action="auth.php">'."\n";
+    echo '<div id="auth">'."\n";
+    echo '<p><label for="user">'.ucfirst($GLOBALS['lang']['label_dp_identifiant']).'</label><input class="text" type="text"  autocomplete="off" id="user" name="nom_utilisateur" placeholder="John Doe" value="" /></p>'."\n";
+    echo '<p><label for="password">'.ucfirst($GLOBALS['lang']['label_dp_motdepasse']).'</label><input class="text" id="password" type="password" placeholder="••••••••••••" name="mot_de_passe" value="" /></p>'."\n";
+    echo '<p><input type="checkbox" id="stay_logged" name="stay_logged" checked class="checkbox" /><label for="stay_logged">'.$GLOBALS['lang']['label_stay_logged'].'</label></p>'."\n";
+    echo '<button class="submit button-submit" type="submit" name="submit">'.$GLOBALS['lang']['connexion'].'</button>'."\n";
+    echo '<input type="hidden" name="_verif_envoi" value="1" />'."\n";
+    echo '</div>'."\n";
+    echo '</form>'."\n";
 }
 
 function valider_form()

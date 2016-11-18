@@ -14,20 +14,15 @@
 $begin = microtime(true);
 define('BT_ROOT', '../');
 
-
-
 require_once '../inc/inc.php';
 
 operate_session();
 
 $GLOBALS['db_handle'] = open_base();
 
-
 // RECUP MAJ
-$article_id='';
-$article_title='';
-
-
+$article_id = '';
+$article_title = '';
 
 // TRAITEMENT
 $erreurs_form = array();
@@ -50,7 +45,6 @@ if (isset($_POST['_verif_envoi'])) {
     }
 }
 
-
 $tableau = array();
 // if article ID is given in query string
 
@@ -58,7 +52,12 @@ if (isset($_GET['post_id']) and preg_match('#\d{14}#', $_GET['post_id'])) {
     $param_makeup['menu_theme'] = 'for_article';
     $article_id = $_GET['post_id'];
 
-    $query = "SELECT c.*, a.bt_title FROM commentaires AS c, articles AS a WHERE c.bt_article_id=? AND c.bt_article_id=a.bt_id ORDER BY c.bt_id";
+    $query = '
+        SELECT c.*, a.bt_title
+          FROM commentaires AS c, articles AS a
+         WHERE c.bt_article_id = ?
+               AND c.bt_article_id = a.bt_id
+         ORDER BY c.bt_id';
     $commentaires = liste_elements($query, array($article_id), 'commentaires');
 
     if (!empty($commentaires)) {
@@ -77,34 +76,76 @@ else {
         $search = htmlspecialchars(ltrim(strstr($_GET['filtre'], '.'), '.'));
         // filter for date
         if (preg_match('#^\d{6}(\d{1,8})?$#', ($_GET['filtre']))) {
-            $query = "SELECT c.*, a.bt_title FROM commentaires c LEFT JOIN articles a ON a.bt_id = c.bt_article_id WHERE c.bt_id LIKE ? ORDER BY c.bt_id DESC";
+            $query = '
+                SELECT c.*, a.bt_title
+                  FROM commentaires c
+                  LEFT JOIN articles a
+                         ON a.bt_id = c.bt_article_id
+                 WHERE c.bt_id LIKE ?
+                 ORDER BY c.bt_id DESC';
             $commentaires = liste_elements($query, array($_GET['filtre'].'%'), 'commentaires');
         } // filter for statut
         elseif ($_GET['filtre'] == 'draft') {
-            $query = "SELECT c.*, a.bt_title FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id WHERE c.bt_statut=0 ORDER BY c.bt_id DESC";
+            $query = '
+                SELECT c.*, a.bt_title
+                  FROM commentaires c
+                  LEFT JOIN articles a
+                         ON a.bt_id = c.bt_article_id
+                 WHERE c.bt_statut = 0
+                 ORDER BY c.bt_id DESC';
             $commentaires = liste_elements($query, array(), 'commentaires');
         } elseif ($_GET['filtre'] == 'pub') {
-            $query = "SELECT c.*, a.bt_title FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id WHERE c.bt_statut=1 ORDER BY c.bt_id DESC";
+            $query = '
+                SELECT c.*, a.bt_title
+                  FROM commentaires c
+                  LEFT JOIN articles a
+                         ON a.bt_id = c.bt_article_id
+                 WHERE c.bt_statut = 1
+                 ORDER BY c.bt_id DESC';
             $commentaires = liste_elements($query, array(), 'commentaires');
         } // filter for author
         elseif ($type == 'auteur' and $search != '') {
-            $query = "SELECT c.*, a.bt_title FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id WHERE c.bt_author=? ORDER BY c.bt_id DESC";
+            $query = '
+                SELECT c.*, a.bt_title
+                  FROM commentaires c
+                  LEFT JOIN articles a
+                         ON a.bt_id = c.bt_article_id
+                 WHERE c.bt_author = ?
+                 ORDER BY c.bt_id DESC';
             $commentaires = liste_elements($query, array($search), 'commentaires');
         } // no filter
         else {
-            $query = "SELECT c.*, a.bt_title FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id ORDER BY c.bt_id DESC LIMIT ".$GLOBALS['max_comm_admin'];
+            $query = '
+                SELECT c.*, a.bt_title
+                  FROM commentaires c
+                  LEFT JOIN articles a
+                         ON a.bt_id = c.bt_article_id
+                 ORDER BY c.bt_id DESC
+                 LIMIT '.$GLOBALS['max_comm_admin'];
             $commentaires = liste_elements($query, array(), 'commentaires');
         }
     } elseif (!empty($_GET['q'])) {
         $arr = parse_search($_GET['q']);
-        $sql_where = implode(array_fill(0, count($arr), 'c.bt_content LIKE ? '), 'AND ');
-        $query = "SELECT c.*, a.bt_title FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id WHERE ".$sql_where."ORDER BY c.bt_id DESC";
+        $sql_where = implode(array_fill(0, count($arr), 'c.bt_content LIKE ?'), 'AND');
+        $query = '
+            SELECT c.*, a.bt_title
+              FROM commentaires c
+              LEFT JOIN articles a
+                     ON a.bt_id = c.bt_article_id
+             WHERE '.$sql_where.'
+             ORDER BY c.bt_id DESC';
         $commentaires = liste_elements($query, $arr, 'commentaires');
     } else { // no filter, so list'em all
-        $query = "SELECT c.*, a.bt_title FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id ORDER BY c.bt_id DESC LIMIT ".$GLOBALS['max_comm_admin'];
+        $query = '
+            SELECT c.*, a.bt_title
+              FROM commentaires c
+              LEFT JOIN articles a
+                     ON a.bt_id = c.bt_article_id
+             ORDER BY c.bt_id DESC
+             LIMIT '.$GLOBALS['max_comm_admin'];
         $commentaires = liste_elements($query, array(), 'commentaires');
     }
-    $nb_total_comms = liste_elements_count("SELECT count(*) AS nbr FROM commentaires", array());
+    $nb_total_comms = liste_elements_count('SELECT count(*) AS nbr FROM commentaires', array());
     $param_makeup['show_links'] = '1';
 }
 
@@ -153,9 +194,8 @@ function afficher_commentaire($comment, $with_link)
 }
 
 // DEBUT PAGE
-$msgg = $GLOBALS['lang']['titre_commentaires']. ((!empty($article_title)) ?' | '.$article_title : '');
+$msgg = $GLOBALS['lang']['titre_commentaires']. (!empty($article_title) ?' | '.$article_title : '');
 afficher_html_head($msgg);
-
 
 echo '<div id="header">'."\n";
     echo '<div id="top">'."\n";
@@ -191,7 +231,6 @@ echo '</div>'."\n";
 
 echo '<div id="page">'."\n";
 
-
 // COMMENTAIRES
 if (count($commentaires) > 0) {
     echo '<div id="liste-commentaires">'."\n";
@@ -204,7 +243,6 @@ if (count($commentaires) > 0) {
 } else {
     echo info($GLOBALS['lang']['note_no_commentaire']);
 }
-
 
 if ($param_makeup['menu_theme'] == 'for_article') {
     echo '<div id="post-nv-commentaire">'."\n";

@@ -28,7 +28,6 @@ if (isset($_GET['refresh_all'], $_GET['guid']) and ($_GET['guid'] == BLOG_UID)) 
     }
 }
 
-
 operate_session();
 
 $GLOBALS['db_handle'] = open_base();
@@ -59,7 +58,11 @@ if (isset($_POST['delete_old'])) {
         die(erreurs($erreurs));
     }
 
-    $query = 'DELETE FROM rss WHERE bt_statut=0 AND bt_bookmarked=0';
+    $query = '
+        DELETE
+          FROM rss
+         WHERE bt_statut = 0
+               AND bt_bookmarked = 0';
     try {
         $req = $GLOBALS['db_handle']->prepare($query);
         $req->execute(array());
@@ -81,7 +84,6 @@ if (isset($_POST['add-feed'])) {
     $new_feed_folder = htmlspecialchars(trim($_POST['add-feed-folder']));
     $feed_array = retrieve_new_feeds(array($new_feed), '');
 
-
     if (!($feed_array[$new_feed]['infos']['type'] == 'ATOM' or $feed_array[$new_feed]['infos']['type'] == 'RSS')) {
         die('Error: Invalid ressource (not an RSS/ATOM feed)');
     }
@@ -91,8 +93,8 @@ if (isset($_POST['add-feed'])) {
         'link' => $new_feed,
         'title' => ucfirst($feed_array[$new_feed]['infos']['title']),
         'favicon' => 'style/rss-feed-icon.png',
-        'checksum' => '42',
-        'time' => '1',
+        'checksum' => 42,
+        'time' => 1,
         'folder' => $new_feed_folder
     );
 
@@ -115,24 +117,38 @@ if (isset($_POST['mark-as-read'])) {
 
     $what = $_POST['mark-as-read'];
     if ($what == 'all') {
-        $query = 'UPDATE rss SET bt_statut=0';
+        $query = '
+            UPDATE rss
+               SET bt_statut = 0';
         $array = array();
     } elseif ($what == 'site' and !empty($_POST['url'])) {
         $feedurl = $_POST['url'];
-        $query = 'UPDATE rss SET bt_statut=0 WHERE bt_feed=?';
+        $query = '
+            UPDATE rss
+               SET bt_statut = 0
+             WHERE bt_feed = ?';
         $array = array($feedurl);
     } elseif ($what == 'post' and !empty($_POST['url'])) {
         $postid = $_POST['url'];
-        $query = 'UPDATE rss SET bt_statut=0 WHERE bt_id=?';
+        $query = '
+            UPDATE rss
+               SET bt_statut = 0
+             WHERE bt_id = ?';
         $array = array($postid);
     } elseif ($what == 'folder' and !empty($_POST['url'])) {
         $folder = $_POST['url'];
-        $query = 'UPDATE rss SET bt_statut=0 WHERE bt_folder=?';
+        $query = '
+            UPDATE rss
+               SET bt_statut = 0
+             WHERE bt_folder = ?';
         $array = array($folder);
     } elseif ($what == 'postlist' and !empty($_POST['url'])) {
         $list = json_decode($_POST['url']);
         $questionmarks = str_repeat("?,", count($list)-1)."?";
-        $query = 'UPDATE rss SET bt_statut=0 WHERE bt_id IN ('.$questionmarks.')';
+        $query = '
+            UPDATE rss
+               SET bt_statut = 0
+             WHERE bt_id IN ('.$questionmarks.')';
         $array = $list;
     }
 
@@ -153,7 +169,10 @@ if (isset($_POST['mark-as-fav'])) {
     }
 
     $url = $_POST['url'];
-    $query = 'UPDATE rss SET bt_bookmarked= (1-bt_bookmarked) WHERE bt_id= ? ';
+    $query = '
+        UPDATE rss
+           SET bt_bookmarked = (1 - bt_bookmarked)
+         WHERE bt_id = ?';
     $array = array($url);
 
     try {

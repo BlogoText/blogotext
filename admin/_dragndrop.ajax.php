@@ -30,7 +30,6 @@ foreach ($GLOBALS['liste_fichiers'] as $key => $file) {
     $liste_fileid[] = $file['bt_id'];
 }
 
-
 if (isset($_FILES['fichier'])) {
     $time = time();
     $fichier = init_post_fichier();

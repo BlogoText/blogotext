@@ -136,7 +136,6 @@ function conversions_theme($texte, $solo_art, $cnt_mode)
     return $texte;
 }
 
-
 // Commentaire
 function conversions_theme_commentaire($texte, $commentaire)
 {
@@ -195,7 +194,6 @@ function conversions_theme_lien($texte, $lien)
     return $texte;
 }
 
-
 // récupère le bout du fichier thème contenant une boucle comme {BOUCLE_commentaires}
 //  soit le morceau de HTML retourné est parsé à son tour pour crée le HTML de chaque commentaire ou chaque article.
 //  soit le morceau de HTML retourné sert à se faire remplacer par l’ensemble des commentaires constitués
@@ -241,7 +239,6 @@ function afficher_index($tableau, $type)
         if (!empty($tableau)) {
             if (count($tableau)==1 and !empty($tableau[0]['bt_title']) and $tableau[0]['bt_type'] == 'article') {
                 redirection($tableau[0]['bt_link']);
-                exit;
             } else {
                 if (count($tableau)==1 and ($tableau[0]['bt_type'] == 'link' or $tableau[0]['bt_type'] == 'note')) {
                     $data = $tableau[0];
@@ -312,7 +309,7 @@ function afficher_liste($tableau)
         die($GLOBALS['lang']['err_theme_introuvable']);
     }
     $HTML_article = conversions_theme($theme_page, array(), 'list');
-    if (!empty($tableau)) {
+    if ($tableau) {
         $HTML_elmts .= '<ul id="liste-all-articles">'."\n";
         foreach ($tableau as $e) {
             $short_date = substr($e['bt_date'], 0, 4).'/'.substr($e['bt_date'], 4, 2).'/'.substr($e['bt_date'], 6, 2);
@@ -325,7 +322,6 @@ function afficher_liste($tableau)
     }
     echo $HTML;
 }
-
 
 // Include Addons and converts {tags} to HTML (specified in addons)
 function conversion_theme_addons($texte)

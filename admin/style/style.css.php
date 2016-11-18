@@ -7,7 +7,7 @@ if (extension_loaded('zlib') and ob_get_length() > 0) {
     ob_start("ob_gzhandler");
 }
 
-header("Content-type: text/css; charset: UTF-8");
+header('Content-type: text/css; charset: UTF-8');
 
 /* FOR MAINTENANCE : CSS FILES ARE SPLITED IN MULTIPLE FILES
 -------------------------------------------------------------*/
