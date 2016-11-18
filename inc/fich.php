@@ -30,6 +30,23 @@ function create_folder($dossier, $make_htaccess = '')
     return false;
 }
 
+function fichier_user()
+{
+    $fichier_user = '../'.DIR_CONFIG.'/user.ini';
+    $content = '';
+    if (strlen(trim($_POST['mdp'])) == 0) {
+        $new_mdp = USER_PWHASH;
+    } else {
+        $new_mdp = password_hash($_POST['mdp_rep'], PASSWORD_BCRYPT);
+    }
+    $content .= '; <?php die(); /*'."\n\n";
+    $content .= '; This file contains user login + password hash.'."\n\n";
+
+    $content .= 'USER_LOGIN = \''.addslashes(clean_txt(htmlspecialchars($_POST['identifiant']))).'\''."\n";
+    $content .= 'USER_PWHASH = \''.$new_mdp.'\''."\n";
+
+    return file_put_contents($fichier_user, $content) !== false;
+}
 
 function fichier_adv_conf()
 {

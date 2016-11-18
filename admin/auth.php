@@ -18,7 +18,6 @@ if (!is_file('../config/user.ini') || !is_file('../config/prefs.php')) {
 define('BT_ROOT', '../');
 
 require_once '../inc/inc.php';
-require_once '../inc/auth.php';
 
 $max_attemps = 10; // max attempts before blocking login page
 $wait_time = 30;   // time to wait before unblocking login page, in minutes
@@ -39,9 +38,7 @@ if (check_session() === true) { // return to index if session is already open.
 }
 
 // Auth checking :
-if (isset($_POST['_verif_envoi'])
- and auth_is_valid( $_POST['nom_utilisateur'] , $_POST['mot_de_passe'] ) === true
-){ // OK : getting in.
+if (isset($_POST['_verif_envoi']) and valider_form() === true) { // OK : getting in.
     if (USE_IP_IN_SESSION == 1) {
         $ip = get_ip();
     } else {
@@ -86,6 +83,11 @@ if (isset($_POST['_verif_envoi'])
     echo '<input type="hidden" name="_verif_envoi" value="1" />'."\n";
     echo '</div>'."\n";
     echo '</form>'."\n";
+}
+
+function valider_form()
+{
+    return password_verify($_POST['mot_de_passe'], USER_PWHASH) && $_POST['nom_utilisateur'] === USER_LOGIN;
 }
 
 echo "\n".'<script src="style/javascript.js"></script>'."\n";
