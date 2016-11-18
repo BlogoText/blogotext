@@ -26,7 +26,7 @@ function afficher_lien($link)
 {
     $list = '';
 
-    $list .= '<div class="linkbloc'.(!$link['bt_statut'] ? ' privatebloc' : '').'">'."\n";
+    $list .= '<div class="linkbloc'.((!$link['bt_statut']) ? ' privatebloc' : '').'">'."\n";
 
     $list .= '<div class="link-header">'."\n";
     $list .= "\t".'<a class="titre-lien" href="'.$link['bt_link'].'">'.$link['bt_title'].'</a>'."\n";
@@ -39,7 +39,7 @@ function afficher_lien($link)
     $list .= "\t".'</div>'."\n";
     $list .=  '</div>'."\n";
 
-    $list .= !empty($link['bt_content']) ? "\t".'<div class="link-content">'.$link['bt_content'].'</div>'."\n" : '';
+    $list .= (!empty($link['bt_content'])) ? "\t".'<div class="link-content">'.$link['bt_content'].'</div>'."\n" : '';
 
     $list .= "\t".'<div class="link-footer">'."\n";
     $list .= "\t\t".'<ul class="link-tags">'."\n";

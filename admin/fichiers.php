@@ -101,7 +101,7 @@ echo '<div id="page">'."\n";
 $real_fichiers = array();
 if ($fichiers) {
     foreach ($fichiers as $i => $file) {
-        $folder = $file['bt_type'] == 'image' ? DIR_IMAGES.$file['bt_path'] : DIR_DOCUMENTS;
+        $folder = ($file['bt_type'] == 'image') ? DIR_IMAGES.$file['bt_path'] : DIR_DOCUMENTS;
         if (is_file(BT_ROOT.'/'.$folder.'/'.$file['bt_filename']) and ($file['bt_filename'] != 'index.html')) {
             $real_fichiers[] = $file;
         }
