@@ -1,13 +1,13 @@
-/* MES LIENS 
+/* MES LIENS
 --------------------------------------------------------------------------- */
 #list-link {
-	-webkit-column-width: 700px;
-	-moz-column-width: 700px;
-	column-width: 700px;
-	margin-top: 20px;
-	-webkit-column-gap: 20px;
-	-moz-column-gap: 20px;
-	column-gap: 20px;
+    -webkit-column-width: 700px;
+    -moz-column-width: 700px;
+    column-width: 700px;
+    margin-top: 20px;
+    -webkit-column-gap: 20px;
+    -moz-column-gap: 20px;
+    column-gap: 20px;
 }
 
 .linkbloc.privatebloc {
@@ -18,223 +18,221 @@
 /* LINKS : Post new link
 ------------------------------------------------------*/
 #post-new-lien {
-	position: relative;
-	z-index: 1;
+    position: relative;
+    z-index: 1;
 }
 
 #post-new-lien::after {
-	content: "";
-	position: absolute;
-	top: 0; left: 0;
-	width: 100%; height: 100%;
-	box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 0 17px 0 rgba(0, 0, 0, 0.2);
-	opacity: 0;
-	transition: opacity 0.5s ease-in-out 0s;
-	z-index: -1;
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 0 17px 0 rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out 0s;
+    z-index: -1;
 }
 
 #post-new-lien:hover::after {
-	opacity: 1;
+    opacity: 1;
 }
 
 #post-new-lien:hover {
-	color: #333;
+    color: #333;
 }
 
 #post-new-lien .contain-input {
-	margin-top: 5px;
-	display: flex;
-	align-items: center;
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
 }
 
 #post-new-lien label[for="url"] {
-	width: 24px;
-	height: 24px;
-	overflow: hidden;
+    width: 24px;
+    height: 24px;
+    overflow: hidden;
 }
 
 #post-new-lien label[for="url"]::before {
-	content: "\e910";
-	font-size: 1.3em;
-	line-height: 24px;
-	color: rgba(0, 0, 0, .5);
+    content: "\e910";
+    font-size: 1.3em;
+    line-height: 24px;
+    color: rgba(0, 0, 0, .5);
 }
 
 #post-new-lien #url {
-	width: 100%;
-	min-width: 0;
+    width: 100%;
+    min-width: 0;
 }
 
 #post-new-lien .submit {
-	margin-top: 20px;
-	margin-left: 24px;
+    margin-top: 20px;
+    margin-left: 24px;
 }
 
 /* Form new link (title, descr, tags…)
 ------------------------------------------------------------*/
 #post-lien {
-	margin: auto;
-	width: 650px;
-	max-width: 100%;
-	padding: 20px;
-	box-shadow: 0 0 24px 0 rgba(0, 0, 0, 0.3);
-	background: white;
-	display: flex;
-	flex-direction: column;
-	resize: both;
-	overflow: hidden;
-	min-height: 200px;
-	min-width: 200px;
+    margin: auto;
+    width: 650px;
+    max-width: 100%;
+    padding: 20px;
+    box-shadow: 0 0 24px 0 rgba(0, 0, 0, 0.3);
+    background: white;
+    display: flex;
+    flex-direction: column;
+    resize: both;
+    overflow: hidden;
+    min-height: 200px;
+    min-width: 200px;
 }
 
 #post-lien input.readonly-like { /* form nouveau lien (#2), le lien de l’URL */
-	color: #bbb;
-	font-style: italic;
-	padding-left: .2em;
+    color: #bbb;
+    font-style: italic;
+    padding-left: .2em;
 }
 
 #post-lien .text {
-	padding: 14px 7px 2px 1px;
-	margin: 5px 0 0 0;
-	max-width: 100%;
+    padding: 14px 7px 2px 1px;
+    margin: 5px 0 0 0;
+    max-width: 100%;
 }
 
 
 #description-box {
-	flex: 1;
-	display: flex;
+    flex: 1;
+    display: flex;
 }
 
 #description-box #img-container {
-	height: 100%;
-	max-width: 30%;
-	background: #ddd;
+    height: 100%;
+    max-width: 30%;
+    background: #ddd;
 }
 #description-box .preview-img {
-	max-width: 100%;
-	height: auto;
+    max-width: 100%;
+    height: auto;
 }
 
 #description-box #img-container+.description {
-	padding-left: 10px;
+    padding-left: 10px;
 }
 
 #description-box .description {
-	padding-top: 15px;
-	flex: 1;
+    padding-top: 15px;
+    flex: 1;
 }
 
 #post-lien textarea {
-	min-height: 130px;
-	resize: none;
+    min-height: 130px;
+    resize: none;
 }
 
 /* LINKS : tags */
 /* see also #tag_bloc+ in style-ecrire.css */
 
 #post-lien #type_tags {
-	padding-left: 5px;
-	margin-top: 0;
-	padding-top: 5px;
+    padding-left: 5px;
+    margin-top: 0;
+    padding-top: 5px;
 }
 
 #post-lien #selected li:first-of-type {
-	border-left-width: 1px;
+    border-left-width: 1px;
 }
 
 /* LINKS : list of link-blocs (see also in
    "style-commentaires.css" for shared CSS with comments-blocs
 --------------------------------------------------------------*/
 .linkbloc:first-of-type {
-	margin-top: 0;
+    margin-top: 0;
 
 }
 .linkbloc:first-of-type:last-of-type {
-	display: inline-block; /* firefox bugfix for avoid collumn-break when single element */
+    display: inline-block; /* firefox bugfix for avoid collumn-break when single element */
 }
 
-/* LINKS : link header 
+/* LINKS : link header
 --------------------------------*/
 .linkbloc .titre-lien {
-	text-decoration: none;
-	font-weight: bold;
-	color: #333;
-	flex: 0 1 auto;
-	display: block;
+    text-decoration: none;
+    font-weight: bold;
+    color: #333;
+    flex: 0 1 auto;
+    display: block;
 }
 
 .linkbloc .titre-lien:hover {
-	color: #888;
+    color: #888;
 }
 
 .linkbloc .date,
 .linkbloc .hard-link {
-	font-size: .9em;
-	color: #aaa;
+    font-size: .9em;
+    color: #aaa;
 }
 
 .linkbloc .hard-link {
-	word-break: break-all;
+    word-break: break-all;
 }
 
 /* link options button */
-	/*  see comm-options button */
+    /*  see comm-options button */
 
 .link-options > ul > li {
-	padding: 0;
+    padding: 0;
 }
 
 .link-options > ul > li > a {
-	padding: 0 100px 0 40px;
-	box-sizing: border-box;
-	display: inline-block;
-	width: 100%;
-	color: inherit;
-	text-decoration: none;
+    padding: 0 100px 0 40px;
+    box-sizing: border-box;
+    display: inline-block;
+    width: 100%;
+    color: inherit;
+    text-decoration: none;
 }
 
-/* LINKS : link footer 
+/* LINKS : link footer
 --------------------------------*/
 .linkbloc .link-footer {
-	/*display: flex;*//* display block for muti-collum layout */
-	display: block;
-	align-items: center;
-	background-color: rgba(0, 0, 0, .05);
-	border-top: #eee;
+    /*display: flex;*//* display block for muti-collum layout */
+    display: block;
+    align-items: center;
+    background-color: rgba(0, 0, 0, .05);
+    border-top: #eee;
 }
 
 .linkbloc .link-tags {
-	flex: 1 0 auto;
-	margin: 0;
-	padding: 0;
+    flex: 1 0 auto;
+    margin: 0;
+    padding: 0;
 }
 
 .linkbloc .link-tags li {
-	display: inline-block;
-	padding: 3px 0;
+    display: inline-block;
+    padding: 3px 0;
 }
 
 .linkbloc .link-tags a {
-	display: inline-block;
-	margin-right: 3px;
-	padding: 3px 6px;
-	color: inherit;
-	text-decoration: none;
-	background: rgba(0, 0, 0, .05);
-	border-radius: 3px;
-	box-shadow: 0 0 1px rgba(0, 0, 0, .3) inset;
+    display: inline-block;
+    margin-right: 3px;
+    padding: 3px 6px;
+    color: inherit;
+    text-decoration: none;
+    background: rgba(0, 0, 0, .05);
+    border-radius: 3px;
+    box-shadow: 0 0 1px rgba(0, 0, 0, .3) inset;
 }
 
 .linkbloc .link-tags a:hover {
-	background: rgba(0, 0, 0, .1);
+    background: rgba(0, 0, 0, .1);
 }
 
 #post-lien #liste-tags {
-	min-width: 400px;
-	width: 50%;
-	margin: 0 0 2px 25%;
-	padding-left: 21px;
-	line-height: 19px;
+    min-width: 400px;
+    width: 50%;
+    margin: 0 0 2px 25%;
+    padding-left: 21px;
+    line-height: 19px;
 }
-
-

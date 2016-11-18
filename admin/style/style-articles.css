@@ -2,105 +2,104 @@
 --------------------------------------------------------------------------- */
 
 #billets {
-	padding: 0;
-	margin: auto;
-	list-style: none;
+    padding: 0;
+    margin: auto;
+    list-style: none;
 }
 
 #billets a:not(:hover),
 #billets > li > span:nth-of-type(3) a:hover,
 #billets > li > span:nth-of-type(4) a:hover {
-	text-decoration: none;
+    text-decoration: none;
 }
 
 #billets > li {
-	padding: 10px 20px;
-	min-height: 50px;
-	display: flex;
-	align-items: center;
-	border-bottom: 1px solid rgba(0, 0, 0, .1);
+    padding: 10px 20px;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
 }
 
 #billets > li:hover {
-	transition: box-shadow 0.5s ease 0s;
-	position: relative;
-	box-shadow: 0px 6px 20px 0px rgba(0, 0, 0, 0.19), 0px 8px 17px 0px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.5s ease 0s;
+    position: relative;
+    box-shadow: 0px 6px 20px 0px rgba(0, 0, 0, 0.19), 0px 8px 17px 0px rgba(0, 0, 0, 0.2);
 }
 
 #billets > li.planned {
-	background: #f0f0f0;
+    background: #f0f0f0;
 }
 
 #billets > li > span:nth-of-type(1)::before,
 #billets > li > span:nth-of-type(2)::before,
 #billets > li > span:nth-of-type(3) a::before,
 #billets > li > span:nth-of-type(4) a::before {
-	font-size: 1.4em;
-	margin-right: 5px;
-	color: rgba(0, 0, 0, .5);
+    font-size: 1.4em;
+    margin-right: 5px;
+    color: rgba(0, 0, 0, .5);
 }
 
 #billets > li > span:nth-of-type(1)::before {
-	font-size: 1.9em;
-	margin-right: 20px;
+    font-size: 1.9em;
+    margin-right: 20px;
 }
 
 #billets > li > span:nth-of-type(1).on::before {
-	content: "\e91c";
-	color: rgba(101, 234, 143, 1);
+    content: "\e91c";
+    color: rgba(101, 234, 143, 1);
 }
 
 #billets > li > span:nth-of-type(1).off::before {
-	content: "\e917";
-	color: rgba(252, 101, 101, 1);
+    content: "\e917";
+    color: rgba(252, 101, 101, 1);
 }
 
 #billets > li > span:nth-of-type(1) { /*title*/
-	flex: 1;
-	padding: 0 10px 0 0;
+    flex: 1;
+    padding: 0 10px 0 0;
 }
 
 #billets > li > span:nth-of-type(n+2) {
-	opacity: .5;
-	font-size: .9em;
+    opacity: .5;
+    font-size: .9em;
 }
 #billets > li:hover > span:nth-of-type(n+2) {
-	opacity: 1;
+    opacity: 1;
 }
 
 #billets > li > span:nth-of-type(1),
 #billets > li > span:nth-of-type(1) a {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #billets > li > span:nth-of-type(2) { /*date*/
-	text-align: center;
+    text-align: center;
 }
 #billets > li > span:nth-of-type(2)::before {
-	content: "\e918";
+    content: "\e918";
 }
 
 #billets > li > span:nth-of-type(3) { /*comms*/
-	padding: 0 0 0 12px;
-	margin: 0 15px 0 10px;
+    padding: 0 0 0 12px;
+    margin: 0 15px 0 10px;
 }
 #billets > li > span:nth-of-type(3) a {
 }
 #billets > li > span:nth-of-type(3) a::before {
-	content: "\e91b";
+    content: "\e91b";
 }
 
 
 #billets > li > span:nth-of-type(4) a::before { /* prev */
-	content: "\e902";
+    content: "\e902";
 }
 
 
 #billets > li > span:nth-of-type(1) a,
 #billets > li > span:nth-of-type(2) a,
 #billets > li > span:nth-of-type(3) a {
-	color: inherit;
+    color: inherit;
 }
-
