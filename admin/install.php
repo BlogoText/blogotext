@@ -21,7 +21,7 @@ if (is_file('../config/user.ini') and is_file('../config/prefs.php') and !$step3
 
 // some constants definition
 define('BT_ROOT', '../');
-define('DISPLAY_PHP_ERRORS', '-1');
+define('DISPLAY_PHP_ERRORS', -1);
 $GLOBALS['fuseau_horaire'] = 'UTC';
 
 if (isset($_GET['l'])) {

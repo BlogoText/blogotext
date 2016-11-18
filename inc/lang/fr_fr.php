@@ -466,7 +466,7 @@ $GLOBALS['lang'] = array(
 // vérifier les mises à jours
 'maint_chk_update' => 'Mises à jour',
 'maint_update_youisgood' => 'Blogotext est à jour',
-'maint_update_youisbad' => 'Une nouvelle version de Blogotext est disponible !',
+'maint_update_youisbad' => 'Une nouvelle version de Blogotext est disponible :',
 'maint_update_go_dl_it' => 'Vous pouvez la télécharger à l’adresse :',
 
 'succes' => 'Succès',

@@ -1028,28 +1028,28 @@ function afficher_form_prefs($erreurs = '')
     // Check if a new Blogotext version is available (code from Shaarli, by Sebsauvage).
     // Get latest version number at most once a day.
     if ($GLOBALS['check_update'] == 1) {
-        $version_file = '../config/version.txt';
-        if (!is_file($version_file) or (filemtime($version_file) < time()-(24*60*60))) {
-            $version_hit_url = 'http://lehollandaisvolant.net/blogotext/version.php';
-            $response = request_external_files(array($version_hit_url), 6, false);
-            $last_version = $response[$version_hit_url]['body'];
-            // If failed, nevermind. We don't want to bother the user with that.
-            if (empty($last_version)) {
-                file_put_contents($version_file, BLOGOTEXT_VERSION); // touch
-            } else {
-                file_put_contents($version_file, $last_version); // rewrite file
-            }
+        $version_file = '../VERSION';
+        if (!is_file($version_file) or filemtime($version_file) < time() - 24 * 60 * 60) {
+            $version_hit_url = 'https://raw.githubusercontent.com/BoboTiG/blogotext/master/VERSION';
+            $response = request_external_files(array($version_hit_url), 6);
+            $version = trim($response[$version_hit_url]['body']);
+            $last_version = is_valid_version($version) ? $version : BLOGOTEXT_VERSION;
+            file_put_contents($version_file, $last_version);
         }
 
         // Compare versions
-        $newestversion = file_get_contents($version_file);
-        if (version_compare($newestversion, BLOGOTEXT_VERSION) == 1) {
+        $newest_version = file_get_contents($version_file);
+        if (version_compare($newest_version, BLOGOTEXT_VERSION) == 1) {
             $fld_update = '<div role="group" class="pref">';
             $fld_update .= '<div class="form-legend"><legend class="legend-update">'.$GLOBALS['lang']['maint_chk_update'].'</legend></div>'."\n";
             $fld_update .= '<div class="form-lines">'."\n";
             $fld_update .= '<p>'."\n";
-            $fld_update .= "\t".'<label>'.$GLOBALS['lang']['maint_update_youisbad'].' ('.$newestversion.'). '.$GLOBALS['lang']['maint_update_go_dl_it'].'</label>'."\n";
-            $fld_update .= "\t".'<a href="http://lehollandaisvolant.net/blogotext/">lehollandaisvolant.net/blogotext</a>.';
+            $fld_update .= "\t".'<label>'.$GLOBALS['lang']['maint_update_youisbad'].'</label>'."\n";
+            $fld_update .= "\t".'<b>'.$newest_version.'</b>';
+            $fld_update .= '</p>'."\n";
+            $fld_update .= '<p>'."\n";
+            $fld_update .= "\t".'<label>'.$GLOBALS['lang']['maint_update_go_dl_it'].'</label>'."\n";
+            $fld_update .= "\t".'<a href="'.BLOGOTEXT_SITE.'">'.parse_url(BLOGOTEXT_SITE, 1).parse_url(BLOGOTEXT_SITE, 5).'</a>';
             $fld_update .= '</p>'."\n";
             $fld_update .= '</div>'."\n";
             $fld_update .= '</div>'."\n";
@@ -1058,4 +1058,35 @@ function afficher_form_prefs($erreurs = '')
     }
 
     echo '</form>'."\n";
+}
+
+// Check SemVer validity
+// source: https://github.com/morrisonlevi/SemVer/blob/master/src/League/SemVer/RegexParser.php
+function is_valid_version($version)
+{
+    $regex = '/^
+        (?#major)(0|(?:[1-9][0-9]*))
+        \\.
+        (?#minor)(0|(?:[1-9][0-9]*))
+        \\.
+        (?#patch)(0|(?:[1-9][0-9]*))
+        (?:
+            -
+            (?#pre-release)(
+                (?:(?:0|(?:[1-9][0-9]*))|(?:[0-9]*[a-zA-Z-][a-zA-Z0-9-]*))
+                (?:
+                    \\.
+                    (?:(?:0|(?:[1-9][0-9]*))|(?:[0-9]*[a-zA-Z-][a-zA-Z0-9-]*))
+                )*
+            )
+        )?
+        (?:
+            \\+
+            (?#build)(
+                [0-9a-zA-Z-]+
+                (?:\\.[a-zA-Z0-9-]+)*
+            )
+        )?
+    $/x';
+    return preg_match($regex, $version);
 }
