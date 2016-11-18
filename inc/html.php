@@ -51,16 +51,16 @@ function afficher_topnav($titre)
     $html = '';
     $html .= '<div id="nav">'."\n";
     $html .=  "\t".'<ul>'."\n";
-    $html .=  "\t\t".'<li><a href="index.php" id="lien-index"'.(($tab == 'index.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['label_resume'].'</a></li>'."\n";
-    $html .=  "\t\t".'<li><a href="articles.php" id="lien-liste"'.(($tab == 'articles.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['mesarticles'].'</a></li>'."\n";
-    $html .=  "\t\t".'<li><a href="ecrire.php" id="lien-nouveau"'.(($tab == 'ecrire.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['nouveau'].'</a></li>'."\n";
-    $html .=  "\t\t".'<li><a href="commentaires.php" id="lien-lscom"'.(($tab == 'commentaires.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['titre_commentaires'].'</a></li>'."\n";
-    $html .=  "\t\t".'<li><a href="fichiers.php" id="lien-fichiers"'.(($tab == 'fichiers.php') ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_fichiers']).'</a></li>'."\n";
+    $html .=  "\t\t".'<li><a href="index.php" id="lien-index"'.($tab == 'index.php' ? ' class="current"' : '').'>'.$GLOBALS['lang']['label_resume'].'</a></li>'."\n";
+    $html .=  "\t\t".'<li><a href="articles.php" id="lien-liste"'.($tab == 'articles.php' ? ' class="current"' : '').'>'.$GLOBALS['lang']['mesarticles'].'</a></li>'."\n";
+    $html .=  "\t\t".'<li><a href="ecrire.php" id="lien-nouveau"'.($tab == 'ecrire.php' ? ' class="current"' : '').'>'.$GLOBALS['lang']['nouveau'].'</a></li>'."\n";
+    $html .=  "\t\t".'<li><a href="commentaires.php" id="lien-lscom"'.($tab == 'commentaires.php' ? ' class="current"' : '').'>'.$GLOBALS['lang']['titre_commentaires'].'</a></li>'."\n";
+    $html .=  "\t\t".'<li><a href="fichiers.php" id="lien-fichiers"'.($tab == 'fichiers.php' ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_fichiers']).'</a></li>'."\n";
     if ($GLOBALS['onglet_liens']) {
-        $html .=  "\t\t".'<li><a href="links.php" id="lien-links"'.(($tab == 'links.php') ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_links']).'</a></li>'."\n";
+        $html .=  "\t\t".'<li><a href="links.php" id="lien-links"'.($tab == 'links.php' ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_links']).'</a></li>'."\n";
     }
     if ($GLOBALS['onglet_rss']) {
-        $html .=  "\t\t".'<li><a href="feed.php" id="lien-rss"'.(($tab == 'feed.php') ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_feeds']).'</a></li>'."\n";
+        $html .=  "\t\t".'<li><a href="feed.php" id="lien-rss"'.($tab == 'feed.php' ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_feeds']).'</a></li>'."\n";
     }
     $html .=  "\t".'</ul>'."\n";
     $html .=  '</div>'."\n";
@@ -125,7 +125,7 @@ function afficher_msg()
     // message vert
     if (isset($_GET['msg'])) {
         if (array_key_exists(htmlspecialchars($_GET['msg']), $GLOBALS['lang'])) {
-            $suffix = (isset($_GET['nbnew'])) ? htmlspecialchars($_GET['nbnew']).' '.$GLOBALS['lang']['rss_nouveau_flux'] : ''; // nb new RSS
+            $suffix = isset($_GET['nbnew']) ? htmlspecialchars($_GET['nbnew']).' '.$GLOBALS['lang']['rss_nouveau_flux'] : ''; // nb new RSS
             confirmation($GLOBALS['lang'][$_GET['msg']].$suffix);
         }
     }
@@ -193,10 +193,10 @@ function encart_commentaires()
 function encart_categories($mode)
 {
     if ($GLOBALS['activer_categories'] == '1') {
-        $where = ($mode == 'links') ? 'links' : 'articles';
-        $ampmode = ($mode == 'links') ? '&amp;mode=links' : '';
+        $where = $mode == 'links' ? 'links' : 'articles';
+        $ampmode = $mode == 'links' ? '&amp;mode=links' : '';
 
-        $liste = list_all_tags($where, '1');
+        $liste = list_all_tags($where, 1);
 
         // attach non-diacritic versions of tag, so that "é" does not pass after "z" and re-indexes
         foreach ($liste as $tag => $nb) {
@@ -221,32 +221,34 @@ function lien_pagination()
 {
     if (!isset($GLOBALS['param_pagination']) or isset($_GET['d']) or isset($_GET['liste']) or isset($_GET['id'])) {
         return '';
-    } else {
-        $nb = $GLOBALS['param_pagination']['nb'];
-        $nb_par_page = $GLOBALS['param_pagination']['nb_par_page'];
     }
-    $page_courante = (isset($_GET['p']) and is_numeric($_GET['p'])) ? $_GET['p'] : 0;
+
     $qstring = remove_url_param('p');
-    if ($page_courante <=0) {
-        $lien_precede = '';
-        $lien_suivant = '<a href="?'.$qstring.'&amp;p=1" rel="next">'.$GLOBALS['lang']['label_suivant'].'</a>';
-        if ($nb < $nb_par_page) { // évite de pouvoir aller dans la passé s’il y a moins de 10 posts
-            $lien_suivant = '';
+    $page_courante = !empty($_GET['p']) ? $_GET['p'] + 0 : 1;
+    if ($page_courante < 1) {
+        redirection('?'.$qstring.'&p=1');
+    }
+
+    $nb = $GLOBALS['param_pagination']['nb'];
+    $nb_par_page = $GLOBALS['param_pagination']['nb_par_page'];
+    $lien_precede = '';
+    $lien_suivant = '';
+    if ($nb == $nb_par_page) {
+        if ($page_courante > 1) {
+            $lien_precede = '<a href="?'.$qstring.'&amp;p='.($page_courante - 1).'" rel="prev">'.$GLOBALS['lang']['label_precedent'].'</a>';
         }
-    } elseif ($nb < $nb_par_page) { // évite de pouvoir aller dans l’infini en arrière dans les pages, nottament pour les robots.
-        $lien_precede = '<a href="?'.$qstring.'&amp;p='.($page_courante-1).'" rel="prev">'.$GLOBALS['lang']['label_precedent'].'</a>';
-        $lien_suivant = '';
+        $lien_suivant = '<a href="?'.$qstring.'&amp;p='.($page_courante + 1).'" rel="next">'.$GLOBALS['lang']['label_suivant'].'</a>';
+    } elseif ($nb < $nb_par_page) {
+        $lien_precede = '<a href="?'.$qstring.'&amp;p='.($page_courante - 1).'" rel="prev">'.$GLOBALS['lang']['label_precedent'].'</a>';
     } else {
-        $lien_precede = '<a href="?'.$qstring.'&amp;p='.($page_courante-1).'" rel="prev">'.$GLOBALS['lang']['label_precedent'].'</a>';
-        $lien_suivant = '<a href="?'.$qstring.'&amp;p='.($page_courante+1).'" rel="next">'.$GLOBALS['lang']['label_suivant'].'</a>';
+        $lien_suivant = '<a href="?'.$qstring.'&amp;p='.($page_courante + 1).'" rel="next">'.$GLOBALS['lang']['label_suivant'].'</a>';
     }
     return '<p class="pagination">'.$lien_precede.$lien_suivant.'</p>';
 }
 
-
 function liste_tags($billet, $html_link)
 {
-    $mode = ($billet['bt_type'] == 'article') ? '' : '&amp;mode=links';
+    $mode = $billet['bt_type'] == 'article' ? '' : '&amp;mode=links';
     $liste = '';
     if (!empty($billet['bt_tags'])) {
         $tag_list = explode(', ', $billet['bt_tags']);
