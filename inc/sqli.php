@@ -20,9 +20,9 @@ function create_tables()
     if (is_file(BT_ROOT.DIR_CONFIG.'/'.'mysql.php')) {
         include BT_ROOT.DIR_CONFIG.'/'.'mysql.php';
     }
-    $auto_increment = DBMS == 'mysql' ? 'AUTO_INCREMENT' : ''; // SQLite doesn't need this, but MySQL does.
-    $index_limit_size = DBMS == 'mysql' ? '(15)' : ''; // MySQL needs a limit for indexes on TEXT fields.
-    $if_not_exists = DBMS == 'sqlite' ? 'IF NOT EXISTS' : ''; // MySQL doesn’t know this statement for INDEXES
+    $auto_increment = (DBMS == 'mysql') ? 'AUTO_INCREMENT' : ''; // SQLite doesn't need this, but MySQL does.
+    $index_limit_size = (DBMS == 'mysql') ? '(15)' : ''; // MySQL needs a limit for indexes on TEXT fields.
+    $if_not_exists = (DBMS == 'sqlite') ? 'IF NOT EXISTS' : ''; // MySQL doesn’t know this statement for INDEXES
 
     $dbase_structure['links'] = "CREATE TABLE IF NOT EXISTS links
         (
@@ -261,13 +261,13 @@ function init_post_article()
         'bt_id'             => $id,
         'bt_date'           => $date,
         'bt_title'          => protect($_POST['titre']),
-        'bt_abstract'       => empty($_POST['chapo']) ? '' : clean_txt($_POST['chapo']),
+        'bt_abstract'       => (empty($_POST['chapo'])) ? '' : clean_txt($_POST['chapo']),
         'bt_notes'          => protect($_POST['notes']),
         'bt_content'        => $formated_contenu,
         'bt_wiki_content'   => clean_txt($_POST['contenu']),
         'bt_link'           => '', // this one is not needed yet. Maybe in the futur. I dunno why it is still in the DB…
         'bt_keywords'       => $keywords,
-        'bt_tags'           => isset($_POST['categories']) ? htmlspecialchars(traiter_tags($_POST['categories'])) : '', // htmlSpecialChars() nedded to escape the (") since tags are put in a <input/>. (') are escaped in form_categories(), with addslashes – not here because of JS problems :/
+        'bt_tags'           => (isset($_POST['categories'])) ? htmlspecialchars(traiter_tags($_POST['categories'])) : '', // htmlSpecialChars() nedded to escape the (") since tags are put in a <input/>. (') are escaped in form_categories(), with addslashes – not here because of JS problems :/
         'bt_statut'         => $_POST['statut'],
         'bt_allow_comments' => $_POST['allowcomment'],
     );
@@ -337,9 +337,9 @@ function init_post_link2()
         'bt_content'      => markup(htmlspecialchars(clean_txt($_POST['description']), ENT_NOQUOTES)),
         'bt_wiki_content' => protect($_POST['description']),
         'bt_title'        => protect($_POST['title']),
-        'bt_link'         => empty($_POST['url']) ? $GLOBALS['racine'].'?mode=links&amp;id='.$id : protect($_POST['url']),
+        'bt_link'         => (empty($_POST['url'])) ? $GLOBALS['racine'].'?mode=links&amp;id='.$id : protect($_POST['url']),
         'bt_tags'         => htmlspecialchars(traiter_tags($_POST['categories'])),
-        'bt_statut'       => isset($_POST['statut']) ? 0 : 1
+        'bt_statut'       => (isset($_POST['statut'])) ? 0 : 1
     );
     if (isset($_POST['ID']) and is_numeric($_POST['ID'])) { // ID only added on edit.
         $link['ID'] = $_POST['ID'];
@@ -891,7 +891,7 @@ function rss_count_feed()
 // FOR RSS : get $_POST and update feeds (title, url…) for feeds.php?config
 function traiter_form_rssconf()
 {
-    $msg_param_to_trim = isset($_GET['msg']) ? '&msg='.$_GET['msg'] : '';
+    $msg_param_to_trim = (isset($_GET['msg'])) ? '&msg='.$_GET['msg'] : '';
     $query_string = str_replace($msg_param_to_trim, '', $_SERVER['QUERY_STRING']);
     // traitement
     $GLOBALS['db_handle']->beginTransaction();

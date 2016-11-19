@@ -15,6 +15,7 @@ $begin = microtime(true);
 define('BT_ROOT', '../');
 
 require_once '../inc/inc.php';
+require_once '../inc/auth.php';
 
 operate_session();
 
@@ -23,7 +24,8 @@ $erreurs_form = array();
 if (isset($_POST['_verif_envoi'])) {
     $erreurs_form = valider_form_preferences();
     if (empty($erreurs_form)) {
-        if (fichier_user() and fichier_prefs()) {
+        // devnote : I suppose we take $_POST['mdp_rep'] (alt. $_POST['mdp'])
+        if (auth_write_user_login_file($_POST['identifiant'], $_POST['mdp_rep']) && fichier_prefs()) {
             redirection(basename($_SERVER['SCRIPT_NAME']).'?msg=confirm_prefs_maj');
         } else {
             $erreurs_form[] = $GLOBALS['lang']['err_prefs_write'];

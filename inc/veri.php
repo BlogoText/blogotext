@@ -223,7 +223,7 @@ function valider_form_link()
 function valider_form_maintenance()
 {
     $erreurs = array();
-    $token = isset($_POST['token']) ? $_POST['token'] : (isset($_GET['token']) ? $_GET['token'] : 'false');
+    $token = (isset($_POST['token'])) ? $_POST['token'] : (isset($_GET['token']) ? $_GET['token'] : 'false');
     if (!check_token($token)) {
         $erreurs[] = $GLOBALS['lang']['err_wrong_token'];
     }

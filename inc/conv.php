@@ -149,7 +149,7 @@ function parse_texte_code($texte, $code_before)
         foreach ($code_before as $i => $code) {
             $pos = strpos($texte, $code_after[$i][0]);
             if ($pos !== false) {
-                 $texte = substr_replace($texte, '<pre'.(isset($code_after[$i][1]) ? $code_after[$i][1] : '').'><code>'.htmlspecialchars(htmlspecialchars_decode($code_before[$i][3])).'</code></pre>', $pos, strlen($code_after[$i][0]));
+                 $texte = substr_replace($texte, '<pre'.((isset($code_after[$i][1])) ? $code_after[$i][1] : '').'><code>'.htmlspecialchars(htmlspecialchars_decode($code_before[$i][3])).'</code></pre>', $pos, strlen($code_after[$i][0]));
             }
         }
     }

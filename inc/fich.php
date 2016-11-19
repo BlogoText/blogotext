@@ -30,23 +30,6 @@ function create_folder($dossier, $make_htaccess = '')
     return false;
 }
 
-function fichier_user()
-{
-    $fichier_user = '../'.DIR_CONFIG.'/user.ini';
-    $content = '';
-    if (strlen(trim($_POST['mdp'])) == 0) {
-        $new_mdp = USER_PWHASH;
-    } else {
-        $new_mdp = password_hash($_POST['mdp_rep'], PASSWORD_BCRYPT);
-    }
-    $content .= '; <?php die(); /*'."\n\n";
-    $content .= '; This file contains user login + password hash.'."\n\n";
-
-    $content .= 'USER_LOGIN = \''.addslashes(clean_txt(htmlspecialchars($_POST['identifiant']))).'\''."\n";
-    $content .= 'USER_PWHASH = \''.$new_mdp.'\''."\n";
-
-    return file_put_contents($fichier_user, $content) !== false;
-}
 
 function fichier_adv_conf()
 {
@@ -66,7 +49,7 @@ function fichier_prefs()
 {
     $fichier_prefs = '../'.DIR_CONFIG.'/prefs.php';
     if (!empty($_POST['_verif_envoi'])) {
-        $lang = isset($_POST['langue']) and preg_match('#^[a-z]{2}$#', $_POST['langue']) ? $_POST['langue'] : 'fr';
+        $lang = (isset($_POST['langue']) and preg_match('#^[a-z]{2}$#', $_POST['langue'])) ? $_POST['langue'] : 'fr';
         $auteur = addslashes(clean_txt(htmlspecialchars($_POST['auteur'])));
         $email = addslashes(clean_txt(htmlspecialchars($_POST['email'])));
         $nomsite = addslashes(clean_txt(htmlspecialchars($_POST['nomsite'])));
@@ -522,7 +505,7 @@ function feed2array($feed_content, $feedlink)
                 // place le lien du flux (on a besoin de ça)
                 $flux['items'][$c]['bt_feed_url'] = $feedlink;
                 // place le dossier
-                $flux['items'][$c]['bt_folder'] = isset($GLOBALS['liste_flux'][$feedlink]['folder']) ? $GLOBALS['liste_flux'][$feedlink]['folder'] : '';
+                $flux['items'][$c]['bt_folder'] = (isset($GLOBALS['liste_flux'][$feedlink]['folder'])) ? $GLOBALS['liste_flux'][$feedlink]['folder'] : '';
             }
         } else {
             return false;
@@ -560,7 +543,7 @@ function send_rss_json($rss_entries)
             '"content": '.json_encode($entry['bt_content']).','.
             '"statut": '.$entry['bt_statut'].','.
             '"fav": '.$entry['bt_bookmarked'].''.
-        '}'.($count == $i ? '' :',')."\n";
+        '}'.(($count == $i) ? '' :',')."\n";
     }
     $out .= ']'."\n".'}';
     $out .=  '</script>'."\n";
@@ -572,7 +555,7 @@ if (!function_exists('http_parse_headers')) {
     function http_parse_headers($raw_headers)
     {
         $headers = array();
-        $array_headers = (is_array($raw_headers) ? $raw_headers : explode("\n", $raw_headers));
+        $array_headers = ((is_array($raw_headers)) ? $raw_headers : explode("\n", $raw_headers));
 
         foreach ($array_headers as $i => $h) {
             $h = explode(':', $h, 2);

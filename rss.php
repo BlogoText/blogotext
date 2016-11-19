@@ -14,7 +14,7 @@
 header('Content-Type: application/rss+xml; charset=UTF-8');
 
 // second level caching file.
-$lv2_cache_file = 'cache/c_rss_'.substr(md5(isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : ''), 0, 8).'.dat';
+$lv2_cache_file = 'cache/c_rss_'.substr(md5((isset($_SERVER['QUERY_STRING'])) ? $_SERVER['QUERY_STRING'] : ''), 0, 8).'.dat';
 
 // if cache file exists
 if (is_file($lv2_cache_file)) {

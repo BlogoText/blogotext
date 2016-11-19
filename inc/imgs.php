@@ -453,8 +453,8 @@ function init_post_fichier()
         'bt_wiki_content' => clean_txt($_POST['description']),
         'bt_checksum' => $checksum,
         'bt_statut' => $statut,
-        'bt_dossier' => (empty($dossier) ? 'default' : $dossier ), // tags
-        'bt_path' => (empty($path) ? '/'.(substr($checksum, 0, 2)) : $path ), // path on disk (rand subdir to avoid too many files in same dir)
+        'bt_dossier' => ((empty($dossier)) ? 'default' : $dossier ), // tags
+        'bt_path' => ((empty($path)) ? '/'.(substr($checksum, 0, 2)) : $path ), // path on disk (rand subdir to avoid too many files in same dir)
     );
     return $fichier;
 }
@@ -561,7 +561,7 @@ function afficher_form_fichier($erreurs, $fichiers, $what)
         $form .= '<div id="img-others-infos">'."\n";
         $form .= "\t".'<p><label for="nom_entree">'.ucfirst($GLOBALS['lang']['label_dp_nom']).'</label><input type="text" id="nom_entree" name="nom_entree" placeholder="" value="'.pathinfo($myfile['bt_filename'], PATHINFO_FILENAME).'" size="60" class="text" /></p>'."\n";
         $form .= "\t".'<p><label for="description">'.$GLOBALS['lang']['label_dp_description'].'</label><textarea class="text" name="description" id="description" cols="60" rows="5" placeholder="'.$GLOBALS['lang']['placeholder_description'].'" >'.$myfile['bt_wiki_content'].'</textarea></p>'."\n";
-        $form .= "\t".'<p><label for="dossier">'.$GLOBALS['lang']['label_dp_dossier'].'</label><input type="text" name="dossier" placeholder="'.$GLOBALS['lang']['placeholder_folder'].'" value="'.(!empty($myfile['bt_dossier']) ? $myfile['bt_dossier'] : '').'" size="60" class="text" /></p>'."\n";
+        $form .= "\t".'<p><label for="dossier">'.$GLOBALS['lang']['label_dp_dossier'].'</label><input type="text" name="dossier" placeholder="'.$GLOBALS['lang']['placeholder_folder'].'" value="'.((!empty($myfile['bt_dossier'])) ? $myfile['bt_dossier'] : '').'" size="60" class="text" /></p>'."\n";
         $checked = ($myfile['bt_statut'] == 0) ? 'checked ' : '';
         $form .= "\t".'<p><input type="checkbox" id="statut" name="statut" '.$checked.' class="checkbox" /><label for="statut">'.$GLOBALS['lang']['label_file_priv'].'</label></p>';
         $form .= "\t".'<p class="submit-bttns">'."\n";

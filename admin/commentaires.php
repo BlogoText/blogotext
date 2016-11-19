@@ -28,7 +28,7 @@ $article_title = '';
 $erreurs_form = array();
 if (isset($_POST['_verif_envoi'])) {
     if (isset($_POST['com_supprimer']) or isset($_POST['com_activer'])) {
-        $comm_action = (isset($_POST['com_supprimer']) ? $_POST['com_supprimer'] : $_POST['com_activer']);
+        $comm_action = ((isset($_POST['com_supprimer'])) ? $_POST['com_supprimer'] : $_POST['com_activer']);
         $erreurs_form = valider_form_commentaire_ajax($comm_action);
         if (empty($erreurs_form)) {
             traiter_form_commentaire($comm_action, 'admin');
@@ -152,10 +152,10 @@ else {
 function afficher_commentaire($comment, $with_link)
 {
     afficher_form_commentaire($comment['bt_article_id'], 'admin', '', $comment);
-    echo '<div class="commentbloc'.(!$comment['bt_statut'] ? ' privatebloc' : '').'" id="'.article_anchor($comment['bt_id']).'">'."\n";
+    echo '<div class="commentbloc'.((!$comment['bt_statut']) ? ' privatebloc' : '').'" id="'.article_anchor($comment['bt_id']).'">'."\n";
     echo '<div class="comm-side-icon">'."\n";
         echo "\t".'<div class="comm-title">'."\n";
-        echo "\t\t".'<img class="author-icon" src="cache/get.php?w=avatar&amp;q='.md5((!empty($comment['bt_email']) ? $comment['bt_email'] : $comment['bt_author'] )).'&amp;s=48&amp;d=monsterid"/>'."\n";
+        echo "\t\t".'<img class="author-icon" src="cache/get.php?w=avatar&amp;q='.md5(((!empty($comment['bt_email'])) ? $comment['bt_email'] : $comment['bt_author'] )).'&amp;s=48&amp;d=monsterid"/>'."\n";
         echo "\t\t".'<span class="date">'.date_formate($comment['bt_id']).'<span>'.heure_formate($comment['bt_id']).'</span></span>'."\n" ;
 
         echo "\t\t".'<span class="reply" onclick="reply(\'[b]@['.str_replace('\'', '\\\'', $comment['bt_author']).'|#'.article_anchor($comment['bt_id']).'] :[/b] \'); ">Reply</span> ';
@@ -177,7 +177,7 @@ function afficher_commentaire($comment, $with_link)
     echo "\t\t".'<div class="comm-options">'."\n";
     echo "\t\t\t".'<ul>'."\n";
     echo "\t\t\t\t".'<li class="cl-edit" onclick="unfold(this);">'.$GLOBALS['lang']['editer'].'</li>'."\n";
-    echo "\t\t\t\t".'<li class="cl-activ" onclick="activate_comm(this);" data-comm-id="'.$comment['ID'].'" data-comm-btid="'.$comment['bt_id'].'" data-comm-art-id="'.$comment['bt_article_id'].'">'.$GLOBALS['lang'][(!$comment['bt_statut'] ? '' : 'des').'activer'].'</li>'."\n";
+    echo "\t\t\t\t".'<li class="cl-activ" onclick="activate_comm(this);" data-comm-id="'.$comment['ID'].'" data-comm-btid="'.$comment['bt_id'].'" data-comm-art-id="'.$comment['bt_article_id'].'">'.$GLOBALS['lang'][((!$comment['bt_statut']) ? '' : 'des').'activer'].'</li>'."\n";
     echo "\t\t\t\t".'<li class="cl-suppr" onclick="suppr_comm(this);" data-comm-id="'.$comment['ID'].'" data-comm-art-id="'.$comment['bt_article_id'].'">'.$GLOBALS['lang']['supprimer'].'</li>'."\n";
     echo "\t\t\t".'</ul>'."\n";
     echo "\t\t".'</div>'."\n";
