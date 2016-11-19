@@ -39,9 +39,8 @@ if (check_session() === true) { // return to index if session is already open.
 }
 
 // Auth checking :
-if (isset($_POST['_verif_envoi'])
- and auth_is_valid( $_POST['nom_utilisateur'] , $_POST['mot_de_passe'] ) === true
-){ // OK : getting in.
+if (isset($_POST['_verif_envoi']) and auth_is_valid( $_POST['nom_utilisateur'] , $_POST['mot_de_passe'] ) === true){
+    // OK : getting in.
     if (USE_IP_IN_SESSION == 1) {
         $ip = get_ip();
     } else {
