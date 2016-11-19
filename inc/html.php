@@ -10,7 +10,6 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 #
 # *** LICENSE ***
-
 function afficher_html_head($titre)
 {
     $html = '<!DOCTYPE html>'."\n";
@@ -24,7 +23,6 @@ function afficher_html_head($titre)
     $html .= '<body id="body">'."\n\n";
     echo $html;
 }
-
 function footer($begin_time = '')
 {
     $msg = '';
@@ -32,7 +30,6 @@ function footer($begin_time = '')
         $dt = round((microtime(true) - $begin_time), 6);
         $msg = ' - '.$GLOBALS['lang']['rendered'].' '.$dt.' s '.$GLOBALS['lang']['using'].' '.DBMS;
     }
-
     $html = '</div>'."\n";
     $html .= '</div>'."\n";
     $html .= '<p id="footer"><a href="'.BLOGOTEXT_SITE.'">'.BLOGOTEXT_NAME.' '.BLOGOTEXT_VERSION.'</a>'.$msg.'</p>'."\n";
@@ -40,7 +37,6 @@ function footer($begin_time = '')
     $html .= '</html>'."\n";
     echo $html;
 }
-
 /// menu haut panneau admin /////////
 function afficher_topnav($titre)
 {
@@ -64,9 +60,7 @@ function afficher_topnav($titre)
     }
     $html .=  "\t".'</ul>'."\n";
     $html .=  '</div>'."\n";
-
     $html .=  '<h1>'.$titre.'</h1>'."\n";
-
     $html .=  '<div id="nav-acc">'."\n";
     $html .=  "\t".'<ul>'."\n";
     $html .=  "\t\t".'<li><a href="preferences.php" id="lien-preferences">'.$GLOBALS['lang']['preferences'].'</a></li>'."\n";
@@ -77,27 +71,22 @@ function afficher_topnav($titre)
     $html .=  '</div>'."\n";
     echo $html;
 }
-
 function confirmation($message)
 {
     echo '<div class="confirmation">'.$message.'</div>'."\n";
 }
-
 function no_confirmation($message)
 {
     echo '<div class="no_confirmation">'.$message.'</div>'."\n";
 }
-
 function label($for, $txt)
 {
     return '<label for="'.$for.'">'.$txt.'</label>'."\n";
 }
-
 function info($message)
 {
     return '<p class="info">'.$message.'</p>'."\n";
 }
-
 function erreurs($erreurs)
 {
     $html = '';
@@ -109,17 +98,14 @@ function erreurs($erreurs)
     }
     return $html;
 }
-
 function erreur($message)
 {
       echo '<p class="erreurs">'.$message.'</p>'."\n";
 }
-
 function question($message)
 {
       echo '<p id="question">'.$message.'</p>';
 }
-
 function afficher_msg()
 {
     // message vert
@@ -136,7 +122,6 @@ function afficher_msg()
         }
     }
 }
-
 function apercu($article)
 {
     if (isset($article)) {
@@ -149,7 +134,6 @@ function apercu($article)
         echo '<div id="apercu">'."\n".$apercu.'</div>'."\n\n";
     }
 }
-
 function moteur_recherche()
 {
     $requete='';
@@ -165,7 +149,6 @@ function moteur_recherche()
     $return .= '</form>'."\n\n";
     return $return;
 }
-
 function encart_commentaires()
 {
     $query = "SELECT a.bt_title, c.bt_author, c.bt_id, c.bt_article_id, c.bt_content FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id WHERE c.bt_statut=1 AND a.bt_statut=1 ORDER BY c.bt_id DESC LIMIT 5";
@@ -181,7 +164,7 @@ function encart_commentaires()
             if (strlen($comment['bt_author']) >= 30) {
                 $comment['bt_author'] = mb_substr($comment['bt_author'], 0, 29).'…';
             }
-            $listeLastComments .= '<li title="'.date_formate($comment['bt_id']).'"><strong>'.$comment['bt_author'].' : </strong><a href="'.$comment['bt_link'].'">'.$comment['contenu_abbr'].'</a>'.'</li>'."\n";
+            $listeLastComments .= '<li title="'.date_formate($comment['bt_id']).'"><strong>'.$comment['bt_author'].' : </strong><a href="'.$comment['bt_link'].'">'.$comment['contenu_abbr'].'</a>'.'</li>'."\n";
         }
         $listeLastComments .= '</ul>'."\n";
         return $listeLastComments;
@@ -189,15 +172,12 @@ function encart_commentaires()
         return $GLOBALS['lang']['no_comments'];
     }
 }
-
 function encart_categories($mode)
 {
     if ($GLOBALS['activer_categories'] == '1') {
         $where = $mode == 'links' ? 'links' : 'articles';
         $ampmode = $mode == 'links' ? '&amp;mode=links' : '';
-
         $liste = list_all_tags($where, 1);
-
         // attach non-diacritic versions of tag, so that "é" does not pass after "z" and re-indexes
         foreach ($liste as $tag => $nb) {
             $liste[$tag] = array(diacritique(trim($tag)), $nb);
@@ -205,7 +185,6 @@ function encart_categories($mode)
         // sort tags according non-diacritics versions of tags
         $liste = array_reverse(tri_selon_sous_cle($liste, 0));
         $uliste = '<ul>'."\n";
-
         // create the <ul> with "tags (nb) "
         foreach ($liste as $tag => $nb) {
             if ($tag != '' and $nb[1] > 1) {
@@ -216,19 +195,16 @@ function encart_categories($mode)
         return $uliste;
     }
 }
-
 function lien_pagination()
 {
     if (!isset($GLOBALS['param_pagination']) or isset($_GET['d']) or isset($_GET['liste']) or isset($_GET['id'])) {
         return '';
     }
-
     $qstring = remove_url_param('p');
     $page_courante = !empty($_GET['p']) ? $_GET['p'] + 0 : 1;
     if ($page_courante < 1) {
         redirection('?'.$qstring.'&p=1');
     }
-
     $nb = $GLOBALS['param_pagination']['nb'];
     $nb_par_page = $GLOBALS['param_pagination']['nb_par_page'];
     $lien_precede = '';
@@ -245,7 +221,6 @@ function lien_pagination()
     }
     return '<p class="pagination">'.$lien_precede.$lien_suivant.'</p>';
 }
-
 function liste_tags($billet, $html_link)
 {
     $mode = $billet['bt_type'] == 'article' ? '' : '&amp;mode=links';
@@ -257,7 +232,6 @@ function liste_tags($billet, $html_link)
             $tag_list[$i] = array('t' => trim($tag), 'tt' => diacritique(trim($tag)));
         }
         $tag_list = array_reverse(tri_selon_sous_cle($tag_list, 'tt'));
-
         foreach ($tag_list as $tag) {
             $tag = trim($tag['t']);
             if ($html_link == 1) {
@@ -269,8 +243,6 @@ function liste_tags($billet, $html_link)
     }
     return $liste;
 }
-
-
 /* From DB : returns a HTML list with the feeds (the left panel) */
 function feed_list_html()
 {
@@ -281,18 +253,14 @@ function feed_list_html()
         $total_unread += $feed['nbrun'];
         $total_favs += $feed['nbfav'];
     }
-
     // First item : link all feeds
     $html = "\t\t".'<li class="all-feeds"><a href="#" onclick="document.getElementById(\'markasread\').onclick=function(){markAsRead(\'all\', true);}; sortAll(); return false;">'.$GLOBALS['lang']['rss_label_all_feeds'].' <span id="global-post-counter" data-nbrun="'.$total_unread.'">('.$total_unread.')</span></a></li>'."\n";
-
     // Next item : favorites items
     $html .= "\t\t".'<li class="fav-feeds"><a href="#" onclick="document.getElementById(\'markasread\').onclick=function(){markAsRead(\'favs\', true);}; return sortFavs(); return false;">'.$GLOBALS['lang']['rss_label_favs_feeds'].' <span id="favs-post-counter" data-nbrun="'.$total_favs.'">('.$total_favs.')</span></a></li>'."\n";
-
     $feed_urls = array();
     foreach ($feeds_nb as $i => $feed) {
         $feed_urls[$feed['bt_feed']] = $feed;
     }
-
     // sort feeds by folder
     $folders = array();
     foreach ($GLOBALS['liste_flux'] as $i => $feed) {
@@ -300,7 +268,6 @@ function feed_list_html()
         $folders[$feed['folder']][] = $feed;
     }
     krsort($folders);
-
     // creates html : lists RSS feeds without folder separately from feeds with a folder
     foreach ($folders as $i => $folder) {
         //$folder = tri_selon_sous_cle($folder, 'nbrun');
@@ -314,7 +281,6 @@ function feed_list_html()
                 $li_html .= '</li>'."\n";
                 $folder_count += $feed['nbrun'];
         }
-
         if ($i != '') {
             $html .= "\t\t".'<li class="feed-folder" data-nbrun="'.$folder_count.'" data-folder="'.$i.'">'."\n";
             $html .= "\t\t\t".'<span class="feed-folder-title">'."\n";
@@ -331,7 +297,6 @@ function feed_list_html()
     }
     return $html;
 }
-
 function php_lang_to_js($a)
 {
     $frontend_str = array();
@@ -350,9 +315,7 @@ function php_lang_to_js($a)
     $frontend_str['questionSupprComment'] = $GLOBALS['lang']['question_suppr_comment'];
     $frontend_str['questionSupprArticle'] = $GLOBALS['lang']['question_suppr_article'];
     $frontend_str['questionSupprFichier'] = $GLOBALS['lang']['question_suppr_fichier'];
-
     $sc = 'var BTlang = '.json_encode($frontend_str).';'."\n";
-
     if ($a == 1) {
         $sc = "\n".'<script>'."\n".$sc."\n".'</script>'."\n";
     }
