@@ -237,9 +237,9 @@ function afficher_index($tableau, $type)
         $HTML_elmts = '';
         $data = array();
         if (!empty($tableau)) {
-            if (count($tableau)==1 and !empty($tableau[0]['bt_title']) and $tableau[0]['bt_type'] == 'article') {
-                redirection($tableau[0]['bt_link']);
-            } else {
+            // if (count($tableau)==1 and !empty($tableau[0]['bt_title']) and $tableau[0]['bt_type'] == 'article') {
+                // redirection($tableau[0]['bt_link']);
+            // } else {
                 if (count($tableau)==1 and ($tableau[0]['bt_type'] == 'link' or $tableau[0]['bt_type'] == 'note')) {
                     $data = $tableau[0];
                 }
@@ -266,7 +266,7 @@ function afficher_index($tableau, $type)
                 }
                 $HTML = str_replace(extract_boucles($theme_page, $GLOBALS['boucles']['posts'], 'incl'), $HTML_elmts, $theme_page);
                 $HTML = conversions_theme($HTML, $data, 'post');
-            }
+            // }
         } else {
             $HTML_article = conversions_theme($theme_page, $data, 'list');
             $HTML = str_replace(extract_boucles($theme_page, $GLOBALS['boucles']['posts'], 'incl'), $GLOBALS['lang']['note_no_article'], $HTML_article);
