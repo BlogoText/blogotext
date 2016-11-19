@@ -240,32 +240,32 @@ function afficher_index($tableau, $type)
             // if (count($tableau)==1 and !empty($tableau[0]['bt_title']) and $tableau[0]['bt_type'] == 'article') {
                 // redirection($tableau[0]['bt_link']);
             // } else {
-                if (count($tableau)==1 and ($tableau[0]['bt_type'] == 'link' or $tableau[0]['bt_type'] == 'note')) {
-                    $data = $tableau[0];
+            if (count($tableau)==1 and ($tableau[0]['bt_type'] == 'link' or $tableau[0]['bt_type'] == 'note')) {
+                $data = $tableau[0];
+            }
+            if ($tableau[0]['bt_type'] == 'article') {
+                if (!($theme_article = file_get_contents($GLOBALS['theme_post_artc']))) {
+                    die($GLOBALS['lang']['err_theme_introuvable']);
                 }
-                if ($tableau[0]['bt_type'] == 'article') {
-                    if (!($theme_article = file_get_contents($GLOBALS['theme_post_artc']))) {
-                        die($GLOBALS['lang']['err_theme_introuvable']);
-                    }
-                    $conversion_theme_fonction = 'conversions_theme_article';
+                $conversion_theme_fonction = 'conversions_theme_article';
+            }
+            if ($tableau[0]['bt_type'] == 'comment') {
+                if (!($theme_article = file_get_contents($GLOBALS['theme_post_comm']))) {
+                    die($GLOBALS['lang']['err_theme_introuvable']);
                 }
-                if ($tableau[0]['bt_type'] == 'comment') {
-                    if (!($theme_article = file_get_contents($GLOBALS['theme_post_comm']))) {
-                        die($GLOBALS['lang']['err_theme_introuvable']);
-                    }
-                    $conversion_theme_fonction = 'conversions_theme_commentaire';
+                $conversion_theme_fonction = 'conversions_theme_commentaire';
+            }
+            if ($tableau[0]['bt_type'] == 'link' or $tableau[0]['bt_type'] == 'note') {
+                if (!($theme_article = file_get_contents($GLOBALS['theme_post_link']))) {
+                    die($GLOBALS['lang']['err_theme_introuvable']);
                 }
-                if ($tableau[0]['bt_type'] == 'link' or $tableau[0]['bt_type'] == 'note') {
-                    if (!($theme_article = file_get_contents($GLOBALS['theme_post_link']))) {
-                        die($GLOBALS['lang']['err_theme_introuvable']);
-                    }
-                    $conversion_theme_fonction = 'conversions_theme_lien';
-                }
-                foreach ($tableau as $element) {
-                    $HTML_elmts .=  $conversion_theme_fonction($theme_article, $element);
-                }
-                $HTML = str_replace(extract_boucles($theme_page, $GLOBALS['boucles']['posts'], 'incl'), $HTML_elmts, $theme_page);
-                $HTML = conversions_theme($HTML, $data, 'post');
+                $conversion_theme_fonction = 'conversions_theme_lien';
+            }
+            foreach ($tableau as $element) {
+                $HTML_elmts .=  $conversion_theme_fonction($theme_article, $element);
+            }
+            $HTML = str_replace(extract_boucles($theme_page, $GLOBALS['boucles']['posts'], 'incl'), $HTML_elmts, $theme_page);
+            $HTML = conversions_theme($HTML, $data, 'post');
             // }
         } else {
             $HTML_article = conversions_theme($theme_page, $data, 'list');
