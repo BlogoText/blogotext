@@ -54,14 +54,14 @@ if ($GLOBALS['step'] == 1) {
         if ($err_2 = valid_install_2()) {
             afficher_form_2($err_2);
         } else {
-			require_once BT_ROOT.'/inc/auth.php';
+            require_once BT_ROOT.'/inc/auth.php';
 
             $config_dir = '../config';
             create_folder($config_dir, 1);
             create_folder('../'.DIR_IMAGES, 0);
             create_folder('../'.DIR_DOCUMENTS, 0);
             create_folder('../'.DIR_DATABASES, 1);
-			auth_write_user_login_file( $_POST['identifiant'] , $_POST['mdp'] );
+            auth_write_user_login_file($_POST['identifiant'], $_POST['mdp']);
             import_ini_file($config_dir.'/user.ini');
 
             traiter_install_2();
