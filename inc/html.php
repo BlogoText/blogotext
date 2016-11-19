@@ -217,50 +217,51 @@ function encart_categories($mode)
     }
 }
 
-function lien_pagination(){
-	if (!isset($GLOBALS['param_pagination']) or isset($_GET['d']) or isset($_GET['liste']) or isset($_GET['id']) ) {
-		return '';
-	} else {
-		$nb_par_page = (int)$GLOBALS['param_pagination']['nb_par_page'];
-	}
+function lien_pagination()
+{
+    if (!isset($GLOBALS['param_pagination']) or isset($_GET['d']) or isset($_GET['liste']) or isset($_GET['id']) ) {
+        return '';
+    } else {
+        $nb_par_page = (int)$GLOBALS['param_pagination']['nb_par_page'];
+    }
 
-	$page_courante = (isset($_GET['p']) and is_numeric($_GET['p'])) ? (int)$_GET['p'] : 0;
-	$qstring = remove_url_param('p');
-	if (!empty($qstring)){$qstring .= '&amp;';}
+    $page_courante = (isset($_GET['p']) and is_numeric($_GET['p'])) ? (int)$_GET['p'] : 0;
+    $qstring = remove_url_param('p');
+    if (!empty($qstring)){$qstring .= '&amp;';}
 
-	$db_req = '';
-	$db_params = array();
-	if (isset($_GET['mode']) && $_GET['mode'] == 'links'){
-		$db_req = 'SELECT count(ID) AS nbr FROM links WHERE bt_article_id=? and bt_statut=1';
-	} else {
-		$db_req = 'SELECT count(ID) AS nbr FROM articles WHERE bt_date <= '.date('YmdHis').' and bt_statut=1';
-	}
-	if (isset($_GET['tag'])){
-		$db_req .= ' and ( bt_tags LIKE ? OR bt_tags LIKE ? OR bt_tags LIKE ? OR bt_tags LIKE ? )';
-		$db_params = array( $_GET['tag'],$_GET['tag'].', %','%, '.$_GET['tag'].', %','%, '.$_GET['tag'] );
-	}
-	$nb = (int)liste_elements_count($db_req,$db_params);
+    $db_req = '';
+    $db_params = array();
+    if (isset($_GET['mode']) && $_GET['mode'] == 'links'){
+        $db_req = 'SELECT count(ID) AS nbr FROM links WHERE bt_article_id=? and bt_statut=1';
+    } else {
+        $db_req = 'SELECT count(ID) AS nbr FROM articles WHERE bt_date <= '.date('YmdHis').' and bt_statut=1';
+    }
+    if (isset($_GET['tag'])){
+        $db_req .= ' and ( bt_tags LIKE ? OR bt_tags LIKE ? OR bt_tags LIKE ? OR bt_tags LIKE ? )';
+        $db_params = array( $_GET['tag'],$_GET['tag'].', %','%, '.$_GET['tag'].', %','%, '.$_GET['tag'] );
+    }
+    $nb = (int)liste_elements_count($db_req,$db_params);
 
-	$lien_precede = '';
-	$lien_suivant = '';
-	// -1 because ?p=0 is the first
-	$total_page = (int)ceil( $nb / $nb_par_page ) - 1;
+    $lien_precede = '';
+    $lien_suivant = '';
+    // -1 because ?p=0 is the first
+    $total_page = (int)ceil( $nb / $nb_par_page ) - 1;
 
-	// page sup ?
-	if ($page_courante < 0){
-		$lien_suivant = '<a href="?'.$qstring.'p=0" rel="next">'.$GLOBALS['lang']['label_suivant'].'</a>';
-	} else if ($page_courante < $total_page){
-		$lien_suivant = '<a href="?'.$qstring.'p='.($page_courante+1).'" rel="next">'.$GLOBALS['lang']['label_suivant'].'</a>';
-	}
+    // page sup ?
+    if ($page_courante < 0){
+        $lien_suivant = '<a href="?'.$qstring.'p=0" rel="next">'.$GLOBALS['lang']['label_suivant'].'</a>';
+    } else if ($page_courante < $total_page){
+        $lien_suivant = '<a href="?'.$qstring.'p='.($page_courante+1).'" rel="next">'.$GLOBALS['lang']['label_suivant'].'</a>';
+    }
 
-	// page inf ?
-	if ($page_courante > $total_page){
-		$lien_precede = '<a href="?'.$qstring.'p='.$total_page.'" rel="prev">'.$GLOBALS['lang']['label_precedent'].'</a>';
-	} else if ($page_courante <= $total_page && $page_courante > 0){
-		$lien_precede = '<a href="?'.$qstring.'p='.($page_courante-1).'" rel="prev">'.$GLOBALS['lang']['label_precedent'].'</a>';
-	}
+    // page inf ?
+    if ($page_courante > $total_page){
+        $lien_precede = '<a href="?'.$qstring.'p='.$total_page.'" rel="prev">'.$GLOBALS['lang']['label_precedent'].'</a>';
+    } else if ($page_courante <= $total_page && $page_courante > 0){
+        $lien_precede = '<a href="?'.$qstring.'p='.($page_courante-1).'" rel="prev">'.$GLOBALS['lang']['label_precedent'].'</a>';
+    }
 
-	return '<p class="pagination">'.$lien_precede.$lien_suivant.'</p>';
+    return '<p class="pagination">'.$lien_precede.$lien_suivant.'</p>';
 }
 
 function liste_tags($billet, $html_link)
