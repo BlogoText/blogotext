@@ -382,5 +382,11 @@ function conversion_theme_addons($texte)
     $texte = str_replace('{includes.css}', $css, $texte);
     $texte = str_replace('{includes.js}', $js, $texte);
 
+    // remove useless tag in case of tag for nonexistent addon
+    // strpos for perfomance : no tag = no regex
+    if (strpos($texte, '{addon_') !== false) {
+        $texte = preg_replace('/\{addon_[a-zA-Z0-9-_]*\}/', '', $texte);
+    }
+
     return $texte;
 }
