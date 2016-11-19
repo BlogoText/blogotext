@@ -247,7 +247,7 @@ function afficher_liste_modules($tableau, $filtre)
             $out .= "\t".'<div>'."\n";
 
             // addon tag
-            if (function_exists('addon_'.$addon['tag'])){
+            if (function_exists('addon_'.$addon['tag'])) {
                 $out .= "\t\t".'<p><code title="'.$GLOBALS['lang']['label_code_theme'].'">'.'{addon_'.$addon['tag'].'}'.'</code>'.addon_get_translation($addon['desc']).'</p>'."\n";
             } else {
                 $out .= "\t\t".'<p>'.$GLOBALS['lang']['label_no_code_theme'].'</p>';
