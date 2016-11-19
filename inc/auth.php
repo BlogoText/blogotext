@@ -34,7 +34,7 @@ function auth_format_password($pass)
  */
 function auth_format_login($login)
 {
-	return addslashes(clean_txt(htmlspecialchars($login)));
+    return addslashes(clean_txt(htmlspecialchars($login)));
 }
 
 /**
