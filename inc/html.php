@@ -219,7 +219,7 @@ function encart_categories($mode)
 
 function lien_pagination()
 {
-    if (!isset($GLOBALS['param_pagination']) or isset($_GET['d']) or isset($_GET['liste']) or isset($_GET['id']) ) {
+    if (!isset($GLOBALS['param_pagination']) or isset($_GET['d']) or isset($_GET['liste']) or isset($_GET['id'])) {
         return '';
     } else {
         $nb_par_page = (int)$GLOBALS['param_pagination']['nb_par_page'];
@@ -227,7 +227,9 @@ function lien_pagination()
 
     $page_courante = (isset($_GET['p']) and is_numeric($_GET['p'])) ? (int)$_GET['p'] : 0;
     $qstring = remove_url_param('p');
-    if (!empty($qstring)){$qstring .= '&amp;';}
+    if (!empty($qstring)){
+        $qstring .= '&amp;';
+    }
 
     $db_req = '';
     $db_params = array();
