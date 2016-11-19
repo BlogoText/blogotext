@@ -46,8 +46,8 @@ if (isset($_POST['_verif_envoi'])) {
 }
 
 $tableau = array();
-// if article ID is given in query string
 
+// if article ID is given in query string
 if (isset($_GET['post_id']) and preg_match('#\d{14}#', $_GET['post_id'])) {
     $param_makeup['menu_theme'] = 'for_article';
     $article_id = $_GET['post_id'];
@@ -66,7 +66,7 @@ if (isset($_GET['post_id']) and preg_match('#\d{14}#', $_GET['post_id'])) {
         $article_title = get_entry($GLOBALS['db_handle'], 'articles', 'bt_title', $article_id, 'return');
     }
 
-    $param_makeup['show_links'] = '0';
+    $param_makeup['show_links'] = 0;
 } // else, no ID
 else {
     $param_makeup['menu_theme'] = 'for_comms';

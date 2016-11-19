@@ -13,7 +13,7 @@
 "use strict";
 
 /*
-	cancel button on forms.
+    cancel button on forms.
 */
 
 function annuler(pagecible)
@@ -23,8 +23,8 @@ function annuler(pagecible)
 
 
 /*
-	On login captcha : if the captcha is unreadable, this helps you reload the captcha
-	without reloading the whole page (the other fields might been filed)
+    On login captcha : if the captcha is unreadable, this helps you reload the captcha
+    without reloading the whole page (the other fields might been filed)
 */
 
 function new_freecap()
@@ -36,7 +36,7 @@ function new_freecap()
 
 
 /*
-	On article or comment writing: insert a BBCode Tag or a Unicode char.
+    On article or comment writing: insert a BBCode Tag or a Unicode char.
 */
 
 function insertTag(e, startTag, endTag)
@@ -88,7 +88,7 @@ function insertChar(e, ch)
 
 
 /*
-	Used in file upload: converts bytes to kB, MB, GB…
+    Used in file upload: converts bytes to kB, MB, GB…
 */
 function humanFileSize(bytes)
 {
@@ -101,7 +101,7 @@ function humanFileSize(bytes)
 
 
 /*
-	in page maintenance : switch visibility of forms.
+    in page maintenance : switch visibility of forms.
 */
 
 function switch_form(activeForm)
@@ -168,7 +168,7 @@ function annuler(pagecible)
 **************************************************************************************************************************************/
 
 /*
-	on comment : reply link « @ » quotes le name.
+    on comment : reply link « @ » quotes le name.
 */
 
 function reply(code)
@@ -185,7 +185,7 @@ function reply(code)
 
 
 /*
-	unfold comment edition bloc.
+    unfold comment edition bloc.
 */
 
 function unfold(button)
@@ -300,11 +300,10 @@ function activate_comm(button)
     formData.append('_verif_envoi', 1);
 
     formData.append('com_activer', button.dataset.commId);
-//	formData.append('com_bt_id', button.dataset.commBtid);
+    formData.append('com_bt_id', button.dataset.commBtid);
     formData.append('com_article_id', button.dataset.commArtId);
 
     xhr.send(formData);
-
 }
 
 
@@ -557,7 +556,7 @@ function checkKey(e)
 }
 
 
-/*	Images slideshow */
+/*  Images slideshow */
 function slideshow(action, image)
 {
     if (action == 'close') {

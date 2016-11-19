@@ -591,11 +591,12 @@ function traiter_form_commentaire($commentaire, $admin)
         elseif (isset($_POST['com_supprimer']) or isset($_POST['com_activer'])) {
             $ID = (isset($_POST['com_supprimer']) ? htmlspecialchars($_POST['com_supprimer']) : htmlspecialchars($_POST['com_activer']));
             $action = (isset($_POST['com_supprimer']) ? 'supprimer-existant' : 'activer-existant');
-                $comm = array('ID' => $ID, 'bt_article_id' => htmlspecialchars($_POST['com_article_id']));
-                $result = bdd_commentaire($comm, $action);
-                // Ajax response
+            $comm = array('ID' => $ID, 'bt_article_id' => htmlspecialchars($_POST['com_article_id']));
+            $result = bdd_commentaire($comm, $action);
+            // Ajax response
             if ($result === true) {
-                if (isset($_POST['com_activer']) and $GLOBALS['comm_defaut_status'] == 0) { // send subscribe emails if comments just got activated
+                if (isset($_POST['com_activer']) and $GLOBALS['comm_defaut_status'] == 0) {
+                    // send subscribe emails if comments just got activated
                     send_emails(htmlspecialchars($_POST['com_bt_id']));
                 }
                 rafraichir_cache_lv1();
@@ -613,9 +614,8 @@ function traiter_form_commentaire($commentaire, $admin)
     if ($result === true) {
         rafraichir_cache_lv1();
         redirection($redir);
-    } else {
-        die($result);
     }
+    die($result);
 }
 
 function bdd_commentaire($commentaire, $what)
@@ -652,7 +652,7 @@ function bdd_commentaire($commentaire, $what)
             ));
             // remet à jour le nombre de commentaires associés à l’article.
             $sql = '
-                SELECT count(*) AS nbr
+                SELECT count(ID) AS nbr
                   FROM commentaires
                  WHERE bt_article_id = ?
                        AND bt_statut = 1';
@@ -672,17 +672,18 @@ function bdd_commentaire($commentaire, $what)
     } elseif ($what == 'editer-existant') {
     // ÉDITION D'UN COMMENTAIRE DÉJÀ EXISTANT. (ou activation)
         try {
-            $req = $GLOBALS['db_handle']->prepare('UPDATE commentaires SET
-                bt_article_id=?,
-                bt_content=?,
-                bt_wiki_content=?,
-                bt_author=?,
-                bt_link=?,
-                bt_webpage=?,
-                bt_email=?,
-                bt_subscribe=?,
-                bt_statut=?
-                WHERE ID=?');
+            $req = $GLOBALS['db_handle']->prepare('
+                UPDATE commentaires
+                   SET bt_article_id = ?,
+                       bt_content = ?,
+                       bt_wiki_content = ?,
+                       bt_author = ?,
+                       bt_link = ?,
+                       bt_webpage = ?,
+                       bt_email = ?,
+                       bt_subscribe = ?,
+                       bt_statut = ?
+                 WHERE ID = ?');
             $req->execute(array(
                 $commentaire['bt_article_id'],
                 $commentaire['bt_content'],
@@ -698,7 +699,8 @@ function bdd_commentaire($commentaire, $what)
 
             // remet à jour le nombre de commentaires associés à l’article.
             $sql = '
-                SELECT count(*) AS nbr FROM commentaires
+                SELECT count(*) AS nbr
+                  FROM commentaires
                  WHERE bt_article_id = ?
                        AND bt_statut = 1';
             $nb_comments_art = liste_elements_count($sql, array($commentaire['bt_article_id']));
@@ -721,7 +723,7 @@ function bdd_commentaire($commentaire, $what)
 
             // remet à jour le nombre de commentaires associés à l’article.
             $sql = '
-                SELECT count(*) AS nbr
+                SELECT count(ID) AS nbr
                   FROM commentaires
                  WHERE bt_article_id = ?
                        AND bt_statut = 1';
@@ -749,7 +751,7 @@ function bdd_commentaire($commentaire, $what)
 
             // remet à jour le nombre de commentaires associés à l’article.
             $sql = '
-                SELECT count(*) AS nbr
+                SELECT count(ID) AS nbr
                   FROM commentaires
                  WHERE bt_article_id = ?
                        AND bt_statut = 1';

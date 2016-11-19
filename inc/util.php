@@ -205,7 +205,7 @@ function send_emails($id_comment)
                    AND bt_article_id = ?
                    AND bt_email != ?
                    AND bt_subscribe = 1
-             ORDER BY bt_i';
+             ORDER BY bt_id';
         $req = $GLOBALS['db_handle']->prepare($query);
         $req->execute(array($article_id, $comm_author_email));
         $liste_comments = $req->fetchAll(PDO::FETCH_ASSOC);
