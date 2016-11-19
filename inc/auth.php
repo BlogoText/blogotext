@@ -12,7 +12,7 @@
 # *** LICENSE ***
 
 if (!defined('BT_ROOT')){
-	exit('Require BT_ROOT for auth');
+    exit('Require BT_ROOT for auth');
 }
 
 /**
@@ -22,7 +22,7 @@ if (!defined('BT_ROOT')){
  * @return string, the formated unhashed/crypted password
  */
 function auth_format_password( $pass ){
-	return trim( $pass );
+    return trim( $pass );
 }
 
 /**
@@ -43,10 +43,7 @@ function auth_format_login( $login ){
  * @param return true;
  */
 function auth_is_valid( $login , $pass ){
-	return (
-				password_verify( auth_format_password( $pass ) , USER_PWHASH )
-			 && auth_format_login( $login ) == USER_LOGIN
-			);
+    return (password_verify(auth_format_password($pass) ,USER_PWHASH )&& auth_format_login($login) == USER_LOGIN);
 }
 
 
@@ -56,23 +53,23 @@ function auth_is_valid( $login , $pass ){
  * 
  */
 function auth_write_user_login_file( $login , $pass ){
-	$file = '../'. DIR_CONFIG .'/user.ini';
-	$content = '';
+    $file = '../'. DIR_CONFIG .'/user.ini';
+    $content = '';
 
-	$pass = auth_format_password( $pass );
-	$login = auth_format_login( $login );
+    $pass = auth_format_password($pass);
+    $login = auth_format_login($login);
 
-	// unchanged password (need to rehash ?)
-	if (empty($pass)){
-		$pass = USER_PWHASH;
-	} else {
-		$pass = password_hash( $pass, PASSWORD_BCRYPT );
-	}
+    // unchanged password (need to rehash ?)
+    if (empty($pass)){
+        $pass = USER_PWHASH;
+    } else {
+        $pass = password_hash( $pass, PASSWORD_BCRYPT );
+    }
 
-	$content .= '; <?php die(); /*'."\n\n";
-	$content .= '; This file contains user login + password hash.'."\n\n";
-	$content .= 'USER_LOGIN = \''. $login .'\''."\n";
-	$content .= 'USER_PWHASH = \''. $pass .'\''."\n";
+    $content .= '; <?php die(); /*'."\n\n";
+    $content .= '; This file contains user login + password hash.'."\n\n";
+    $content .= 'USER_LOGIN = \''. $login .'\''."\n";
+    $content .= 'USER_PWHASH = \''. $pass .'\''."\n";
 
-	return (file_put_contents($file, $content) !== false);
+    return (file_put_contents($file, $content) !== false);
 }
