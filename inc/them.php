@@ -336,6 +336,8 @@ function conversion_theme_addons($texte)
     $has_style = false;
     foreach ($GLOBALS['addons'] as $addon) {
         $look_for = '{addon_'.$addon['tag'].'}';
+        $add_public_file = false; // js and css
+
         if (strpos($texte, $look_for) !== false) {
             $callback = 'addon_'.$addon['tag'];
             $to_replace = '';
@@ -343,12 +345,13 @@ function conversion_theme_addons($texte)
                 while (($pos = strpos($texte, $look_for)) !== false) {
                     $texte = substr_replace($texte, call_user_func($callback), $pos, strlen($look_for));
                 }
+                $add_public_file = true;
             } else {
                 $texte = str_replace($look_for, '', $texte);
             }
         }
 
-        if (isset($addon['css'])) {
+        if (isset($addon['css']) && $add_public_file == true) {
             if (!is_array($addon['css'])) {
                 $addon['css'] = array($addon['css']);
             }
@@ -361,7 +364,7 @@ function conversion_theme_addons($texte)
             }
         }
 
-        if (isset($addon['js'])) {
+        if (isset($addon['js']) && $add_public_file == true) {
             if (!is_array($addon['js'])) {
                 $addon['js'] = array($addon['js']);
             }
@@ -381,6 +384,12 @@ function conversion_theme_addons($texte)
     }
     $texte = str_replace('{includes.css}', $css, $texte);
     $texte = str_replace('{includes.js}', $js, $texte);
+
+    // remove useless tag in case of tag for nonexistent addon
+    // strpos for perfomance : no tag = no regex
+    if (strpos($texte, '{addon_') !== false) {
+        $texte = preg_replace('/\{addon_[a-zA-Z0-9-_]*\}/', '', $texte);
+    }
 
     return $texte;
 }

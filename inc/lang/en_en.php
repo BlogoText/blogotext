@@ -163,6 +163,7 @@ $GLOBALS['lang'] = array(
 'label_all_comm_by_author' => 'All comments by this author',
 'label_owner_url' => 'Owner website',
 'label_code_theme' => 'Themes integration code',
+'label_no_code_theme' => 'This addon don’t use any integration code',
 // Label avec ": "
 'label_dp_lien' => 'Link: ',
 'label_dp_fichier' => 'File: ',

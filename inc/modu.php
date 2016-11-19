@@ -13,6 +13,20 @@
 
 
 /**
+ * addon as a config ?
+ *
+ * @return bool
+ */
+function addon_has_conf($addonName)
+{
+    $infos = addon_get_infos($addonName);
+    if ($infos === false) {
+        return false;
+    }
+    return (isset($infos['config']) && count($infos['config']) > 0);
+}
+
+/**
  * get the config of an addon
  *
  * @param string $addonName, the addon name
@@ -124,23 +138,19 @@ function addon_edit_params_process($addonName)
  */
 function addon_edit_params_form($addonName)
 {
+    // load addons
     $addons_status = list_addons();
+    // get info for the addon
     $infos = addon_get_infos($addonName);
+    // addon is active ?
+    $infos['status'] = $addons_status[$addonName];
+    // get addon params
     $params = addon_get_conf($addonName);
-    $return = '';
+
     $return .= '<form id="preferences" method="post" action="?addonName='. $addonName .'" >';
-    $return .= '<div role="group" class="pref">';
-    $return .= "\t\t".'<ul id="modules"><li>';
-    // on/off checkbox
-    $return .= "\t\t".'<span><input type="checkbox" class="checkbox-toggle" name="module_'. $infos['tag'] .'" id="module_'. $infos['tag'] .'" '.(($addons_status[$addonName]) ? 'checked' : '').' onchange="activate_mod(this);" /><label for="module_'. $infos['tag'] .'"></label></span>'."\n";
-    // addon name
-    $return .= "\t\t".'<span><a href="modules.php?addon_id='.$infos['tag'].'">'. addon_get_translation($infos['name']) .'</a></span>'."\n";
-    // version
-    $return .= "\t\t".'<span>'.$infos['version'].'</span>'."\n";
-    $return .= "\t".'</li>';
-    // other infos
-    $return .= "\t\t".'<div class=""><code title="'.$GLOBALS['lang']['label_code_theme'].'">'.'{addon_'.$infos['tag'].'}'.'</code>'.addon_get_translation($infos['desc']).'</div>'."\n";
-    $return .= "\t".'</ul>'."\n";
+    $return .= '<div role="group" class="pref" style="margin-top:0;">';
+    afficher_liste_modules(array($infos['tag'] => $infos), '');
+
     // build the config form
     $return .= '<div class="form-lines">'."\n";
     foreach ($params as $key => $param) {
@@ -219,30 +229,37 @@ function afficher_liste_modules($tableau, $filtre)
     if (!empty($tableau)) {
         $out = '<ul id="modules">'."\n";
         foreach ($tableau as $i => $addon) {
-            // get addon config
-            $params = addon_get_conf($addon['tag']);
-
-            // DESCRIPTION
+            // addon
             $out .= "\t".'<li>'."\n";
-            // CHECKBOX POUR ACTIVER
+            // addon checkbox activation
             $out .= "\t\t".'<span><input type="checkbox" class="checkbox-toggle" name="module_'.$i.'" id="module_'.$i.'" '.(($addon['status']) ? 'checked' : '').' onchange="activate_mod(this);" /><label for="module_'.$i.'"></label></span>'."\n";
 
-            // NOM DU MODULE
+            // addon name
             $out .= "\t\t".'<span><a href="modules.php?addon_id='.$addon['tag'].'">'.addon_get_translation($addon['name']).'</a></span>'."\n";
 
-            // VERSION
+            // addon version
             $out .= "\t\t".'<span>'.$addon['version'].'</span>'."\n";
 
             $out .= "\t".'</li>'."\n";
 
-            // AUTRES INFOS
+            // other infos and params
             $url = '';
             $out .= "\t".'<div>'."\n";
-            $out .= "\t\t".'<p><code title="'.$GLOBALS['lang']['label_code_theme'].'">'.'{addon_'.$addon['tag'].'}'.'</code>'.addon_get_translation($addon['desc']).'</p>'."\n";
+
+            // addon tag
+            if (function_exists('addon_'.$addon['tag'])){
+                $out .= "\t\t".'<p><code title="'.$GLOBALS['lang']['label_code_theme'].'">'.'{addon_'.$addon['tag'].'}'.'</code>'.addon_get_translation($addon['desc']).'</p>'."\n";
+            } else {
+                $out .= "\t\t".'<p>'.$GLOBALS['lang']['label_no_code_theme'].'</p>';
+            }
             $out .= "\t\t".'<p>';
-            if (is_array($params) && count($params) > 0) {
+
+            // addon params
+            if (addon_has_conf($addon['tag'])) {
                 $out .= '<a href="module.php?addonName='. $addon['tag'] .'">params</a>';
             }
+
+            // author URL
             if (!empty($addon['url'])) {
                 $out .= ' <a href="'.$addon['url'].'">'.$GLOBALS['lang']['label_owner_url'].'</a>';
             }
