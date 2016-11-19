@@ -112,12 +112,12 @@ function addon_edit_params_process($addonName)
         $conf .= $key .' = \''. $value .'\''."\n";
     }
     $conf .= '; */ ?>'."\n";
-    return (file_put_contents(BT_ROOT.DIR_ADDONS.'/'.$addonName.'/params.ini', $conf) !== FALSE);
+    return (file_put_contents(BT_ROOT.DIR_ADDONS.'/'.$addonName.'/params.ini', $conf) !== false);
 }
 
 /**
  * Get the addon config form
- * 
+ *
  * @param string $addonName, the addon name
  * @return string, the html form
  */
@@ -238,7 +238,7 @@ function afficher_liste_modules($tableau, $filtre)
             $out .= "\t".'<div>'."\n";
             $out .= "\t\t".'<p><code title="'.$GLOBALS['lang']['label_code_theme'].'">'.'{addon_'.$addon['tag'].'}'.'</code>'.addon_get_translation($addon['desc']).'</p>'."\n";
             $out .= "\t\t".'<p>';
-            if (is_array( $params ) && count( $params ) > 0){
+            if (is_array($params) && count($params) > 0) {
                 $out .= '<a href="module.php?addonName='. $addon['tag'] .'">params</a>';
             }
             if (!empty($addon['url'])) {
