@@ -234,7 +234,7 @@ function lien_pagination()
     $db_req = '';
     $db_params = array();
     if (isset($_GET['mode']) && $_GET['mode'] == 'links') {
-        $db_req = 'SELECT count(ID) AS nbr FROM links WHERE bt_article_id=? and bt_statut=1';
+        $db_req = 'SELECT count(ID) AS nbr FROM links WHERE bt_statut=1';
     } else {
         $db_req = 'SELECT count(ID) AS nbr FROM articles WHERE bt_date <= '.date('YmdHis').' and bt_statut=1';
     }
