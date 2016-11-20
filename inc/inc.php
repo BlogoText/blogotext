@@ -15,6 +15,7 @@ if (is_file(BT_ROOT.'config/prefs.php')) {
     require_once BT_ROOT.'/config/prefs.php';
 }
 require_once BT_ROOT.'/inc/conf.php';
+require_once BT_ROOT.'/inc/hook.php';
 require_once BT_ROOT.'/inc/lang.php';
 require_once BT_ROOT.'/inc/util.php';
 require_once BT_ROOT.'/inc/fich.php';

@@ -35,6 +35,7 @@ error_reporting(-1);
 $begin = microtime(true);
 
 require_once 'config/prefs.php';
+require_once 'inc/hook.php';
 date_default_timezone_set($GLOBALS['fuseau_horaire']);
 
 function require_all()
@@ -50,6 +51,10 @@ function require_all()
     require_once 'inc/veri.php';
     require_once 'inc/sqli.php';
 }
+
+require_once 'inc/inc.php';
+list_addons();
+hook_trigger('system-start');
 
 $xml .= '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">'."\n";
 $xml .= '<channel>'."\n";
@@ -173,6 +178,11 @@ else {
 
     // ne garde que les 20 premières entrées
     $liste_rss = array_slice($liste_rss, 0, 20);
+    $tmp_hook = hook_trigger('before_afficher_rss_no_cache', $liste_rss);
+    if (hook_check('before_afficher_rss_no_cache', 2, $tmp_hook)) {
+        $liste_rss = $tmp_hook['1'];
+    }
+
     $invert = (isset($_GET['invertlinks'])) ? true : false;
     $xml .= '<title>'.$GLOBALS['nom_du_site'].'</title>'."\n";
     $xml .= '<link>'.$GLOBALS['racine'].((trim($modes_url, '-') == '') ? '' : '?mode='.(trim($modes_url, '-'))).'</link>'."\n";

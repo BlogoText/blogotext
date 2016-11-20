@@ -35,6 +35,7 @@ error_reporting(-1);
 $begin = microtime(true);
 
 require_once 'config/prefs.php';
+require_once 'inc/hook.php';
 date_default_timezone_set($GLOBALS['fuseau_horaire']);
 
 function require_all()
@@ -50,6 +51,10 @@ function require_all()
     require_once 'inc/veri.php';
     require_once 'inc/sqli.php';
 }
+
+require_once 'inc/inc.php';
+list_addons();
+hook_trigger('system-start');
 
 $xml .= '<feed xmlns="http://www.w3.org/2005/Atom">'."\n";
 $xml .= '<author><name>'.$GLOBALS['auteur'].'</name></author>'."\n";

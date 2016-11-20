@@ -40,6 +40,11 @@ session_start();
 require_once 'inc/inc.php';
 $GLOBALS['db_handle'] = open_base();
 
+// load addons, allow addons to use hooks
+list_addons();
+
+// hookTrigger
+hook_trigger('system-start');
 
 /*****************************************************************************
  some misc requests
@@ -327,6 +332,7 @@ else {
     $query .= $glue.$sql_a_p.$sql_order.$sql_p;
     $tableau = liste_elements($query, $array, $where);
     $GLOBALS['param_pagination'] = array('nb' => count($tableau), 'nb_par_page' => $GLOBALS['max_bill_acceuil']);
+
     afficher_index($tableau, 'list');
 }
 

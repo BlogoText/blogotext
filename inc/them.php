@@ -298,6 +298,12 @@ function afficher_index($tableau, $type)
         // in global page : remplace remaining tags
         $HTML = conversions_theme($HTML, $billet, 'post');
     }
+
+    $tmp_hook = hook_trigger('afficher_index', $HTML);
+    if (hook_check('afficher_index', 2, $tmp_hook)) {
+        $HTML = $tmp_hook['1'];
+    }
+
     echo $HTML;
 }
 
