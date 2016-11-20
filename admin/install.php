@@ -11,6 +11,13 @@
 #
 # *** LICENSE ***
 
+
+/**
+ * DevNote
+ * - all the functions in this file are only used in the install process
+ *   no need to be in /inc/*
+ */
+
 // install or reinstall with same config ?
 $step3 = is_file('../config/mysql.ini') and file_get_contents('../config/mysql.ini') != '';
 
@@ -24,76 +31,21 @@ define('BT_ROOT', '../');
 define('DISPLAY_PHP_ERRORS', -1);
 $GLOBALS['fuseau_horaire'] = 'UTC';
 
+
+// set language
 if (isset($_GET['l'])) {
-    $lang = $_GET['l'];
-    if ($lang == 'fr' or $lang == 'en') {
-        $GLOBALS['lang'] = $lang;
-    } else {
-        $GLOBALS['lang'] = 'fr';
-    }
+    $GLOBALS['lang'] = ($_GET['l'] == 'fr' or $_GET['l'] == 'en') ? $_GET['l'] : 'fr';
 }
+
 
 require_once BT_ROOT.'/inc/inc.php';
 
-$GLOBALS['step'] = (isset($_GET['s']) and is_numeric($_GET['s'])) ? $_GET['s'] + 0 : 1;
 
-if ($GLOBALS['step'] == 1) {
-    // LANGUE
-    if (isset($_POST['verif_envoi_1'])) {
-        if ($err_1 = valid_install_1()) {
-            afficher_form_1($err_1);
-        } else {
-            redirection('install.php?s=2&l='.$_POST['langue']);
-        }
-    } else {
-        afficher_form_1();
-    }
-} elseif ($GLOBALS['step'] == 2) {
-    // ID + MOT DE PASSE
-    if (isset($_POST['verif_envoi_2'])) {
-        if ($err_2 = valid_install_2()) {
-            afficher_form_2($err_2);
-        } else {
-            require_once BT_ROOT.'/inc/auth.php';
-
-            $config_dir = '../config';
-            create_folder($config_dir, 1);
-            create_folder('../'.DIR_IMAGES, 0);
-            create_folder('../'.DIR_DOCUMENTS, 0);
-            create_folder('../'.DIR_DATABASES, 1);
-            auth_write_user_login_file($_POST['identifiant'], $_POST['mdp']);
-            import_ini_file($config_dir.'/user.ini');
-
-            traiter_install_2();
-            redirection('install.php?s=3&l='.$_POST['langue']);
-        }
-    } else {
-        afficher_form_2();
-    }
-} elseif ($GLOBALS['step'] == 3) {
-    // CHOIX DB
-    if (isset($_POST['verif_envoi_3'])) {
-        if ($err_3 = valid_install_3()) {
-            afficher_form_3($err_3);
-        } else {
-            if (isset($_POST['sgdb']) and $_POST['sgdb'] == 'mysql') {
-                fichier_mysql('mysql');
-            } else {
-                fichier_mysql('sqlite');
-            }
-            traiter_install_3();
-            if (!is_file('../config/config-advanced.ini')) {
-                fichier_adv_conf(); // is done right after DB init
-            }
-            redirection('auth.php');
-        }
-    } else {
-        afficher_form_3();
-    }
-}
-
-// affiche le form de choix de langue
-function afficher_form_1($erreurs = '')
+/**
+ * show the form for step 1 (language)
+ * ! this function return nothing and use echo
+ */
+function install_form_1_echo($erreurs = '')
 {
     afficher_html_head('Install');
     echo '<div id="axe">'."\n";
@@ -127,16 +79,24 @@ function afficher_form_1($erreurs = '')
     echo '<form method="post" action="install.php">'."\n";
     echo '<div id="install">'."\n";
     echo '<p>';
-    form_langue_install('Choisissez votre langue / Choose your language: ');
-    echo hidden_input('verif_envoi_1', 1);
+    echo '<label for="langue">Choisissez votre langue / Choose your language: ';
+    echo '<select id="langue" name="langue">'."\n";
+    foreach ($GLOBALS['langs'] as $option => $label) {
+        echo "\t".'<option value="'.htmlentities($option).'">'.$label.'</option>'."\n";
+    }
+    echo '</select></label>'."\n";
+    echo hidden_input('install_form_1_sended', 1);
     echo '</p>';
     echo '<button class="submit button-submit" type="submit" name="enregistrer">Ok</button>'."\n";
     echo '<div>'."\n";
     echo '</form>'."\n";
 }
 
-// form pour login + mdp + url
-function afficher_form_2($erreurs = '')
+/**
+ * show the form for step 2 (login + password + url)
+ * ! this function return nothing and use echo
+ */
+function install_form_2_echo($erreurs = '')
 {
     afficher_html_head('Install');
     echo '<div id="axe">'."\n";
@@ -158,14 +118,17 @@ function afficher_form_2($erreurs = '')
     echo '</p>'."\n";
     echo hidden_input('comm_defaut_status', 1);
     echo hidden_input('langue', $GLOBALS['lang']['id']);
-    echo hidden_input('verif_envoi_2', 1);
+    echo hidden_input('install_form_2_sended', 1);
     echo '<button class="submit button-submit" type="submit" name="enregistrer">Ok</button>'."\n";
     echo '</div>'."\n";
     echo '</form>'."\n";
 }
 
-// form choix SGBD
-function afficher_form_3($erreurs = '')
+/**
+ * show the form for step 3 (database)
+ * ! this function return nothing and use echo
+ */
+function install_form_3_echo($erreurs = '')
 {
     afficher_html_head('Install');
     echo '<div id="axe">'."\n";
@@ -199,24 +162,42 @@ function afficher_form_3($erreurs = '')
     echo '</div>'."\n";
 
     echo hidden_input('langue', $GLOBALS['lang']['id']);
-    echo hidden_input('verif_envoi_3', 1);
+    echo hidden_input('install_form_3_sended', 1);
     echo '<button class="submit button-submit" type="submit" name="enregistrer">Ok</button>'."\n";
 
     echo '</div>'."\n";
     echo '</form>'."\n";
 }
 
-function traiter_install_2()
+/**
+ * proceed the submited form 2 (login + password + url)
+ */
+function install_form_2_proceed()
 {
     $config_dir = '../config';
+    create_folder($config_dir, 1);
+    create_folder('../'.DIR_IMAGES, 0);
+    create_folder('../'.DIR_DOCUMENTS, 0);
+    create_folder('../'.DIR_DATABASES, 1);
+    auth_write_user_login_file($_POST['identifiant'], $_POST['mdp']);
+    import_ini_file($config_dir.'/user.ini');
     if (!is_file($config_dir.'/prefs.php')) {
         fichier_prefs();
     }
     fichier_mysql(false); // create an empty file
 }
 
-function traiter_install_3()
+/**
+ * proceed the submited form 3 (database)
+ */
+function install_form_3_proceed()
 {
+    if (isset($_POST['sgdb']) and $_POST['sgdb'] == 'mysql') {
+        fichier_mysql('mysql');
+    } else {
+        fichier_mysql('sqlite');
+    }
+
     import_ini_file(BT_ROOT.DIR_CONFIG.'/'.'mysql.ini');
     $GLOBALS['db_handle'] = open_base();
     $total_articles = liste_elements_count('SELECT count(ID) AS nbr FROM articles', array());
@@ -299,9 +280,17 @@ function traiter_install_3()
 
         bdd_commentaire($comm_ar, 'enregistrer-nouveau'); // commentaire sur l’article
     }
+
+    if (!is_file('../config/config-advanced.ini')) {
+        fichier_adv_conf(); // is done right after DB init
+    }
 }
 
-function valid_install_1()
+/**
+ * check the submited form 1 (language)
+ * @return array
+ */
+function install_form_1_valid()
 {
     $erreurs = array();
     if (!strlen(trim($_POST['langue']))) {
@@ -310,7 +299,11 @@ function valid_install_1()
     return $erreurs;
 }
 
-function valid_install_2()
+/**
+ * check the submited form 2 (login + password + url)
+ * @return array
+ */
+function install_form_2_valid()
 {
     $erreurs = array();
     if (!strlen(trim($_POST['identifiant']))) {
@@ -332,7 +325,11 @@ function valid_install_2()
     return $erreurs;
 }
 
-function valid_install_3()
+/**
+ * check the submited form 3 (database)
+ * @return array
+ */
+function install_form_3_valid()
 {
     $erreurs = array();
     if ($_POST['sgdb'] == 'mysql') {
@@ -356,6 +353,10 @@ function valid_install_3()
     return $erreurs;
 }
 
+/**
+ * test the MySQL connection
+ * @return bool
+ */
 function test_connection_mysql()
 {
     try {
@@ -364,6 +365,49 @@ function test_connection_mysql()
         return true;
     } catch (Exception $e) {
         return false;
+    }
+}
+
+
+
+// get the step of the install
+$GLOBALS['step'] = (isset($_GET['s']) and is_numeric($_GET['s'])) ? $_GET['s'] + 0 : 1;
+
+if ($GLOBALS['step'] == 1) {
+    // set language
+    if (isset($_POST['install_form_1_sended'])) {
+        if ($err_1 = install_form_1_valid()) {
+            install_form_1_echo($err_1);
+        } else {
+            redirection('install.php?s=2&l='.$_POST['langue']);
+        }
+    } else {
+        install_form_1_echo();
+    }
+} elseif ($GLOBALS['step'] == 2) {
+    // set login + password + url
+    if (isset($_POST['install_form_2_sended'])) {
+        if ($err_2 = install_form_2_valid()) {
+            install_form_2_echo($err_2);
+        } else {
+            require_once BT_ROOT.'/inc/auth.php';
+            install_form_2_proceed();
+            redirection('install.php?s=3&l='.$_POST['langue']);
+        }
+    } else {
+        install_form_2_echo();
+    }
+} elseif ($GLOBALS['step'] == 3) {
+    // set db choice
+    if (isset($_POST['install_form_3_sended'])) {
+        if ($err_3 = install_form_3_valid()) {
+            install_form_3_echo($err_3);
+        } else {
+            install_form_3_proceed();
+            redirection('auth.php');
+        }
+    } else {
+        install_form_3_echo();
     }
 }
 
