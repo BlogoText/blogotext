@@ -232,7 +232,6 @@ function afficher_liste_modules($tableau, $filtre)
     if (!empty($tableau)) {
         $out = '<ul id="modules">'."\n";
         foreach ($tableau as $i => $addon) {
-
             // addon
             $out .= "\t".'<li>'."\n";
             // addon checkbox activation
