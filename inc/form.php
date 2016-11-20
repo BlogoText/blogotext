@@ -153,17 +153,6 @@ function form_langue($defaut)
     return $form;
 }
 
-function form_langue_install($label)
-{
-    $ret = '<label for="langue">'.$label;
-    $ret .= '<select id="langue" name="langue">'."\n";
-    foreach ($GLOBALS['langs'] as $option => $label) {
-        $ret .= "\t".'<option value="'.htmlentities($option).'">'.$label.'</option>'."\n";
-    }
-    $ret .= '</select></label>'."\n";
-    echo $ret;
-}
-
 function liste_themes($chemin)
 {
     if ($ouverture = opendir($chemin)) {
