@@ -397,5 +397,11 @@ function conversion_theme_addons($texte)
         $texte = preg_replace('/\{addon_[a-zA-Z0-9-_]*\}/', '', $texte);
     }
 
+    // hook
+    $tmp_hook = hook_trigger('conversion_theme_addons_end', $texte);
+    if (hook_check('conversion_theme_addons_end', 2, $tmp_hook)) {
+        $texte = $tmp_hook['1'];
+    }
+    
     return $texte;
 }
