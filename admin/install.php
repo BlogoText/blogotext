@@ -242,25 +242,25 @@ function install_form_3_proceed()
         bdd_article($readme_post, 'enregistrer-nouveau'); // billet "read me" avec les instructions // Assuming the 2nd possing will be good if the first was too.
 
         $link_ar = array(
-                'bt_type' => 'link',
-                'bt_id' => date('YmdHis', $time + 1),
-                'bt_content' => 'Blog du Hollandais Volant, développeur de BlogoText',
-                'bt_wiki_content' => 'Blog du Hollandais Volant, développeur de BlogoText.',
-                'bt_title' => 'Le Hollandais Volant',
-                'bt_link' => 'http://lehollandaisvolant.net/',
-                'bt_tags' => 'blog, timo',
-                'bt_statut' => 1
-            );
+            'bt_type' => 'link',
+            'bt_id' => date('YmdHis', $time + 1),
+            'bt_content' => 'This domain is established to be used for illustrative examples in documents. You may use this domain in examples without prior coordination or asking for permission.',
+            'bt_wiki_content' => 'This domain is established to be used for illustrative examples in documents. You may use this domain in examples without prior coordination or asking for permission.',
+            'bt_title' => 'Example Domain',
+            'bt_link' => 'http://www.example.org/',
+            'bt_tags' => 'blog, example',
+            'bt_statut' => 1
+        );
         $link_ar2 = array(
-                'bt_type' => 'note',
-                'bt_id' => date('YmdHis', $time + 5),
-                'bt_content' => 'Ceci est un lien privé. Vous seuls pouvez le voir.',
-                'bt_wiki_content' => 'Ceci est un lien privé. Vous seul pouvez le voir.',
-                'bt_title' => 'Note : lien privé',
-                'bt_link' => $GLOBALS['racine'].'index.php?mode=links&amp;id='.date('YmdHis', $time + 5),
-                'bt_tags' => '',
-                'bt_statut' => 0
-            );
+            'bt_type' => 'note',
+            'bt_id' => date('YmdHis', $time + 5),
+            'bt_content' => 'Ceci est un lien privé. Vous seul pouvez le voir. / This is a private link. Only you can see it.',
+            'bt_wiki_content' => 'Ceci est un lien privé. Vous seul pouvez le voir. / This is a private link. Only you can see it.',
+            'bt_title' => 'Note : lien privé / private link',
+            'bt_link' => $GLOBALS['racine'].'index.php?mode=links&amp;id='.date('YmdHis', $time + 5),
+            'bt_tags' => '',
+            'bt_statut' => 0
+        );
         bdd_lien($link_ar, 'enregistrer-nouveau'); // lien
         bdd_lien($link_ar2, 'enregistrer-nouveau'); // lien
 
@@ -268,11 +268,11 @@ function install_form_3_proceed()
             'bt_type' => 'comment',
             'bt_id' => date('YmdHis', $time + 6),
             'bt_article_id' => date('YmdHis', $time),
-            'bt_content' => '<p>Ceci est un commentaire.</p>',
-            'bt_wiki_content' => 'Ceci est un commentaire.',
+            'bt_content' => '<p>Ceci est un commentaire / This is a comment.</p>',
+            'bt_wiki_content' => 'Ceci est un commentaire / This is a comment.',
             'bt_author' => 'BlogoText',
             'bt_link' => '',
-            'bt_webpage' => 'http://lehollandaisvolant.net/blogotext/',
+            'bt_webpage' => 'http://www.example.org',
             'bt_email' => 'mail@example.com',
             'bt_subscribe' => 0,
             'bt_statut' => 1
