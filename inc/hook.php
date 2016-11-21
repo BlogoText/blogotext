@@ -14,7 +14,7 @@
 
 /**
  * BASED ON :
- * 
+ *
  * DS hook - Dirty Script, a light hook system
  * @licence   MIT
  * @version   0.03.002 beta
@@ -35,7 +35,7 @@
 function hook_push($hook_name, $function, $priority = 10)
 {
     // prevent hook on admin side
-    if (defined('DONT_USE_HOOK')){
+    if (defined('DONT_USE_HOOK')) {
         return true;
     }
 
@@ -51,7 +51,7 @@ function hook_push($hook_name, $function, $priority = 10)
  */
 function hook_clean($hook_name)
 {
-    if (isset($GLOBALS['hooks'][$hook_name])){
+    if (isset($GLOBALS['hooks'][$hook_name])) {
         unset($GLOBALS['hooks'][$hook_name]);
     }
 }
@@ -63,14 +63,14 @@ function hook_clean($hook_name)
  *
  * @param string $hook_name, the hook name, required
  * @param mixed ... , you can push all the params you want
- * @return array, the returns of the functions to call 
+ * @return array, the returns of the functions to call
  */
 function hook_trigger($hook_name)
 {
     $args = func_get_args();
 
     // prevent hook on admin side
-    if (defined('DONT_USE_HOOK')){
+    if (defined('DONT_USE_HOOK')) {
         return $args;
     }
 
@@ -86,7 +86,7 @@ function hook_trigger($hook_name)
         krsort($functions);
         foreach ($functions as $function) {
             if (function_exists($function)) {
-                $args = call_user_func($function ,$args);
+                $args = call_user_func($function, $args);
             }
         }
     }
@@ -97,15 +97,16 @@ function hook_trigger($hook_name)
 /**
  * check if the return of a hook seem's valid
  *
- * @param string $hook_name  
+ * @param string $hook_name
  * @param int    $args_count the total count of hook_trigger() args
  * @param array  $args       the var returned by hook_trigger()
  * @param bool   $must_die   if true, use DIE(), else return bool
  * @return bool||die()
  */
-function hook_check($hook_name, $args_count, $args, $must_die = true) {
+function hook_check($hook_name, $args_count, $args, $must_die = true)
+{
     // prevent hook on admin side
-    if (defined('DONT_USE_HOOK')){
+    if (defined('DONT_USE_HOOK')) {
         return true;
     }
 
@@ -134,9 +135,9 @@ function hook_check($hook_name, $args_count, $args, $must_die = true) {
     }
 
     // check the args key
-    while(--$args_count){
+    while (--$args_count) {
         if (!isset($args[$args_count])) {
-            if ($must_die){
+            if ($must_die) {
                 die('hook : '. $hook_name .', missing $args['.$args_count.'] .');
             } else {
                 return false;

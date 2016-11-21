@@ -171,7 +171,6 @@ function encart_commentaires()
     $query = "SELECT a.bt_title, c.bt_author, c.bt_id, c.bt_article_id, c.bt_content FROM commentaires c LEFT JOIN articles a ON a.bt_id=c.bt_article_id WHERE c.bt_statut=1 AND a.bt_statut=1 ORDER BY c.bt_id DESC LIMIT 5";
     $tableau = liste_elements($query, array(), 'commentaires');
     if (isset($tableau)) {
-
         // hook
         $tmp_hook = hook_trigger('encart_commentaires', $tableau);
         if (hook_check('encart_commentaires', 2, $tmp_hook)) {
