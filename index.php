@@ -332,7 +332,6 @@ else {
     $query .= $glue.$sql_a_p.$sql_order.$sql_p;
     $tableau = liste_elements($query, $array, $where);
     $GLOBALS['param_pagination'] = array('nb' => count($tableau), 'nb_par_page' => $GLOBALS['max_bill_acceuil']);
-
     afficher_index($tableau, 'list');
 }
 
