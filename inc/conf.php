@@ -19,7 +19,7 @@
 // GENERAL
 define('BLOGOTEXT_NAME', 'BlogoText');
 define('BLOGOTEXT_SITE', 'https://github.com/BoboTiG/blogotext');
-define('BLOGOTEXT_VERSION', '3.7.0-dev');
+define('BLOGOTEXT_VERSION', '4.0-dev');
 define('MINIMAL_PHP_REQUIRED_VERSION', '5.5');
 define('BLOGOTEXT_UA', 'Mozilla/5.0 (Windows NT 10; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0');
 mb_internal_encoding('UTF-8');
