@@ -147,49 +147,52 @@ function addon_edit_params_form($addonName)
     // get addon params
     $params = addon_get_conf($addonName);
 
-    $return .= '<form id="preferences" method="post" action="?addonName='. $addonName .'" >';
-    $return .= '<div role="group" class="pref" style="margin-top:0;">';
-    afficher_liste_modules(array($infos['tag'] => $infos), '');
+    $out = '';
+    $out .= '<form id="preferences" method="post" action="?addonName='. $addonName .'" >';
+    $out .= '<div role="group" class="pref">'; /* no fieldset because browset can’t style them correctly */
+    $out .= '<div class="form-legend"><legend class="legend-user">'.$GLOBALS['lang']['addons_settings_legend'].addon_get_translation($infos['name']).'</legend></div>'."\n";
 
     // build the config form
-    $return .= '<div class="form-lines">'."\n";
+    $out .= '<div class="form-lines">'."\n";
     foreach ($params as $key => $param) {
-        $return .= '<p>';
+        $out .= '<p>';
         if ($param['type'] == 'bool') {
-            $return .= form_checkbox($key, ($param['value'] === true || $param['value'] == 1), $param['label'][ $GLOBALS['lang']['id'] ]);
+            $out .= form_checkbox($key, ($param['value'] === true || $param['value'] == 1), $param['label'][ $GLOBALS['lang']['id'] ]);
         } else if ($param['type'] == 'int') {
             $val_min = (isset($param['value_min'])) ? ' min="'.$param['value_min'].'" ' : '' ;
             $val_max = (isset($param['value_max'])) ? ' max="'.$param['value_max'].'" ' : '' ;
-            $return .= "\t".'<label for="'.$key.'">'.$param['label'][ $GLOBALS['lang']['id'] ].'</label>'."\n";
-            $return .= "\t".'<input type="number" id="'.$key.'" name="'.$key.'" size="30" '. $val_min . $val_max .' value="'.$param['value'].'" class="text" />'."\n";
+            $out .= "\t".'<label for="'.$key.'">'.$param['label'][ $GLOBALS['lang']['id'] ].'</label>'."\n";
+            $out .= "\t".'<input type="number" id="'.$key.'" name="'.$key.'" size="30" '. $val_min . $val_max .' value="'.$param['value'].'" class="text" />'."\n";
         } else if ($param['type'] == 'text') {
-            $return .= "\t".'<label for="'.$key.'">'.$param['label'][ $GLOBALS['lang']['id'] ].'</label>'."\n";
-            $return .= "\t".'<input type="text" id="'.$key.'" name="'.$key.'" size="30" value="'.$param['value'].'" class="text" />'."\n";
+            $out .= "\t".'<label for="'.$key.'">'.$param['label'][ $GLOBALS['lang']['id'] ].'</label>'."\n";
+            $out .= "\t".'<input type="text" id="'.$key.'" name="'.$key.'" size="30" value="'.$param['value'].'" class="text" />'."\n";
         } else if ($param['type'] == 'select') {
-            $return .= "\t".'<label for="'.$key.'">'.$param['label'][ $GLOBALS['lang']['id'] ].'</label>'."\n";
-            $return .= "\t".'<select id="'.$key.'" name="'.$key.'">'."\n";
+            $out .= "\t".'<label for="'.$key.'">'.$param['label'][ $GLOBALS['lang']['id'] ].'</label>'."\n";
+            $out .= "\t".'<select id="'.$key.'" name="'.$key.'">'."\n";
             // var_dump( $param['value'] );
             foreach ($param['options'] as $opt_key => $label_lang) {
                 $selected = ($opt_key == $param['value']) ? ' selected' : '';
-                $return .= "\t\t".'<option value="'. $opt_key .'"'. $selected .'>'. $label_lang[ $GLOBALS['lang']['id'] ] .'</option>';
+                $out .= "\t\t".'<option value="'. $opt_key .'"'. $selected .'>'. $label_lang[ $GLOBALS['lang']['id'] ] .'</option>';
             }
-            $return .= "\t".'</select>'."\n";
+            $out .= "\t".'</select>'."\n";
         }
-        $return .= '</p>';
+        $out .= '</p>';
     }
-    $return .= '</div>';
+    $out .= '</div>';
     // submit box
-    $return .= '<div class="submit-bttns">'."\n";
-    $return .= hidden_input('_verif_envoi', '1');
-    $return .= hidden_input('token', new_token());
-    $return .= '<input type="hidden" name="addon_action" value="params" />';
-    $return .= '<button class="submit button-cancel" type="button" onclick="annuler(\'preferences.php\');" >'.$GLOBALS['lang']['annuler'].'</button>'."\n";
-    $return .= '<button class="submit button-submit" type="submit" name="enregistrer">'.$GLOBALS['lang']['enregistrer'].'</button>'."\n";
-    $return .= '</div>'."\n";
+    $out .= '<div class="submit-bttns">'."\n";
+    $out .= hidden_input('_verif_envoi', '1');
+    $out .= hidden_input('token', new_token());
+    $out .= '<input type="hidden" name="addon_action" value="params" />';
+    $out .= '<button class="submit button-cancel" type="button" onclick="annuler(\'modules.php\');" >'.$GLOBALS['lang']['annuler'].'</button>'."\n";
+    $out .= '<button class="submit button-submit" type="submit" name="enregistrer">'.$GLOBALS['lang']['enregistrer'].'</button>'."\n";
+    $out .= '</div>'."\n";
     // END submit box
-    $return .= '</div>';
-    $return .= '</form>';
-    return $return;
+    $out .= '</ul>'."\n\n";
+    $out .= '</div>'."\n";
+    $out .= '</div>'."\n";
+    $out .= '</form>';
+    return $out;
 }
 
 /* list all addons */
@@ -243,7 +246,6 @@ function afficher_liste_modules($tableau, $filtre)
             $out .= "\t".'</li>'."\n";
 
             // other infos and params
-            $url = '';
             $out .= "\t".'<div>'."\n";
 
             // addon tag
@@ -256,12 +258,15 @@ function afficher_liste_modules($tableau, $filtre)
 
             // addon params
             if (addon_has_conf($addon['tag'])) {
-                $out .= '<a href="module.php?addonName='. $addon['tag'] .'">params</a>';
+                $out .= '<a href="module.php?addonName='. $addon['tag'] .'">'.$GLOBALS['lang']['addons_settings_link_title'].'</a>';
+                if (!empty($addon['url'])) {
+                    $out .= ' | ';
+                }
             }
 
             // author URL
             if (!empty($addon['url'])) {
-                $out .= ' <a href="'.$addon['url'].'">'.$GLOBALS['lang']['label_owner_url'].'</a>';
+                $out .= '<a href="'.$addon['url'].'">'.$GLOBALS['lang']['label_owner_url'].'</a>';
             }
             $out .= '</p>'."\n";
             $out .= '</div>'."\n";

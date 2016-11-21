@@ -334,6 +334,9 @@ $GLOBALS['lang'] = array(
 'titre_preferences' => 'Préférences',
 'titre_fichier' => 'Fichiers',
 'titre_maintenance' => 'Maintenance',
+// modules / addons
+'addons_settings_legend' => 'Préférences du module : ',
+'addons_settings_link_title' => 'Préférences du module',
 // Preferences
 'prefs_legend_utilisateur' => 'Utilisateur',
 'prefs_legend_apparence' => 'Apparence',
