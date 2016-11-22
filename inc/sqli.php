@@ -177,8 +177,8 @@ function liste_elements($query, $array, $data_type)
 
         // prevent use hook on admin side
         if (!defined('DONT_USE_HOOK')) {
-            $tmp_hook = hook_trigger('liste_elements', $return, $data_type);
-            if (hook_check('liste_elements', 3, $tmp_hook)) {
+            $tmp_hook = hook_trigger_and_check('list_items', $return, $data_type);
+            if ($tmp_hook !== false) {
                 $return = $tmp_hook['1'];
             }
         }

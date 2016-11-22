@@ -176,6 +176,11 @@ else {
     }
     array_multisort($bt_id, SORT_DESC, $liste_rss);
     $liste_rss = array_slice($liste_rss, 0, 20);
+    $tmp_hook = hook_trigger_and_check('before_show_atom_no_cache', $liste_rss);
+    if ($tmp_hook !== false) {
+        $liste_rss = $tmp_hook['1'];
+    }
+
     $invert = (isset($_GET['invertlinks'])) ? true : false;
     $xml .= '<title>'.$GLOBALS['nom_du_site'].'</title>'."\n";
     $xml .= '<link href="'.$GLOBALS['racine'].'?mode='.(trim($modes_url, '-')).'"/>'."\n";

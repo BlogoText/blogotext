@@ -15,8 +15,8 @@ function redirection($url)
 {
     // prevent use hook on admin side
     if (!defined('DONT_USE_HOOK')) {
-        $tmp_hook = hook_trigger('before_redirection', $url);
-        if (hook_check('before_redirection', 2, $tmp_hook)) {
+        $tmp_hook = hook_trigger_and_check('before_redirection', $url);
+        if ($tmp_hook !== false) {
             $url = $tmp_hook['1'];
         }
     }

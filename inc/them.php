@@ -299,8 +299,8 @@ function afficher_index($tableau, $type)
         $HTML = conversions_theme($HTML, $billet, 'post');
     }
 
-    $tmp_hook = hook_trigger('afficher_index', $HTML);
-    if (hook_check('afficher_index', 2, $tmp_hook)) {
+    $tmp_hook = hook_trigger_and_check('show_index', $HTML);
+    if ($tmp_hook !== false) {
         $HTML = $tmp_hook['1'];
     }
 
@@ -398,8 +398,8 @@ function conversion_theme_addons($texte)
     }
 
     // hook
-    $tmp_hook = hook_trigger('conversion_theme_addons_end', $texte);
-    if (hook_check('conversion_theme_addons_end', 2, $tmp_hook)) {
+    $tmp_hook = hook_trigger_and_check('conversion_theme_addons_end', $texte);
+    if ($tmp_hook !== false) {
         $texte = $tmp_hook['1'];
     }
     

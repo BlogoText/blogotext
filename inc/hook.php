@@ -147,3 +147,22 @@ function hook_check($hook_name, $args_count, $args, $must_die = true)
 
     return true;
 }
+
+
+function hook_trigger_and_check( $hook_name )
+{
+    $args = func_get_args();
+
+    // prevent hook on admin side
+    if (defined('DONT_USE_HOOK')) {
+        return $args;
+    }
+
+    // $tmp_hook = hook_trigger($hook_name, $texte);
+    $tmp_hook = call_user_func_array("hook_trigger", $args);
+    if (hook_check($hook_name, func_num_args(), $tmp_hook)) {
+        return $tmp_hook;
+    }
+
+    return false;
+}

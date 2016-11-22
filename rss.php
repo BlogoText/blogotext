@@ -178,8 +178,8 @@ else {
 
     // ne garde que les 20 premières entrées
     $liste_rss = array_slice($liste_rss, 0, 20);
-    $tmp_hook = hook_trigger('before_afficher_rss_no_cache', $liste_rss);
-    if (hook_check('before_afficher_rss_no_cache', 2, $tmp_hook)) {
+    $tmp_hook = hook_trigger_and_check('before_show_rss_no_cache', $liste_rss);
+    if ($tmp_hook !== false) {
         $liste_rss = $tmp_hook['1'];
     }
 
