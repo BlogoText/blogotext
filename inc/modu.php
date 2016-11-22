@@ -96,12 +96,13 @@ function addon_edit_params_process($addonName)
             $datas[$key] = (int) (isset($_POST[$key]));
         } else if ($param['type'] == 'int') {
             if (isset($_POST[$key]) && is_numeric($_POST[$key])) {
-                if (isset($param['value_min']) && $param['value_min'] >= $_POST[$key]) {
+                $value = (int) $_POST[$key];
+                if (isset($param['value_min']) && $value < $param['value_min']) {
                     $errors[$key][] = 'Value is behind limit min.';
-                } else if (isset($param['value_max']) && $param['value_max'] <= $_POST[$key]) {
+                } else if (isset($param['value_max']) && $value > $param['value_max']) {
                     $errors[$key][] = 'Value is reach limit max.';
                 } else {
-                    $datas[$key] = (int) $_POST[$key];
+                    $datas[$key] = $value;
                 }
             } else {
                 // error
