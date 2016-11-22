@@ -40,6 +40,11 @@ session_start();
 require_once 'inc/inc.php';
 $GLOBALS['db_handle'] = open_base();
 
+// load addons, allow addons to use hooks
+list_addons();
+
+// hookTrigger
+hook_trigger('system-start');
 
 /*****************************************************************************
  some misc requests

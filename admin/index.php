@@ -17,6 +17,7 @@ if (!is_file('../config/user.ini') || !is_file('../config/prefs.php')) {
 
 $begin = microtime(true);
 define('BT_ROOT', '../');
+define('DONT_USE_HOOK', 1);
 
 require_once '../inc/inc.php';
 

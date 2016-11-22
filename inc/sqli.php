@@ -175,6 +175,14 @@ function liste_elements($query, $array, $data_type)
                 break;
         }
 
+        // prevent use hook on admin side
+        if (!defined('DONT_USE_HOOK')) {
+            $tmp_hook = hook_trigger_and_check('list_items', $return, $data_type);
+            if ($tmp_hook !== false) {
+                $return = $tmp_hook['1'];
+            }
+        }
+
         return $return;
     } catch (Exception $e) {
         die('Erreur 89208 : '.$e->getMessage());

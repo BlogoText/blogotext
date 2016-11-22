@@ -35,6 +35,7 @@ error_reporting(-1);
 $begin = microtime(true);
 
 require_once 'config/prefs.php';
+require_once 'inc/hook.php';
 date_default_timezone_set($GLOBALS['fuseau_horaire']);
 
 function require_all()
@@ -50,6 +51,10 @@ function require_all()
     require_once 'inc/veri.php';
     require_once 'inc/sqli.php';
 }
+
+require_once 'inc/inc.php';
+list_addons();
+hook_trigger('system-start');
 
 $xml .= '<feed xmlns="http://www.w3.org/2005/Atom">'."\n";
 $xml .= '<author><name>'.$GLOBALS['auteur'].'</name></author>'."\n";
@@ -171,6 +176,11 @@ else {
     }
     array_multisort($bt_id, SORT_DESC, $liste_rss);
     $liste_rss = array_slice($liste_rss, 0, 20);
+    $tmp_hook = hook_trigger_and_check('before_show_atom_no_cache', $liste_rss);
+    if ($tmp_hook !== false) {
+        $liste_rss = $tmp_hook['1'];
+    }
+
     $invert = (isset($_GET['invertlinks'])) ? true : false;
     $xml .= '<title>'.$GLOBALS['nom_du_site'].'</title>'."\n";
     $xml .= '<link href="'.$GLOBALS['racine'].'?mode='.(trim($modes_url, '-')).'"/>'."\n";

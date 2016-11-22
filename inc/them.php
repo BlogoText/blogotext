@@ -298,6 +298,12 @@ function afficher_index($tableau, $type)
         // in global page : remplace remaining tags
         $HTML = conversions_theme($HTML, $billet, 'post');
     }
+
+    $tmp_hook = hook_trigger_and_check('show_index', $HTML);
+    if ($tmp_hook !== false) {
+        $HTML = $tmp_hook['1'];
+    }
+
     echo $HTML;
 }
 
@@ -391,5 +397,11 @@ function conversion_theme_addons($texte)
         $texte = preg_replace('/\{addon_[a-zA-Z0-9-_]*\}/', '', $texte);
     }
 
+    // hook
+    $tmp_hook = hook_trigger_and_check('conversion_theme_addons_end', $texte);
+    if ($tmp_hook !== false) {
+        $texte = $tmp_hook['1'];
+    }
+    
     return $texte;
 }
