@@ -148,8 +148,16 @@ function hook_check($hook_name, $args_count, $args, $must_die = true)
     return true;
 }
 
-
-function hook_trigger_and_check( $hook_name )
+/**
+ * Shortcut for hook_trigger() -> hook_check()
+ *
+ * if return false, that means tests have fail
+ *
+ * @param string $hook_name, the hook name, required
+ * @param mixed ... , you can push all the params you want
+ * @return false|array, the returns of the functions to call
+ */
+function hook_trigger_and_check($hook_name)
 {
     $args = func_get_args();
 
