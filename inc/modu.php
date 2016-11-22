@@ -93,7 +93,7 @@ function addon_edit_params_process($addonName)
     foreach ($params as $key => $param) {
         $datas[$key] = '';
         if ($param['type'] == 'bool') {
-            $datas[$key] = (isset($_POST[$key]));
+            $datas[$key] = (int) (isset($_POST[$key]));
         } else if ($param['type'] == 'int') {
             if (isset($_POST[$key]) && is_numeric($_POST[$key])) {
                 if (isset($param['value_min']) && $param['value_min'] >= $_POST[$key]) {
@@ -101,7 +101,7 @@ function addon_edit_params_process($addonName)
                 } else if (isset($param['value_max']) && $param['value_max'] <= $_POST[$key]) {
                     $errors[$key][] = 'Value is reach limit max.';
                 } else {
-                    $datas[$key] = htmlentities($_POST[$key], ENT_QUOTES);
+                    $datas[$key] = (int) $_POST[$key];
                 }
             } else {
                 // error
@@ -121,12 +121,9 @@ function addon_edit_params_process($addonName)
         }
     }
     $conf  = '';
-    $conf .= '; <?php die(); /*'."\n\n";
-    $conf .= '; This file contains addons params, you can modify this file.'."\n\n";
     foreach ($datas as $key => $value) {
-        $conf .= $key .' = \''. $value .'\''."\n";
+        $conf .= $key .' = '.((is_numeric($value)) ? $value : '\''.$value.'\'').''."\n";
     }
-    $conf .= '; */ ?>'."\n";
     return (file_put_contents(BT_ROOT.DIR_ADDONS.'/'.$addonName.'/params.ini', $conf) !== false);
 }
 
@@ -334,6 +331,6 @@ function init_post_module()
 {
     return array (
         'addon_id' => htmlspecialchars($_POST['addon_id']),
-        'status' => (isset($_POST['statut']) and $_POST['statut'] == 'on') ? '1' : '0',
+        'status' => (isset($_POST['statut']) and $_POST['statut'] == 'on') ? 1 : 0,
     );
 }
