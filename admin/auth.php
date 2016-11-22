@@ -30,11 +30,11 @@ if (isset($_POST['nom_utilisateur'])) {
     // Proxy IPs, if exists.
     $ip .= (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) ? '_'.htmlspecialchars($_SERVER['HTTP_X_FORWARDED_FOR']) : '';
     $curent_time = date('r'); // heure : Wed, 18 Jan 2012 20:42:12 +0100
-    $data = '<?php die(\'no.\'); // '.$curent_time.' - '.$ip.' - '.((check_session()===true) ? 'login succes' : 'login fail') ." ?>\n";
+    $data = '<?php die(\'no.\'); // '.$curent_time.' - '.$ip.' - '.((auth_check_session()===true) ? 'login succes' : 'login fail') ." ?>\n";
     file_put_contents(BT_ROOT.DIR_CONFIG.'/'.'xauthlog.php', $data, FILE_APPEND);
 }
 
-if (check_session() === true) { // return to index if session is already open.
+if (auth_check_session() === true) { // return to index if session is already open.
     exit(header('Location: index.php'));
 }
 

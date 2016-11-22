@@ -28,7 +28,7 @@ if (isset($_GET['refresh_all'], $_GET['guid']) and ($_GET['guid'] == BLOG_UID)) 
     }
 }
 
-operate_session();
+auth_ttl();
 
 $GLOBALS['db_handle'] = open_base();
 $GLOBALS['liste_flux'] = open_serialzd_file(FEEDS_DB);

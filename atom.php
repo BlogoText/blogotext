@@ -35,25 +35,11 @@ error_reporting(-1);
 $begin = microtime(true);
 
 require_once 'config/prefs.php';
-require_once 'inc/hook.php';
 date_default_timezone_set($GLOBALS['fuseau_horaire']);
 
-function require_all()
-{
-    require_once 'inc/conf.php';
-    require_once 'inc/lang.php';
-    require_once 'inc/fich.php';
-    require_once 'inc/util.php';
-    require_once 'inc/html.php';
-    require_once 'inc/form.php';
-    require_once 'inc/comm.php';
-    require_once 'inc/conv.php';
-    require_once 'inc/veri.php';
-    require_once 'inc/sqli.php';
-}
-
 require_once 'inc/inc.php';
-list_addons();
+
+addon_list_addons();
 hook_trigger('system-start');
 
 $xml .= '<feed xmlns="http://www.w3.org/2005/Atom">'."\n";
@@ -63,7 +49,6 @@ $xml .= '<link rel="self" href="'.$GLOBALS['racine'].'atom.php'.((!empty($_SERVE
 // ATOM DU BLOG
 /* si y'a un ID en paramètre : flux sur fil commentaires de l'article "ID" */
 if (isset($_GET['id']) and preg_match('#^[0-9]{14}$#', $_GET['id'])) {
-    require_all();
     $GLOBALS['db_handle'] = open_base();
     $article_id = htmlspecialchars($_GET['id']);
 
@@ -112,7 +97,6 @@ else {
     $fcache = 'cache/cache_rss_array.dat';
     $liste = array();
     if (!is_file($fcache)) {
-        require_all();
         $GLOBALS['db_handle'] = open_base();
         rafraichir_cache_lv1();
     }

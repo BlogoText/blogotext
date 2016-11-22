@@ -15,5 +15,5 @@ define('BT_ROOT', '../');
 
 require_once '../inc/inc.php';
 
-operate_session();
-fermer_session();
+auth_ttl();
+auth_kill_session();

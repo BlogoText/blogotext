@@ -20,7 +20,7 @@ define('BT_ROOT', '../');
 
 require_once '../inc/inc.php';
 
-operate_session();
+auth_ttl();
 $begin = microtime(true);
 
 $GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);

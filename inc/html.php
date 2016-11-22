@@ -41,42 +41,6 @@ function footer($begin_time = '')
     echo $html;
 }
 
-/// menu haut panneau admin /////////
-function afficher_topnav($titre)
-{
-    $tab = pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME);
-    if (strlen($titre) == 0) {
-        $titre = BLOGOTEXT_NAME;
-    }
-    $html = '';
-    $html .= '<div id="nav">'."\n";
-    $html .=  "\t".'<ul>'."\n";
-    $html .=  "\t\t".'<li><a href="index.php" id="lien-index"'.(($tab == 'index.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['label_resume'].'</a></li>'."\n";
-    $html .=  "\t\t".'<li><a href="articles.php" id="lien-liste"'.(($tab == 'articles.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['mesarticles'].'</a></li>'."\n";
-    $html .=  "\t\t".'<li><a href="ecrire.php" id="lien-nouveau"'.(($tab == 'ecrire.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['nouveau'].'</a></li>'."\n";
-    $html .=  "\t\t".'<li><a href="commentaires.php" id="lien-lscom"'.(($tab == 'commentaires.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['titre_commentaires'].'</a></li>'."\n";
-    $html .=  "\t\t".'<li><a href="fichiers.php" id="lien-fichiers"'.(($tab == 'fichiers.php') ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_fichiers']).'</a></li>'."\n";
-    if ($GLOBALS['onglet_liens']) {
-        $html .=  "\t\t".'<li><a href="links.php" id="lien-links"'.(($tab == 'links.php') ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_links']).'</a></li>'."\n";
-    }
-    if ($GLOBALS['onglet_rss']) {
-        $html .=  "\t\t".'<li><a href="feed.php" id="lien-rss"'.(($tab == 'feed.php') ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_feeds']).'</a></li>'."\n";
-    }
-    $html .=  "\t".'</ul>'."\n";
-    $html .=  '</div>'."\n";
-
-    $html .=  '<h1>'.$titre.'</h1>'."\n";
-
-    $html .=  '<div id="nav-acc">'."\n";
-    $html .=  "\t".'<ul>'."\n";
-    $html .=  "\t\t".'<li><a href="preferences.php" id="lien-preferences">'.$GLOBALS['lang']['preferences'].'</a></li>'."\n";
-    $html .=  "\t\t".'<li><a href="modules.php" id="lien-modules">'.ucfirst($GLOBALS['lang']['label_modules']).'</a></li>'."\n";
-    $html .=  "\t\t".'<li><a href="'.$GLOBALS['racine'].'" id="lien-site">'.$GLOBALS['lang']['blog_link'].'</a></li>'."\n";
-    $html .=  "\t\t".'<li><a href="logout.php" id="lien-deconnexion">'.$GLOBALS['lang']['deconnexion'].'</a></li>'."\n";
-    $html .=  "\t".'</ul>'."\n";
-    $html .=  '</div>'."\n";
-    echo $html;
-}
 
 function confirmation($message)
 {
@@ -120,35 +84,6 @@ function question($message)
       echo '<p id="question">'.$message.'</p>';
 }
 
-function afficher_msg()
-{
-    // message vert
-    if (isset($_GET['msg'])) {
-        if (array_key_exists(htmlspecialchars($_GET['msg']), $GLOBALS['lang'])) {
-            $suffix = (isset($_GET['nbnew'])) ? htmlspecialchars($_GET['nbnew']).' '.$GLOBALS['lang']['rss_nouveau_flux'] : ''; // nb new RSS
-            confirmation($GLOBALS['lang'][$_GET['msg']].$suffix);
-        }
-    }
-    // message rouge
-    if (isset($_GET['errmsg'])) {
-        if (array_key_exists($_GET['errmsg'], $GLOBALS['lang'])) {
-            no_confirmation($GLOBALS['lang'][$_GET['errmsg']]);
-        }
-    }
-}
-
-function apercu($article)
-{
-    if (isset($article)) {
-        $apercu = '<h2>'.$article['bt_title'].'</h2>'."\n";
-        if (empty($article['bt_abstract'])) {
-            $article['bt_abstract'] = mb_substr(strip_tags($article['bt_content']), 0, 249).'…';
-        }
-        $apercu .= '<div><strong>'.$article['bt_abstract'].'</strong></div>'."\n";
-        $apercu .= '<div>'.rel2abs_admin($article['bt_content']).'</div>'."\n";
-        echo '<div id="apercu">'."\n".$apercu.'</div>'."\n\n";
-    }
-}
 
 function moteur_recherche()
 {
@@ -288,68 +223,6 @@ function liste_tags($billet, $html_link)
         }
     }
     return $liste;
-}
-
-
-/* From DB : returns a HTML list with the feeds (the left panel) */
-function feed_list_html()
-{
-    // counts unread feeds in DB
-    $feeds_nb = rss_count_feed();
-    $total_unread = $total_favs = 0;
-    foreach ($feeds_nb as $feed) {
-        $total_unread += $feed['nbrun'];
-        $total_favs += $feed['nbfav'];
-    }
-
-    // First item : link all feeds
-    $html = "\t\t".'<li class="all-feeds"><a href="#" onclick="document.getElementById(\'markasread\').onclick=function(){markAsRead(\'all\', true);}; sortAll(); return false;">'.$GLOBALS['lang']['rss_label_all_feeds'].' <span id="global-post-counter" data-nbrun="'.$total_unread.'">('.$total_unread.')</span></a></li>'."\n";
-
-    // Next item : favorites items
-    $html .= "\t\t".'<li class="fav-feeds"><a href="#" onclick="document.getElementById(\'markasread\').onclick=function(){markAsRead(\'favs\', true);}; return sortFavs(); return false;">'.$GLOBALS['lang']['rss_label_favs_feeds'].' <span id="favs-post-counter" data-nbrun="'.$total_favs.'">('.$total_favs.')</span></a></li>'."\n";
-
-    $feed_urls = array();
-    foreach ($feeds_nb as $i => $feed) {
-        $feed_urls[$feed['bt_feed']] = $feed;
-    }
-
-    // sort feeds by folder
-    $folders = array();
-    foreach ($GLOBALS['liste_flux'] as $i => $feed) {
-        $feed['nbrun'] = ((isset($feed_urls[$feed['link']]['nbrun'])) ? $feed_urls[$feed['link']]['nbrun'] : 0);
-        $folders[$feed['folder']][] = $feed;
-    }
-    krsort($folders);
-
-    // creates html : lists RSS feeds without folder separately from feeds with a folder
-    foreach ($folders as $i => $folder) {
-        //$folder = tri_selon_sous_cle($folder, 'nbrun');
-        $li_html = "";
-        $folder_count = 0;
-        foreach ($folder as $j => $feed) {
-            $js = 'onclick="document.getElementById(\'markasread\').onclick=function(){sendMarkReadRequest(\'site\', \''.$feed['link'].'\', true);}; sortSite(this);"';
-                $li_html .= "\t\t".'<li class="" data-nbrun="'.$feed['nbrun'].'" data-feedurl="'.$feed['link'].'" title="'.$feed['link'].'">';
-                $li_html .= '<a href="#" '.(($feed['iserror'] > 2) ? 'class="feed-error" ': ' ' ).$js.' data-feed-domain="'.parse_url($feed['link'], PHP_URL_HOST).'">'.$feed['title'].'</a>';
-                $li_html .= '<span>('.$feed['nbrun'].')</span>';
-                $li_html .= '</li>'."\n";
-                $folder_count += $feed['nbrun'];
-        }
-
-        if ($i != '') {
-            $html .= "\t\t".'<li class="feed-folder" data-nbrun="'.$folder_count.'" data-folder="'.$i.'">'."\n";
-            $html .= "\t\t\t".'<span class="feed-folder-title">'."\n";
-            $html .= "\t\t\t\t".'<a href="#" onclick="document.getElementById(\'markasread\').onclick=function(){sendMarkReadRequest(\'folder\', \''.$i.'\', true);}; sortFolder(this);">'.$i.'<span>('.$folder_count.')</span></a>'."\n";
-            $html .= "\t\t\t\t".'<a href="#" onclick="return hideFolder(this)" class="unfold">unfold</a>'."\n";
-            $html .= "\t\t\t".'</span>'."\n";
-            $html .= "\t\t\t".'<ul>'."\n\t\t";
-        }
-        $html .= $li_html;
-        if ($i != '') {
-            $html .= "\t\t\t".'</ul>'."\n";
-            $html .= "\t\t".'</li>'."\n";
-        }
-    }
-    return $html;
 }
 
 function php_lang_to_js($a)

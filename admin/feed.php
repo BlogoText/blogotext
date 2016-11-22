@@ -15,8 +15,235 @@ define('BT_ROOT', '../');
 
 require_once '../inc/inc.php';
 
-operate_session();
+auth_ttl();
 $begin = microtime(true);
+
+
+// RSS feeds form: allow changing feeds (title, url) or remove a feed
+function afficher_form_rssconf($errors = '')
+{
+    if (!empty($errors)) {
+        echo erreurs($errors);
+    }
+    $out = '';
+    // form add new feed.
+    $out .= '<form id="form-rss-add" method="post" action="feed.php?config">'."\n";
+    $out .= '<fieldset class="pref">'."\n";
+    $out .= '<legend class="legend-link">'.$GLOBALS['lang']['label_feed_ajout'].'</legend>'."\n";
+    $out .= "\t\t\t".'<label for="new-feed">'.$GLOBALS['lang']['label_feed_new'].':</label>'."\n";
+    $out .= "\t\t\t".'<input id="new-feed" name="new-feed" type="text" class="text" value="" placeholder="http://www.example.org/rss">'."\n";
+    $out .= '<p class="submit-bttns">'."\n";
+    $out .= "\t".'<button class="submit button-submit" type="submit" name="send">'.$GLOBALS['lang']['envoyer'].'</button>'."\n";
+    $out .= '</p>'."\n";
+    $out .= hidden_input('token', new_token());
+    $out .= hidden_input('verif_envoi', 1);
+    $out .= '</fieldset>'."\n";
+    $out .= '</form>'."\n";
+
+    // Form edit + list feeds.
+    $out .= '<form id="form-rss-config" method="post" action="feed.php?config">'."\n";
+    $out .= '<ul>'."\n";
+    foreach ($GLOBALS['liste_flux'] as $i => $flux) {
+        $out .= "\t".'<li>'."\n";
+        $out .= "\t\t".'<span'.( ($flux['iserror'] > 2) ? ' class="feed-error" title="('.$flux['iserror'].' last requests were errors.)" ' : ''  ).'>'."\n";
+        $out .= "\t\t\t".'<label for="i_'.$flux['checksum'].'">'.$GLOBALS['lang']['rss_label_titre_flux'].'</label>'."\n";
+        $out .= "\t\t\t".'<input id="i_'.$flux['checksum'].'" name="i_'.$flux['checksum'].'" type="text" class="text" value="'.htmlspecialchars($flux['title']).'">'."\n";
+        $out .= "\t\t".'</span>'."\n";
+        $out .= "\t\t".'<span>'."\n";
+        $out .= "\t\t\t".'<label for="j_'.$flux['checksum'].'">'.$GLOBALS['lang']['rss_label_url_flux'].'</label>'."\n";
+        $out .= "\t\t\t".'<input id="j_'.$flux['checksum'].'" name="j_'.$flux['checksum'].'" type="text" class="text" value="'.htmlspecialchars($flux['link']).'">'."\n";
+        $out .= "\t\t".'</span>'."\n";
+        $out .= "\t\t".'<span>'."\n";
+        $out .= "\t\t\t".'<label for="l_'.$flux['checksum'].'">'.$GLOBALS['lang']['rss_label_dossier'].'</label>'."\n";
+        $out .= "\t\t\t".'<input id="l_'.$flux['checksum'].'" name="l_'.$flux['checksum'].'" type="text" class="text" value="'.htmlspecialchars($flux['folder']).'">'."\n";
+        $out .= "\t\t\t".'<input class="remove-feed" name="k_'.$flux['checksum'].'" type="hidden" value="1">'."\n";
+        $out .= "\t\t".'</span>'."\n";
+        $out .= "\t\t".'<span>'."\n";
+        $out .= "\t\t\t".'<button type="button" class="submit button-cancel" onclick="unMarkAsRemove(this)">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
+        $out .= "\t\t\t".'<button type="button" class="submit button-delete" onclick="markAsRemove(this)">'.$GLOBALS['lang']['supprimer'].'</button>'."\n";
+        $out .= "\t\t".'</span>';
+        $out .= "\t".'</li>'."\n";
+    }
+    $out .= '</ul>'."\n";
+    $out .= '<p class="submit-bttns">'."\n";
+    $out .= "\t".'<button class="submit button-submit" type="submit" name="send">'.$GLOBALS['lang']['envoyer'].'</button>'."\n";
+    $out .= '</p>'."\n";
+    $out .= hidden_input('token', new_token());
+    $out .= hidden_input('verif_envoi', 1);
+    $out .= '</form>'."\n";
+
+    return $out;
+}
+
+// FOR RSS : get $_POST and update feeds (title, url…) for feeds.php?config
+function traiter_form_rssconf()
+{
+    $msg_param_to_trim = (isset($_GET['msg'])) ? '&msg='.$_GET['msg'] : '';
+    $query_string = str_replace($msg_param_to_trim, '', $_SERVER['QUERY_STRING']);
+    // traitement
+    $GLOBALS['db_handle']->beginTransaction();
+    foreach ($GLOBALS['liste_flux'] as $i => $feed) {
+        if (isset($_POST['i_'.$feed['checksum']])) {
+            // feed marked to be removed
+            if ($_POST['k_'.$feed['checksum']] == 0) {
+                unset($GLOBALS['liste_flux'][$i]);
+                try {
+                    $req = $GLOBALS['db_handle']->prepare('DELETE FROM rss WHERE bt_feed=?');
+                    $req->execute(array($feed['link']));
+                } catch (Exception $e) {
+                    die('Error : Rss?conf RM-from db: '.$e->getMessage());
+                }
+            } // title, url or folders have changed
+            else {
+                // title has change
+                $GLOBALS['liste_flux'][$i]['title'] = $_POST['i_'.$feed['checksum']];
+                // folder has changed : update & change folder where it must be changed
+                if ($GLOBALS['liste_flux'][$i]['folder'] != $_POST['l_'.$feed['checksum']]) {
+                    $GLOBALS['liste_flux'][$i]['folder'] = $_POST['l_'.$feed['checksum']];
+                    try {
+                        $req = $GLOBALS['db_handle']->prepare('UPDATE rss SET bt_folder=? WHERE bt_feed=?');
+                        $req->execute(array($_POST['l_'.$feed['checksum']], $feed['link']));
+                    } catch (Exception $e) {
+                        die('Error : Rss?conf Update-feed db: '.$e->getMessage());
+                    }
+                }
+
+                // URL has change
+                if ($_POST['j_'.$feed['checksum']] != $GLOBALS['liste_flux'][$i]['link']) {
+                    $a = $GLOBALS['liste_flux'][$i];
+                    $a['link'] = $_POST['j_'.$feed['checksum']];
+                    unset($GLOBALS['liste_flux'][$i]);
+                    $GLOBALS['liste_flux'][$a['link']] = $a;
+                    try {
+                        $req = $GLOBALS['db_handle']->prepare('UPDATE rss SET bt_feed=? WHERE bt_feed=?');
+                        $req->execute(array($_POST['j_'.$feed['checksum']], $feed['link']));
+                    } catch (Exception $e) {
+                        die('Error : Rss?conf Update-feed db: '.$e->getMessage());
+                    }
+                }
+            }
+        }
+    }
+    $GLOBALS['db_handle']->commit();
+
+    // sort list with title
+    $GLOBALS['liste_flux'] = array_reverse(tri_selon_sous_cle($GLOBALS['liste_flux'], 'title'));
+    file_put_contents(FEEDS_DB, '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_flux']))).' */');
+
+    $redir = basename($_SERVER['SCRIPT_NAME']).'?'.$query_string.'&msg=confirm_feeds_edit';
+    redirection($redir);
+}
+
+// FOR RSS : RETUNS nb of articles per feed
+function rss_count_feed()
+{
+    $result = array();
+    $query = '
+        SELECT bt_feed, SUM(bt_statut) AS nbrun, SUM(bt_bookmarked) AS nbfav
+          FROM rss
+         GROUP BY bt_feed';
+    try {
+        $result = $GLOBALS['db_handle']->query($query)->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    } catch (Exception $e) {
+        die('Erreur 0329-rss-count_per_feed : '.$e->getMessage());
+    }
+}
+
+
+/* From DB : returns a HTML list with the feeds (the left panel) */
+function feed_list_html()
+{
+    // counts unread feeds in DB
+    $feeds_nb = rss_count_feed();
+    $total_unread = $total_favs = 0;
+    foreach ($feeds_nb as $feed) {
+        $total_unread += $feed['nbrun'];
+        $total_favs += $feed['nbfav'];
+    }
+
+    // First item : link all feeds
+    $html = "\t\t".'<li class="all-feeds"><a href="#" onclick="document.getElementById(\'markasread\').onclick=function(){markAsRead(\'all\', true);}; sortAll(); return false;">'.$GLOBALS['lang']['rss_label_all_feeds'].' <span id="global-post-counter" data-nbrun="'.$total_unread.'">('.$total_unread.')</span></a></li>'."\n";
+
+    // Next item : favorites items
+    $html .= "\t\t".'<li class="fav-feeds"><a href="#" onclick="document.getElementById(\'markasread\').onclick=function(){markAsRead(\'favs\', true);}; return sortFavs(); return false;">'.$GLOBALS['lang']['rss_label_favs_feeds'].' <span id="favs-post-counter" data-nbrun="'.$total_favs.'">('.$total_favs.')</span></a></li>'."\n";
+
+    $feed_urls = array();
+    foreach ($feeds_nb as $i => $feed) {
+        $feed_urls[$feed['bt_feed']] = $feed;
+    }
+
+    // sort feeds by folder
+    $folders = array();
+    foreach ($GLOBALS['liste_flux'] as $i => $feed) {
+        $feed['nbrun'] = ((isset($feed_urls[$feed['link']]['nbrun'])) ? $feed_urls[$feed['link']]['nbrun'] : 0);
+        $folders[$feed['folder']][] = $feed;
+    }
+    krsort($folders);
+
+    // creates html : lists RSS feeds without folder separately from feeds with a folder
+    foreach ($folders as $i => $folder) {
+        //$folder = tri_selon_sous_cle($folder, 'nbrun');
+        $li_html = "";
+        $folder_count = 0;
+        foreach ($folder as $j => $feed) {
+            $js = 'onclick="document.getElementById(\'markasread\').onclick=function(){sendMarkReadRequest(\'site\', \''.$feed['link'].'\', true);}; sortSite(this);"';
+                $li_html .= "\t\t".'<li class="" data-nbrun="'.$feed['nbrun'].'" data-feedurl="'.$feed['link'].'" title="'.$feed['link'].'">';
+                $li_html .= '<a href="#" '.(($feed['iserror'] > 2) ? 'class="feed-error" ': ' ' ).$js.' data-feed-domain="'.parse_url($feed['link'], PHP_URL_HOST).'">'.$feed['title'].'</a>';
+                $li_html .= '<span>('.$feed['nbrun'].')</span>';
+                $li_html .= '</li>'."\n";
+                $folder_count += $feed['nbrun'];
+        }
+
+        if ($i != '') {
+            $html .= "\t\t".'<li class="feed-folder" data-nbrun="'.$folder_count.'" data-folder="'.$i.'">'."\n";
+            $html .= "\t\t\t".'<span class="feed-folder-title">'."\n";
+            $html .= "\t\t\t\t".'<a href="#" onclick="document.getElementById(\'markasread\').onclick=function(){sendMarkReadRequest(\'folder\', \''.$i.'\', true);}; sortFolder(this);">'.$i.'<span>('.$folder_count.')</span></a>'."\n";
+            $html .= "\t\t\t\t".'<a href="#" onclick="return hideFolder(this)" class="unfold">unfold</a>'."\n";
+            $html .= "\t\t\t".'</span>'."\n";
+            $html .= "\t\t\t".'<ul>'."\n\t\t";
+        }
+        $html .= $li_html;
+        if ($i != '') {
+            $html .= "\t\t\t".'</ul>'."\n";
+            $html .= "\t\t".'</li>'."\n";
+        }
+    }
+    return $html;
+}
+
+/* From the data out of DB, creates JSON, to send to browser */
+function send_rss_json($rss_entries)
+{
+    // send all the entries data in a JSON format
+    $out = '';
+    $out .= '<script>';
+
+    // RSS entries
+    $out .= 'var rss_entries = {"list": ['."\n";
+    $count = count($rss_entries)-1;
+    foreach ($rss_entries as $i => $entry) {
+        // Note: json_encode adds « " » on the data, so we use encode() and not '"'.encode().'"';
+        $out .= '{'.
+            '"id": '.json_encode($entry['bt_id']).','.
+            '"date": '.json_encode(date_formate(date('YmdHis', $entry['bt_date']))).','.
+            '"time": '.json_encode(heure_formate(date('YmdHis', $entry['bt_date']))).','.
+            '"title": '.json_encode($entry['bt_title']).','.
+            '"link": '.json_encode($entry['bt_link']).','.
+            '"feed": '.json_encode($entry['bt_feed']).','.
+            '"sitename": '.json_encode($GLOBALS['liste_flux'][$entry['bt_feed']]['title']).','.
+            '"folder": '.json_encode($GLOBALS['liste_flux'][$entry['bt_feed']]['folder']).','.
+            '"content": '.json_encode($entry['bt_content']).','.
+            '"statut": '.$entry['bt_statut'].','.
+            '"fav": '.$entry['bt_bookmarked'].''.
+        '}'.(($count == $i) ? '' :',')."\n";
+    }
+    $out .= ']'."\n".'}';
+    $out .=  '</script>'."\n";
+
+    return $out;
+}
+
 
 $GLOBALS['db_handle'] = open_base();
 $GLOBALS['liste_flux'] = open_serialzd_file(FEEDS_DB);
@@ -66,9 +293,9 @@ afficher_html_head($GLOBALS['lang']['mesabonnements']);
 
 echo '<div id="header">'."\n";
     echo '<div id="top">'."\n";
-    afficher_msg();
+    tpl_show_msg();
     echo moteur_recherche();
-    afficher_topnav($GLOBALS['lang']['mesabonnements']);
+    tpl_show_topnav($GLOBALS['lang']['mesabonnements']);
     echo '</div>'."\n";
 
 if (!isset($_GET['config'])) {

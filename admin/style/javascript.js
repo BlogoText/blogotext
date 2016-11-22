@@ -317,7 +317,7 @@ function activate_mod(button)
     var notifDiv = document.createElement('div');
 
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', 'modules.php', true);
+    xhr.open('POST', 'addons.php', true);
 
     xhr.onload = function () {
         var resp = this.responseText;
