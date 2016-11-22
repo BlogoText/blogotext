@@ -175,10 +175,9 @@ function fichier_htaccess($dossier)
     return file_put_contents($htaccess, $content) !== false;
 }
 
-function fichier_module_disabled($file)
+function enable_addon($file)
 {
-    $content = $GLOBALS['lang']['label_disabled'];
-    return file_put_contents($file, $content) !== false;
+    return file_put_contents($file, '') !== false;
 }
 
 // à partir de l’extension du fichier, trouve le "type" correspondant.

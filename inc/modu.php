@@ -208,7 +208,7 @@ function list_addons()
         // include the addons
         foreach ($addons_list as $addon) {
             $inc = sprintf('%s/%s/%s.php', $path, $addon, $addon);
-            $is_enabled = !is_file(sprintf('%s/%s/.disabled', $path, $addon));
+            $is_enabled = is_file(sprintf('%s/%s/.enabled', $path, $addon));
             if (is_file($inc)) {
                 $addons[$addon] = $is_enabled;
                 include_once $inc;
@@ -301,19 +301,19 @@ function traiter_form_module($module)
 {
     $erreurs = array();
     $path = BT_ROOT.DIR_ADDONS;
-    $check_file = sprintf('%s/%s/.disabled', $path, $module['addon_id']);
-    $is_enabled = !is_file($check_file);
+    $check_file = sprintf('%s/%s/.enabled', $path, $module['addon_id']);
+    $is_enabled = is_file($check_file);
     $new_status = (bool) $module['status'];
 
     if ($is_enabled != $new_status) {
         if ($new_status) {
-            // Module activé, on supprimer le fichier .disabled
-            if (unlink($check_file) === false) {
+            // Addon enabled: we create .enabled
+            if (!enable_addon($check_file)) {
                 $erreurs[] = sprintf($GLOBALS['lang']['err_addon_enabled'], $module['addon_id']);
             }
         } else {
-            // Module désactivé, on crée le fichier .disabled
-            if (fichier_module_disabled($check_file) === false) {
+            // Addon disabled: we delete .enabled
+            if (!unlink($check_file)) {
                 $erreurs[] = sprintf($GLOBALS['lang']['err_addon_disabled'], $module['addon_id']);
             }
         }
