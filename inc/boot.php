@@ -236,7 +236,7 @@ define('BLOGOTEXT_UA', 'Mozilla/5.0 (Windows NT 10; WOW64; rv:47.0) Gecko/201001
 // system is installed 
 if (!is_file(DIR_CONFIG.'user.ini') || !is_file(DIR_CONFIG.'prefs.php')) {
     // if this is install script, dont redirect
-    if (!defined('BT_RUN_INSTALL')){
+    if (!defined('BT_RUN_INSTALL')) {
         if (defined('IS_IN_ADMIN')) {
             exit(header('Location: install.php'));
         } else {
