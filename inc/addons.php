@@ -15,7 +15,7 @@
 /**
  * return the var path for an addon
  * /var/{domain.tld}/addon/{addonTag}/
- * 
+ *
  * @param string $addonTag
  * @param bool $check_create, create folder if doesn't exists
  * @return string|false
