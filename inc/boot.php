@@ -236,7 +236,7 @@ define('BLOGOTEXT_UA', 'Mozilla/5.0 (Windows NT 10; WOW64; rv:47.0) Gecko/201001
 // system is installed 
 if (!is_file(DIR_CONFIG.'user.ini') || !is_file(DIR_CONFIG.'prefs.php')) {
     // if this is install script, dont redirect
-    if (!defined('BT_RUN_INSTALL')) {
+    if (!defined('BT_RUN_INSTALL')){
         if (defined('IS_IN_ADMIN')) {
             exit(header('Location: install.php'));
         } else {
@@ -375,7 +375,6 @@ require_once BT_ROOT.'inc/form.php';
 require_once BT_ROOT.'inc/hook.php';
 require_once BT_ROOT.'inc/html.php';
 require_once BT_ROOT.'inc/sqli.php';
-<<<<<<< HEAD
 require_once BT_ROOT.'inc/them.php';
 require_once BT_ROOT.'inc/tpl.php';
 require_once BT_ROOT.'inc/util.php';
@@ -385,6 +384,3 @@ require_once BT_ROOT.'inc/util.php';
  */
 lang_set_list();
 lang_load_land(defined('IS_IN_ADMIN'));
-=======
-require_once BT_ROOT.'inc/addons.php';
->>>>>>> origin/BT_root-et-refactor
