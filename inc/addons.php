@@ -12,10 +12,18 @@
 # *** LICENSE ***
 
 
-function addon_get_var_path($addonTag)
+/**
+ * return the var path for an addon
+ * /var/{domain.tld}/addon/{addonTag}/
+ *
+ * @param string $addonTag
+ * @param bool $check_create, create folder if doesn't exists
+ * @return string|false
+ */
+function addon_get_var_path($addonTag, $check_create = false)
 {
     $path = DIR_VAR_ADDONS.$addonTag.'/';
-    if (!is_dir($path) && !create_folder($path)) {
+    if ($check_create === true && !is_dir($path) && !create_folder($path)) {
         return false;
     }
     return $path;
