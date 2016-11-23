@@ -11,13 +11,10 @@
 #
 # *** LICENSE ***
 
-require_once dirname(getcwd()).'/inc/defines.php';
+// disallow temporary auth_ttl()
+define('BT_RUN_LOGIN',1);
 
-if (!is_file(DIR_CONFIG.'user.ini') || !is_file(DIR_CONFIG.'prefs.php')) {
-    exit(header('Location: install.php'));
-}
-
-require_once BT_ROOT.'admin/inc/auth.php';
+require_once 'inc/boot.php';
 
 $max_attemps = 6; // max attempts before blocking login page
 $wait_time = 30;   // time to wait before unblocking login page, in minutes

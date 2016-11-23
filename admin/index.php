@@ -11,16 +11,8 @@
 #
 # *** LICENSE ***
 
-require_once dirname(getcwd()).'/inc/defines.php';
-require_once BT_ROOT.'inc/inc.php';
-require_once BT_ROOT.'admin/inc/inc.php';
+require_once 'inc/boot.php';
 
-if (!is_file(DIR_CONFIG.'user.ini') || !is_file(DIR_CONFIG.'prefs.php')) {
-    redirection('Location: install.php');
-}
-
-$begin = microtime(true);
-auth_ttl();
 
 // Open bases
 $GLOBALS['db_handle'] = open_base();

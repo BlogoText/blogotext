@@ -11,8 +11,7 @@
 #
 # *** LICENSE ***
 
-require_once dirname(getcwd()).'/inc/defines.php';
-require_once BT_ROOT.'admin/inc/inc.php';
+require_once 'inc/boot.php';
 
 // Update all RSS feeds using GET (for cron jobs).
 // only test here is on install UID.
@@ -26,8 +25,6 @@ if (isset($_GET['refresh_all'], $_GET['guid']) and ($_GET['guid'] == BLOG_UID)) 
         die('Error');
     }
 }
-
-auth_ttl();
 
 $GLOBALS['db_handle'] = open_base();
 $GLOBALS['liste_flux'] = open_serialzd_file(FEEDS_DB);

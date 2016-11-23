@@ -11,11 +11,10 @@
 #
 # *** LICENSE ***
 
-require_once dirname(getcwd()).'/inc/defines.php';
-require_once BT_ROOT.'admin/inc/inc.php';
 
-$begin = microtime(true);
-auth_ttl();
+
+require_once 'inc/boot.php';
+
 
 $fichier = array();
 $GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);

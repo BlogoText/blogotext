@@ -17,11 +17,12 @@ if (empty($GLOBALS['lang'])) {
     $GLOBALS['lang'] = '';
 }
 
+
 switch ($GLOBALS['lang']) {
     case 'en':
-        include_once('lang/en_en.php');
+        include_once(BT_ROOT.'inc/lang/en_en.php');
         break;
     case 'fr':
     default:
-        include_once('lang/fr_fr.php');
+        include_once(BT_ROOT.'inc/lang/fr_fr.php');
 }

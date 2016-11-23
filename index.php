@@ -11,10 +11,9 @@
 #
 # *** LICENSE ***
 
-require_once dirname(__file__).'/inc/defines.php';
-require_once BT_ROOT.'inc/inc.php';
+require_once 'inc/boot.php';
 
-$begin = microtime(true);
+
 
 // Anti XSS : /index.php/%22onmouseover=prompt(971741)%3E or /index.php/ redirects all on index.php
 // If there is a slash after the "index.php", the file is considered as a folder, but the code inside it still executed.
@@ -23,9 +22,9 @@ if (strpos($_SERVER['REQUEST_URI'], $_SERVER['SCRIPT_NAME'].'/') === 0) {
 }
 
 // If no config: go to install process.
-if (!is_file(DIR_CONFIG.'user.ini') or !is_file(DIR_CONFIG.'prefs.php')) {
-    exit(header('Location: admin/install.php'));
-}
+// if (!is_file(DIR_CONFIG.'user.ini') or !is_file(DIR_CONFIG.'prefs.php')) {
+    // exit(header('Location: admin/install.php'));
+// }
 
 // gzip compression
 if (extension_loaded('zlib')) {

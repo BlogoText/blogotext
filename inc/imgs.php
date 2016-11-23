@@ -56,7 +56,8 @@ function chemin_thb_img_test($filepath)
 */
 function afficher_liste_images($images)
 {
-    $dossier = DIR_IMAGES;
+    $dossier_http = URL_IMAGES;
+    $dossier_relatif = DIR_IMAGES;
     $out = '';
     $i = 0;
     if ($images) {
@@ -116,16 +117,16 @@ function afficher_liste_images($images)
 
         foreach ($images as $i => $im) {
             //debug($im);
-            $rel_thb_src = chemin_thb_img_test($dossier.$im['bt_path'].'/'.$im['bt_filename']);
+            $rel_thb_src = chemin_thb_img_test($dossier_http.$im['bt_path'].'/'.$im['bt_filename']);
             $out .= '
             {
                 "index": "'.$i.'",
                 "filename":
                     [
-                    "'.$dossier.$im['bt_path'].'/'.$im['bt_filename'].'",
+                    "'.$dossier_http.$im['bt_path'].'/'.$im['bt_filename'].'",
                     "'.$im['bt_filename'].'",
                     "'.$rel_thb_src.'",
-                    "'.$dossier.$im['bt_path'].'/'.$im['bt_filename'].'"
+                    "'.$dossier_http.$im['bt_path'].'/'.$im['bt_filename'].'"
                     ],
                 "id": "'.$im['bt_id'].'",
                 "desc": "'.addslashes(preg_replace('#(\n|\r|\n\r)#', '', nl2br($im['bt_content']))).'",
@@ -453,7 +454,7 @@ function init_post_fichier()
         'bt_checksum' => $checksum,
         'bt_statut' => $statut,
         'bt_dossier' => ((empty($dossier)) ? 'default' : $dossier ), // tags
-        'bt_path' => ((empty($path)) ? '/'.(substr($checksum, 0, 2)) : $path ), // path on disk (rand subdir to avoid too many files in same dir)
+        'bt_path' => ((empty($path)) ? (substr($checksum, 0, 2)) : $path ), // path on disk (rand subdir to avoid too many files in same dir)
     );
     return $fichier;
 }
@@ -502,8 +503,19 @@ function afficher_form_fichier($erreurs, $fichiers, $what)
     } // si ID dans l’URL, il s’agit également du seul fichier dans le tableau fichiers, d’où le [0]
     elseif (!empty($fichiers) and isset($_GET['file_id']) and preg_match('/\d{14}/', ($_GET['file_id']))) {
         $myfile = $fichiers[0];
-        $absolute_URI = (($myfile['bt_type'] == 'image') ? DIR_IMAGES : DIR_DOCUMENTS).$myfile['bt_path'].'/'.$myfile['bt_filename'];
-        $simple_URI = parse_url($absolute_URI)['path'];
+
+        // image or doc ?
+        if ($myfile['bt_type'] == 'image') {
+            // dirty, todo : need a way to get relative url for images/documents
+            $url_relative = str_replace(URL_ROOT, '/', URL_IMAGES);
+            $simple_URI = rtrim($url_relative, '/').$myfile['bt_path'].'/'.$myfile['bt_filename'];
+            $absolute_URI = rtrim(URL_IMAGES, '/').$myfile['bt_path'].'/'.$myfile['bt_filename'];
+        } else {
+            // dirty, todo : need a way to get relative url for images/documents
+            $url_relative = str_replace(URL_ROOT, '/', URL_DOCUMENTS);
+            $simple_URI = rtrim($url_relative, '/').$myfile['bt_path'].'/'.$myfile['bt_filename'];
+            $absolute_URI = rtrim(URL_DOCUMENTS, '/').$myfile['bt_path'].'/'.$myfile['bt_filename'];
+        }
 
         $form .= '<div class="edit-fichier">'."\n";
 

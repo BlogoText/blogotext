@@ -11,8 +11,14 @@
 #
 # *** LICENSE ***
 
-require_once dirname(getcwd()).'/inc/defines.php';
-require_once BT_ROOT.'admin/inc/inc.php';
+
+// set language
+if (isset($_GET['l'])) {
+    $GLOBALS['lang'] = ($_GET['l'] == 'fr' or $_GET['l'] == 'en') ? $_GET['l'] : 'fr';
+}
+
+define('BT_RUN_INSTALL',1);
+require_once 'inc/boot.php';
 
 /**
  * DevNote
@@ -31,14 +37,17 @@ if (is_file(DIR_CONFIG.'user.ini') and is_file(DIR_CONFIG.'prefs.php') and !$ste
 // some constants definition
 $GLOBALS['fuseau_horaire'] = 'UTC';
 
-// set language
-if (isset($_GET['l'])) {
-    $GLOBALS['lang'] = ($_GET['l'] == 'fr' or $_GET['l'] == 'en') ? $_GET['l'] : 'fr';
-}
 
+/**
+ * if file is already set, return true
+ * else return fail write success
+ */
 function fichier_adv_conf()
 {
     $fichier_advconf = DIR_CONFIG.'config-advanced.ini';
+    if (is_file($fichier_advconf)) {
+        return true;
+    }
     $conf  = '; <?php die;'."\n";
     $conf .= '; This file contains some more advanced configuration features.'."\n\n";
     $conf .= 'BLOG_UID = \''.sha1(uniqid(mt_rand(), true)).'\''."\n";
@@ -118,7 +127,10 @@ function install_form_2_echo($erreurs = '')
     echo '<p>';
     echo '<label for="mdp">'.$GLOBALS['lang']['install_mdp'].' </label><input type="password" name="mdp" id="mdp" size="30" value="" class="text" autocomplete="off" placeholder="••••••••••••" required /><button type="button" class="unveilmdp" onclick="return revealpass(\'mdp\');"></button>'."\n";
     echo '</p>'."\n";
-    $lien = str_replace(DIR_ADMIN.'/install.php', '', 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['SCRIPT_NAME']);
+    // $lien = str_replace(DIR_ADMIN.'/install.php', '', 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['SCRIPT_NAME']);
+    $lien = 'http://'.$_SERVER['SERVER_NAME'].dirname(dirname($_SERVER['SCRIPT_NAME']));
+    // bug fix for DIRECTORY_SEPARATOR
+    $lien = str_replace('\\', '/', $lien);
     echo '<p>';
     echo '<label for="racine">'.$GLOBALS['lang']['pref_racine'].' </label><input type="text" name="racine" id="racine" size="30" value="'.$lien.'" class="text"  placeholder="'.$lien.'" required />'."\n";
     echo '</p>'."\n";
@@ -198,12 +210,12 @@ function fichier_mysql($sgdb)
  */
 function install_form_2_proceed()
 {
-    create_folder(DIR_CONFIG, 1);
-    create_folder(DIR_IMAGES, 0);
-    create_folder(DIR_DOCUMENTS, 0);
-    create_folder(DIR_DATABASES, 1);
+    create_folder(DIR_CONFIG, 1); // todo : change for v4
+    create_folder(DIR_IMAGES, 0); // todo : change for v4
+    create_folder(DIR_DOCUMENTS, 0); // todo : change for v4
+    create_folder(DIR_DATABASES, 1); // todo : change for v4
     auth_write_user_login_file($_POST['identifiant'], $_POST['mdp']);
-    import_ini_file(DIR_CONFIG.'user.ini');
+    import_ini_file(DIR_CONFIG.'user.ini'); // todo : change for v4
     if (!is_file(DIR_CONFIG.'prefs.php')) {
         fichier_prefs();
     }
@@ -304,9 +316,7 @@ function install_form_3_proceed()
         bdd_commentaire($comm_ar, 'enregistrer-nouveau'); // commentaire sur l’article
     }
 
-    if (!is_file(DIR_CONIF.'config-advanced.ini')) {
-        fichier_adv_conf(); // is done right after DB init
-    }
+    fichier_adv_conf(); // is done right after DB init
 }
 
 /**
