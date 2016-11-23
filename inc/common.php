@@ -79,7 +79,7 @@ function lang_load_land($admin)
     }
 
     $path = '';
-    if ($admin === true){
+    if ($admin === true) {
         $path = 'admin/';
     }
     switch ($GLOBALS['lang']) {
