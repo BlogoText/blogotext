@@ -25,7 +25,7 @@
  * _GET['mode']
  * @param _GET['mode'], string, blog||comments||links, default : blog
  * @echo the lastest of _GET['mode']
- * 
+ *
  * _GET['tag'] (child of _GET['mode']) if available
  * @param _GET['tag']
  *
@@ -256,7 +256,7 @@ if (isset($_GET['id']) and preg_match('#^[0-9]{14}$#', $_GET['id'])) {
                AND c.bt_statut=1 
           ORDER BY c.bt_id 
               DESC';
-    $liste = liste_elements( $db_req, array($article_id), 'commentaires');
+    $liste = liste_elements($db_req, array($article_id), 'commentaires');
 
     if ($format == 'atom') {
         echo flux_comments_for_article_atom($liste);
