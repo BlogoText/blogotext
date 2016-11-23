@@ -13,7 +13,7 @@
 
 /**
  * can be used by addon
- * 
+ *
  * used in : inc/addons.php
  *           inc/boot.php
  *           inc/filesystem.php
