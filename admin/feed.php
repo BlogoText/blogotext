@@ -269,7 +269,6 @@ $sql_where = 'bt_date < "'. $ttl .'" AND bt_date > "'. ($ttl - 86400) .'" ';
 
 
 if (!empty($_GET['q'])) {
-
     $sql_where_status = '';
     $q_query = (isset($_GET['q'])) ? $_GET['q'] : '';
 
@@ -345,7 +344,7 @@ if (isset($_GET['config'])) {
 
     $out_html .= "\t\t".'<ul id="feed-list">'."\n";
     $out_html .= "\t\t\t".'<li><a style="text-align:center;font-weight:bold;font-size:1.8em;" href="feed.php?ttl='. ($ttl-86400) .'" title="Before"><</a></li>'."\n";
-    if (($ttl+86400) > time()){
+    if (($ttl+86400) > time()) {
         $out_html .= "\t\t\t".'<li><a style="text-align:center;font-weight:bold;font-size:1.8em;" disabled title="After">></a></li>'."\n";
     } else {
         $out_html .= "\t\t\t".'<li><a style="text-align:center;font-weight:bold;font-size:1.8em;" href="feed.php?ttl='. ($ttl+86400) .'" title="After">></a></li>'."\n";
