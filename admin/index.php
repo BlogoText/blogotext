@@ -18,7 +18,7 @@ require_once 'inc/boot.php';
 $GLOBALS['db_handle'] = open_base();
 $GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);
 
-afficher_html_head($GLOBALS['lang']['label_resume']);
+tpl_show_html_head($GLOBALS['lang']['label_resume']);
 
 echo '<div id="header">'."\n";
 echo '<div id="top">'."\n";

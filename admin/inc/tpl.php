@@ -48,7 +48,6 @@ function tpl_show_topnav($titre)
     echo $html;
 }
 
-
 function tpl_show_msg()
 {
     // message vert
@@ -77,4 +76,89 @@ function tpl_show_preview($article)
         $apercu .= '<div>'.rel2abs_admin($article['bt_content']).'</div>'."\n";
         echo '<div id="apercu">'."\n".$apercu.'</div>'."\n\n";
     }
+}
+
+// function afficher_html_head($titre)
+function tpl_show_html_head($titre)
+{
+    $html = '<!DOCTYPE html>'."\n";
+    $html .= '<html>'."\n";
+    $html .= '<head>'."\n";
+    $html .= "\t".'<meta charset="UTF-8" />'."\n";
+    $html .= "\t".'<link type="text/css" rel="stylesheet" href="style/style.css.php" />'."\n";
+    $html .= "\t".'<meta name="viewport" content="initial-scale=1.0, user-scalable=yes" />'."\n";
+    $html .= "\t".'<title>'.$titre.' | '.BLOGOTEXT_NAME.'</title>'."\n";
+    $html .= '</head>'."\n";
+    $html .= '<body id="body">'."\n\n";
+    echo $html;
+}
+
+function footer($begin_time = '')
+{
+    $msg = '';
+    if ($begin_time != '') {
+        $dt = round((microtime(true) - $begin_time), 6);
+        $msg = ' - '.$GLOBALS['lang']['rendered'].' '.$dt.' s '.$GLOBALS['lang']['using'].' '.DBMS;
+    }
+
+    $html = '</div>'."\n";
+    $html .= '</div>'."\n";
+    $html .= '<p id="footer"><a href="'.BLOGOTEXT_SITE.'">'.BLOGOTEXT_NAME.' '.BLOGOTEXT_VERSION.'</a>'.$msg.'</p>'."\n";
+    $html .= '</body>'."\n";
+    $html .= '</html>'."\n";
+    echo $html;
+}
+
+function confirmation($message)
+{
+    echo '<div class="confirmation">'.$message.'</div>'."\n";
+}
+
+function no_confirmation($message)
+{
+    echo '<div class="no_confirmation">'.$message.'</div>'."\n";
+}
+
+function info($message)
+{
+    return '<p class="info">'.$message.'</p>'."\n";
+}
+
+function question($message)
+{
+      echo '<p id="question">'.$message.'</p>';
+}
+
+function php_lang_to_js($a)
+{
+    $frontend_str = array();
+    $frontend_str['maxFilesSize'] = min(return_bytes(ini_get('upload_max_filesize')), return_bytes(ini_get('post_max_size')));
+    $frontend_str['rssJsAlertNewLink'] = $GLOBALS['lang']['rss_jsalert_new_link'];
+    $frontend_str['rssJsAlertNewLinkFolder'] = $GLOBALS['lang']['rss_jsalert_new_link_folder'];
+    $frontend_str['confirmFeedClean'] = $GLOBALS['lang']['confirm_feed_clean'];
+    $frontend_str['confirmCommentSuppr'] = $GLOBALS['lang']['confirm_comment_suppr'];
+    $frontend_str['activer'] = $GLOBALS['lang']['activer'];
+    $frontend_str['desactiver'] = $GLOBALS['lang']['desactiver'];
+    $frontend_str['errorPhpAjax'] = $GLOBALS['lang']['error_phpajax'];
+    $frontend_str['errorCommentSuppr'] = $GLOBALS['lang']['error_comment_suppr'];
+    $frontend_str['errorCommentValid'] = $GLOBALS['lang']['error_comment_valid'];
+    $frontend_str['questionQuitPage'] = $GLOBALS['lang']['question_quit_page'];
+    $frontend_str['questionCleanRss'] = $GLOBALS['lang']['question_clean_rss'];
+    $frontend_str['questionSupprComment'] = $GLOBALS['lang']['question_suppr_comment'];
+    $frontend_str['questionSupprArticle'] = $GLOBALS['lang']['question_suppr_article'];
+    $frontend_str['questionSupprFichier'] = $GLOBALS['lang']['question_suppr_fichier'];
+
+    $sc = 'var BTlang = '.json_encode($frontend_str).';'."\n";
+
+    if ($a == 1) {
+        $sc = "\n".'<script>'."\n".$sc."\n".'</script>'."\n";
+    }
+    return $sc;
+}
+
+function rel2abs_admin($article)
+{
+    // if relative URI in path, make absolute paths (since /admin/ panel is 1 lv deeper) for href/src.
+    $article = preg_replace('#(src|href)=\"(?!(/|[a-z]+://))#i', '$1="../', $article);
+    return $article;
 }

@@ -364,23 +364,23 @@ $GLOBALS['files_ext'] = array(
 
 
 /**
- * todo: reduce at strict minimal require (common, utils, lang...)
- *  and require in process file when specific needs
+ * All file in /inc/*.php must be included here (except boot.php).
+ * TODO optimise: for the v4.0
  */
-// if (is_file(DIR_CONFIG.'/prefs.php')) {
-    // require_once DIR_CONFIG.'/prefs.php';
-// }
-require_once BT_ROOT.'inc/common.php';
-// require_once BT_ROOT.'inc/conf.php'; // already merged in boot
-require_once BT_ROOT.'inc/hook.php';
-require_once BT_ROOT.'inc/lang.php';
-require_once BT_ROOT.'inc/util.php';
-require_once BT_ROOT.'inc/filesystem.php';
-require_once BT_ROOT.'inc/them.php';
-require_once BT_ROOT.'inc/html.php';
-require_once BT_ROOT.'inc/form.php';
-require_once BT_ROOT.'inc/conv.php';
-require_once BT_ROOT.'inc/veri.php';
-require_once BT_ROOT.'inc/imgs.php';
-require_once BT_ROOT.'inc/sqli.php';
 require_once BT_ROOT.'inc/addons.php';
+require_once BT_ROOT.'inc/common.php';
+require_once BT_ROOT.'inc/conv.php';
+require_once BT_ROOT.'inc/filesystem.php';
+require_once BT_ROOT.'inc/form.php';
+require_once BT_ROOT.'inc/hook.php';
+require_once BT_ROOT.'inc/html.php';
+require_once BT_ROOT.'inc/sqli.php';
+require_once BT_ROOT.'inc/them.php';
+require_once BT_ROOT.'inc/tpl.php';
+require_once BT_ROOT.'inc/util.php';
+
+/**
+ * init lang
+ */
+lang_set_list();
+lang_load_land(defined('IS_IN_ADMIN'));

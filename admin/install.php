@@ -11,14 +11,17 @@
 #
 # *** LICENSE ***
 
-
 // set language
 if (isset($_GET['l'])) {
     $GLOBALS['lang'] = ($_GET['l'] == 'fr' or $_GET['l'] == 'en') ? $_GET['l'] : 'fr';
 }
 
 define('BT_RUN_INSTALL',1);
+
 require_once 'inc/boot.php';
+
+// dependancy
+require_once BT_ROOT.'admin/inc/links.php';
 
 /**
  * DevNote
@@ -62,7 +65,7 @@ function fichier_adv_conf()
  */
 function install_form_1_echo($erreurs = '')
 {
-    afficher_html_head('Install');
+    tpl_show_html_head('Install');
     echo '<div id="axe">'."\n";
     echo '<div id="pageauth">'."\n";
     echo '<h1>'.BLOGOTEXT_NAME.'</h1>'."\n";
@@ -113,7 +116,7 @@ function install_form_1_echo($erreurs = '')
  */
 function install_form_2_echo($erreurs = '')
 {
-    afficher_html_head('Install');
+    tpl_show_html_head('Install');
     echo '<div id="axe">'."\n";
     echo '<div id="pageauth">'."\n";
     echo '<h1>'.BLOGOTEXT_NAME.'</h1>'."\n";
@@ -148,7 +151,7 @@ function install_form_2_echo($erreurs = '')
  */
 function install_form_3_echo($erreurs = '')
 {
-    afficher_html_head('Install');
+    tpl_show_html_head('Install');
     echo '<div id="axe">'."\n";
     echo '<div id="pageauth">'."\n";
     echo '<h1>'.BLOGOTEXT_NAME.'</h1>'."\n";
@@ -296,8 +299,8 @@ function install_form_3_proceed()
             'bt_tags' => '',
             'bt_statut' => 0
         );
-        bdd_lien($link_ar, 'enregistrer-nouveau'); // lien
-        bdd_lien($link_ar2, 'enregistrer-nouveau'); // lien
+        links_db_push($link_ar); // lien
+        links_db_push($link_ar2); // lien
 
         $comm_ar = array(
             'bt_type' => 'comment',

@@ -22,7 +22,6 @@
  */
 
 
-
 /**
  * hook system
  * push a new hook
@@ -45,7 +44,6 @@ function hook_push($hook_name, $function, $priority = 10)
     $GLOBALS['hooks'][$hook_name][$priority][] = $function;
 }
 
-
 /**
  * remove all function for a hook
  */
@@ -55,7 +53,6 @@ function hook_clean($hook_name)
         unset($GLOBALS['hooks'][$hook_name]);
     }
 }
-
 
 /**
  * the hook trigger

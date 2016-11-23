@@ -11,8 +11,6 @@
 #
 # *** LICENSE ***
 
-
-
 require_once 'inc/boot.php';
 
 
@@ -193,7 +191,8 @@ function afficher_commentaire($comment, $with_link)
 
 // DEBUT PAGE
 $msgg = $GLOBALS['lang']['titre_commentaires']. (!empty($article_title) ?' | '.$article_title : '');
-afficher_html_head($msgg);
+
+tpl_show_html_head($msgg);
 
 echo '<div id="header">'."\n";
     echo '<div id="top">'."\n";

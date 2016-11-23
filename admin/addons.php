@@ -11,10 +11,10 @@
 #
 # *** LICENSE ***
 
-
-
 require_once 'inc/boot.php';
 
+// dependancy
+require_once BT_ROOT.'admin/inc/addons.php';
 
 // traitement d’une action sur le module
 $erreurs = array();
@@ -48,7 +48,7 @@ foreach ($GLOBALS['addons'] as $addon) {
     $tableau[$addon['tag']]['status'] = $status;
 }
 
-afficher_html_head($GLOBALS['lang']['mesmodules']);
+tpl_show_html_head($GLOBALS['lang']['mesmodules']);
 
 echo '<div id="header">'."\n";
     echo '<div id="top">'."\n";

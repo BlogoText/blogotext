@@ -181,3 +181,245 @@ function valider_form_maintenance()
     }
     return $erreurs;
 }
+
+
+function form_select($id, $choix, $defaut, $label)
+{
+    $form = '<label for="'.$id.'">'.$label.'</label>'."\n";
+    $form .= "\t".'<select id="'.$id.'" name="'.$id.'">'."\n";
+    foreach ($choix as $valeur => $mot) {
+        $form .= "\t\t".'<option value="'.$valeur.'"'.(($defaut == $valeur) ? ' selected="selected" ' : '').'>'.$mot.'</option>'."\n";
+    }
+    $form .= "\t".'</select>'."\n";
+    $form .= "\n";
+    return $form;
+}
+
+function form_select_no_label($id, $choix, $defaut)
+{
+    $form = '<select id="'.$id.'" name="'.$id.'">'."\n";
+    foreach ($choix as $valeur => $mot) {
+        $form .= "\t".'<option value="'.$valeur.'"'.(($defaut == $valeur) ? ' selected="selected" ' : '').'>'.$mot.'</option>'."\n";
+    }
+    $form .= '</select>'."\n";
+    return $form;
+}
+
+// Check SemVer validity
+// source: https://github.com/morrisonlevi/SemVer/blob/master/src/League/SemVer/RegexParser.php
+function is_valid_version($version)
+{
+    $regex = '/^
+        (?#major)(0|(?:[1-9][0-9]*))
+        \\.
+        (?#minor)(0|(?:[1-9][0-9]*))
+        \\.
+        (?#patch)(0|(?:[1-9][0-9]*))
+        (?:
+            -
+            (?#pre-release)(
+                (?:(?:0|(?:[1-9][0-9]*))|(?:[0-9]*[a-zA-Z-][a-zA-Z0-9-]*))
+                (?:
+                    \\.
+                    (?:(?:0|(?:[1-9][0-9]*))|(?:[0-9]*[a-zA-Z-][a-zA-Z0-9-]*))
+                )*
+            )
+        )?
+        (?:
+            \\+
+            (?#build)(
+                [0-9a-zA-Z-]+
+                (?:\\.[a-zA-Z0-9-]+)*
+            )
+        )?
+    $/x';
+    return preg_match($regex, $version);
+}
+
+function form_categories_links($where, $tags_post)
+{
+    $tags = list_all_tags($where, false);
+    $html = '';
+    if (!empty($tags)) {
+        $html = '<datalist id="htmlListTags">'."\n";
+        foreach ($tags as $tag => $i) {
+            $html .= "\t".'<option value="'.addslashes($tag).'">'."\n";
+        }
+        $html .= '</datalist>'."\n";
+    }
+    $html .= '<ul id="selected">'."\n";
+    $list_tags = explode(',', $tags_post);
+
+    // remove diacritics and reindexes so that "ééé" does not passe after "zzz"
+    foreach ($list_tags as $i => $tag) {
+        $list_tags[$i] = array('t' => trim($tag), 'tt' => diacritique(trim($tag)));
+    }
+    $list_tags = array_reverse(tri_selon_sous_cle($list_tags, 'tt'));
+
+    foreach ($list_tags as $i => $tag) {
+        if (!empty($tag['t'])) {
+            $html .= "\t".'<li><span>'.trim($tag['t']).'</span><a href="javascript:void(0)" onclick="removeTag(this.parentNode)">×</a></li>'."\n";
+        }
+    }
+    $html .= '</ul>'."\n";
+    return $html;
+}
+
+// Posts forms
+function afficher_form_filtre($type, $filtre)
+{
+    $ret = '<form method="get" action="'.basename($_SERVER['SCRIPT_NAME']).'" onchange="this.submit();">'."\n";
+    $ret .= '<div id="form-filtre">'."\n";
+    $ret .= filtre($type, $filtre);
+    $ret .= '</div>'."\n";
+    $ret .= '</form>'."\n";
+    echo $ret;
+}
+
+function form_checkbox($name, $checked, $label)
+{
+    $checked = ($checked) ? "checked " : '';
+    $form = '<input type="checkbox" id="'.$name.'" name="'.$name.'" '.$checked.' class="checkbox-toggle" />'."\n" ;
+    $form .= '<label for="'.$name.'" >'.$label.'</label>'."\n";
+    return $form;
+}
+
+
+// FOR COMMENTS : RETUNS nb_com per author
+function nb_entries_as($table, $what)
+{
+    $result = array();
+    $query = "
+        SELECT count($what) AS nb, $what
+          FROM $table
+         GROUP BY $what
+         ORDER BY nb DESC";
+    try {
+        $result = $GLOBALS['db_handle']->query($query)->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    } catch (Exception $e) {
+        die('Erreur 0349 : '.$e->getMessage());
+    }
+}
+
+
+function filtre($type, $filtre)
+{
+    // WARNING: this is a resources heavy consuming function.
+    $liste_des_types = array();
+    $ret = '';
+    $ret .= "\n".'<select name="filtre">'."\n" ;
+    if ($type == 'articles') {
+        $ret .= '<option value="">'.$GLOBALS['lang']['label_article_derniers'].'</option>'."\n";
+        $query = '
+            SELECT DISTINCT substr(bt_date, 1, 6) AS date
+              FROM articles
+             ORDER BY date DESC';
+        $tab_tags = list_all_tags('articles', false);
+        $BDD = 'sqlite';
+    } elseif ($type == 'commentaires') {
+        $ret .= '<option value="">'.$GLOBALS['lang']['label_comment_derniers'].'</option>'."\n";
+        $tab_auteur = nb_entries_as('commentaires', 'bt_author');
+        $query = '
+            SELECT DISTINCT substr(bt_id, 1, 6) AS date
+              FROM commentaires
+             ORDER BY bt_id DESC';
+        $BDD = 'sqlite';
+    } elseif ($type == 'links') {
+        $ret .= '<option value="">'.$GLOBALS['lang']['label_link_derniers'].'</option>'."\n";
+        $tab_tags = list_all_tags('links', false);
+        $query = '
+            SELECT DISTINCT substr(bt_id, 1, 6) AS date
+              FROM links
+             ORDER BY bt_id DESC';
+        $BDD = 'sqlite';
+    } elseif ($type == 'fichiers') {
+        // crée un tableau où les clé sont les types de fichiers et les valeurs, le nombre de fichiers de ce type.
+        $files = $GLOBALS['liste_fichiers'];
+        $tableau_mois = array();
+        if (!empty($files)) {
+            foreach ($files as $id => $file) {
+                $type = $file['bt_type'];
+                if (!array_key_exists($type, $liste_des_types)) {
+                    $liste_des_types[$type] = 1;
+                } else {
+                    $liste_des_types[$type]++;
+                }
+            }
+        }
+        arsort($liste_des_types);
+
+        $ret .= '<option value="">'.$GLOBALS['lang']['label_fichier_derniers'].'</option>'."\n";
+        $filtre_type = '';
+        $BDD = 'fichier_txt_files';
+    }
+
+    if ($BDD == 'sqlite') {
+        try {
+            $req = $GLOBALS['db_handle']->prepare($query);
+            $req->execute(array());
+            while ($row = $req->fetch()) {
+                $tableau_mois[$row['date']] = mois_en_lettres(substr($row['date'], 4, 2)).' '.substr($row['date'], 0, 4);
+            }
+        } catch (Exception $x) {
+            die('Erreur affichage filtre() : '.$x->getMessage());
+        }
+    } elseif ($BDD == 'fichier_txt_files') {
+        foreach ($GLOBALS['liste_fichiers'] as $e) {
+            if (!empty($e['bt_id'])) {
+                // mk array[201005] => "May 2010", uzw
+                $tableau_mois[substr($e['bt_id'], 0, 6)] = mois_en_lettres(substr($e['bt_id'], 4, 2)).' '.substr($e['bt_id'], 0, 4);
+            }
+        }
+        krsort($tableau_mois);
+    }
+
+    // Drafts
+    $ret .= '<option value="draft"'.(($filtre == 'draft') ? ' selected="selected"' : '').'>'.$GLOBALS['lang']['label_invisibles'].'</option>'."\n";
+
+    // Public
+    $ret .= '<option value="pub"'.(($filtre == 'pub') ? ' selected="selected"' : '').'>'.$GLOBALS['lang']['label_publies'].'</option>'."\n";
+
+    // By date
+    if (!empty($tableau_mois)) {
+        $ret .= '<optgroup label="'.$GLOBALS['lang']['label_date'].'">'."\n";
+        foreach ($tableau_mois as $mois => $label) {
+            $ret .= "\t".'<option value="' . htmlentities($mois) . '"'.((substr($filtre, 0, 6) == $mois) ? ' selected="selected"' : '').'>'.$label.'</option>'."\n";
+        }
+        $ret .= '</optgroup>'."\n";
+    }
+
+    // By author (for comments)
+    if (!empty($tab_auteur)) {
+        $ret .= '<optgroup label="'.$GLOBALS['lang']['pref_auteur'].'">'."\n";
+        foreach ($tab_auteur as $nom) {
+            if (!empty($nom['nb'])) {
+                $ret .= "\t".'<option value="auteur.'.$nom['bt_author'].'"'.(($filtre == 'auteur.'.$nom['bt_author']) ? ' selected="selected"' : '').'>'.$nom['bt_author'].' ('.$nom['nb'].')'.'</option>'."\n";
+            }
+        }
+        $ret .= '</optgroup>'."\n";
+    }
+
+    // By type (for files)
+    if (!empty($liste_des_types)) {
+        $ret .= '<optgroup label="'.'Type'.'">'."\n";
+        foreach ($liste_des_types as $type => $nb) {
+            if (!empty($type)) {
+                $ret .= "\t".'<option value="type.'.$type.'"'.(($filtre == 'type.'.$type) ? ' selected="selected"' : '').'>'.$type.' ('.$nb.')'.'</option>'."\n";
+            }
+        }
+        $ret .= '</optgroup>'."\n";
+    }
+
+    // By tag (for posts and links)
+    if (!empty($tab_tags)) {
+        $ret .= '<optgroup label="'.'Tags'.'">'."\n";
+        foreach ($tab_tags as $tag => $nb) {
+            $ret .= "\t".'<option value="tag.'.$tag.'"'.(($filtre == 'tag.'.$tag) ? ' selected="selected"' : '').'>'.$tag.' ('.$nb.')</option>'."\n";
+        }
+        $ret .= '</optgroup>'."\n";
+    }
+    $ret .= '</select> '."\n\n";
+
+    return $ret;
+}

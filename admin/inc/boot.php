@@ -18,21 +18,16 @@ define('IS_IN_ADMIN', true);
 // use init and security of public side
 require_once '../inc/boot.php';
 
-
-// TODO FIX: for the v4.0 remove this line, if we can.
-// require_once BT_ROOT.'inc/conf.php';
-
-// require_once BT_ROOT.'admin/inc/inc.php';
-
 /**
- * All file in /admin/inc/*.php must be included here.
+ * All file in /admin/inc/*.php must be included here (except boot.php).
  * TODO optimise: for the v4.0
  */
-require_once BT_ROOT.'admin/inc/auth.php';
-require_once BT_ROOT.'admin/inc/addons.php';
+// require_once BT_ROOT.'admin/inc/addons.php'; // Done !
+require_once BT_ROOT.'admin/inc/auth.php'; // Security, dont move !
+require_once BT_ROOT.'admin/inc/filesystem.php';
 require_once BT_ROOT.'admin/inc/form.php';
-require_once BT_ROOT.'admin/inc/sqli.php';
-require_once BT_ROOT.'admin/inc/tpl.php';
+// require_once BT_ROOT.'admin/inc/links.php'; // Done !
+require_once BT_ROOT.'admin/inc/tpl.php'; // no choice !
 
 // auth everywhere except for install and login page
 if (!defined('BT_RUN_INSTALL') && !defined('BT_RUN_LOGIN')) {

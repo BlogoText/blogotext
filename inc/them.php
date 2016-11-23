@@ -29,6 +29,8 @@ $GLOBALS['balises'] = array(
     'racine_du_site' => '{racine_du_site}',
     'rss' => '{rss}',
     'rss_comments' => '{rss_comments}',
+    // content type
+    'tpl_class' => '{tpl_class}',
     // Navigation
     'pagination' => '{pagination}',
     // Blog
@@ -92,6 +94,7 @@ function conversions_theme($texte, $solo_art, $cnt_mode)
     $texte = str_replace($GLOBALS['balises']['blog_auteur'], $GLOBALS['auteur'], $texte);
     $texte = str_replace($GLOBALS['balises']['blog_email'], $GLOBALS['email'], $texte);
     $texte = str_replace($GLOBALS['balises']['blog_nom'], $GLOBALS['nom_du_site'], $texte);
+    $texte = str_replace($GLOBALS['balises']['tpl_class'], $GLOBALS['tpl_class'], $texte);
 
     if ($cnt_mode == 'post' and !empty($solo_art)) {
         $texte = str_replace($GLOBALS['balises']['article_titre_page'], $solo_art['bt_title'].' - ', $texte);

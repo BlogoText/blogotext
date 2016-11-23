@@ -11,8 +11,6 @@
 #
 # *** LICENSE ***
 
-
-
 require_once 'inc/boot.php';
 
 $GLOBALS['db_handle'] = open_base();
@@ -103,7 +101,7 @@ function afficher_liste_articles($tableau)
     echo $out;
 }
 
-afficher_html_head($GLOBALS['lang']['mesarticles']);
+tpl_show_html_head($GLOBALS['lang']['mesarticles']);
 
 echo '<div id="header">'."\n";
     echo '<div id="top">'."\n";

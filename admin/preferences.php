@@ -422,7 +422,8 @@ if (isset($_POST['_verif_envoi'])) {
     }
 }
 
-afficher_html_head($GLOBALS['lang']['preferences']);
+tpl_show_html_head($GLOBALS['lang']['preferences']);
+
     echo '<div id="header">'."\n";
         echo '<div id="top">'."\n";
         tpl_show_msg();

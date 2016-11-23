@@ -13,6 +13,20 @@
 
 $GLOBALS['lang'] = array(
 'id' => 'en',
+// Install
+'install' => 'Installation',
+'install_id' => 'Choose an username: ',
+'install_mdp' => 'Choose a password: ',
+'install_remdp' => 'Confirme your password: ',
+'install_choose_sgdb' => 'Choose your DBMS: ',
+'install_sqlite_no_more_todo' => 'No additionnal configuration is needed for SQLite.',
+'install_err_mysql_usr_empty' => 'MySQL Username is empty.',
+'install_err_mysql_pss_empty' => 'MySQL Password is empty.',
+'install_err_mysql_hst_empty' => 'MySQL Hostname is empty.',
+'install_err_mysql_dba_empty' => 'MySQL DB-name is empty',
+'install_err_mysql_connect' => 'BlogoText is unable to connect to MySQL with these informations.',
+'first_titre' => 'My first Blogpost',
+'first_edit' => 'Edit me',
 // Navigation
 'le' => 'the',
 'remarque' => 'Notice',
@@ -237,9 +251,10 @@ $GLOBALS['lang'] = array(
 'hier' => 'Yesterday',
 // Erreurs
 'erreurs' => 'Error(s)',
-
-    'err_annee' => 'Year is incorrect',
-    'err_mois' => 'Month is incorrect',
+'err_titre' => 'Title is empty',
+'err_contenu' => 'Content is empty',
+'err_annee' => 'Year is incorrect',
+'err_mois' => 'Month is incorrect',
 'err_jour' => 'Day is incorrect',
 'err_heure' => 'Hours are incorrect',
 'err_minutes' => 'Minutes are incorrect',

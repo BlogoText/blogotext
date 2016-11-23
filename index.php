@@ -39,6 +39,8 @@ header('Content-Type: text/html; charset=UTF-8');
 session_start();
 
 $GLOBALS['db_handle'] = open_base();
+$GLOBALS['tpl_class'] = '';
+
 
 // load addons and load addon's hook
 addon_boot_hook_push();
@@ -139,28 +141,46 @@ if (isset($_GET['d']) and preg_match('#^\d{4}/\d{2}/\d{2}/\d{2}/\d{2}/\d{2}#', $
             traiter_form_commentaire($comment, 'public');
         }
 
+        $GLOBALS['tpl_class'] = 'content-blog content-item';
         afficher_index($billets[0], 'post');
     } else {
+        $GLOBALS['tpl_class'] = 'content-blog content-item content-404';
+        http_response_code(404);
         afficher_index(null, 'list');
     }
 } // single link post
 elseif (isset($_GET['id']) and preg_match('#\d{14}#', $_GET['id'])) {
     $tableau = liste_elements("SELECT * FROM links WHERE bt_id=? AND bt_statut=1", array($_GET['id']), 'links');
-    afficher_index($tableau, 'list');
+    if (!empty($tableau[0])) {
+        $GLOBALS['tpl_class'] = 'content-links content-item';
+        afficher_index($tableau, 'list');
+    } else {
+        // to do 404
+        $GLOBALS['tpl_class'] = 'content-links content-item content-404';
+        http_response_code(404);
+        afficher_index($tableau, 'list');
+    }
 } // List of all articles
 elseif (isset($_GET['liste'])) {
     $query = "SELECT bt_date,bt_id,bt_title,bt_nb_comments,bt_link FROM articles WHERE bt_date <= ".date('YmdHis')." AND bt_statut=1 ORDER BY bt_date DESC";
     $tableau = liste_elements($query, array(), 'articles');
+    if (!empty($tableau[0])) {
+        $GLOBALS['tpl_class'] = 'content-blog content-list content-list-all';
+    } else {
+        $GLOBALS['tpl_class'] = 'content-blog content-list content-list-all content-404';
+        http_response_code(404);
+    }
     afficher_liste($tableau);
 } /*****************************************************************************
  show by lists of more than one post
 ******************************************************************************/
 else {
+    $GLOBALS['tpl_class'] = '';
     $annee = date('Y');
     $mois = date('m');
     $jour = '';
     $array = array();
-    $query = "SELECT * FROM ";
+    $query = 'SELECT * FROM ';
 
     // paramètre mode : quelle table "mode" ?
     if (isset($_GET['mode'])) {
@@ -168,17 +188,21 @@ else {
             case 'comments':
                 $query = "SELECT c.*, a.bt_title FROM ";
                 $where = 'commentaires';
+                $GLOBALS['tpl_class'] .= 'content-comments ';
                 break;
             case 'links':
                 $where = 'links';
+                $GLOBALS['tpl_class'] .= 'content-links ';
                 break;
             case 'blog':
             default:
                 $where = 'articles';
+                $GLOBALS['tpl_class'] .= 'content-blog ';
                 break;
         }
     } else {
         $where = 'articles';
+        $GLOBALS['tpl_class'] .= 'content-blog ';
     }
 
     switch ($where) {
@@ -239,6 +263,7 @@ else {
 
     // paramètre de recherche "q"
     if (isset($_GET['q'])) {
+        $GLOBALS['tpl_class'] .= 'content-search ';
         $arr = parse_search($_GET['q']);
         $array = array_merge($array, $arr);
         switch ($where) {
@@ -252,13 +277,14 @@ else {
                 $sql_q = implode(array_fill(0, count($arr), 'c.bt_content LIKE ? '), 'AND ');
                 break;
             default:
-                $sql_q = "";
+                $sql_q = '';
                 break;
         }
     }
 
     // paramètre de tag "tag"
     if (isset($_GET['tag'])) {
+        $GLOBALS['tpl_class'] .= 'content-tag ';
         switch ($where) {
             case 'articles':
                 $sql_tag = "( bt_tags LIKE ? OR bt_tags LIKE ? OR bt_tags LIKE ? OR bt_tags LIKE ? ) ";
@@ -310,8 +336,10 @@ else {
 
     // paramètre de page "p"
     if (isset($_GET['p']) and is_numeric($_GET['p']) and $_GET['p'] >= 1) {
+        $GLOBALS['tpl_class'] .= 'content-list ';
         $sql_p = 'LIMIT '.$GLOBALS['max_bill_acceuil'] * $_GET['p'].', '.$GLOBALS['max_bill_acceuil'];
     } elseif (empty($sql_date)) {
+        $GLOBALS['tpl_class'] .= 'content-list ';
         $sql_p = 'LIMIT '.$GLOBALS['max_bill_acceuil']; // no limit for $date param, is param is valid
     } else {
         $sql_p = '';
@@ -335,5 +363,5 @@ else {
     afficher_index($tableau, 'list');
 }
 
- $end = microtime(true);
- echo ' <!-- Rendered in '.round(($end - $begin), 6).' seconds -->';
+$end = microtime(true);
+echo ' <!-- Rendered in '.round(($end - $begin), 6).' seconds -->';

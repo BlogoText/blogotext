@@ -171,16 +171,17 @@ function afficher_form_commentaire($article_id, $mode, $erreurs, $edit_comm)
     }
 }
 
-
 /// DECODAGES //////////
 
 /**
  * useless ?
  */
+/*
 function get_id($file)
 {
     return substr($file, 0, 14);
 }
+*/
 
 function decode_id($id)
 {
@@ -227,12 +228,6 @@ function tri_selon_sous_cle($table, $cle)
     }
     return $table;
 }
-
-function get_ip()
-{
-    return (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) ? htmlspecialchars($_SERVER['HTTP_X_FORWARDED_FOR']) : htmlspecialchars($_SERVER['REMOTE_ADDR']);
-}
-
 
 // Code from Shaarli. Generate an unique sess_id, usable only once.
 function new_token()
