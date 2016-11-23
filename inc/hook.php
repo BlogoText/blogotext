@@ -35,7 +35,7 @@
 function hook_push($hook_name, $function, $priority = 10)
 {
     // prevent hook on admin side
-    if (!defined('IS_IN_ADMIN')) {
+    if (defined('IS_IN_ADMIN')) {
         return true;
     }
 
@@ -70,7 +70,7 @@ function hook_trigger($hook_name)
     $args = func_get_args();
 
     // prevent hook on admin side
-    if (!defined('IS_IN_ADMIN')) {
+    if (defined('IS_IN_ADMIN')) {
         return $args;
     }
 
@@ -106,7 +106,7 @@ function hook_trigger($hook_name)
 function hook_check($hook_name, $args_count, $args, $must_die = true)
 {
     // prevent hook on admin side
-    if (!defined('IS_IN_ADMIN')) {
+    if (defined('IS_IN_ADMIN')) {
         return true;
     }
 
@@ -162,7 +162,7 @@ function hook_trigger_and_check($hook_name)
     $args = func_get_args();
 
     // prevent hook on admin side
-    if (!defined('IS_IN_ADMIN')) {
+    if (defined('IS_IN_ADMIN')) {
         return $args;
     }
 
