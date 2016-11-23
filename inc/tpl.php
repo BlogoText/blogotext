@@ -144,7 +144,7 @@ if (!function_exists('http_response_code')) {
             default:
                 $code = 200;
                 $text = 'OK';
-            break;
+                break;
         }
 
         $protocol = ((isset($_SERVER['SERVER_PROTOCOL'])) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
