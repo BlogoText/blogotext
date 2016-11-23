@@ -16,8 +16,12 @@ if (isset($_GET['l'])) {
     $GLOBALS['lang'] = ($_GET['l'] == 'fr' or $_GET['l'] == 'en') ? $_GET['l'] : 'fr';
 }
 
+<<<<<<< HEAD
 define('BT_RUN_INSTALL',1);
 
+=======
+define('BT_RUN_INSTALL', 1);
+>>>>>>> origin/BT_root-et-refactor
 require_once 'inc/boot.php';
 
 // dependancy
