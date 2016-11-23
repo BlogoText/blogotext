@@ -15,12 +15,59 @@
 // This file contains functions relative to search and list data posts.
 // It also contains functions about files : creating, deleting files, etc.
 
-function create_folder($dossier, $make_htaccess = '')
+
+/**
+ * return the absolute and clean path
+ * used for debug and for security
+ *
+ * @param string $path, the absolute path from your BT directory
+ * @param bool $check, run some check, and correct if possible (recommended for dev/debug use only !)
+ * @param bool $alert, show alert if something got wrong (recommended for dev/debug use only !)
+ * @return bool|string, the absolute path for your host
+ */
+function get_path($path, $check = false, $alert = false)
+{
+    if ($check === true) {
+        if (strpos($path, '/') !== 0) {
+            if ($alert === true) {
+                var_dump('get_path() : path not starting with "/" ('. $path .')');
+            }
+            return false;
+        }
+        if (strpos($path, BT_DIR) === 0) {
+            if ($alert === true) {
+                var_dump('get_path() : seem\'s already an absolute path ('. $path .')');
+            }
+            return false;
+        }
+        if (strpos($path, './') !== false) {
+            if ($alert === true) {
+                var_dump('get_path() : use of "./" or "../", try to hack ? ('. $path .')');
+            }
+            return false;
+        }
+    }
+
+    $return = BT_DIR .'/'. $path;
+    $return = str_replace(array('/', '\\', '/\\'), '/', $return);
+    while (strstr($return, '\\\\')) {
+        $return = str_replace('\\\\', '\\', $return);
+    }
+    while (strstr($return, '//')) {
+        $return = str_replace('//', '/', $return);
+    }
+    return $return;
+}
+
+/**
+ * can be used by addon
+ */
+function create_folder($dossier, $make_htaccess = '', $recursive = false)
 {
     if (is_dir($dossier)) {
         return true;
     }
-    if (mkdir($dossier, 0777) === true) {
+    if (mkdir($dossier, 0777, $recursive) === true) {
         fichier_index($dossier); // file index.html to prevent directory listing
         if ($make_htaccess == 1) {
             fichier_htaccess($dossier); // to prevent direct access to files
@@ -28,21 +75,6 @@ function create_folder($dossier, $make_htaccess = '')
         return true;
     }
     return false;
-}
-
-
-function fichier_adv_conf()
-{
-    $fichier_advconf = '../'.DIR_CONFIG.'/config-advanced.ini';
-    $conf='';
-    $conf .= '; <?php die(); /*'."\n\n";
-    $conf .= '; This file contains some more advanced configuration features.'."\n\n";
-    $conf .= 'BLOG_UID = \''.sha1(uniqid(mt_rand(), true)).'\''."\n";
-    $conf .= 'DISPLAY_PHP_ERRORS = 0;'."\n";
-    $conf .= 'USE_IP_IN_SESSION = 1;'."\n\n\n";
-    $conf .= '; */ ?>'."\n";
-
-    return file_put_contents($fichier_advconf, $conf) !== false;
 }
 
 function fichier_prefs()
@@ -131,24 +163,6 @@ function fichier_prefs()
     return file_put_contents($fichier_prefs, $prefs) !== false;
 }
 
-function fichier_mysql($sgdb)
-{
-    $fichier_mysql = '../'.DIR_CONFIG.'/mysql.ini';
-
-    $data = '';
-    if ($sgdb !== false) {
-        $data .= '; <?php die(); /*'."\n\n";
-        $data .= '; This file contains MySQL credentials and configuration.'."\n\n";
-        $data .= 'MYSQL_LOGIN = \''.htmlentities($_POST['mysql_user'], ENT_QUOTES).'\''."\n";
-        $data .= 'MYSQL_PASS = \''.htmlentities($_POST['mysql_passwd'], ENT_QUOTES).'\''."\n";
-        $data .= 'MYSQL_DB = \''.htmlentities($_POST['mysql_db'], ENT_QUOTES).'\''."\n";
-        $data .= 'MYSQL_HOST = \''.htmlentities($_POST['mysql_host'], ENT_QUOTES).'\''."\n\n";
-        $data .= 'DBMS = \''.$sgdb.'\''."\n";
-    }
-
-    return file_put_contents($fichier_mysql, $data) !== false;
-}
-
 function fichier_index($dossier)
 {
     $content = '<html>'."\n";
@@ -175,11 +189,6 @@ function fichier_htaccess($dossier)
     return file_put_contents($htaccess, $content) !== false;
 }
 
-function enable_addon($file)
-{
-    return file_put_contents($file, '') !== false;
-}
-
 // à partir de l’extension du fichier, trouve le "type" correspondant.
 // les "type" et le tableau des extensions est le $GLOBALS['files_ext'] dans conf.php
 function detection_type_fichier($extension)
@@ -194,11 +203,6 @@ function detection_type_fichier($extension)
     return $good_type;
 }
 
-function open_serialzd_file($fichier)
-{
-    $liste  = (is_file($fichier)) ? unserialize(base64_decode(substr(file_get_contents($fichier), strlen('<?php /* '), -strlen(' */')))) : array();
-    return $liste;
-}
 
 // $feeds is an array of URLs: Array( [http://…], [http://…], …)
 // Returns the same array: Array([http://…] [[headers]=> 'string', [body]=> 'string'], …)
@@ -266,7 +270,7 @@ function request_external_files($feeds, $timeout, $echo_progress = false)
     return $results;
 }
 
-function rafraichir_cache_lv1()
+function flux_refresh_cache_lv1()
 {
     create_folder(BT_ROOT.DIR_CACHE, 1);
     $arr_a = liste_elements("SELECT * FROM articles WHERE bt_statut=1 ORDER BY bt_date DESC LIMIT 0, 20", array(), 'articles');
@@ -516,38 +520,6 @@ function feed2array($feed_content, $feedlink)
         echo ' '.$feedlink." \n";
         return false;
     }
-}
-
-/* From the data out of DB, creates JSON, to send to browser */
-function send_rss_json($rss_entries)
-{
-    // send all the entries data in a JSON format
-    $out = '';
-    $out .= '<script>';
-
-    // RSS entries
-    $out .= 'var rss_entries = {"list": ['."\n";
-    $count = count($rss_entries)-1;
-    foreach ($rss_entries as $i => $entry) {
-        // Note: json_encode adds « " » on the data, so we use encode() and not '"'.encode().'"';
-        $out .= '{'.
-            '"id": '.json_encode($entry['bt_id']).','.
-            '"date": '.json_encode(date_formate(date('YmdHis', $entry['bt_date']))).','.
-            '"time": '.json_encode(heure_formate(date('YmdHis', $entry['bt_date']))).','.
-            '"title": '.json_encode($entry['bt_title']).','.
-            '"link": '.json_encode($entry['bt_link']).','.
-            '"feed": '.json_encode($entry['bt_feed']).','.
-            '"sitename": '.json_encode($GLOBALS['liste_flux'][$entry['bt_feed']]['title']).','.
-            '"folder": '.json_encode($GLOBALS['liste_flux'][$entry['bt_feed']]['folder']).','.
-            '"content": '.json_encode($entry['bt_content']).','.
-            '"statut": '.$entry['bt_statut'].','.
-            '"fav": '.$entry['bt_bookmarked'].''.
-        '}'.(($count == $i) ? '' :',')."\n";
-    }
-    $out .= ']'."\n".'}';
-    $out .=  '</script>'."\n";
-
-    return $out;
 }
 
 if (!function_exists('http_parse_headers')) {

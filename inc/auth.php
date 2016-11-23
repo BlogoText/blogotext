@@ -11,8 +11,88 @@
 #
 # *** LICENSE ***
 
+/**
+ * Note :
+ *
+ *  - seem's like we can move this file in admin/inc/, but, we must do something first with the 'install.php'
+*/
+
 if (!defined('BT_ROOT')) {
     exit('Require BT_ROOT for auth');
+}
+
+
+function auth_kill_session()
+{
+    unset($_SESSION['nom_utilisateur'], $_SESSION['user_id'], $_SESSION['tokens']);
+    setcookie('BT-admin-stay-logged', null);
+    session_destroy(); // destroy session
+    // Saving server-side the possible lost data (writing article for example)
+    session_start();
+    session_regenerate_id(true); // change l'ID au cas ou
+    foreach ($_POST as $key => $value) {
+        $_SESSION['BT-post-'.$key] = $value;
+    }
+
+    if (strrpos($_SERVER['REQUEST_URI'], '/logout.php') != strlen($_SERVER['REQUEST_URI']) - strlen('/logout.php')) {
+        $_SESSION['BT-saved-url'] = $_SERVER['REQUEST_URI'];
+    }
+    redirection('auth.php');
+}
+
+/**
+ * check som stuff about the session
+ *
+ */
+function auth_check_session()
+{
+    if (USE_IP_IN_SESSION == 1) {
+        $ip = get_ip();
+    } else {
+        $ip = date('m');
+    }
+    @session_start();
+    ini_set('session.cookie_httponly', true);
+
+    // generate hash for cookie
+    $newUID = hash('sha256', USER_PWHASH.USER_LOGIN.md5($_SERVER['HTTP_USER_AGENT'].$ip));
+
+    // check old cookie  with newUID
+    if (isset($_COOKIE['BT-admin-stay-logged']) and $_COOKIE['BT-admin-stay-logged'] == $newUID) {
+        $_SESSION['user_id'] = md5($newUID);
+        session_set_cookie_params(365*24*60*60); // set new expiration time to the browser
+        session_regenerate_id(true);  // Send cookie
+        // Still logged in, return
+        return true;
+    } else {
+        return false;
+    }
+
+    // no "stay-logged" cookie : check session.
+    if ((!isset($_SESSION['user_id'])) or ($_SESSION['user_id'] != USER_LOGIN.hash('sha256', USER_PWHASH.$_SERVER['HTTP_USER_AGENT'].$ip))) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+/**
+ * This will look if session expired and kill it, otherwise restore it
+ */
+function auth_ttl()
+{
+    if (auth_check_session() === false) { // session is not good
+        auth_kill_session(); // destroy it
+    } else {
+        // Restore data lost if possible
+        foreach ($_SESSION as $key => $value) {
+            if (substr($key, 0, 8) === 'BT-post-') {
+                $_POST[substr($key, 8)] = $value;
+                unset($_SESSION[$key]);
+            }
+        }
+        return true;
+    }
 }
 
 /**

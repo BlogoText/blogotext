@@ -15,7 +15,7 @@ define('BT_ROOT', '../');
 
 require_once '../inc/inc.php';
 
-operate_session();
+auth_ttl();
 $begin = microtime(true);
 
 $GLOBALS['db_handle'] = open_base();
@@ -26,8 +26,8 @@ afficher_html_head($GLOBALS['lang']['titre_maintenance']);
 
 echo '<div id="header">'."\n";
     echo '<div id="top">'."\n";
-    afficher_msg();
-    afficher_topnav('preferences.php', $GLOBALS['lang']['titre_maintenance']);
+    tpl_show_msg();
+    tpl_show_topnav('preferences.php', $GLOBALS['lang']['titre_maintenance']);
     echo '</div>'."\n";
 echo '</div>'."\n";
 
@@ -36,6 +36,22 @@ echo '<div id="page">'."\n";
 
 // création du dossier des backups
 create_folder(BT_ROOT.DIR_BACKUP, 0);
+
+
+function select_yes_no($name, $defaut, $label)
+{
+    $choix = array(
+        $GLOBALS['lang']['non'],
+        $GLOBALS['lang']['oui']
+    );
+    $form = '<label for="'.$name.'" >'.$label.'</label>'."\n";
+    $form .= '<select id="'.$name.'" name="'.$name.'">'."\n" ;
+    foreach ($choix as $option => $label) {
+        $form .= "\t".'<option value="'.htmlentities($option).'"'.(($option == $defaut) ? ' selected="selected" ' : '').'>'.htmlentities($label).'</option>'."\n";
+    }
+    $form .= '</select>'."\n";
+    return $form;
+}
 
 /*
  * reconstruit la BDD des fichiers (qui n’est pas dans SQL, mais un fichier serializé à côte)

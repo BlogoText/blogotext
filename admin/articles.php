@@ -16,7 +16,7 @@ define('BT_ROOT', '../');
 
 require_once '../inc/inc.php';
 
-operate_session();
+auth_ttl();
 
 $GLOBALS['db_handle'] = open_base();
 
@@ -110,9 +110,9 @@ afficher_html_head($GLOBALS['lang']['mesarticles']);
 
 echo '<div id="header">'."\n";
     echo '<div id="top">'."\n";
-        afficher_msg();
+        tpl_show_msg();
         echo moteur_recherche();
-        afficher_topnav($GLOBALS['lang']['mesarticles']);
+        tpl_show_topnav($GLOBALS['lang']['mesarticles']);
     echo '</div>'."\n";
 echo '</div>'."\n";
 

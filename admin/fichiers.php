@@ -15,7 +15,7 @@ define('BT_ROOT', '../');
 
 require_once '../inc/inc.php';
 
-operate_session();
+auth_ttl();
 $begin = microtime(true);
 
 $fichier = array();
@@ -78,9 +78,9 @@ afficher_html_head($GLOBALS['lang']['titre_fichier']);
 
 echo '<div id="header">'."\n";
     echo '<div id="top">'."\n";
-    afficher_msg();
+    tpl_show_msg();
     echo moteur_recherche();
-    afficher_topnav($GLOBALS['lang']['titre_fichier']);
+    tpl_show_topnav($GLOBALS['lang']['titre_fichier']);
     echo '</div>'."\n";
 echo '</div>'."\n";
 

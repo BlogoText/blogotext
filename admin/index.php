@@ -21,7 +21,7 @@ define('DONT_USE_HOOK', 1);
 
 require_once '../inc/inc.php';
 
-operate_session();
+auth_ttl();
 
 // open bases
 $GLOBALS['db_handle'] = open_base();
@@ -39,9 +39,9 @@ afficher_html_head($GLOBALS['lang']['label_resume']);
 
 echo '<div id="header">'."\n";
 echo '<div id="top">'."\n";
-afficher_msg();
+tpl_show_msg();
 echo moteur_recherche();
-afficher_topnav($GLOBALS['lang']['label_resume']);
+tpl_show_topnav($GLOBALS['lang']['label_resume']);
 echo '</div>'."\n";
 echo '</div>'."\n";
 $total_artic = liste_elements_count('SELECT count(ID) AS nbr FROM articles', array());

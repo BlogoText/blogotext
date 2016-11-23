@@ -18,25 +18,34 @@
 define('BT_ROOT', '../');
 
 require_once '../inc/inc.php';
+require_once 'inc/addons.php';
 
-operate_session();
+auth_ttl();
 $begin = microtime(true);
+
+// load addons
+$addons_status = addon_list_addons();
 
 
 // traitement d’une action sur le module
-if (isset($_POST['_verif_envoi'])) {
-    // $module = init_post_module();
+if (isset($_POST['_verif_envoi']) && isset($_POST['action_type'])) {
+    // $module = addon_retrieve_posted_addon();
     // $erreurs = valider_form_module($module);
 
-    $form_process = addon_edit_params_process($_GET['addonName']);
+    if ($_POST['action_type'] == 'settings') {
+        $form_process = addon_edit_settings_form_process($_GET['addonTag']);
+    } else if ($_POST['action_type'] == 'buttons') {
+        $form_process = addon_buttons_action_process($_GET['addonTag']);
+    }
 }
+
 
 afficher_html_head($GLOBALS['lang']['mesmodules']);
 
 echo '<div id="header">'."\n";
     echo '<div id="top">'."\n";
         echo moteur_recherche();
-        afficher_topnav($GLOBALS['lang']['mesmodules']);
+        tpl_show_topnav($GLOBALS['lang']['mesmodules']);
     echo '</div>'."\n";
 echo '</div>'."\n";
 
@@ -45,7 +54,7 @@ echo '<div id="page">'."\n";
 
 // echo erreurs($erreurs);
 
-echo addon_edit_params_form($_GET['addonName']);
+echo addon_edit_settings_form($_GET['addonTag']);
 
 echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
 echo '<script type="text/javascript">';

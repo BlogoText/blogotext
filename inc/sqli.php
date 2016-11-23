@@ -334,59 +334,6 @@ function init_post_comment($id, $mode)
     return $comment;
 }
 
-// POST LINK
-function init_post_link2()
-{
-    // second init : the whole link data needs to be stored
-    $id = protect($_POST['bt_id']);
-    $link = array (
-        'bt_id'           => $id,
-        'bt_type'         => htmlspecialchars($_POST['type']),
-        'bt_content'      => markup(htmlspecialchars(clean_txt($_POST['description']), ENT_NOQUOTES)),
-        'bt_wiki_content' => protect($_POST['description']),
-        'bt_title'        => protect($_POST['title']),
-        'bt_link'         => (empty($_POST['url'])) ? $GLOBALS['racine'].'?mode=links&amp;id='.$id : protect($_POST['url']),
-        'bt_tags'         => htmlspecialchars(traiter_tags($_POST['categories'])),
-        'bt_statut'       => (isset($_POST['statut'])) ? 0 : 1
-    );
-    if (isset($_POST['ID']) and is_numeric($_POST['ID'])) { // ID only added on edit.
-        $link['ID'] = $_POST['ID'];
-    }
-
-    return $link;
-}
-
-// once form is initiated, and no errors are found, treat it (save it to DB).
-function traiter_form_billet($billet)
-{
-    if (isset($_POST['enregistrer']) and !isset($billet['ID'])) {
-        $result = bdd_article($billet, 'enregistrer-nouveau');
-        $redir = basename($_SERVER['SCRIPT_NAME']).'?post_id='.$billet['bt_id'].'&msg=confirm_article_maj';
-    } elseif (isset($_POST['enregistrer']) and isset($billet['ID'])) {
-        $result = bdd_article($billet, 'modifier-existant');
-        $redir = basename($_SERVER['SCRIPT_NAME']).'?post_id='.$billet['bt_id'].'&msg=confirm_article_ajout';
-    } elseif (isset($_POST['supprimer']) and isset($_POST['ID']) and is_numeric($_POST['ID'])) {
-        $result = bdd_article($billet, 'supprimer-existant');
-        try {
-            $sql = '
-                DELETE FROM commentaires
-                 WHERE bt_article_id=?';
-            $req = $GLOBALS['db_handle']->prepare($sql);
-            $req->execute(array($_POST['article_id']));
-        } catch (Exception $e) {
-            die('Erreur Suppr Comm associés: '.$e->getMessage());
-        }
-
-        $redir = 'articles.php?msg=confirm_article_suppr';
-    }
-    if ($result === true) {
-        rafraichir_cache_lv1();
-        redirection($redir);
-    } else {
-        die($result);
-    }
-}
-
 function bdd_article($billet, $what)
 {
     // l'article n'existe pas, on le crée
@@ -475,98 +422,6 @@ function bdd_article($billet, $what)
     }
 }
 
-// traiter un ajout de lien prend deux étapes :
-//  1) on donne le lien > il donne un form avec lien+titre
-//  2) après ajout d'une description, on clic pour l'ajouter à la bdd.
-// une fois le lien donné (étape 1) et les champs renseignés (étape 2) on traite dans la BDD
-function traiter_form_link($link)
-{
-    $query_string = str_replace(((isset($_GET['msg'])) ? '&msg='.$_GET['msg'] : ''), '', $_SERVER['QUERY_STRING']);
-    if (isset($_POST['enregistrer'])) {
-        $result = bdd_lien($link, 'enregistrer-nouveau');
-        $redir = basename($_SERVER['SCRIPT_NAME']).'?msg=confirm_link_ajout';
-    } elseif (isset($_POST['editer'])) {
-        $result = bdd_lien($link, 'modifier-existant');
-        $redir = basename($_SERVER['SCRIPT_NAME']).'?msg=confirm_link_edit';
-    } elseif (isset($_POST['supprimer'])) {
-        $result = bdd_lien($link, 'supprimer-existant');
-        $redir = basename($_SERVER['SCRIPT_NAME']).'?msg=confirm_link_suppr';
-    }
-
-    if ($result === true) {
-        rafraichir_cache_lv1();
-        redirection($redir);
-    } else {
-        die($result);
-    }
-}
-
-function bdd_lien($link, $what)
-{
-    if ($what == 'enregistrer-nouveau') {
-        try {
-            $req = $GLOBALS['db_handle']->prepare('INSERT INTO links
-            (   bt_type,
-                bt_id,
-                bt_content,
-                bt_wiki_content,
-                bt_title,
-                bt_link,
-                bt_tags,
-                bt_statut
-            )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
-            $req->execute(array(
-                $link['bt_type'],
-                $link['bt_id'],
-                $link['bt_content'],
-                $link['bt_wiki_content'],
-                $link['bt_title'],
-                $link['bt_link'],
-                $link['bt_tags'],
-                $link['bt_statut']
-            ));
-            return true;
-        } catch (Exception $e) {
-            return 'Erreur 5867 : '.$e->getMessage();
-        }
-    } elseif ($what == 'modifier-existant') {
-        try {
-            $req = $GLOBALS['db_handle']->prepare('UPDATE links SET
-                bt_content=?,
-                bt_wiki_content=?,
-                bt_title=?,
-                bt_link=?,
-                bt_tags=?,
-                bt_statut=?
-                WHERE ID=?');
-            $req->execute(array(
-                $link['bt_content'],
-                $link['bt_wiki_content'],
-                $link['bt_title'],
-                $link['bt_link'],
-                $link['bt_tags'],
-                $link['bt_statut'],
-                $link['ID']
-            ));
-            return true;
-        } catch (Exception $e) {
-            return 'Erreur 435678 : '.$e->getMessage();
-        }
-    } elseif ($what == 'supprimer-existant') {
-        try {
-            $sql = '
-                DELETE FROM links
-                 WHERE ID=?';
-            $req = $GLOBALS['db_handle']->prepare($sql);
-            $req->execute(array($link['ID']));
-            return true;
-        } catch (Exception $e) {
-            return 'Erreur 97652 : '.$e->getMessage();
-        }
-    }
-}
-
 // Called when a new comment is posted (public side or admin side) or on edit/activating/removing
 //  when adding, redirects with message after processing
 //  when edit/activating/removing, dies with message after processing (message is then caught with AJAX)
@@ -607,7 +462,7 @@ function traiter_form_commentaire($commentaire, $admin)
                     // send subscribe emails if comments just got activated
                     send_emails(htmlspecialchars($_POST['com_bt_id']));
                 }
-                rafraichir_cache_lv1();
+                flux_refresh_cache_lv1();
                 echo 'Success'.new_token();
             } else {
                 echo 'Error'.new_token();
@@ -620,7 +475,7 @@ function traiter_form_commentaire($commentaire, $admin)
     }
 
     if ($result === true) {
-        rafraichir_cache_lv1();
+        flux_refresh_cache_lv1();
         redirection($redir);
     }
     die($result);
@@ -880,79 +735,4 @@ function rss_list_guid()
     } catch (Exception $e) {
         die('Erreur 0329-rss-get_guid : '.$e->getMessage());
     }
-}
-
-// FOR RSS : RETUNS nb of articles per feed
-function rss_count_feed()
-{
-    $result = array();
-    $query = '
-        SELECT bt_feed, SUM(bt_statut) AS nbrun, SUM(bt_bookmarked) AS nbfav
-          FROM rss
-         GROUP BY bt_feed';
-    try {
-        $result = $GLOBALS['db_handle']->query($query)->fetchAll(PDO::FETCH_ASSOC);
-        return $result;
-    } catch (Exception $e) {
-        die('Erreur 0329-rss-count_per_feed : '.$e->getMessage());
-    }
-}
-
-// FOR RSS : get $_POST and update feeds (title, url…) for feeds.php?config
-function traiter_form_rssconf()
-{
-    $msg_param_to_trim = (isset($_GET['msg'])) ? '&msg='.$_GET['msg'] : '';
-    $query_string = str_replace($msg_param_to_trim, '', $_SERVER['QUERY_STRING']);
-    // traitement
-    $GLOBALS['db_handle']->beginTransaction();
-    foreach ($GLOBALS['liste_flux'] as $i => $feed) {
-        if (isset($_POST['i_'.$feed['checksum']])) {
-            // feed marked to be removed
-            if ($_POST['k_'.$feed['checksum']] == 0) {
-                unset($GLOBALS['liste_flux'][$i]);
-                try {
-                    $req = $GLOBALS['db_handle']->prepare('DELETE FROM rss WHERE bt_feed=?');
-                    $req->execute(array($feed['link']));
-                } catch (Exception $e) {
-                    die('Error : Rss?conf RM-from db: '.$e->getMessage());
-                }
-            } // title, url or folders have changed
-            else {
-                // title has change
-                $GLOBALS['liste_flux'][$i]['title'] = $_POST['i_'.$feed['checksum']];
-                // folder has changed : update & change folder where it must be changed
-                if ($GLOBALS['liste_flux'][$i]['folder'] != $_POST['l_'.$feed['checksum']]) {
-                    $GLOBALS['liste_flux'][$i]['folder'] = $_POST['l_'.$feed['checksum']];
-                    try {
-                        $req = $GLOBALS['db_handle']->prepare('UPDATE rss SET bt_folder=? WHERE bt_feed=?');
-                        $req->execute(array($_POST['l_'.$feed['checksum']], $feed['link']));
-                    } catch (Exception $e) {
-                        die('Error : Rss?conf Update-feed db: '.$e->getMessage());
-                    }
-                }
-
-                // URL has change
-                if ($_POST['j_'.$feed['checksum']] != $GLOBALS['liste_flux'][$i]['link']) {
-                    $a = $GLOBALS['liste_flux'][$i];
-                    $a['link'] = $_POST['j_'.$feed['checksum']];
-                    unset($GLOBALS['liste_flux'][$i]);
-                    $GLOBALS['liste_flux'][$a['link']] = $a;
-                    try {
-                        $req = $GLOBALS['db_handle']->prepare('UPDATE rss SET bt_feed=? WHERE bt_feed=?');
-                        $req->execute(array($_POST['j_'.$feed['checksum']], $feed['link']));
-                    } catch (Exception $e) {
-                        die('Error : Rss?conf Update-feed db: '.$e->getMessage());
-                    }
-                }
-            }
-        }
-    }
-    $GLOBALS['db_handle']->commit();
-
-    // sort list with title
-    $GLOBALS['liste_flux'] = array_reverse(tri_selon_sous_cle($GLOBALS['liste_flux'], 'title'));
-    file_put_contents(FEEDS_DB, '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_flux']))).' */');
-
-    $redir = basename($_SERVER['SCRIPT_NAME']).'?'.$query_string.'&msg=confirm_feeds_edit';
-    redirection($redir);
 }

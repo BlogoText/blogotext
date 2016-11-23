@@ -41,6 +41,20 @@ if (isset($_GET['l'])) {
 require_once BT_ROOT.'/inc/inc.php';
 
 
+function fichier_adv_conf()
+{
+    $fichier_advconf = '../'.DIR_CONFIG.'/config-advanced.ini';
+    $conf='';
+    $conf .= '; <?php die(); /*'."\n\n";
+    $conf .= '; This file contains some more advanced configuration features.'."\n\n";
+    $conf .= 'BLOG_UID = \''.sha1(uniqid(mt_rand(), true)).'\''."\n";
+    $conf .= 'DISPLAY_PHP_ERRORS = 0;'."\n";
+    $conf .= 'USE_IP_IN_SESSION = 1;'."\n\n\n";
+    $conf .= '; */ ?>'."\n";
+
+    return file_put_contents($fichier_advconf, $conf) !== false;
+}
+
 /**
  * show the form for step 1 (language)
  * ! this function return nothing and use echo
@@ -167,6 +181,24 @@ function install_form_3_echo($erreurs = '')
 
     echo '</div>'."\n";
     echo '</form>'."\n";
+}
+
+function fichier_mysql($sgdb)
+{
+    $fichier_mysql = '../'.DIR_CONFIG.'/mysql.ini';
+
+    $data = '';
+    if ($sgdb !== false) {
+        $data .= '; <?php die(); /*'."\n\n";
+        $data .= '; This file contains MySQL credentials and configuration.'."\n\n";
+        $data .= 'MYSQL_LOGIN = \''.htmlentities($_POST['mysql_user'], ENT_QUOTES).'\''."\n";
+        $data .= 'MYSQL_PASS = \''.htmlentities($_POST['mysql_passwd'], ENT_QUOTES).'\''."\n";
+        $data .= 'MYSQL_DB = \''.htmlentities($_POST['mysql_db'], ENT_QUOTES).'\''."\n";
+        $data .= 'MYSQL_HOST = \''.htmlentities($_POST['mysql_host'], ENT_QUOTES).'\''."\n\n";
+        $data .= 'DBMS = \''.$sgdb.'\''."\n";
+    }
+
+    return file_put_contents($fichier_mysql, $data) !== false;
 }
 
 /**

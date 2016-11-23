@@ -12,67 +12,51 @@
 # *** LICENSE ***
 
 
+// temp, put this include somewhere else
+include 'filesystem.php';
+
 /**
- * addon as a config ?
  *
- * @return bool
  */
-function addon_has_conf($addonName)
+function addon_clean_cache_path($addonTag)
 {
-    $infos = addon_get_infos($addonName);
-    if ($infos === false) {
-        return false;
+    $path = addon_get_cache_path($addonTag, false);
+    if (!is_dir($path)) {
+        return true;
     }
-    return (isset($infos['config']) && count($infos['config']) > 0);
+    $path = str_replace(array('../', './'), '', $path);
+    return rmdir_recursive($path);
 }
 
 /**
- * get the config of an addon
- *
- * @param string $addonName, the addon name
- * @return array
+ * put a .enabled file to an addon
  */
-function addon_get_conf($addonName)
+function addon_put_enable_file($file)
 {
-    $infos = addon_get_infos($addonName);
-    if ($infos === false) {
-        return false;
-    }
-    $saved = array();
-    $file_path = BT_ROOT.DIR_ADDONS.'/'.$addonName.'/params.ini';
-    if (is_file($file_path) and is_readable($file_path)) {
-        $t = parse_ini_file($file_path);
-        foreach ($t as $option => $value) {
-            $saved[$option] = $value;
-        }
-    }
-    if (isset($infos['config'])) {
-        if (!is_array($saved)) {
-            return $infos['config'];
-        } else {
-            foreach ($infos['config'] as $key => $vals) {
-                $infos['config'][$key]['value'] = (isset($saved[$key])) ? $saved[$key] : $vals['value'] ;
-            }
-            return $infos['config'];
-        }
-    }
-    return array();
+    return file_put_contents($file, '') !== false;
 }
 
 /**
- * get addon informations
- *
- * @param string $addonName, the addon name
- * @return array||false, false if addon not found/loaded...
+ * (?) return a translated sentence
  */
-function addon_get_infos($addonName)
+function addon_get_translation($info)
 {
-    foreach ($GLOBALS['addons'] as $k) {
-        if ($k['tag'] == $addonName) {
-            return $k;
-        }
+    if (is_array($info)) {
+        return $info[$GLOBALS['lang']['id']];
     }
-    return false;
+    return $info;
+}
+
+/**
+ * retrieve and return basic datas about a addon based on
+ * _POST[addon_id] and _POST[statut]
+ */
+function addon_retrieve_posted_addon()
+{
+    return array (
+        'addon_id' => htmlspecialchars($_POST['addon_id']),
+        'status' => (isset($_POST['statut']) and $_POST['statut'] == 'on') ? '1' : '0',
+    );
 }
 
 /**
@@ -81,14 +65,14 @@ function addon_get_infos($addonName)
  * todo :
  *   - manage errors
  *
- * @param string $addonName, the addon name
+ * @param string $addonTag, the addon name
  * @return bool
  */
-function addon_edit_params_process($addonName)
+function addon_edit_settings_form_process($addonTag)
 {
     $errors = array();
-    $addons_status = list_addons();
-    $params = addon_get_conf($addonName);
+    $addons_status = addon_list_addons();
+    $params = addon_get_conf($addonTag);
     $datas = array();
     foreach ($params as $key => $param) {
         $datas[$key] = '';
@@ -122,31 +106,85 @@ function addon_edit_params_process($addonName)
         }
     }
     $conf  = '';
+    $conf .= '; <?php die(); /*'."\n\n";
+    $conf .= '; This file contains addons params, you can modify this file.'."\n\n";
     foreach ($datas as $key => $value) {
-        $conf .= $key .' = '.((is_numeric($value)) ? $value : '\''.$value.'\'').''."\n";
+        $conf .= $key .' = \''. $value .'\''."\n";
     }
-    return (file_put_contents(BT_ROOT.DIR_ADDONS.'/'.$addonName.'/params.ini', $conf) !== false);
+    $conf .= '; */ ?>'."\n";
+    return (file_put_contents((addon_get_var_path($addonTag).'settings.ini'), $conf) !== false);
+}
+
+/**
+ * perform action from button
+ */
+function addon_buttons_action_process($addonTag)
+{
+
+    // get info for the addon
+    $infos = addon_get_infos($addonTag);
+
+    if (isset($infos['buttons'])) {
+        foreach ($infos['buttons'] as $btnId => $btn) {
+            if (!isset($_POST[$btnId]) || !function_exists($btn['callback'])) {
+                continue;
+            }
+            call_user_func($btn['callback']);
+        }
+    }
+
+    // clean module cache ?
+    if (isset($_POST['addon_clean_cache'])) {
+        addon_clean_cache_path($addonTag);
+    }
 }
 
 /**
  * Get the addon config form
  *
- * @param string $addonName, the addon name
+ * @param string $addonTag, the addon name
  * @return string, the html form
  */
-function addon_edit_params_form($addonName)
+function addon_edit_settings_form($addonTag)
 {
     // load addons
-    $addons_status = list_addons();
+    $addons_status = addon_list_addons();
     // get info for the addon
-    $infos = addon_get_infos($addonName);
+    $infos = addon_get_infos($addonTag);
     // addon is active ?
-    $infos['status'] = $addons_status[$addonName];
+    $infos['status'] = $addons_status[$addonTag];
     // get addon params
-    $params = addon_get_conf($addonName);
+    $params = addon_get_conf($addonTag);
 
+    // button
     $out = '';
-    $out .= '<form id="preferences" method="post" action="?addonName='. $addonName .'" >';
+    $out .= '<form id="preferences" method="post" action="?addonTag='. $addonTag .'" onsubmit="return confirm(\''. addslashes($GLOBALS['lang']['addons_confirm_buttons_action']) .'\');" >';
+    $out .= '<div role="group" class="pref">'; /* no fieldset because browset can’t style them correctly */
+    $out .= '<div class="form-legend"><legend class="legend-user">'.$GLOBALS['lang']['addons_settings_legend'].addon_get_translation($infos['name']).'</legend></div>'."\n";
+    
+    $out .= '<div class="form-lines">'."\n";
+    if (isset($infos['buttons'])) {
+        foreach ($infos['buttons'] as $btnId => $btn) {
+            $out .= '<p>'. form_checkbox($btnId, false, $btn['label'][$GLOBALS['lang']['id']]) .'</p>'."\n";
+        }
+    }
+    $out .= '<p>'. form_checkbox('addon_clean_cache', false, $GLOBALS['lang']['addons_clean_cache_label']) .'</p>'."\n";
+    $out .= '</div">'."\n";
+        // submit box
+    $out .= '<div class="submit-bttns">'."\n";
+    $out .= hidden_input('_verif_envoi', '1');
+    $out .= hidden_input('token', new_token());
+    $out .= hidden_input('action_type', 'buttons');
+    $out .= '<input type="hidden" name="addon_action" value="params" />';
+    $out .= '<button class="submit button-submit" type="submit" name="enregistrer">'.$GLOBALS['lang']['valider'].'</button>'."\n";
+    $out .= '</div>'."\n";
+    // END submit box
+    $out .= '</div>'."\n";
+    $out .= '</div>'."\n";
+    $out .= '</form>';
+
+    // settings
+    $out .= '<form id="preferences" method="post" action="?addonTag='. $addonTag .'" >';
     $out .= '<div role="group" class="pref">'; /* no fieldset because browset can’t style them correctly */
     $out .= '<div class="form-legend"><legend class="legend-user">'.$GLOBALS['lang']['addons_settings_legend'].addon_get_translation($infos['name']).'</legend></div>'."\n";
 
@@ -167,7 +205,6 @@ function addon_edit_params_form($addonName)
         } else if ($param['type'] == 'select') {
             $out .= "\t".'<label for="'.$key.'">'.$param['label'][ $GLOBALS['lang']['id'] ].'</label>'."\n";
             $out .= "\t".'<select id="'.$key.'" name="'.$key.'">'."\n";
-            // var_dump( $param['value'] );
             foreach ($param['options'] as $opt_key => $label_lang) {
                 $selected = ($opt_key == $param['value']) ? ' selected' : '';
                 $out .= "\t\t".'<option value="'. $opt_key .'"'. $selected .'>'. $label_lang[ $GLOBALS['lang']['id'] ] .'</option>';
@@ -181,51 +218,37 @@ function addon_edit_params_form($addonName)
     $out .= '<div class="submit-bttns">'."\n";
     $out .= hidden_input('_verif_envoi', '1');
     $out .= hidden_input('token', new_token());
+    $out .= hidden_input('action_type', 'settings');
     $out .= '<input type="hidden" name="addon_action" value="params" />';
     $out .= '<button class="submit button-cancel" type="button" onclick="annuler(\'addons.php\');" >'.$GLOBALS['lang']['annuler'].'</button>'."\n";
     $out .= '<button class="submit button-submit" type="submit" name="enregistrer">'.$GLOBALS['lang']['enregistrer'].'</button>'."\n";
     $out .= '</div>'."\n";
     // END submit box
-    $out .= '</ul>'."\n\n";
     $out .= '</div>'."\n";
     $out .= '</div>'."\n";
     $out .= '</form>';
+
     return $out;
 }
 
-/* list all addons */
-function list_addons()
+/**
+ * addon as a config ?
+ *
+ * @return bool
+ */
+function addon_have_settings($addonTag)
 {
-    $addons = array();
-    $path = BT_ROOT.DIR_ADDONS;
-
-    if (is_dir($path)) {
-        // get the list of installed addons
-        $addons_list = rm_dots_dir(scandir($path));
-
-        // include the addons
-        foreach ($addons_list as $addon) {
-            $inc = sprintf('%s/%s/%s.php', $path, $addon, $addon);
-            $is_enabled = is_file(sprintf('%s/%s/.enabled', $path, $addon));
-            if (is_file($inc)) {
-                $addons[$addon] = $is_enabled;
-                include_once $inc;
-            }
-        }
+    $infos = addon_get_infos($addonTag);
+    if ($infos === false) {
+        return false;
     }
-
-    return $addons;
+    return (isset($infos['settings']) && count($infos['settings']) > 0);
 }
 
-function addon_get_translation($info)
-{
-    if (is_array($info)) {
-        return $info[$GLOBALS['lang']['id']];
-    }
-    return $info;
-}
-
-function afficher_liste_modules($tableau, $filtre)
+/**
+ * return the main list of addon
+ */
+function addon_show_list_addons($tableau, $filtre)
 {
     if (!empty($tableau)) {
         $out = '<ul id="modules">'."\n";
@@ -255,8 +278,8 @@ function afficher_liste_modules($tableau, $filtre)
             $out .= "\t\t".'<p>';
 
             // addon params
-            if (addon_has_conf($addon['tag'])) {
-                $out .= '<a href="addon.php?addonName='. $addon['tag'] .'">'.$GLOBALS['lang']['addons_settings_link_title'].'</a>';
+            if (addon_have_settings($addon['tag'])) {
+                $out .= '<a href="addon.php?addonTag='. $addon['tag'] .'">'.$GLOBALS['lang']['addons_settings_link_title'].'</a>';
                 if (!empty($addon['url'])) {
                     $out .= ' | ';
                 }
@@ -277,36 +300,21 @@ function afficher_liste_modules($tableau, $filtre)
     echo $out;
 }
 
-// TODO: at the end, put this in "afficher_form_filtre()"
-function afficher_form_filtre_modules($filtre)
-{
-    $ret = '<div id="form-filtre">'."\n";
-    $ret .= '<form method="get" action="'.basename($_SERVER['SCRIPT_NAME']).'" onchange="this.submit();">'."\n";
-    $ret .= "\n".'<select name="filtre">'."\n" ;
-    // TOUS
-    $ret .= '<option value="all"'.(($filtre == '') ? ' selected="selected"' : '').'>'.$GLOBALS['lang']['label_all'].'</option>'."\n";
-    // ACTIVÉS
-    $ret .= '<option value="enabled"'.(($filtre == 'enabled') ? ' selected="selected"' : '').'>'.$GLOBALS['lang']['label_enabled'].'</option>'."\n";
-    // DÉSACTIVÉS
-    $ret .= '<option value="disabled"'.(($filtre == 'disabled') ? ' selected="selected"' : '').'>'.$GLOBALS['lang']['label_disabled'].'</option>'."\n";
-    $ret .= '</select> '."\n\n";
-    $ret .= '</form>'."\n";
-    $ret .= '</div>'."\n";
-    echo $ret;
-}
-
-function traiter_form_module($module)
+/**
+ * (?) proceed submitted form from addon_show_list_addons()
+ */
+function addon_show_list_addons_form_proceed($module)
 {
     $erreurs = array();
     $path = BT_ROOT.DIR_ADDONS;
-    $check_file = sprintf('%s/%s/.enabled', $path, $module['addon_id']);
+    $check_file = sprintf('%s.enabled', addon_get_var_path($module['addon_id']));
     $is_enabled = is_file($check_file);
     $new_status = (bool) $module['status'];
 
     if ($is_enabled != $new_status) {
         if ($new_status) {
             // Addon enabled: we create .enabled
-            if (!enable_addon($check_file)) {
+            if (!addon_put_enable_file($check_file)) {
                 $erreurs[] = sprintf($GLOBALS['lang']['err_addon_enabled'], $module['addon_id']);
             }
         } else {
@@ -328,10 +336,23 @@ function traiter_form_module($module)
     return $erreurs;
 }
 
-function init_post_module()
+// TODO: at the end, put this in "afficher_form_filtre()"
+/**
+ *
+ */
+function addon_show_list_addons_form_filters($filtre)
 {
-    return array (
-        'addon_id' => htmlspecialchars($_POST['addon_id']),
-        'status' => (isset($_POST['statut']) and $_POST['statut'] == 'on') ? 1 : 0,
-    );
+    $ret = '<div id="form-filtre">'."\n";
+    $ret .= '<form method="get" action="'.basename($_SERVER['SCRIPT_NAME']).'" onchange="this.submit();">'."\n";
+    $ret .= "\n".'<select name="filtre">'."\n" ;
+    // TOUS
+    $ret .= '<option value="all"'.(($filtre == '') ? ' selected="selected"' : '').'>'.$GLOBALS['lang']['label_all'].'</option>'."\n";
+    // ACTIVÉS
+    $ret .= '<option value="enabled"'.(($filtre == 'enabled') ? ' selected="selected"' : '').'>'.$GLOBALS['lang']['label_enabled'].'</option>'."\n";
+    // DÉSACTIVÉS
+    $ret .= '<option value="disabled"'.(($filtre == 'disabled') ? ' selected="selected"' : '').'>'.$GLOBALS['lang']['label_disabled'].'</option>'."\n";
+    $ret .= '</select> '."\n\n";
+    $ret .= '</form>'."\n";
+    $ret .= '</div>'."\n";
+    echo $ret;
 }

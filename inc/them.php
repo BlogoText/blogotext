@@ -333,7 +333,7 @@ function afficher_liste($tableau)
 function conversion_theme_addons($texte)
 {
     // include all addons
-    $addons_status = list_addons();
+    $addons_status = addon_list_addons();
 
     // Parse the $texte and replace {tags} with html generated in addon.
     // Generate CSS and JS includes too.
