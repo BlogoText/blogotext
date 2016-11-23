@@ -31,8 +31,9 @@ function addon_clean_cache_path($addonTag)
 /**
  * put a .enabled file to an addon
  */
-function addon_put_enable_file($file)
+function addon_put_enable_file($addonTag)
 {
+    $file = sprintf('%s.enabled', addon_get_var_path($addonTag, true));
     return file_put_contents($file, '') !== false;
 }
 
@@ -112,7 +113,7 @@ function addon_edit_settings_form_process($addonTag)
         $conf .= $key .' = \''. $value .'\''."\n";
     }
     $conf .= '; */ ?>'."\n";
-    return (file_put_contents((addon_get_var_path($addonTag).'settings.ini'), $conf) !== false);
+    return (file_put_contents((addon_get_var_path($addonTag, true).'settings.ini'), $conf) !== false);
 }
 
 /**
@@ -314,7 +315,7 @@ function addon_show_list_addons_form_proceed($module)
     if ($is_enabled != $new_status) {
         if ($new_status) {
             // Addon enabled: we create .enabled
-            if (!addon_put_enable_file($check_file)) {
+            if (!addon_put_enable_file($module['addon_id'])) {
                 $erreurs[] = sprintf($GLOBALS['lang']['err_addon_enabled'], $module['addon_id']);
             }
         } else {
