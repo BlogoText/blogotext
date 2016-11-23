@@ -49,7 +49,8 @@ function links_db_push($link)
 function links_db_upd($link)
 {
     try {
-        $req = $GLOBALS['db_handle']->prepare('UPDATE links 
+        $req = $GLOBALS['db_handle']->prepare('
+             UPDATE links 
                 SET
                     bt_content=?,
                     bt_wiki_content=?,
@@ -57,8 +58,7 @@ function links_db_upd($link)
                     bt_link=?,
                     bt_tags=?,
                     bt_statut=?
-              WHERE ID=?'
-        );
+              WHERE ID=?');
         $req->execute(
             array(
                 $link['bt_content'],
