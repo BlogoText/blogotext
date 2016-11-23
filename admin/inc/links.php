@@ -49,8 +49,7 @@ function links_db_push($link)
 function links_db_upd($link)
 {
     try {
-        $req = $GLOBALS['db_handle']->prepare('
-            UPDATE links 
+        $req = $GLOBALS['db_handle']->prepare('UPDATE links 
                 SET
                     bt_content=?,
                     bt_wiki_content=?,
@@ -309,4 +308,3 @@ function afficher_lien($link)
     $list .= '</div>'."\n";
     echo $list;
 }
-
