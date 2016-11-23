@@ -11,7 +11,7 @@
 #
 # *** LICENSE ***
 
-require_once 'inc/boot.php';
+require_once 'inc/boot.php';;
 
 
 
