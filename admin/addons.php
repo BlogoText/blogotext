@@ -11,12 +11,11 @@
 #
 # *** LICENSE ***
 
-define('BT_ROOT', '../');
+require_once dirname(getcwd()).'/inc/defines.php';
+require_once BT_ROOT.'admin/inc/inc.php';
 
-require_once '../inc/inc.php';
-
-auth_ttl();
 $begin = microtime(true);
+auth_ttl();
 
 // traitement d’une action sur le module
 $erreurs = array();

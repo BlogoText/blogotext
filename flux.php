@@ -11,6 +11,10 @@
 #
 # *** LICENSE ***
 
+require_once getcwd().'/inc/defines.php';
+
+$begin = microtime(true);
+
 /**
  * flux.php replace atom.php and rss.php
  *
@@ -186,11 +190,9 @@ function rel2abs($article)
 }
 /* functions : END */
 
-$format = 'rss';
-if (isset($_GET['format'])) {
-    if ($_GET['format'] == 'atom') {
-        $format = 'atom';
-    }
+$format = (string)filter_input(INPUT_GET, 'format');
+if (!in_array($format, array('rss', 'atom'))) {
+    $format = 'rss';
 }
 
 header('Content-Type: application/'. $format .'+xml; charset=UTF-8');
@@ -198,36 +200,26 @@ header('Content-Type: application/'. $format .'+xml; charset=UTF-8');
 /**
  * second level caching file.
  */
-$flux_cache_lv2_path = 'cache/c_'. $format .'_'.substr(md5((isset($_SERVER['QUERY_STRING'])) ? $_SERVER['QUERY_STRING'] : ''), 0, 8).'.dat';
+$flux_cache_lv2_path = DIR_CACHE.'c_'. $format .'_'.substr(md5((isset($_SERVER['QUERY_STRING'])) ? $_SERVER['QUERY_STRING'] : ''), 0, 8).'.dat';
 
 // if cache file exists
 if (is_file($flux_cache_lv2_path)) {
     // if cache not too old
     if (filemtime($flux_cache_lv2_path) > time()-(3600)) {
-        readfile($flux_cache_lv2_path);
-        die;
+        die(readfile($flux_cache_lv2_path));
     }
     // file too old: delete it and go on (and create new file)
     unlink($flux_cache_lv2_path);
 }
 
-define('BT_ROOT', './');
-
-error_reporting(-1);
-$begin = microtime(true);
-
-require_once 'config/prefs.php';
-date_default_timezone_set($GLOBALS['fuseau_horaire']);
-
-require_once 'inc/inc.php';
+require_once DIR_CONFIG.'prefs.php';
+require_once BT_ROOT.'inc/inc.php';
 
 addon_list_addons();
 hook_trigger('system-start');
 
-
-
 $xml = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
-if ($_GET['format'] == 'atom') {
+if ($format == 'atom') {
     $xml .= '<feed xmlns="http://www.w3.org/2005/Atom">'."\n";
     $xml .= '<author><name>'.$GLOBALS['auteur'].'</name></author>'."\n";
     $xml .= '<link rel="self" href="'.$GLOBALS['racine'].'atom.php'.((!empty($_SERVER['QUERY_STRING'])) ? '?'.(htmlspecialchars($_SERVER['QUERY_STRING'])) : '').'" />'."\n";
@@ -243,20 +235,19 @@ if ($_GET['format'] == 'atom') {
  * @param _GET['id'], string, (^[0-9]{14}$), id of 1 article
  * @echo comments on 1 article
  */
-if (isset($_GET['id']) and preg_match('#^[0-9]{14}$#', $_GET['id'])) {
+$postId = (string)filter_input(INPUT_GET, 'id');
+if (preg_match('#^[0-9]{14}$#', $postId)) {
     $GLOBALS['db_handle'] = open_base();
-    $article_id = htmlspecialchars($_GET['id']);
-
     $db_req = '
-            SELECT c.*, a.bt_title 
-              FROM commentaires AS c, 
-                   articles AS a 
-             WHERE c.bt_article_id=? 
-               AND c.bt_article_id=a.bt_id 
-               AND c.bt_statut=1 
-          ORDER BY c.bt_id 
+            SELECT c.*, a.bt_title
+              FROM commentaires AS c,
+                   articles AS a
+             WHERE c.bt_article_id = ?
+               AND c.bt_article_id = a.bt_id
+               AND c.bt_statut = 1
+          ORDER BY c.bt_id
               DESC';
-    $liste = liste_elements($db_req, array($article_id), 'commentaires');
+    $liste = liste_elements($db_req, array((int)$postId), 'commentaires');
 
     if ($format == 'atom') {
         echo flux_comments_for_article_atom($liste);
@@ -270,15 +261,14 @@ if (isset($_GET['id']) and preg_match('#^[0-9]{14}$#', $_GET['id'])) {
  * @echo the lastest of _GET['mode']
  */
 } else {
-    $fcache = 'cache/cache_rss_array.dat';
-
-    $liste = @unserialize(base64_decode(substr(file_get_contents($fcache), strlen('<?php /* '), -strlen(' */'))));
+    $fcache = DIR_CACHE.'cache_rss_array.dat';
+    $liste = open_serialzd_file($fcache);
     if (!is_file($fcache) or !is_array($liste)) {
         $GLOBALS['db_handle'] = open_base();
         flux_refresh_cache_lv1();
         // if file exists but reading it does not give an array: try again
         if (is_file($fcache)) {
-            $liste = unserialize(base64_decode(substr(file_get_contents($fcache), strlen('<?php /* '), -strlen(' */'))));
+            $liste = open_serialzd_file($fcache);
         }
     }
 
@@ -290,22 +280,23 @@ if (isset($_GET['id']) and preg_match('#^[0-9]{14}$#', $_GET['id'])) {
 
     $liste_rss = array();
     $modes_url = '';
-    if (!empty($_GET['mode'])) {
+    $mode = (string)filter_input(INPUT_GET, 'mode');
+    if ($mode) {
         $found = 0;
         // 1 = articles
-        if (strpos($_GET['mode'], 'blog') !== false) {
+        if (strpos($mode, 'blog') !== false) {
             $liste_rss = array_merge($liste_rss, $liste['a']);
             $found = 1;
             $modes_url .= 'blog-';
         }
         // 2 = commentaires
-        if (strpos($_GET['mode'], 'comments') !== false) {
+        if (strpos($mode, 'comments') !== false) {
             $liste_rss = array_merge($liste_rss, $liste['c']);
             $found = 1;
             $modes_url .= 'comments-';
         }
         // 4 = links
-        if (strpos($_GET['mode'], 'links') !== false) {
+        if (strpos($$mode, 'links') !== false) {
             $liste_rss = array_merge($liste_rss, $liste['l']);
             $found = 1;
             $modes_url .= 'links-';
@@ -321,12 +312,13 @@ if (isset($_GET['id']) and preg_match('#^[0-9]{14}$#', $_GET['id'])) {
     }
 
     // tri selon tags (si il y a)
-    if (isset($_GET['tag'])) {
+    $tag = (string)filter_input(INPUT_GET, 'tag');
+    if ($tag) {
         foreach ($liste_rss as $i => $entry) {
             if (isset($entry['bt_tags'])) {
-                if ((strpos($entry['bt_tags'], htmlspecialchars($_GET['tag'].',')) === false) and
-                     (strpos($entry['bt_tags'], htmlspecialchars(', '.$_GET['tag'])) === false) and
-                     ($entry['bt_tags'] != htmlspecialchars($_GET['tag']))) {
+                if ((strpos($entry['bt_tags'], htmlspecialchars($tag.',')) === false) and
+                     (strpos($entry['bt_tags'], htmlspecialchars(', '.$tag)) === false) and
+                     ($entry['bt_tags'] != htmlspecialchars($tag))) {
                     unset($liste_rss[$i]);
                 }
             }
@@ -370,12 +362,12 @@ if (isset($_GET['id']) and preg_match('#^[0-9]{14}$#', $_GET['id'])) {
 $end = microtime(true);
 
 if ($format == 'rss') {
-    $xml .= '<!-- cached file generated on '.date("r").' -->'."\n";
+    $xml .= '<!-- cached file generated on '.date('r').' -->'."\n";
     $xml .= '<!-- generated in '.round(($end - $begin), 6).' seconds -->'."\n";
     $xml .= '</channel>'."\n";
     $xml .= '</rss>';
 } else {
-    $xml .= '<!-- cached file generated on '.date("r").' -->'."\n";
+    $xml .= '<!-- cached file generated on '.date('r').' -->'."\n";
     $xml .= '<!-- generated in '.round(($end - $begin), 6).' seconds -->'."\n";
     $xml .= '</feed>';
 }

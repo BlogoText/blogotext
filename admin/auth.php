@@ -11,16 +11,15 @@
 #
 # *** LICENSE ***
 
-if (!is_file('../config/user.ini') || !is_file('../config/prefs.php')) {
+require_once dirname(getcwd()).'/inc/defines.php';
+
+if (!is_file(DIR_CONFIG.'user.ini') || !is_file(DIR_CONFIG.'prefs.php')) {
     exit(header('Location: install.php'));
 }
 
-define('BT_ROOT', '../');
+require_once BT_ROOT.'admin/inc/auth.php';
 
-require_once '../inc/inc.php';
-require_once '../inc/auth.php';
-
-$max_attemps = 10; // max attempts before blocking login page
+$max_attemps = 6; // max attempts before blocking login page
 $wait_time = 30;   // time to wait before unblocking login page, in minutes
 
 // Acces LOG
@@ -30,16 +29,16 @@ if (isset($_POST['nom_utilisateur'])) {
     // Proxy IPs, if exists.
     $ip .= (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) ? '_'.htmlspecialchars($_SERVER['HTTP_X_FORWARDED_FOR']) : '';
     $curent_time = date('r'); // heure : Wed, 18 Jan 2012 20:42:12 +0100
-    $data = '<?php die(\'no.\'); // '.$curent_time.' - '.$ip.' - '.((auth_check_session()===true) ? 'login succes' : 'login fail') ." ?>\n";
-    file_put_contents(BT_ROOT.DIR_CONFIG.'/'.'xauthlog.php', $data, FILE_APPEND);
+    $data = '<?php die(\'no.\'); // '.$curent_time.' - '.$ip.' - '.((auth_check_session()) ? 'login succes' : 'login fail') ." ?>\n";
+    file_put_contents(DIR_CONFIG.'xauthlog.php', $data, FILE_APPEND);
 }
 
-if (auth_check_session() === true) { // return to index if session is already open.
-    exit(header('Location: index.php'));
+if (auth_check_session()) { // return to index if session is already open.
+    redirection('Location: index.php');
 }
 
 // Auth checking :
-if (isset($_POST['_verif_envoi']) and auth_is_valid($_POST['nom_utilisateur'], $_POST['mot_de_passe']) === true) {
+if (isset($_POST['_verif_envoi']) and auth_is_valid($_POST['nom_utilisateur'], $_POST['mot_de_passe'])) {
     // OK : getting in.
     if (USE_IP_IN_SESSION == 1) {
         $ip = get_ip();

@@ -11,23 +11,14 @@
 #
 # *** LICENSE ***
 
-/*
- * Some hard coded constants
- * Don’t change unless you know what you’re doing.
-*/
-
-// GENERAL
-define('BLOGOTEXT_NAME', 'BlogoText');
-define('BLOGOTEXT_SITE', 'https://github.com/BoboTiG/blogotext');
-define('BLOGOTEXT_VERSION', '3.7.0-dev');
-define('MINIMAL_PHP_REQUIRED_VERSION', '5.5');
-define('BLOGOTEXT_UA', 'Mozilla/5.0 (Windows NT 10; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0');
+// Use UTF-8 for all
 mb_internal_encoding('UTF-8');
 
+// Timezone
+date_default_timezone_set($GLOBALS['fuseau_horaire']);
 
 
-// IMPORT SEVERAL .ini CONFIG FILES
-// with this function
+// Import several .ini config files with this function
 function import_ini_file($file_path)
 {
     if (is_file($file_path) and is_readable($file_path)) {
@@ -113,7 +104,7 @@ function secure_host_to_path($http_host)
     }
 
     // is admin url ? (remove the last "folder/")
-    if (!empty($exploded['path']) && BT_ROOT == '../') {
+    if (!empty($exploded['path'])) {
         $tmp = trim($exploded['path'], '/');
         $tmp = explode('/', $tmp);
         array_pop($tmp);
@@ -154,7 +145,7 @@ function secure_host_to_path($http_host)
 }
 
 // if this request is about install or reset password
-if (is_file(BT_ROOT.'config/prefs.php')) {
+if (is_file(DIR_CONFIG.'prefs.php')) {
     $supposed_path = secure_host_to_path($_SERVER['HTTP_HOST']);
 
     if (is_array($supposed_path)) {
@@ -171,7 +162,7 @@ if (is_file(BT_ROOT.'config/prefs.php')) {
         define('DIR_VAR_ADDONS', DIR_VAR.'addons/');
         // check the var/domain.tld/ exits
         if (!is_dir(DIR_VAR_ADDONS)) {
-            require_once BT_ROOT.'/inc/filesystem.php';
+            require_once BT_ROOT.'inc/filesystem.php';
             if (!create_folder(DIR_VAR_ADDONS, true, true)) {
                 die('BlogoText can\'t create '. DIR_VAR_ADDONS .', please check your file system rights for this folder.');
             }
@@ -198,43 +189,18 @@ if (is_file(BT_ROOT.'config/prefs.php')) {
  * END OF /var/ part
  */
 
-
-// FOLDERS (change this only if you know what you are doing...)
-DEFINE('BT_DIR', dirname(__file__, 2) . '/');// define absolute path, tired of working with relatives...
-define('DIR_ADMIN', 'admin');
-define('DIR_BACKUP', 'bt_backup');
-define('DIR_IMAGES', 'img');
-define('DIR_DOCUMENTS', 'files');
-define('DIR_THEMES', 'themes');
-define('DIR_CACHE', 'cache');
-define('DIR_DATABASES', 'databases');
-define('DIR_CONFIG', 'config');
-define('DIR_ADDONS', 'addons');
-// DB FILES
-define('FILES_DB', BT_ROOT.DIR_DATABASES.'/'.'files.php'); // files/image DB storage.
-define('FEEDS_DB', BT_ROOT.DIR_DATABASES.'/'.'rss.php'); // RSS-feeds list info storage.
-
-// TIMEZONES
-date_default_timezone_set($GLOBALS['fuseau_horaire']);
-
 // INIT SOME VARS
 $GLOBALS['addons'] = array();
 $GLOBALS['form_commentaire'] = '';
 
 // ADVANCED CONFIG OPTIONS
-import_ini_file(BT_ROOT.DIR_CONFIG.'/'.'config-advanced.ini');
-
-// Error reporting
-ini_set('display_errors', (bool) DISPLAY_PHP_ERRORS);
-error_reporting((int) DISPLAY_PHP_ERRORS);
-// ini_set('display_errors', (bool) true);
-// error_reporting((int) true);
+import_ini_file(DIR_CONFIG.'config-advanced.ini');
 
 // DATABASE OPTIONS + MySQL DB PARAMS
-import_ini_file(BT_ROOT.DIR_CONFIG.'/'.'mysql.ini');
+import_ini_file(DIR_CONFIG.'mysql.ini');
 
 // USER LOGIN + PW HASH
-import_ini_file(BT_ROOT.DIR_CONFIG.'/'.'user.ini');
+import_ini_file(DIR_CONFIG.'user.ini');
 
 // regenerate captcha (always)
 if (!isset($GLOBALS['captcha'])) {
@@ -246,7 +212,7 @@ if (!isset($GLOBALS['captcha'])) {
 
 // THEMES FILES and PATHS
 if (isset($GLOBALS['theme_choisi'])) {
-    $GLOBALS['theme_style'] = DIR_THEMES.'/'.$GLOBALS['theme_choisi'];
+    $GLOBALS['theme_style'] = str_replace(BT_ROOT, '', DIR_THEMES).$GLOBALS['theme_choisi'];
     $GLOBALS['theme_liste'] = $GLOBALS['theme_style'].'/list.html';
     $GLOBALS['theme_post_artc'] = $GLOBALS['theme_style'].'/template/article.html';
     $GLOBALS['theme_post_comm'] = $GLOBALS['theme_style'].'/template/commentaire.html';

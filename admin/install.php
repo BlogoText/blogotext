@@ -11,6 +11,8 @@
 #
 # *** LICENSE ***
 
+require_once dirname(getcwd()).'/inc/defines.php';
+require_once BT_ROOT.'admin/inc/inc.php';
 
 /**
  * DevNote
@@ -19,38 +21,28 @@
  */
 
 // install or reinstall with same config ?
-$step3 = is_file('../config/mysql.ini') and file_get_contents('../config/mysql.ini') != '';
+$step3 = is_file(DIR_CONFIG.'mysql.ini') and file_get_contents(DIR_CONFIG.'mysql.ini') != '';
 
 // install is already done
-if (is_file('../config/user.ini') and is_file('../config/prefs.php') and !$step3) {
-    exit(header('Location: auth.php'));
+if (is_file(DIR_CONFIG.'user.ini') and is_file(DIR_CONFIG.'prefs.php') and !$step3) {
+    redirection('Location: auth.php');
 }
 
 // some constants definition
-define('BT_ROOT', '../');
-define('DISPLAY_PHP_ERRORS', -1);
 $GLOBALS['fuseau_horaire'] = 'UTC';
-
 
 // set language
 if (isset($_GET['l'])) {
     $GLOBALS['lang'] = ($_GET['l'] == 'fr' or $_GET['l'] == 'en') ? $_GET['l'] : 'fr';
 }
 
-
-require_once BT_ROOT.'/inc/inc.php';
-
-
 function fichier_adv_conf()
 {
-    $fichier_advconf = '../'.DIR_CONFIG.'/config-advanced.ini';
-    $conf='';
-    $conf .= '; <?php die(); /*'."\n\n";
+    $fichier_advconf = DIR_CONFIG.'config-advanced.ini';
+    $conf  = '; <?php die;'."\n";
     $conf .= '; This file contains some more advanced configuration features.'."\n\n";
     $conf .= 'BLOG_UID = \''.sha1(uniqid(mt_rand(), true)).'\''."\n";
-    $conf .= 'DISPLAY_PHP_ERRORS = 0;'."\n";
-    $conf .= 'USE_IP_IN_SESSION = 1;'."\n\n\n";
-    $conf .= '; */ ?>'."\n";
+    $conf .= 'USE_IP_IN_SESSION = 1;'."\n";
 
     return file_put_contents($fichier_advconf, $conf) !== false;
 }
@@ -185,11 +177,11 @@ function install_form_3_echo($erreurs = '')
 
 function fichier_mysql($sgdb)
 {
-    $fichier_mysql = '../'.DIR_CONFIG.'/mysql.ini';
+    $fichier_mysql = DIR_CONFIG.'/mysql.ini';
 
     $data = '';
     if ($sgdb !== false) {
-        $data .= '; <?php die(); /*'."\n\n";
+        $data .= '; <?php die;'."\n";
         $data .= '; This file contains MySQL credentials and configuration.'."\n\n";
         $data .= 'MYSQL_LOGIN = \''.htmlentities($_POST['mysql_user'], ENT_QUOTES).'\''."\n";
         $data .= 'MYSQL_PASS = \''.htmlentities($_POST['mysql_passwd'], ENT_QUOTES).'\''."\n";
@@ -206,14 +198,13 @@ function fichier_mysql($sgdb)
  */
 function install_form_2_proceed()
 {
-    $config_dir = '../config';
-    create_folder($config_dir, 1);
-    create_folder('../'.DIR_IMAGES, 0);
-    create_folder('../'.DIR_DOCUMENTS, 0);
-    create_folder('../'.DIR_DATABASES, 1);
+    create_folder(DIR_CONFIG, 1);
+    create_folder(DIR_IMAGES, 0);
+    create_folder(DIR_DOCUMENTS, 0);
+    create_folder(DIR_DATABASES, 1);
     auth_write_user_login_file($_POST['identifiant'], $_POST['mdp']);
-    import_ini_file($config_dir.'/user.ini');
-    if (!is_file($config_dir.'/prefs.php')) {
+    import_ini_file(DIR_CONFIG.'user.ini');
+    if (!is_file(DIR_CONFIG.'prefs.php')) {
         fichier_prefs();
     }
     fichier_mysql(false); // create an empty file
@@ -230,7 +221,7 @@ function install_form_3_proceed()
         fichier_mysql('sqlite');
     }
 
-    import_ini_file(BT_ROOT.DIR_CONFIG.'/'.'mysql.ini');
+    import_ini_file(DIR_CONFIG.'mysql.ini');
     $GLOBALS['db_handle'] = open_base();
     $total_articles = liste_elements_count('SELECT count(ID) AS nbr FROM articles', array());
     if ($total_articles != 0) {
@@ -313,7 +304,7 @@ function install_form_3_proceed()
         bdd_commentaire($comm_ar, 'enregistrer-nouveau'); // commentaire sur l’article
     }
 
-    if (!is_file('../config/config-advanced.ini')) {
+    if (!is_file(DIR_CONIF.'config-advanced.ini')) {
         fichier_adv_conf(); // is done right after DB init
     }
 }
@@ -422,7 +413,6 @@ if ($GLOBALS['step'] == 1) {
         if ($err_2 = install_form_2_valid()) {
             install_form_2_echo($err_2);
         } else {
-            require_once BT_ROOT.'/inc/auth.php';
             install_form_2_proceed();
             redirection('install.php?s=3&l='.$_POST['langue']);
         }

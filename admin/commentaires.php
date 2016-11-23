@@ -11,11 +11,10 @@
 #
 # *** LICENSE ***
 
+require_once dirname(getcwd()).'/inc/defines.php';
+require_once BT_ROOT.'admin/inc/inc.php';
+
 $begin = microtime(true);
-define('BT_ROOT', '../');
-
-require_once '../inc/inc.php';
-
 auth_ttl();
 
 $GLOBALS['db_handle'] = open_base();

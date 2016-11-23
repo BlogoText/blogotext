@@ -56,8 +56,7 @@ function chemin_thb_img_test($filepath)
 */
 function afficher_liste_images($images)
 {
-    $dossier = $GLOBALS['racine'].DIR_IMAGES;
-    $dossier_relatif = BT_ROOT.DIR_IMAGES;
+    $dossier = DIR_IMAGES;
     $out = '';
     $i = 0;
     if ($images) {
@@ -117,7 +116,7 @@ function afficher_liste_images($images)
 
         foreach ($images as $i => $im) {
             //debug($im);
-            $rel_thb_src = chemin_thb_img_test($dossier_relatif.$im['bt_path'].'/'.$im['bt_filename']);
+            $rel_thb_src = chemin_thb_img_test($dossier.$im['bt_path'].'/'.$im['bt_filename']);
             $out .= '
             {
                 "index": "'.$i.'",
@@ -126,7 +125,7 @@ function afficher_liste_images($images)
                     "'.$dossier.$im['bt_path'].'/'.$im['bt_filename'].'",
                     "'.$im['bt_filename'].'",
                     "'.$rel_thb_src.'",
-                    "'.$dossier_relatif.$im['bt_path'].'/'.$im['bt_filename'].'"
+                    "'.$dossier.$im['bt_path'].'/'.$im['bt_filename'].'"
                     ],
                 "id": "'.$im['bt_id'].'",
                 "desc": "'.addslashes(preg_replace('#(\n|\r|\n\r)#', '', nl2br($im['bt_content']))).'",
@@ -261,9 +260,9 @@ function traiter_form_fichier($fichier)
 function bdd_fichier($fichier, $quoi, $comment, $sup_var)
 {
     if ($fichier['bt_type'] == 'image') {
-        $dossier = BT_ROOT.DIR_IMAGES.$fichier['bt_path'];
+        $dossier = DIR_IMAGES.$fichier['bt_path'].'/';
     } else {
-        $dossier = BT_ROOT.DIR_DOCUMENTS;
+        $dossier = DIR_DOCUMENTS;
         $rand_dir = '';
     }
     if (!create_folder($dossier, 0)) {
@@ -280,7 +279,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var)
         }
 
         // éviter d’écraser un fichier existant
-        while (is_file($dossier.'/'.$prefix.$fichier['bt_filename'])) {
+        while (is_file($dossier.$prefix.$fichier['bt_filename'])) {
             $prefix .= rand(0, 9);
         }
 
@@ -291,22 +290,22 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var)
         // Fichier uploadé s’il y a (sinon fichier téléchargé depuis l’URL)
         if ($comment == 'upload') {
             $new_file = $sup_var['tmp_name'];
-            if (move_uploaded_file($new_file, $dossier.'/'. $dest)) {
-                $fichier['bt_checksum'] = sha1_file($dossier.'/'. $dest);
+            if (move_uploaded_file($new_file, $dossier.$dest)) {
+                $fichier['bt_checksum'] = sha1_file($dossier.$dest);
             } else {
                 redirection(basename($_SERVER['SCRIPT_NAME']).'?errmsg=error_fichier_ajout_2');
             }
         } // fichier spécifié par URL
-        elseif ($comment == 'download' and copy($sup_var, $dossier.'/'. $dest)) {
-            $fichier['bt_filesize'] = filesize($dossier.'/'. $dest);
+        elseif ($comment == 'download' and copy($sup_var, $dossier.$dest)) {
+            $fichier['bt_filesize'] = filesize($dossier.$dest);
         } else {
             redirection(basename($_SERVER['SCRIPT_NAME']).'?errmsg=error_fichier_ajout');
         }
 
         // si fichier par POST ou par URL == OK, on l’ajoute à la base. (si pas OK, on serai déjà sorti par le else { redirection() }.
         if ($fichier['bt_type'] == 'image') { // miniature si c’est une image
-            create_thumbnail($dossier.'/'. $dest);
-            list($fichier['bt_dim_w'], $fichier['bt_dim_h']) = getimagesize($dossier.'/'. $dest);
+            create_thumbnail($dossier.$dest);
+            list($fichier['bt_dim_w'], $fichier['bt_dim_h']) = getimagesize($dossier.$dest);
         } // rm $path if not image
         else {
             $fichier['bt_path'] = '';
@@ -321,21 +320,21 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var)
         $old_filename = $sup_var;
         if ($new_filename != $old_filename) { // nom du fichier a changé ? on déplace le fichier.
             $prefix = '';
-            while (is_file($dossier.'/'.$prefix.$new_filename)) { // évite d’avoir deux fichiers de même nom
+            while (is_file($dossier.$prefix.$new_filename)) { // évite d’avoir deux fichiers de même nom
                 $prefix .= rand(0, 9);
             }
             $new_filename = $prefix.$fichier['bt_filename'];
             $fichier['bt_filename'] = $new_filename; // update file name in $fichier array(), with the new prefix.
 
             // rename file on disk
-            if (rename($dossier.'/'.$old_filename, $dossier.'/'.$new_filename)) {
+            if (rename($dossier.$old_filename, $dossier.$new_filename)) {
                 // si c’est une image : renome la miniature si elle existe, sinon la crée
                 if ($fichier['bt_type'] == 'image') {
-                    $old_thb = chemin_thb_img_test($dossier.'/'.$old_filename);
-                    if ($old_thb != $dossier.'/'.$old_filename) {
-                        rename($old_thb, chemin_thb_img($dossier.'/'.$new_filename));
+                    $old_thb = chemin_thb_img_test($dossier.$old_filename);
+                    if ($old_thb != $dossier.$old_filename) {
+                        rename($old_thb, chemin_thb_img($dossier.$new_filename));
                     } else {
-                        create_thumbnail($dossier.'/'.$new_filename);
+                        create_thumbnail($dossier.$new_filename);
                     }
                 }
                 // error rename ficher
@@ -343,7 +342,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var)
                 redirection(basename($_SERVER['SCRIPT_NAME']).'?file_id='.$fichier['bt_id'].'&errmsg=error_fichier_rename');
             }
         }
-        list($fichier['bt_dim_w'], $fichier['bt_dim_h']) = getimagesize($dossier.'/'.$new_filename); // reupdate filesize.
+        list($fichier['bt_dim_w'], $fichier['bt_dim_h']) = getimagesize($dossier.$new_filename); // reupdate filesize.
 
         // modifie le fichier dans la BDD des fichiers.
         foreach ($GLOBALS['liste_fichiers'] as $key => $entry) {
@@ -366,12 +365,12 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var)
             }
         }
         // remove physical file on disk if it exists
-        if (is_file($dossier.'/'.$fichier['bt_filename']) and isset($tbl_id)) {
+        if (is_file($dossier.$fichier['bt_filename']) and isset($tbl_id)) {
             $liste_fichiers = rm_dots_dir(scandir($dossier)); // liste les fichiers réels dans le dossier
-            if (unlink($dossier.'/'.$fichier['bt_filename'])) { // fichier physique effacé
+            if (unlink($dossier.$fichier['bt_filename'])) { // fichier physique effacé
                 if ($fichier['bt_type'] == 'image') {
                     // Delete the preview picture if any
-                    $img = chemin_thb_img($dossier.'/'.$fichier['bt_filename']);
+                    $img = chemin_thb_img($dossier.$fichier['bt_filename']);
                     if (is_file($img)) {
                         unlink($img);
                     }
@@ -503,7 +502,7 @@ function afficher_form_fichier($erreurs, $fichiers, $what)
     } // si ID dans l’URL, il s’agit également du seul fichier dans le tableau fichiers, d’où le [0]
     elseif (!empty($fichiers) and isset($_GET['file_id']) and preg_match('/\d{14}/', ($_GET['file_id']))) {
         $myfile = $fichiers[0];
-        $absolute_URI = $GLOBALS['racine'].(($myfile['bt_type'] == 'image') ? DIR_IMAGES : DIR_DOCUMENTS).$myfile['bt_path'].'/'.$myfile['bt_filename'];
+        $absolute_URI = (($myfile['bt_type'] == 'image') ? DIR_IMAGES : DIR_DOCUMENTS).$myfile['bt_path'].'/'.$myfile['bt_filename'];
         $simple_URI = parse_url($absolute_URI)['path'];
 
         $form .= '<div class="edit-fichier">'."\n";
@@ -589,8 +588,7 @@ function afficher_form_fichier($erreurs, $fichiers, $what)
 // affichage de la liste des fichiers
 function afficher_liste_fichiers($tableau)
 {
-    $dossier = $GLOBALS['racine'].DIR_DOCUMENTS;
-    $dossier_relatif = BT_ROOT.DIR_DOCUMENTS;
+    $dossier = DIR_DOCUMENTS;
     $out = '';
     if ($tableau) {
         // affichage sous la forme d’icônes, comme les images.
@@ -633,7 +631,7 @@ function afficher_liste_fichiers($tableau)
             $out .= "\t\t".'<td><a href="fichiers.php?file_id='.$file['bt_id'].'&amp;edit">'.$file['bt_filename'].'</a></td>'."\n";
             $out .= "\t\t".'<td>'.taille_formate($file['bt_filesize']).'</td>'."\n";
             $out .= "\t\t".'<td>'.date_formate($file['bt_id']).'</td>'."\n";
-            $out .= "\t\t".'<td><a href="'.$dossier_relatif.'/'.$file['bt_filename'].'" download>DL</a></td>'."\n";
+            $out .= "\t\t".'<td><a href="'.$dossier.$file['bt_filename'].'" download>DL</a></td>'."\n";
             $out .= "\t\t".'<td><a href="#" onclick="request_delete_form(\''.$file['bt_id'].'\'); return false;" >DEL</a></td>'."\n";
             $out .= "\t".'</tr>'."\n";
         }

@@ -11,6 +11,11 @@
 #
 # *** LICENSE ***
 
+require_once dirname(__file__).'/inc/defines.php';
+require_once BT_ROOT.'inc/inc.php';
+
+$begin = microtime(true);
+
 // Anti XSS : /index.php/%22onmouseover=prompt(971741)%3E or /index.php/ redirects all on index.php
 // If there is a slash after the "index.php", the file is considered as a folder, but the code inside it still executed.
 if (strpos($_SERVER['REQUEST_URI'], $_SERVER['SCRIPT_NAME'].'/') === 0) {
@@ -18,7 +23,7 @@ if (strpos($_SERVER['REQUEST_URI'], $_SERVER['SCRIPT_NAME'].'/') === 0) {
 }
 
 // If no config: go to install process.
-if (!is_file('config/user.ini') or !is_file('config/prefs.php')) {
+if (!is_file(DIR_CONFIG.'user.ini') or !is_file(DIR_CONFIG.'prefs.php')) {
     exit(header('Location: admin/install.php'));
 }
 
@@ -27,17 +32,13 @@ if (extension_loaded('zlib')) {
     if (ob_get_length() > 0) {
         ob_end_clean();
     }
-    ob_start("ob_gzhandler");
+    ob_start('ob_gzhandler');
 }
 
 header('Content-Type: text/html; charset=UTF-8');
-define('BT_ROOT', './');
-
-$begin = microtime(true);
 
 session_start();
 
-require_once 'inc/inc.php';
 $GLOBALS['db_handle'] = open_base();
 
 // load addons and load addon's hook

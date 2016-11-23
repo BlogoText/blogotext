@@ -11,16 +11,14 @@
 #
 # *** LICENSE ***
 
+// TODO FIX: for the v4.0 remove this line, if we can.
+require_once BT_ROOT.'inc/inc.php';
+
 /**
- * all file in /admin/inc/*.php
- * must be include here
+ * All file in /admin/inc/*.php must be included here.
  */
-
-
-require_once get_path('/inc/auth.php');
-
-require_once get_path('/admin/inc/addons.php');
-require_once get_path('/admin/inc/filesystem.php');
-require_once get_path('/admin/inc/form.php');
-require_once get_path('/admin/inc/sqli.php');
-require_once get_path('/admin/inc/tpl.php');
+require_once BT_ROOT.'admin/inc/auth.php';
+require_once BT_ROOT.'admin/inc/addons.php';
+require_once BT_ROOT.'admin/inc/form.php';
+require_once BT_ROOT.'admin/inc/sqli.php';
+require_once BT_ROOT.'admin/inc/tpl.php';

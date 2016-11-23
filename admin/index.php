@@ -11,29 +11,20 @@
 #
 # *** LICENSE ***
 
-if (!is_file('../config/user.ini') || !is_file('../config/prefs.php')) {
-    exit(header('Location: install.php'));
+require_once dirname(getcwd()).'/inc/defines.php';
+require_once BT_ROOT.'inc/inc.php';
+require_once BT_ROOT.'admin/inc/inc.php';
+
+if (!is_file(DIR_CONFIG.'user.ini') || !is_file(DIR_CONFIG.'prefs.php')) {
+    redirection('Location: install.php');
 }
 
 $begin = microtime(true);
-define('BT_ROOT', '../');
-define('DONT_USE_HOOK', 1);
-
-require_once '../inc/inc.php';
-
 auth_ttl();
 
-// open bases
+// Open bases
 $GLOBALS['db_handle'] = open_base();
 $GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);
-
-// migration 2.1.0.0 => 2.1.0.1 FIXME : remove later
-if (!isset($GLOBALS['liste_fichiers'][0]['bt_path'])) {
-    foreach ($GLOBALS['liste_fichiers'] as $i => $file) {
-        $GLOBALS['liste_fichiers'][$i]['bt_path'] = '';
-    }
-    file_put_contents(FILES_DB, '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_fichiers']))).' */');
-}
 
 afficher_html_head($GLOBALS['lang']['label_resume']);
 

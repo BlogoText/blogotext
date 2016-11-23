@@ -11,16 +11,9 @@
 #
 # *** LICENSE ***
 
-/**
- * Note :
- *
- *  - seem's like we can move this file in admin/inc/, but, we must do something first with the 'install.php'
-*/
-
 if (!defined('BT_ROOT')) {
-    exit('Require BT_ROOT for auth');
+    exit('Requires BT_ROOT.');
 }
-
 
 function auth_kill_session()
 {
@@ -81,17 +74,16 @@ function auth_check_session()
  */
 function auth_ttl()
 {
-    if (auth_check_session() === false) { // session is not good
-        auth_kill_session(); // destroy it
-    } else {
-        // Restore data lost if possible
-        foreach ($_SESSION as $key => $value) {
-            if (substr($key, 0, 8) === 'BT-post-') {
-                $_POST[substr($key, 8)] = $value;
-                unset($_SESSION[$key]);
-            }
+    if (!auth_check_session()) {
+        auth_kill_session();
+    }
+
+    // Restore data lost if possible
+    foreach ($_SESSION as $key => $value) {
+        if (substr($key, 0, 8) === 'BT-post-') {
+            $_POST[substr($key, 8)] = $value;
+            unset($_SESSION[$key]);
         }
-        return true;
     }
 }
 
@@ -136,7 +128,7 @@ function auth_is_valid($login, $pass)
  */
 function auth_write_user_login_file($login, $pass)
 {
-    $file = '../'. DIR_CONFIG .'/user.ini';
+    $file = DIR_CONFIG.'user.ini';
     $content = '';
 
     $pass = auth_format_password($pass);
@@ -149,7 +141,7 @@ function auth_write_user_login_file($login, $pass)
         $pass = password_hash($pass, PASSWORD_BCRYPT);
     }
 
-    $content .= '; <?php die(); /*'."\n\n";
+    $content .= '; <?php die;'."\n";
     $content .= '; This file contains user login + password hash.'."\n\n";
     $content .= 'USER_LOGIN = \''. $login .'\''."\n";
     $content .= 'USER_PWHASH = \''. $pass .'\''."\n";

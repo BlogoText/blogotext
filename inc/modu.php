@@ -39,7 +39,7 @@ function addon_get_conf($addonName)
         return false;
     }
     $saved = array();
-    $file_path = BT_ROOT.DIR_ADDONS.'/'.$addonName.'/params.ini';
+    $file_path = DIR_ADDONS.'/'.$addonName.'/params.ini';
     if (is_file($file_path) and is_readable($file_path)) {
         $t = parse_ini_file($file_path);
         foreach ($t as $option => $value) {
@@ -125,7 +125,7 @@ function addon_edit_params_process($addonName)
     foreach ($datas as $key => $value) {
         $conf .= $key .' = '.((is_numeric($value)) ? $value : '\''.$value.'\'').''."\n";
     }
-    return (file_put_contents(BT_ROOT.DIR_ADDONS.'/'.$addonName.'/params.ini', $conf) !== false);
+    return (file_put_contents(DIR_ADDONS.'/'.$addonName.'/params.ini', $conf) !== false);
 }
 
 /**
@@ -197,16 +197,15 @@ function addon_edit_params_form($addonName)
 function list_addons()
 {
     $addons = array();
-    $path = BT_ROOT.DIR_ADDONS;
 
-    if (is_dir($path)) {
+    if (is_dir(DIR_ADDONS)) {
         // get the list of installed addons
-        $addons_list = rm_dots_dir(scandir($path));
+        $addons_list = rm_dots_dir(scandir(DIR_ADDONS));
 
         // include the addons
         foreach ($addons_list as $addon) {
-            $inc = sprintf('%s/%s/%s.php', $path, $addon, $addon);
-            $is_enabled = is_file(sprintf('%s/%s/.enabled', $path, $addon));
+            $inc = sprintf('%s/%s/%s.php', DIR_ADDONS, $addon, $addon);
+            $is_enabled = is_file(sprintf('%s/%s/.enabled', DIR_ADDONS, $addon));
             if (is_file($inc)) {
                 $addons[$addon] = $is_enabled;
                 include_once $inc;
@@ -298,8 +297,7 @@ function afficher_form_filtre_modules($filtre)
 function traiter_form_module($module)
 {
     $erreurs = array();
-    $path = BT_ROOT.DIR_ADDONS;
-    $check_file = sprintf('%s/%s/.enabled', $path, $module['addon_id']);
+    $check_file = sprintf('%s/%s/.enabled', DIR_ADDONS, $module['addon_id']);
     $is_enabled = is_file($check_file);
     $new_status = (bool) $module['status'];
 

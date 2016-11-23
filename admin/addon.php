@@ -11,17 +11,16 @@
 #
 # *** LICENSE ***
 
+require_once dirname(getcwd()).'/inc/defines.php';
+require_once BT_ROOT.'admin/inc/addons.php';
+
 /**
  * handler for a selected module info / config ...
+ * TODO FIX: file name is error prone (ambigue)
  */
- 
-define('BT_ROOT', '../');
 
-require_once '../inc/inc.php';
-require_once 'inc/addons.php';
-
-auth_ttl();
 $begin = microtime(true);
+auth_ttl();
 
 // load addons
 $addons_status = addon_list_addons();

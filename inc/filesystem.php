@@ -62,14 +62,14 @@ function get_path($path, $check = false, $alert = false)
 /**
  * can be used by addon
  */
-function create_folder($dossier, $make_htaccess = '', $recursive = false)
+function create_folder($dossier, $make_htaccess = false, $recursive = false)
 {
     if (is_dir($dossier)) {
         return true;
     }
-    if (mkdir($dossier, 0777, $recursive) === true) {
+    if (mkdir($dossier, 0777, $recursive)) {
         fichier_index($dossier); // file index.html to prevent directory listing
-        if ($make_htaccess == 1) {
+        if ($make_htaccess) {
             fichier_htaccess($dossier); // to prevent direct access to files
         }
         return true;
@@ -79,7 +79,7 @@ function create_folder($dossier, $make_htaccess = '', $recursive = false)
 
 function fichier_prefs()
 {
-    $fichier_prefs = '../'.DIR_CONFIG.'/prefs.php';
+    $fichier_prefs = DIR_CONFIG.'/prefs.php';
     if (!empty($_POST['_verif_envoi'])) {
         $lang = (isset($_POST['langue']) and preg_match('#^[a-z]{2}$#', $_POST['langue'])) ? $_POST['langue'] : 'fr';
         $auteur = addslashes(clean_txt(htmlspecialchars($_POST['auteur'])));
@@ -272,11 +272,11 @@ function request_external_files($feeds, $timeout, $echo_progress = false)
 
 function flux_refresh_cache_lv1()
 {
-    create_folder(BT_ROOT.DIR_CACHE, 1);
+    create_folder(DIR_CACHE, 1);
     $arr_a = liste_elements("SELECT * FROM articles WHERE bt_statut=1 ORDER BY bt_date DESC LIMIT 0, 20", array(), 'articles');
     $arr_c = liste_elements("SELECT c.*, a.bt_title FROM commentaires AS c, articles AS a WHERE c.bt_statut=1 AND c.bt_article_id=a.bt_id ORDER BY c.bt_id DESC LIMIT 0, 20", array(), 'commentaires');
     $arr_l = liste_elements("SELECT * FROM links WHERE bt_statut=1 ORDER BY bt_id DESC LIMIT 0, 20", array(), 'links');
-    $file = BT_ROOT.DIR_CACHE.'/'.'cache_rss_array.dat';
+    $file = DIR_CACHE.'/'.'cache_rss_array.dat';
     return file_put_contents($file, '<?php /* '.chunk_split(base64_encode(serialize(array('c' => $arr_c, 'a' => $arr_a, 'l' => $arr_l)))).' */');
 }
 

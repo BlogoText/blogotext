@@ -11,12 +11,10 @@
 #
 # *** LICENSE ***
 
+require_once dirname(getcwd()).'/inc/defines.php';
+require_once BT_ROOT.'admin/inc/inc.php';
+
 $begin = microtime(true);
-define('BT_ROOT', '../');
-
-require_once '../inc/inc.php';
-require_once '../inc/auth.php';
-
 auth_ttl();
 
 $erreurs_form = array();
@@ -206,7 +204,7 @@ function afficher_form_prefs($erreurs = '')
 
         $fld_apparence .= '<div class="form-lines">'."\n";
         $fld_apparence .= '<p>'."\n";
-        $fld_apparence .= form_select('theme', liste_themes(BT_ROOT.DIR_THEMES), $GLOBALS['theme_choisi'], $GLOBALS['lang']['pref_theme']);
+        $fld_apparence .= form_select('theme', liste_themes(DIR_THEMES), $GLOBALS['theme_choisi'], $GLOBALS['lang']['pref_theme']);
         $fld_apparence .= '</p>'."\n";
 
         $fld_apparence .= '<p>'."\n";

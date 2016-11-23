@@ -11,19 +11,6 @@
 #
 # *** LICENSE ***
 
-function redirection($url)
-{
-    // prevent use hook on admin side
-    if (!defined('DONT_USE_HOOK')) {
-        $tmp_hook = hook_trigger_and_check('before_redirection', $url);
-        if ($tmp_hook !== false) {
-            $url = $tmp_hook['1'];
-        }
-    }
-
-    exit(header('Location: '.$url));
-}
-
 /* generates the comment form, with params from the admin-side and the visiter-side */
 function afficher_form_commentaire($article_id, $mode, $erreurs, $edit_comm)
 {
@@ -402,16 +389,4 @@ function parse_search($q)
     }
     // uniq + reindex
     return array_values(array_unique($array_q));
-}
-
-/* remove the folders "." and ".." from the list of files returned by scandir(). */
-function rm_dots_dir($array)
-{
-    if (($key = array_search('..', $array)) !== false) {
-        unset($array[$key]);
-    }
-    if (($key = array_search('.', $array)) !== false) {
-        unset($array[$key]);
-    }
-    return ($array);
 }

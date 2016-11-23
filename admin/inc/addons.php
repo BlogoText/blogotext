@@ -12,8 +12,33 @@
 # *** LICENSE ***
 
 
-// temp, put this include somewhere else
-include 'filesystem.php';
+/**
+ * Note: put here because no one else use it.
+ *
+ * Like rmdir, but recursive
+ *
+ * use of get_path(), try to prevent the end of the world...
+ *
+ * @params string $path, the relative path to BT_DIR
+ */
+function rmdir_recursive($path)
+{
+    // TODO FIX: use of get_path() ?
+    $abs = get_path($path);
+    $dir = opendir($abs);
+    while (($file = readdir($dir)) !== false) {
+        if (($file == '.') || ($file == '..')) {
+            continue;
+        }
+        if (is_dir($abs.$file.'/')) {
+            rmdir_recursive($path.$file.'/');
+        } else {
+            unlink($abs.$file);
+        }
+    }
+    closedir($dir);
+    rmdir($abs);
+}
 
 /**
  *
@@ -56,7 +81,7 @@ function addon_retrieve_posted_addon()
 {
     return array (
         'addon_id' => htmlspecialchars($_POST['addon_id']),
-        'status' => (isset($_POST['statut']) and $_POST['statut'] == 'on') ? '1' : '0',
+        'status' => (isset($_POST['statut']) and $_POST['statut'] == 'on') ? 1 : 0,
     );
 }
 
@@ -162,7 +187,7 @@ function addon_edit_settings_form($addonTag)
     $out .= '<form id="preferences" method="post" action="?addonTag='. $addonTag .'" onsubmit="return confirm(\''. addslashes($GLOBALS['lang']['addons_confirm_buttons_action']) .'\');" >';
     $out .= '<div role="group" class="pref">'; /* no fieldset because browset can’t style them correctly */
     $out .= '<div class="form-legend"><legend class="legend-user">'.$GLOBALS['lang']['addons_settings_legend'].addon_get_translation($infos['name']).'</legend></div>'."\n";
-    
+
     $out .= '<div class="form-lines">'."\n";
     if (isset($infos['buttons'])) {
         foreach ($infos['buttons'] as $btnId => $btn) {
@@ -307,7 +332,6 @@ function addon_show_list_addons($tableau, $filtre)
 function addon_show_list_addons_form_proceed($module)
 {
     $erreurs = array();
-    $path = BT_ROOT.DIR_ADDONS;
     $check_file = sprintf('%s.enabled', addon_get_var_path($module['addon_id']));
     $is_enabled = is_file($check_file);
     $new_status = (bool) $module['status'];

@@ -126,15 +126,14 @@ function addon_get_infos($addonTag)
 function addon_list_addons()
 {
     $addons = array();
-    $path = BT_ROOT.DIR_ADDONS;
 
-    if (is_dir($path)) {
+    if (is_dir(DIR_ADDONS)) {
         // get the list of installed addons
-        $addons_list = rm_dots_dir(scandir($path));
+        $addons_list = rm_dots_dir(scandir(DIR_ADDONS));
 
         // include the addons
         foreach ($addons_list as $addon) {
-            $inc = sprintf('%s/%s/%s.php', $path, $addon, $addon);
+            $inc = sprintf('%s/%s/%s.php', DIR_ADDONS, $addon, $addon);
             $is_enabled = is_file(sprintf('%s.enabled', addon_get_var_path($addon)));
             if (is_file($inc)) {
                 $addons[$addon] = $is_enabled;

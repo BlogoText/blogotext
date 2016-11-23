@@ -11,12 +11,11 @@
 #
 # *** LICENSE ***
 
-define('BT_ROOT', '../');
+require_once dirname(getcwd()).'/inc/defines.php';
+require_once BT_ROOT.'admin/inc/inc.php';
 
-require_once '../inc/inc.php';
-
-auth_ttl();
 $begin = microtime(true);
+auth_ttl();
 
 $GLOBALS['db_handle'] = open_base();
 $GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);
@@ -35,7 +34,7 @@ echo '<div id="axe">'."\n";
 echo '<div id="page">'."\n";
 
 // création du dossier des backups
-create_folder(BT_ROOT.DIR_BACKUP, 0);
+create_folder(DIR_BACKUP, 0);
 
 
 function select_yes_no($name, $defaut, $label)
@@ -58,10 +57,10 @@ function select_yes_no($name, $defaut, $label)
 */
 function rebuilt_file_db()
 {
-    $idir = rm_dots_dir(scandir(BT_ROOT.DIR_IMAGES));
+    $idir = rm_dots_dir(scandir(DIR_IMAGES));
     // scans also subdir of img/* (in one single array of paths)
     foreach ($idir as $i => $e) {
-        $subelem = BT_ROOT.DIR_IMAGES.'/'.$e;
+        $subelem = DIR_IMAGES.'/'.$e;
         if (is_dir($subelem)) {
             unset($idir[$i]); // rm folder entry itself
             $subidir = rm_dots_dir(scandir($subelem));
@@ -74,7 +73,7 @@ function rebuilt_file_db()
         $idir[$i] = '/'.$e;
     }
 
-    $fdir = rm_dots_dir(scandir(BT_ROOT.DIR_DOCUMENTS));
+    $fdir = rm_dots_dir(scandir(DIR_DOCUMENTS));
 
     // supprime les miniatures de la liste...
     $idir = array_filter($idir, function ($file) {
@@ -95,7 +94,7 @@ function rebuilt_file_db()
 
     // ajoute les images/* du disque qui ne sont pas encore dans la DB.
     foreach ($idir as $file) {
-        $filepath = BT_ROOT.DIR_IMAGES.'/'.$file;
+        $filepath = DIR_IMAGES.'/'.$file;
         if (!in_array($file, $files_db)) {
             $time = filemtime($filepath);
             $id = date('YmdHis', $time);
@@ -130,7 +129,7 @@ function rebuilt_file_db()
     // fait pareil pour les files/*
     foreach ($fdir as $file) {
         if (!in_array($file, $files_db)) {
-            $filepath = BT_ROOT.DIR_DOCUMENTS.'/'.$file;
+            $filepath = DIR_DOCUMENTS.'/'.$file;
             $time = filemtime($filepath);
             $id = date('YmdHis', $time);
             // vérifie que l’ID ne se trouve pas déjà dans le tableau. Sinon, modifie la date (en allant dans le passé)
@@ -169,7 +168,7 @@ function rebuilt_file_db()
 function creer_fich_html($nb_links)
 {
     // nom du fichier de sortie
-    $path = BT_ROOT.DIR_BACKUP.'/backup-links-'.date('Ymd-His').'.html';
+    $path = DIR_BACKUP.'backup-links-'.date('Ymd-His').'.html';
     // récupère les liens
     $limit = (!empty($nb_links)) ? 'LIMIT 0, '.$nb_links : '';
     $query = '
@@ -353,7 +352,7 @@ function addFolder2zip($zip, $folder)
 
 function creer_fichier_zip($dossiers)
 {
-    $zipfile = BT_ROOT.DIR_BACKUP.'/'.'archive_site-'.date('Ymd').'-'.substr(md5(rand(10, 99)), 3, 5).'.zip';
+    $zipfile = DIR_BACKUP.'archive_site-'.date('Ymd').'-'.substr(md5(rand(10, 99)), 3, 5).'.zip';
     $zip = new ZipArchive;
     if ($zip->open($zipfile, ZipArchive::CREATE) === true) {
         foreach ($dossiers as $dossier) {
@@ -370,14 +369,14 @@ function creer_fichier_zip($dossiers)
 /* FABRIQUE LE FICHIER JSON (très simple en fait) */
 function creer_fichier_json($data_array)
 {
-    $path = BT_ROOT.DIR_BACKUP.'/backup-data-'.date('Ymd-His').'.json';
+    $path = DIR_BACKUP.'backup-data-'.date('Ymd-His').'.json';
     return (file_put_contents($path, json_encode($data_array)) === false) ? false : $path;
 }
 
 /* Crée la liste des RSS et met tout ça dans un fichier OPML */
 function creer_fichier_opml()
 {
-    $path = BT_ROOT.DIR_BACKUP.'/backup-data-'.date('Ymd-His').'.opml';
+    $path = DIR_BACKUP.'backup-data-'.date('Ymd-His').'.opml';
     // sort feeds by folder
     $folders = array();
     foreach ($GLOBALS['liste_flux'] as $i => $feed) {
@@ -780,17 +779,17 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
                     $dossiers = array();
                     $sqlite = (!empty($_GET['incl-sqlit'])) ? $_GET['incl-sqlit'] + 0 : 0;
                     if ($sqlite == 1) {
-                        $dossiers[] = BT_ROOT.DIR_DATABASES;
+                        $dossiers[] = DIR_DATABASES;
                     }
                     if ($_GET['incl-files'] == 1) {
-                        $dossiers[] = BT_ROOT.DIR_DOCUMENTS;
-                        $dossiers[] = BT_ROOT.DIR_IMAGES;
+                        $dossiers[] = DIR_DOCUMENTS;
+                        $dossiers[] = DIR_IMAGES;
                     }
                     if ($_GET['incl-confi'] == 1) {
-                        $dossiers[] = BT_ROOT.DIR_CONFIG;
+                        $dossiers[] = DIR_CONFIG;
                     }
                     if ($_GET['incl-theme'] == 1) {
-                        $dossiers[] = BT_ROOT.DIR_THEMES;
+                        $dossiers[] = DIR_THEMES;
                     }
                     $file_archive = creer_fichier_zip($dossiers);
 

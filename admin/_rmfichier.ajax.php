@@ -11,17 +11,15 @@
 #
 # *** LICENSE ***
 
+require_once dirname(getcwd()).'/inc/defines.php';
+require_once BT_ROOT.'admin/inc/inc.php';
+
 /*
     This file is called by the files. It is an underground working script,
     It is not intended to be called directly in your browser.
 */
 
-define('BT_ROOT', '../');
-
-require_once '../inc/inc.php';
-
 auth_ttl();
-$begin = microtime(true);
 
 $GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);
 

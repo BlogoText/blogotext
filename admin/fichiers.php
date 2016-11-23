@@ -11,12 +11,11 @@
 #
 # *** LICENSE ***
 
-define('BT_ROOT', '../');
+require_once dirname(getcwd()).'/inc/defines.php';
+require_once BT_ROOT.'admin/inc/inc.php';
 
-require_once '../inc/inc.php';
-
-auth_ttl();
 $begin = microtime(true);
+auth_ttl();
 
 $fichier = array();
 $GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);
@@ -102,7 +101,7 @@ $real_fichiers = array();
 if ($fichiers) {
     foreach ($fichiers as $i => $file) {
         $folder = ($file['bt_type'] == 'image') ? DIR_IMAGES.$file['bt_path'] : DIR_DOCUMENTS;
-        if (is_file(BT_ROOT.'/'.$folder.'/'.$file['bt_filename']) and ($file['bt_filename'] != 'index.html')) {
+        if (is_file($folder.'/'.$file['bt_filename']) and ($file['bt_filename'] != 'index.html')) {
             $real_fichiers[] = $file;
         }
     }
