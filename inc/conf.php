@@ -171,7 +171,7 @@ if (is_file(BT_ROOT.'config/prefs.php')) {
         define('DIR_VAR_ADDONS', DIR_VAR.'addons/');
         // check the var/domain.tld/ exits
         if (!is_dir(DIR_VAR_ADDONS)) {
-            require_once BT_ROOT.'/inc/file-system.php';
+            require_once BT_ROOT.'/inc/filesystem.php';
             if (!create_folder(DIR_VAR_ADDONS, true, true)) {
                 die('BlogoText can\'t create '. DIR_VAR_ADDONS .', please check your file system rights for this folder.');
             }

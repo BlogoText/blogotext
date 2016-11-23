@@ -184,7 +184,7 @@ function addon_edit_params_form($addonName)
     $out .= hidden_input('_verif_envoi', '1');
     $out .= hidden_input('token', new_token());
     $out .= '<input type="hidden" name="addon_action" value="params" />';
-    $out .= '<button class="submit button-cancel" type="button" onclick="annuler(\'modules.php\');" >'.$GLOBALS['lang']['annuler'].'</button>'."\n";
+    $out .= '<button class="submit button-cancel" type="button" onclick="annuler(\'addons.php\');" >'.$GLOBALS['lang']['annuler'].'</button>'."\n";
     $out .= '<button class="submit button-submit" type="submit" name="enregistrer">'.$GLOBALS['lang']['enregistrer'].'</button>'."\n";
     $out .= '</div>'."\n";
     // END submit box
@@ -238,7 +238,7 @@ function afficher_liste_modules($tableau, $filtre)
             $out .= "\t\t".'<span><input type="checkbox" class="checkbox-toggle" name="module_'.$i.'" id="module_'.$i.'" '.(($addon['status']) ? 'checked' : '').' onchange="activate_mod(this);" /><label for="module_'.$i.'"></label></span>'."\n";
 
             // addon name
-            $out .= "\t\t".'<span><a href="modules.php?addon_id='.$addon['tag'].'">'.addon_get_translation($addon['name']).'</a></span>'."\n";
+            $out .= "\t\t".'<span><a href="addons.php?addon_id='.$addon['tag'].'">'.addon_get_translation($addon['name']).'</a></span>'."\n";
 
             // addon version
             $out .= "\t\t".'<span>'.$addon['version'].'</span>'."\n";
@@ -258,7 +258,7 @@ function afficher_liste_modules($tableau, $filtre)
 
             // addon params
             if (addon_has_conf($addon['tag'])) {
-                $out .= '<a href="module.php?addonName='. $addon['tag'] .'">'.$GLOBALS['lang']['addons_settings_link_title'].'</a>';
+                $out .= '<a href="addon.php?addonName='. $addon['tag'] .'">'.$GLOBALS['lang']['addons_settings_link_title'].'</a>';
                 if (!empty($addon['url'])) {
                     $out .= ' | ';
                 }

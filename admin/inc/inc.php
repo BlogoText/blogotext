@@ -20,7 +20,7 @@
 require_once get_path('/inc/auth.php');
 
 require_once get_path('/admin/inc/addons.php');
-require_once get_path('/admin/inc/file-system.php');
+require_once get_path('/admin/inc/filesystem.php');
 require_once get_path('/admin/inc/form.php');
 require_once get_path('/admin/inc/sqli.php');
 require_once get_path('/admin/inc/tpl.php');

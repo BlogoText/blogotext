@@ -462,7 +462,7 @@ function traiter_form_commentaire($commentaire, $admin)
                     // send subscribe emails if comments just got activated
                     send_emails(htmlspecialchars($_POST['com_bt_id']));
                 }
-                rafraichir_cache_lv1();
+                flux_refresh_cache_lv1();
                 echo 'Success'.new_token();
             } else {
                 echo 'Error'.new_token();
@@ -475,7 +475,7 @@ function traiter_form_commentaire($commentaire, $admin)
     }
 
     if ($result === true) {
-        rafraichir_cache_lv1();
+        flux_refresh_cache_lv1();
         redirection($redir);
     }
     die($result);

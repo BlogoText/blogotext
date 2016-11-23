@@ -270,7 +270,7 @@ function request_external_files($feeds, $timeout, $echo_progress = false)
     return $results;
 }
 
-function rafraichir_cache_lv1()
+function flux_refresh_cache_lv1()
 {
     create_folder(BT_ROOT.DIR_CACHE, 1);
     $arr_a = liste_elements("SELECT * FROM articles WHERE bt_statut=1 ORDER BY bt_date DESC LIMIT 0, 20", array(), 'articles');

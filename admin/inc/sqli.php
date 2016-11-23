@@ -36,7 +36,7 @@ function traiter_form_billet($billet)
         $redir = 'articles.php?msg=confirm_article_suppr';
     }
     if ($result === true) {
-        rafraichir_cache_lv1();
+        flux_refresh_cache_lv1();
         redirection($redir);
     } else {
         die($result);
@@ -85,7 +85,7 @@ function traiter_form_link($link)
     }
 
     if ($result === true) {
-        rafraichir_cache_lv1();
+        flux_refresh_cache_lv1();
         redirection($redir);
     } else {
         die($result);

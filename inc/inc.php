@@ -18,7 +18,7 @@ require_once BT_ROOT.'/inc/conf.php';
 require_once BT_ROOT.'/inc/hook.php';
 require_once BT_ROOT.'/inc/lang.php';
 require_once BT_ROOT.'/inc/util.php';
-require_once BT_ROOT.'/inc/file-system.php';
+require_once BT_ROOT.'/inc/filesystem.php';
 require_once BT_ROOT.'/inc/them.php';
 require_once BT_ROOT.'/inc/html.php';
 require_once BT_ROOT.'/inc/form.php';
