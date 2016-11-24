@@ -129,13 +129,10 @@ function auth_is_valid($login, $pass)
 
 /**
  * write_user_login_file()
- * write /config/user.ini which containt the login & password
+ * write /config/user.php which containt the login & password
  */
 function auth_write_user_login_file($login, $pass)
 {
-    $file = DIR_CONFIG.'user.ini';
-    $content = '';
-
     $pass = auth_format_password($pass);
     $login = auth_format_login($login);
 
@@ -146,10 +143,10 @@ function auth_write_user_login_file($login, $pass)
         $pass = password_hash($pass, PASSWORD_BCRYPT);
     }
 
-    $content .= '; <?php die;'."\n";
+    $content  = '; <?php die; ?>'."\n";
     $content .= '; This file contains user login + password hash.'."\n\n";
     $content .= 'USER_LOGIN = \''. $login .'\''."\n";
     $content .= 'USER_PWHASH = \''. $pass .'\''."\n";
 
-    return (file_put_contents($file, $content) !== false);
+    return (file_put_contents(FILE_USER, $content) !== false);
 }

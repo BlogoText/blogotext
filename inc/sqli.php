@@ -49,9 +49,6 @@ function extraire_mots($texte)
 */
 function create_tables()
 {
-    if (is_file(DIR_CONFIG.'/mysql.php')) {
-        require_once DIR_CONFIG.'/mysql.php';
-    }
     $auto_increment = (DBMS == 'mysql') ? 'AUTO_INCREMENT' : ''; // SQLite doesn't need this, but MySQL does.
     $index_limit_size = (DBMS == 'mysql') ? '(15)' : ''; // MySQL needs a limit for indexes on TEXT fields.
     $if_not_exists = (DBMS == 'sqlite') ? 'IF NOT EXISTS' : ''; // MySQL doesn’t know this statement for INDEXES

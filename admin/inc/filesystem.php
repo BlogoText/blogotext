@@ -109,7 +109,6 @@ function liste_base_files($tri_selon, $motif, $nombre)
 
 function fichier_prefs()
 {
-    $fichier_prefs = DIR_CONFIG.'/prefs.php';
     if (!empty($_POST['_verif_envoi'])) {
         $lang = (isset($_POST['langue']) and preg_match('#^[a-z]{2}$#', $_POST['langue'])) ? $_POST['langue'] : 'fr';
         $auteur = addslashes(clean_txt(htmlspecialchars($_POST['auteur'])));
@@ -190,7 +189,7 @@ function fichier_prefs()
     $prefs .= "\$GLOBALS['max_linx_admin'] = ".$nombre_liens_admin.";\n";
     $prefs .= "\$GLOBALS['dl_link_to_files'] = ".$auto_dl_liens_fichiers.";\n";
 
-    return file_put_contents($fichier_prefs, $prefs) !== false;
+    return file_put_contents(FILE_SETTINGS, $prefs) !== false;
 }
 
 // TRAITEMENT DU FORMULAIRE DE FICHIER, CÔTÉ BDD

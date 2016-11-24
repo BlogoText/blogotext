@@ -11,10 +11,9 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 # *** LICENSE ***
 
-// set language
-if (isset($_GET['l'])) {
-    $GLOBALS['lang'] = ($_GET['l'] == 'fr' or $_GET['l'] == 'en') ? $_GET['l'] : 'fr';
-}
+// Set language
+$lang = (string)filter_input(INPUT_GET, 'l');
+$GLOBALS['lang'] = ($lang != 'en' && $lang != 'fr') ? 'fr' : $lang;
 
 define('BT_RUN_INSTALL', 1);
 
@@ -29,14 +28,6 @@ require_once BT_ROOT.'admin/inc/links.php';
  *   no need to be in /inc/*
  */
 
-// install or reinstall with same config ?
-$step3 = is_file(DIR_CONFIG.'mysql.ini') and file_get_contents(DIR_CONFIG.'mysql.ini') != '';
-
-// install is already done
-if (is_file(DIR_CONFIG.'user.ini') and is_file(DIR_CONFIG.'prefs.php') and !$step3) {
-    redirection('Location: auth.php');
-}
-
 // some constants definition
 $GLOBALS['fuseau_horaire'] = 'UTC';
 
@@ -47,16 +38,15 @@ $GLOBALS['fuseau_horaire'] = 'UTC';
  */
 function fichier_adv_conf()
 {
-    $fichier_advconf = DIR_CONFIG.'config-advanced.ini';
-    if (is_file($fichier_advconf)) {
+    if (is_file(FILE_SETTINGS_ADV)) {
         return true;
     }
-    $conf  = '; <?php die;'."\n";
+    $conf  = '; <?php die; ?>'."\n";
     $conf .= '; This file contains some more advanced configuration features.'."\n\n";
     $conf .= 'BLOG_UID = \''.sha1(uniqid(mt_rand(), true)).'\''."\n";
     $conf .= 'USE_IP_IN_SESSION = 1;'."\n";
 
-    return file_put_contents($fichier_advconf, $conf) !== false;
+    return file_put_contents(FILE_SETTINGS_ADV, $conf) !== false;
 }
 
 /**
@@ -130,8 +120,7 @@ function install_form_2_echo($erreurs = '')
     echo '<p>';
     echo '<label for="mdp">'.$GLOBALS['lang']['install_mdp'].' </label><input type="password" name="mdp" id="mdp" size="30" value="" class="text" autocomplete="off" placeholder="••••••••••••" required /><button type="button" class="unveilmdp" onclick="return revealpass(\'mdp\');"></button>'."\n";
     echo '</p>'."\n";
-    // $lien = str_replace(DIR_ADMIN.'/install.php', '', 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['SCRIPT_NAME']);
-    $lien = 'http://'.$_SERVER['SERVER_NAME'].dirname(dirname($_SERVER['SCRIPT_NAME']));
+    $lien = 'http://'.$_SERVER['SERVER_NAME'].dirname(dirname($_SERVER['SCRIPT_NAME'])).'/';
     // bug fix for DIRECTORY_SEPARATOR
     $lien = str_replace('\\', '/', $lien);
     echo '<p>';
@@ -192,11 +181,9 @@ function install_form_3_echo($erreurs = '')
 
 function fichier_mysql($sgdb)
 {
-    $fichier_mysql = DIR_CONFIG.'/mysql.ini';
-
     $data = '';
     if ($sgdb !== false) {
-        $data .= '; <?php die;'."\n";
+        $data .= '; <?php die; ?>'."\n";
         $data .= '; This file contains MySQL credentials and configuration.'."\n\n";
         $data .= 'MYSQL_LOGIN = \''.htmlentities($_POST['mysql_user'], ENT_QUOTES).'\''."\n";
         $data .= 'MYSQL_PASS = \''.htmlentities($_POST['mysql_passwd'], ENT_QUOTES).'\''."\n";
@@ -205,7 +192,7 @@ function fichier_mysql($sgdb)
         $data .= 'DBMS = \''.$sgdb.'\''."\n";
     }
 
-    return file_put_contents($fichier_mysql, $data) !== false;
+    return file_put_contents(FILE_MYSQL, $data) !== false;
 }
 
 /**
@@ -218,8 +205,8 @@ function install_form_2_proceed()
     create_folder(DIR_DOCUMENTS, 0); // todo : change for v4
     create_folder(DIR_DATABASES, 1); // todo : change for v4
     auth_write_user_login_file($_POST['identifiant'], $_POST['mdp']);
-    import_ini_file(DIR_CONFIG.'user.ini'); // todo : change for v4
-    if (!is_file(DIR_CONFIG.'prefs.php')) {
+    import_ini_file(FILE_USER); // todo : change for v4
+    if (!is_file(FILE_SETTINGS)) {
         fichier_prefs();
     }
     fichier_mysql(false); // create an empty file
@@ -236,7 +223,7 @@ function install_form_3_proceed()
         fichier_mysql('sqlite');
     }
 
-    import_ini_file(DIR_CONFIG.'mysql.ini');
+    import_ini_file(FILE_MYSQL);
     $GLOBALS['db_handle'] = open_base();
     $total_articles = liste_elements_count('SELECT count(ID) AS nbr FROM articles', array());
     if ($total_articles != 0) {
@@ -295,7 +282,7 @@ function install_form_3_proceed()
             'bt_content' => 'Ceci est un lien privé. Vous seul pouvez le voir. / This is a private link. Only you can see it.',
             'bt_wiki_content' => 'Ceci est un lien privé. Vous seul pouvez le voir. / This is a private link. Only you can see it.',
             'bt_title' => 'Note : lien privé / private link',
-            'bt_link' => $GLOBALS['racine'].'index.php?mode=links&amp;id='.date('YmdHis', $time + 5),
+            'bt_link' => 'index.php?mode=links&amp;id='.date('YmdHis', $time + 5),
             'bt_tags' => '',
             'bt_statut' => 0
         );
@@ -420,11 +407,9 @@ function test_connection_mysql()
 }
 
 
-
 // get the step of the install
-$GLOBALS['step'] = (isset($_GET['s']) and is_numeric($_GET['s'])) ? $_GET['s'] + 0 : 1;
-
-if ($GLOBALS['step'] == 1) {
+$GLOBALS['step'] = (int)filter_input(INPUT_GET, 's');
+if ($GLOBALS['step'] == 0) {
     // set language
     if (isset($_POST['install_form_1_sended'])) {
         if ($err_1 = install_form_1_valid()) {

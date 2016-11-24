@@ -207,6 +207,12 @@ define('DIR_THEMES', BT_ROOT.'themes/');
 define('FILES_DB', DIR_DATABASES.'files.php');
 define('FEEDS_DB', DIR_DATABASES.'rss.php');
 
+// Constants: installation configurations
+define('FILE_USER', DIR_CONFIG.'user.php');
+define('FILE_SETTINGS', DIR_CONFIG.'settings.php');
+define('FILE_SETTINGS_ADV', DIR_CONFIG.'settings-advanced.php');
+define('FILE_MYSQL', DIR_CONFIG.'mysql.php');
+
 // Constants: general
 define('BLOGOTEXT_NAME', 'BlogoText');
 define('BLOGOTEXT_SITE', 'https://github.com/BoboTiG/blogotext');
@@ -220,7 +226,7 @@ define('BLOGOTEXT_UA', 'Mozilla/5.0 (Windows NT 10; WOW64; rv:47.0) Gecko/201001
  */
 
 // system is installed
-if (!is_file(DIR_CONFIG.'user.ini') || !is_file(DIR_CONFIG.'prefs.php')) {
+if (!is_file(FILE_USER) || !is_file(FILE_SETTINGS)) {
     // if this is install script, dont redirect
     if (!defined('BT_RUN_INSTALL')) {
         if (defined('IS_IN_ADMIN')) {
@@ -232,7 +238,7 @@ if (!is_file(DIR_CONFIG.'user.ini') || !is_file(DIR_CONFIG.'prefs.php')) {
 }
 
 // if this request is about install or reset password
-if (is_file(DIR_CONFIG.'prefs.php')) {
+if (is_file(FILE_SETTINGS)) {
     $supposed_path = secure_host_to_path($_SERVER['HTTP_HOST']);
 
     if (is_array($supposed_path)) {
@@ -241,7 +247,7 @@ if (is_file(DIR_CONFIG.'prefs.php')) {
 
     if (version_compare(BLOGOTEXT_VERSION, '4.0', '<')) {
         // load prefs.php
-        require_once DIR_CONFIG.'prefs.php';
+        require_once FILE_SETTINGS;
 
         // check the http_host with $GLOBALS['racine']
         if (strpos($GLOBALS['racine'], $_SERVER['HTTP_HOST']) === false) {
@@ -304,13 +310,13 @@ $GLOBALS['addons'] = array();
 $GLOBALS['form_commentaire'] = '';
 
 // ADVANCED CONFIG OPTIONS
-import_ini_file(DIR_CONFIG.'config-advanced.ini');
+import_ini_file(FILE_SETTINGS_ADV);
 
 // DATABASE OPTIONS + MySQL DB PARAMS
-import_ini_file(DIR_CONFIG.'mysql.ini');
+import_ini_file(FILE_MYSQL);
 
 // USER LOGIN + PW HASH
-import_ini_file(DIR_CONFIG.'user.ini');
+import_ini_file(FILE_USER);
 
 // regenerate captcha (always)
 if (!isset($GLOBALS['captcha'])) {
