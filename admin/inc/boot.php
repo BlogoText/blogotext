@@ -26,7 +26,6 @@ require_once '../inc/boot.php';
 require_once BT_ROOT.'admin/inc/auth.php'; // Security, dont move !
 require_once BT_ROOT.'admin/inc/filesystem.php';
 require_once BT_ROOT.'admin/inc/form.php';
-// require_once BT_ROOT.'admin/inc/links.php'; // Done !
 require_once BT_ROOT.'admin/inc/tpl.php'; // no choice !
 
 // auth everywhere except for install and login page

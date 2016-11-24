@@ -26,7 +26,7 @@ if (isset($_POST['_verif_envoi'])) {
         if (!empty($erreurs)) {
             echo 'Error';
             echo implode("\n", $erreurs);
-            die();
+            die;
         } else {
             addon_show_list_addons_form_proceed($module); // FIXME: this should not return anything. Put a is_readable() in valider_form_module, or somewhere more appropriate.  Or simply die with error, since this is critical error that shouldn’t allow BT to run.
         }
@@ -36,8 +36,20 @@ if (isset($_POST['_verif_envoi'])) {
 }
 
 $filtre = (!empty($_GET['filtre'])) ? htmlspecialchars($_GET['filtre']) : '';
+
 $addons_status = addon_list_addons();
-// Filtrons la liste
+
+// Export the list
+if (!is_file(ADDONS_DB)) {
+    $addons_ = array();
+    foreach ($GLOBALS['addons'] as $addon) {
+        $status = $addons_status[$addon['tag']];
+        $addons_[$addon['tag']] = $status;
+    }
+    addons_export_list($addons_);
+}
+
+// Filter the list
 $tableau = array();
 foreach ($GLOBALS['addons'] as $addon) {
     $status = $addons_status[$addon['tag']];

@@ -212,11 +212,6 @@ if (is_file($flux_cache_lv2_path)) {
     unlink($flux_cache_lv2_path);
 }
 
-
-// require_once DIR_CONFIG.'prefs.php';
-// require_once BT_ROOT.'inc/inc.php';
-
-addon_list_addons();
 hook_trigger('system-start');
 
 $xml = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
@@ -362,14 +357,12 @@ if (preg_match('#^[0-9]{14}$#', $postId)) {
 
 $end = microtime(true);
 
+$xml .= '<!-- cached file generated on '.date('r').' -->'."\n";
+$xml .= '<!-- generated in '.round(($end - $begin), 6).' seconds -->'."\n";
 if ($format == 'rss') {
-    $xml .= '<!-- cached file generated on '.date('r').' -->'."\n";
-    $xml .= '<!-- generated in '.round(($end - $begin), 6).' seconds -->'."\n";
     $xml .= '</channel>'."\n";
     $xml .= '</rss>';
 } else {
-    $xml .= '<!-- cached file generated on '.date('r').' -->'."\n";
-    $xml .= '<!-- generated in '.round(($end - $begin), 6).' seconds -->'."\n";
     $xml .= '</feed>';
 }
 

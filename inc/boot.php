@@ -204,6 +204,7 @@ define('DIR_IMAGES', BT_ROOT.'img/');
 define('DIR_THEMES', BT_ROOT.'themes/');
 
 // Constants: databases
+define('ADDONS_DB', DIR_DATABASES.'addons.php');
 define('FILES_DB', DIR_DATABASES.'files.php');
 define('FEEDS_DB', DIR_DATABASES.'rss.php');
 

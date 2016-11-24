@@ -83,12 +83,38 @@ function rmdir_recursive($path)
     rmdir($abs);
 }
 
+
+/**
+ * list all addons
+ */
+function addon_list_addons()
+{
+    $addons = array();
+
+    if (is_dir(DIR_ADDONS)) {
+        // get the list of installed addons
+        $addons_list = rm_dots_dir(scandir(DIR_ADDONS));
+
+        // include the addons
+        foreach ($addons_list as $addon) {
+            $inc = sprintf('%s/%s/%s.php', DIR_ADDONS, $addon, $addon);
+            if (is_file($inc)) {
+                $addons[$addon] = addon_is_enabled($addon);
+                require_once $inc;
+            }
+        }
+    }
+
+    return $addons;
+}
+
+
 /**
  *
  */
-function addon_clean_cache_path($addonTag)
+function addon_clean_cache_path($addon)
 {
-    $path = addon_get_cache_path($addonTag, false);
+    $path = addon_get_cache_path($addon, false);
     if (!is_dir($path)) {
         return true;
     }
@@ -97,20 +123,29 @@ function addon_clean_cache_path($addonTag)
 }
 
 /**
- * put a .enabled file to an addon
+ * Enables an addon.
  */
-function addon_put_enable_file($addonTag)
+function addon_put_enable_file($addon)
 {
-    $file = sprintf('%s.enabled', addon_get_var_path($addonTag, true));
-    return file_put_contents($file, '') !== false;
+    $file = sprintf('%s.enabled', addon_get_var_path($addon, true));
+
+    return file_put_contents($file, '', LOCK_EX) !== false;
 }
 
 /**
- * (?) return a translated sentence
+ * Checks if an addon is enabled.
+ */
+function addon_is_enabled($addon)
+{
+    return is_file(sprintf('%s.enabled', addon_get_var_path($addon, true)));
+}
+
+/**
+ * Returns a translated sentence.
  */
 function addon_get_translation($info)
 {
-    if (is_array($info)) {
+    if (is_array($info) && isset($info[$GLOBALS['lang']['id']])) {
         return $info[$GLOBALS['lang']['id']];
     }
     return $info;
@@ -134,14 +169,13 @@ function addon_retrieve_posted_addon()
  * todo :
  *   - manage errors
  *
- * @param string $addonTag, the addon name
+ * @param string $addon, the addon name
  * @return bool
  */
-function addon_edit_settings_form_process($addonTag)
+function addon_edit_settings_form_process($addon)
 {
     $errors = array();
-    $addons_status = addon_list_addons();
-    $params = addon_get_conf($addonTag);
+    $params = addon_get_conf($addon);
     $datas = array();
     foreach ($params as $key => $param) {
         $datas[$key] = '';
@@ -155,17 +189,17 @@ function addon_edit_settings_form_process($addonTag)
                 } else if (isset($param['value_max']) && $value > $param['value_max']) {
                     $errors[$key][] = 'Value is reach limit max.';
                 } else {
-                    $datas[$key] = $value;
+                    $datas[$key] = (int)$value;
                 }
             } else {
                 // error
                 $errors[$key][] = 'No data posted';
             }
         } else if ($param['type'] == 'text') {
-            $datas[$key] = htmlentities($_POST[$key], ENT_QUOTES);
+            $datas[$key] = '\''.htmlentities($_POST[$key], ENT_QUOTES).'\'';
         } else if ($param['type'] == 'select') {
             if (isset($param['options'][$_POST[$key]])) {
-                $datas[$key] = htmlentities($_POST[$key], ENT_QUOTES);
+                $datas[$key] = '\''.htmlentities($_POST[$key], ENT_QUOTES).'\'';
             } else {
                 $errors[$key][] = 'not a valid type';
             }
@@ -174,24 +208,21 @@ function addon_edit_settings_form_process($addonTag)
             $errors[$key][] = 'not a valid type';
         }
     }
-    $conf  = '';
-    $conf .= '; <?php die(); /*'."\n\n";
+    $conf  = '; <?php die(); ?>'."\n";
     $conf .= '; This file contains addons params, you can modify this file.'."\n\n";
     foreach ($datas as $key => $value) {
-        $conf .= $key .' = \''. $value .'\''."\n";
+        $conf .= $key .' = ' .$value ."\n";
     }
-    $conf .= '; */ ?>'."\n";
-    return (file_put_contents((addon_get_var_path($addonTag, true).'settings.ini'), $conf) !== false);
+    return (file_put_contents((addon_get_var_path($addon, true).'settings.ini'), $conf, LOCK_EX) !== false);
 }
 
 /**
  * perform action from button
  */
-function addon_buttons_action_process($addonTag)
+function addon_buttons_action_process($addon)
 {
-
     // get info for the addon
-    $infos = addon_get_infos($addonTag);
+    $infos = addon_get_infos($addon);
 
     if (isset($infos['buttons'])) {
         foreach ($infos['buttons'] as $btnId => $btn) {
@@ -204,30 +235,33 @@ function addon_buttons_action_process($addonTag)
 
     // clean module cache ?
     if (isset($_POST['addon_clean_cache'])) {
-        addon_clean_cache_path($addonTag);
+        addon_clean_cache_path($addon);
     }
 }
 
 /**
  * Get the addon config form
  *
- * @param string $addonTag, the addon name
+ * @param string $addon, the addon name
  * @return string, the html form
  */
-function addon_edit_settings_form($addonTag)
+function addon_edit_settings_form($addon)
 {
-    // load addons
-    $addons_status = addon_list_addons();
+    $inc = sprintf('%s/%s/%s.php', DIR_ADDONS, $addon, $addon);
+    if (!is_file($inc)) {
+        return;
+    }
+    require_once $inc;
     // get info for the addon
-    $infos = addon_get_infos($addonTag);
+    $infos = addon_get_infos($addon);
     // addon is active ?
-    $infos['status'] = $addons_status[$addonTag];
+    $infos['status'] = addon_is_enabled($addon);
     // get addon params
-    $params = addon_get_conf($addonTag);
+    $params = addon_get_conf($addon);
 
     // button
     $out = '';
-    $out .= '<form id="preferences" method="post" action="?addonTag='. $addonTag .'" onsubmit="return confirm(\''. addslashes($GLOBALS['lang']['addons_confirm_buttons_action']) .'\');" >';
+    $out .= '<form id="preferences" method="post" action="?addon='. $addon .'" onsubmit="return confirm(\''. addslashes($GLOBALS['lang']['addons_confirm_buttons_action']) .'\');" >';
     $out .= '<div role="group" class="pref">'; /* no fieldset because browset can’t style them correctly */
     $out .= '<div class="form-legend"><legend class="legend-user">'.$GLOBALS['lang']['addons_settings_legend'].addon_get_translation($infos['name']).'</legend></div>'."\n";
 
@@ -253,7 +287,7 @@ function addon_edit_settings_form($addonTag)
     $out .= '</form>';
 
     // settings
-    $out .= '<form id="preferences" method="post" action="?addonTag='. $addonTag .'" >';
+    $out .= '<form id="preferences" method="post" action="?addon='. $addon .'" >';
     $out .= '<div role="group" class="pref">'; /* no fieldset because browset can’t style them correctly */
     $out .= '<div class="form-legend"><legend class="legend-user">'.$GLOBALS['lang']['addons_settings_legend'].addon_get_translation($infos['name']).'</legend></div>'."\n";
 
@@ -305,9 +339,9 @@ function addon_edit_settings_form($addonTag)
  *
  * @return bool
  */
-function addon_have_settings($addonTag)
+function addon_have_settings($addon)
 {
-    $infos = addon_get_infos($addonTag);
+    $infos = addon_get_infos($addon);
     if ($infos === false) {
         return false;
     }
@@ -328,7 +362,7 @@ function addon_show_list_addons($tableau, $filtre)
             $out .= "\t\t".'<span><input type="checkbox" class="checkbox-toggle" name="module_'.$i.'" id="module_'.$i.'" '.(($addon['status']) ? 'checked' : '').' onchange="activate_mod(this);" /><label for="module_'.$i.'"></label></span>'."\n";
 
             // addon name
-            $out .= "\t\t".'<span><a href="addons.php?addon_id='.$addon['tag'].'">'.addon_get_translation($addon['name']).'</a></span>'."\n";
+            $out .= "\t\t".'<span>'.addon_get_translation($addon['name']).'</span>'."\n";
 
             // addon version
             $out .= "\t\t".'<span>'.$addon['version'].'</span>'."\n";
@@ -348,7 +382,7 @@ function addon_show_list_addons($tableau, $filtre)
 
             // addon params
             if (addon_have_settings($addon['tag'])) {
-                $out .= '<a href="addon.php?addonTag='. $addon['tag'] .'">'.$GLOBALS['lang']['addons_settings_link_title'].'</a>';
+                $out .= '<a href="addon-settings.php?addon='. $addon['tag'] .'">'.$GLOBALS['lang']['addons_settings_link_title'].'</a>';
                 if (!empty($addon['url'])) {
                     $out .= ' | ';
                 }
@@ -369,28 +403,40 @@ function addon_show_list_addons($tableau, $filtre)
     echo $out;
 }
 
+function addons_export_list($data)
+{
+    $data = '<?php return '.var_export($data, true).';';
+
+    return file_put_contents(ADDONS_DB, $data, LOCK_EX) !== false;
+}
+
 /**
  * (?) proceed submitted form from addon_show_list_addons()
  */
-function addon_show_list_addons_form_proceed($module)
+function addon_show_list_addons_form_proceed($addon)
 {
     $erreurs = array();
-    $check_file = sprintf('%s.enabled', addon_get_var_path($module['addon_id']));
+    $check_file = sprintf('%s.enabled', addon_get_var_path($addon['addon_id']));
     $is_enabled = is_file($check_file);
-    $new_status = (bool) $module['status'];
+    $new_status = (bool) $addon['status'];
 
     if ($is_enabled != $new_status) {
         if ($new_status) {
             // Addon enabled: we create .enabled
-            if (!addon_put_enable_file($module['addon_id'])) {
-                $erreurs[] = sprintf($GLOBALS['lang']['err_addon_enabled'], $module['addon_id']);
+            if (!addon_put_enable_file($addon['addon_id'])) {
+                $erreurs[] = sprintf($GLOBALS['lang']['err_addon_enabled'], $addon['addon_id']);
             }
         } else {
             // Addon disabled: we delete .enabled
             if (!unlink($check_file)) {
-                $erreurs[] = sprintf($GLOBALS['lang']['err_addon_disabled'], $module['addon_id']);
+                $erreurs[] = sprintf($GLOBALS['lang']['err_addon_disabled'], $addon['addon_id']);
             }
         }
+
+        // Save addons list
+        $addons_ = include ADDONS_DB;
+        $addons_[$addon['addon_id']] = (int)$new_status;
+        addons_export_list($addons_);
     }
 
     if (isset($_POST['mod_activer'])) {
@@ -404,7 +450,6 @@ function addon_show_list_addons_form_proceed($module)
     return $erreurs;
 }
 
-// TODO: at the end, put this in "afficher_form_filtre()"
 /**
  *
  */

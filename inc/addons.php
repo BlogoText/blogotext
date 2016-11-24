@@ -51,13 +51,22 @@ function addon_get_cache_path($addonTag, $create = true)
  */
 function addon_boot_hook_push()
 {
-    $activated = addon_list_addons();
+    $addons_ = array();
+    if (is_file(ADDONS_DB)) {
+        $addons_ = include ADDONS_DB;
+    }
 
-    foreach ($GLOBALS['addons'] as $addon) {
-        if (!isset($addon['hook-push'])) {
+    foreach ($addons_ as $addon => $state) {
+        if (!$state) {
             continue;
         }
-        if (!isset($activated[$addon['tag']]) || $activated[$addon['tag']] !== true) {
+        $inc = sprintf('%s/%s/%s.php', DIR_ADDONS, $addon, $addon);
+        if (!is_file($inc)) {
+            continue;
+        }
+        require_once $inc;
+        $addon = addon_get_infos($addon);
+        if (!isset($addon['hook-push'])) {
             continue;
         }
         foreach ($addon['hook-push'] as $hook_id => $params) {
@@ -79,6 +88,11 @@ function addon_boot_hook_push()
  */
 function addon_get_conf($addonTag)
 {
+    $inc = sprintf('%s/%s/%s.php', DIR_ADDONS, $addonTag, $addonTag);
+    if (!is_file($inc)) {
+        return false;
+    }
+    require_once $inc;
     $infos = addon_get_infos($addonTag);
     if ($infos === false) {
         return false;
@@ -118,29 +132,4 @@ function addon_get_infos($addonTag)
         }
     }
     return false;
-}
-
-/**
- * list all addons
- */
-function addon_list_addons()
-{
-    $addons = array();
-
-    if (is_dir(DIR_ADDONS)) {
-        // get the list of installed addons
-        $addons_list = rm_dots_dir(scandir(DIR_ADDONS));
-
-        // include the addons
-        foreach ($addons_list as $addon) {
-            $inc = sprintf('%s/%s/%s.php', DIR_ADDONS, $addon, $addon);
-            $is_enabled = is_file(sprintf('%s.enabled', addon_get_var_path($addon)));
-            if (is_file($inc)) {
-                $addons[$addon] = $is_enabled;
-                require_once $inc;
-            }
-        }
-    }
-
-    return $addons;
 }

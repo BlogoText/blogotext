@@ -336,50 +336,66 @@ function afficher_liste($tableau)
 function conversion_theme_addons($texte)
 {
     // include all addons
-    $addons_status = addon_list_addons();
+    $addons_ = array();
+    if (is_file(ADDONS_DB)) {
+        $addons_ = include ADDONS_DB;
+    }
 
     // Parse the $texte and replace {tags} with html generated in addon.
     // Generate CSS and JS includes too.
     $css = "<style>\n\t\t@charset 'utf-8';";
     $js = '';
-    $has_style = false;
-    foreach ($GLOBALS['addons'] as $addon) {
-        $look_for = '{addon_'.$addon['tag'].'}';
-        $add_public_file = false; // js and css
+    $hasStyle = false;
+    foreach ($addons_ as $addon => $state) {
+        if (!$state) {
+            continue;
+        };
 
-        if (strpos($texte, $look_for) !== false) {
+        $inc = sprintf('%s%s/%s.php', DIR_ADDONS, $addon, $addon);
+        if (!is_file($inc)) {
+            continue;
+        }
+        require_once $inc;
+
+        $addon = addon_get_infos($addon);
+        $lookFor = '{addon_'.$addon['tag'].'}';
+        //$addPublicFile = false;  // JS and CSS
+
+        if (strpos($texte, $lookFor) !== false) {
             $callback = 'addon_'.$addon['tag'];
-            $to_replace = '';
-            if ($addons_status[$addon['tag']] && function_exists($callback)) {
-                while (($pos = strpos($texte, $look_for)) !== false) {
-                    $texte = substr_replace($texte, call_user_func($callback), $pos, strlen($look_for));
+            $toReplace = '';
+            if (function_exists($callback)) {
+                while (($pos = strpos($texte, $lookFor)) !== false) {
+                    $texte = substr_replace($texte, call_user_func($callback), $pos, strlen($lookFor));
                 }
-                $add_public_file = true;
+                $addPublicFile = true;
             } else {
-                $texte = str_replace($look_for, '', $texte);
+                $texte = str_replace($lookFor, '', $texte);
             }
         }
 
-        if (isset($addon['css']) && $add_public_file == true) {
+        if (isset($addon['css'])/* && $addPublicFile == true*/) {
             if (!is_array($addon['css'])) {
                 $addon['css'] = array($addon['css']);
             }
             foreach ($addon['css'] as $inc_file) {
-                $inc = sprintf('%s/%s/%s', DIR_ADDONS, $addon['tag'], $inc_file);
+                $inc = sprintf('%s%s/%s', DIR_ADDONS, $addon['tag'], $inc_file);
                 if (is_file($inc)) {
-                    $has_style = true;
+                    $hasStyle = true;
+                    $inc = sprintf('%saddons/%s/%s', URL_ROOT, $addon['tag'], $inc_file);
                     $css .= sprintf("\n\t\t@import url('%s');", addslashes($inc));
                 }
             }
         }
 
-        if (isset($addon['js']) && $add_public_file == true) {
+        if (isset($addon['js'])/* && $addPublicFile == true*/) {
             if (!is_array($addon['js'])) {
                 $addon['js'] = array($addon['js']);
             }
             foreach ($addon['js'] as $inc_file) {
-                $inc = sprintf('%s/%s/%s', DIR_ADDONS, $addon['tag'], $inc_file);
+                $inc = sprintf('%s%s/%s', DIR_ADDONS, $addon['tag'], $inc_file);
                 if (is_file($inc)) {
+                    $inc = sprintf('%saddons/%s/%s', URL_ROOT, $addon['tag'], $inc_file);
                     $js .= sprintf("<script src=\"%s\"></script>;\n", $inc);
                 }
             }
@@ -388,7 +404,7 @@ function conversion_theme_addons($texte)
 
     // CSS and JS inclusions
     $css .= "\n\t</style>";
-    if (!$has_style) {
+    if (!$hasStyle) {
         $css = '';
     }
     $texte = str_replace('{includes.css}', $css, $texte);
@@ -405,6 +421,6 @@ function conversion_theme_addons($texte)
     if ($tmp_hook !== false) {
         $texte = $tmp_hook['1'];
     }
-    
+
     return $texte;
 }

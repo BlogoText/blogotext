@@ -17,7 +17,8 @@
  */
 function create_file_dtb($output, $data)
 {
-    return file_put_contents($output, '<?php /* '.chunk_split(base64_encode(serialize($data)), 76, "\n").' */'."\n") !== false;
+    $data = '<?php /* '.chunk_split(base64_encode(serialize($data)), 76, "\n")."*/\n";
+    return file_put_contents($output, $data, LOCK_EX) !== false;
 }
 
 /**
@@ -28,7 +29,7 @@ function open_serialzd_file($file)
     if (!is_file($file)) {
         return array();
     }
-    return unserialize(base64_decode(substr(file_get_contents($file), strlen('<?php /* '), -strlen(' */'))));
+    return unserialize(base64_decode(substr(file_get_contents($file), strlen('<?php /* '), -strlen('*/'))));
 }
 
 /**
