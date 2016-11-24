@@ -186,19 +186,6 @@ if (DEBUG) {
 
 
 
-//
-//
-// ULTRA TEMPORARY TODO FIX ÇAVAPASDUTOUT!
-// Ca me parait bon maintenant ;)
-//
-// This is to disable addon hooks on the admin part ...
-//
-// RemRem, tu voulais du compliqué alors qu'on peut faire simple ? :D
-// Méhhh
-//
-
-
-
 // constant for absolute PATH
 define('BT_ROOT', dirname(dirname(__file__)).'/');
 
@@ -227,13 +214,12 @@ define('BLOGOTEXT_VERSION', '3.7.0-dev');
 define('MINIMAL_PHP_REQUIRED_VERSION', '5.5');
 define('BLOGOTEXT_UA', 'Mozilla/5.0 (Windows NT 10; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0');
 
+
 /**
  * more constants after advanced boot
  */
 
-
-
-// system is installed 
+// system is installed
 if (!is_file(DIR_CONFIG.'user.ini') || !is_file(DIR_CONFIG.'prefs.php')) {
     // if this is install script, dont redirect
     if (!defined('BT_RUN_INSTALL')) {
