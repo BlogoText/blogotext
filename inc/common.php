@@ -84,10 +84,10 @@ function lang_load_land($admin)
     }
     switch ($GLOBALS['lang']) {
         case 'en':
-            include_once(BT_ROOT.$path.'inc/lang/en_en.php');
+            require_once BT_ROOT.$path.'inc/lang/en_en.php';
             break;
         case 'fr':
         default:
-            include_once(BT_ROOT.$path.'inc/lang/fr_fr.php');
+            require_once BT_ROOT.$path.'inc/lang/fr_fr.php';
     }
 }

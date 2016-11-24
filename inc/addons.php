@@ -137,7 +137,7 @@ function addon_list_addons()
             $is_enabled = is_file(sprintf('%s.enabled', addon_get_var_path($addon)));
             if (is_file($inc)) {
                 $addons[$addon] = $is_enabled;
-                include_once $inc;
+                require_once $inc;
             }
         }
     }

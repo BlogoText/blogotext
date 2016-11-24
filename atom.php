@@ -12,4 +12,4 @@
 # *** LICENSE ***
 
 $_GET['format'] = 'atom';
-include 'feed.php';
+require 'feed.php';
