@@ -155,7 +155,7 @@ function rebuilt_file_db()
     // tri le tableau fusionné selon les bt_id (selon une des clés d'un sous tableau).
     $GLOBALS['liste_fichiers'] = tri_selon_sous_cle($GLOBALS['liste_fichiers'], 'bt_id');
     // finalement enregistre la liste des fichiers.
-    file_put_contents(FILES_DB, '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_fichiers']))).' */');
+    create_file_dtb(FILES_DB, $GLOBALS['liste_fichiers']);
 }
 
 /*
@@ -544,7 +544,7 @@ function importer_opml($opml_content)
     $old_len = count($GLOBALS['liste_flux']);
     $GLOBALS['liste_flux'] = array_reverse(tri_selon_sous_cle($GLOBALS['liste_flux'], 'title'));
     $GLOBALS['liste_flux'] = array_merge($GLOBALS['array_new'], $GLOBALS['liste_flux']);
-    file_put_contents(FEEDS_DB, '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_flux']))).' */');
+    create_file_dtb(FEEDS_DB, $GLOBALS['liste_flux']);
 
     return (count($GLOBALS['liste_flux']) - $old_len);
 }

@@ -124,7 +124,7 @@ function traiter_form_rssconf()
 
     // sort list with title
     $GLOBALS['liste_flux'] = array_reverse(tri_selon_sous_cle($GLOBALS['liste_flux'], 'title'));
-    file_put_contents(FEEDS_DB, '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_flux']))).' */');
+    create_file_dtb(FEEDS_DB, $GLOBALS['liste_flux']);
 
     $redir = basename($_SERVER['SCRIPT_NAME']).'?'.$query_string.'&msg=confirm_feeds_edit';
     redirection($redir);

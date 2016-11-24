@@ -104,7 +104,7 @@ function refresh_rss($feeds)
     }
 
     // save last success time in the feed list
-    file_put_contents(FEEDS_DB, '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_flux']))).' */');
+    create_file_dtb(FEEDS_DB, $GLOBALS['liste_flux']);
     return $count_new;
 }
 
@@ -400,7 +400,7 @@ if (isset($_POST['add-feed'])) {
     // sort list with title
     $GLOBALS['liste_flux'] = array_reverse(tri_selon_sous_cle($GLOBALS['liste_flux'], 'title'));
     // save to file
-    file_put_contents(FEEDS_DB, '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_flux']))).' */');
+    create_file_dtb(FEEDS_DB, $GLOBALS['liste_flux']);
 
     // Update DB
     refresh_rss(array($new_feed => $GLOBALS['liste_flux'][$new_feed]));

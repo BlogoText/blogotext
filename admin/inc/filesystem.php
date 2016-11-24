@@ -250,7 +250,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var)
         // ajout à la base.
         $GLOBALS['liste_fichiers'][] = $fichier;
         $GLOBALS['liste_fichiers'] = tri_selon_sous_cle($GLOBALS['liste_fichiers'], 'bt_id');
-        file_put_contents(FILES_DB, '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_fichiers'])), 76, "\n").' */'."\n");
+        create_file_dtb(FILES_DB, $GLOBALS['liste_fichiers']);
     } // modification d’un fichier déjà existant
     elseif ($quoi == 'editer-existant') {
         $new_filename = $fichier['bt_filename'];
@@ -289,7 +289,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var)
         }
 
         $GLOBALS['liste_fichiers'] = tri_selon_sous_cle($GLOBALS['liste_fichiers'], 'bt_id');
-        file_put_contents(FILES_DB, '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_fichiers'])), 76, "\n").' */'."\n"); // écrit dans le fichier, la liste
+        create_file_dtb(FILES_DB, $GLOBALS['liste_fichiers']);
         redirection(basename($_SERVER['SCRIPT_NAME']).'?file_id='.$fichier['bt_id'].'&edit&msg=confirm_fichier_edit');
     } // suppression d’un fichier (de la BDD et du disque)
     elseif ($quoi == 'supprimer-existant') {
@@ -314,7 +314,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var)
                 }
                 unset($GLOBALS['liste_fichiers'][$tbl_id]); // efface le fichier dans la liste des fichiers.
                 $GLOBALS['liste_fichiers'] = tri_selon_sous_cle($GLOBALS['liste_fichiers'], 'bt_id');
-                file_put_contents(FILES_DB, '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_fichiers'])), 76, "\n").' */'."\n"); // enregistre la liste
+                create_file_dtb(FILES_DB, $GLOBALS['liste_fichiers']);
                 return 'success';
             } else { // erreur effacement fichier physique
                 return 'error_suppr_file_suppr_error';
@@ -326,7 +326,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var)
             unset($GLOBALS['liste_fichiers'][$tbl_id]); // remove entry from files-list.
         }
         $GLOBALS['liste_fichiers'] = tri_selon_sous_cle($GLOBALS['liste_fichiers'], 'bt_id');
-        file_put_contents(FILES_DB, '<?php /* '.chunk_split(base64_encode(serialize($GLOBALS['liste_fichiers'])), 76, "\n").' */'."\n"); // enregistre la liste
+        create_file_dtb(FILES_DB, $GLOBALS['liste_fichiers']);
         return 'no_such_file_on_disk';
     }
 }

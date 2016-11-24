@@ -11,8 +11,17 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 # *** LICENSE ***
 
+
 /**
- * Retrieve serialized data.
+ * Create database like file.
+ */
+function create_file_dtb($output, $data)
+{
+    return file_put_contents($output, '<?php /* '.chunk_split(base64_encode(serialize($data)), 76, "\n").' */'."\n") !== false;
+}
+
+/**
+ * Retrieve serialized data used by create_file_dtb().
  */
 function open_serialzd_file($file)
 {

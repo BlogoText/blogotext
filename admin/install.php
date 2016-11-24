@@ -44,7 +44,7 @@ function fichier_adv_conf()
     $conf  = '; <?php die; ?>'."\n";
     $conf .= '; This file contains some more advanced configuration features.'."\n\n";
     $conf .= 'BLOG_UID = \''.sha1(uniqid(mt_rand(), true)).'\''."\n";
-    $conf .= 'USE_IP_IN_SESSION = 1;'."\n";
+    $conf .= 'USE_IP_IN_SESSION = 1'."\n";
 
     return file_put_contents(FILE_SETTINGS_ADV, $conf) !== false;
 }
