@@ -13,6 +13,20 @@
 
 $GLOBALS['lang'] = array(
 'id' => 'fr',
+// Install
+'install' => 'Installation',
+'install_id' => 'Choisissez un identifiant : ',
+'install_mdp' => 'Choisissez un mot de passe : ',
+'install_remdp' => 'Confirmez votre mot de passe : ',
+'install_choose_sgdb' => 'Choisissez votre SGDB : ',
+'install_sqlite_no_more_todo' => 'Aucune configuration supplémentaire n’est nécessaire avec SQLite.',
+'install_err_mysql_usr_empty' => 'L’utilisateur MySQL n’a pas été indiqué.',
+'install_err_mysql_pss_empty' => 'Le mot de passe MySQL n’a pas été indiqué.',
+'install_err_mysql_hst_empty' => 'Le « hostname » MySQL n’a pas été indiqué.',
+'install_err_mysql_dba_empty' => 'Le nom de la base de donnée MySQL n’a pas été indiqué.',
+'install_err_mysql_connect' => 'Échec lors de la connexion à MySQL avec ces informations.',
+'first_titre' => 'Mon premier article',
+'first_edit' => 'Éditez-moi',
 // Navigation
 'le' => 'le',
 'remarque' => 'Remarque',

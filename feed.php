@@ -11,12 +11,12 @@
 #
 # *** LICENSE ***
 
-require_once getcwd().'/inc/defines.php';
+require_once 'inc/boot.php';
 
-$begin = microtime(true);
+
 
 /**
- * flux.php replace atom.php and rss.php
+ * feed.php replace atom.php and rss.php
  *
  * _GET['format']
  * @param _GET['format'], string, rss||atom, default : rss
@@ -212,8 +212,9 @@ if (is_file($flux_cache_lv2_path)) {
     unlink($flux_cache_lv2_path);
 }
 
-require_once DIR_CONFIG.'prefs.php';
-require_once BT_ROOT.'inc/inc.php';
+
+// require_once DIR_CONFIG.'prefs.php';
+// require_once BT_ROOT.'inc/inc.php';
 
 addon_list_addons();
 hook_trigger('system-start');

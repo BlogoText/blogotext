@@ -11,11 +11,8 @@
 #
 # *** LICENSE ***
 
-require_once dirname(getcwd()).'/inc/defines.php';
-require_once BT_ROOT.'admin/inc/inc.php';
+require_once 'inc/boot.php';
 
-$begin = microtime(true);
-auth_ttl();
 
 
 // RSS feeds form: allow changing feeds (title, url) or remove a feed
@@ -256,39 +253,58 @@ if (isset($_POST['verif_envoi'])) {
 }
 
 $tableau = array();
+
+/**
+ * add $ttl for POC
+ * It's dirty ...
+ * remrem
+ */
+$ttl = time();
+$sql_where = '';
+if (!empty($_GET['ttl']) && is_numeric($_GET['ttl'])) {
+    $ttl = $_GET['ttl'];
+}
+
+$sql_where = 'bt_date < "'. $ttl .'" AND bt_date > "'. ($ttl - 86400) .'" ';
+
+
 if (!empty($_GET['q'])) {
     $sql_where_status = '';
-    $q_query = $_GET['q'];
-    // search "in:read"
-    if (substr($_GET['q'], -8) === ' in:read') {
-        $sql_where_status = 'AND bt_statut=0 ';
-        $q_query = substr($_GET['q'], 0, strlen($_GET['q'])-8);
-    }
-    // search "in:unread"
-    if (substr($_GET['q'], -10) === ' in:unread') {
-        $sql_where_status = 'AND bt_statut=1 ';
-        $q_query = substr($_GET['q'], 0, strlen($_GET['q'])-10);
-    }
-    $arr = parse_search($q_query);
+    $q_query = (isset($_GET['q'])) ? $_GET['q'] : '';
 
+    if (!empty($q_query)) {
+        // search "in:read"
+        if (substr($_GET['q'], -8) === ' in:read') {
+            $sql_where_status = 'AND bt_statut=0 ';
+            $q_query = substr($_GET['q'], 0, strlen($_GET['q'])-8);
+        }
+        // search "in:unread"
+        if (substr($_GET['q'], -10) === ' in:unread') {
+            $sql_where_status = 'AND bt_statut=1 ';
+            $q_query = substr($_GET['q'], 0, strlen($_GET['q'])-10);
+        }
+        $arr = parse_search($q_query);
+        $sql_where .= 'AND '. implode(array_fill(0, count($arr), '( bt_content || bt_title ) LIKE ?'), 'AND'); // AND operator between words
+    }
 
-    $sql_where = implode(array_fill(0, count($arr), '( bt_content || bt_title ) LIKE ?'), 'AND'); // AND operator between words
     $query = '
         SELECT * FROM rss
          WHERE '.$sql_where.$sql_where_status.'
          ORDER BY bt_date DESC';
-    //debug($query);
     $tableau = liste_elements($query, $arr, 'rss');
 } else {
     $sql = '
         SELECT * FROM rss
-         WHERE bt_statut = 1
-               OR bt_bookmarked = 1
-         ORDER BY bt_date DESC';
+         WHERE (
+                   bt_statut = 1
+                OR bt_bookmarked = 1
+               )
+               AND '. $sql_where .'
+      ORDER BY bt_date DESC';
     $tableau = liste_elements($sql, array(), 'rss');
 }
 
-afficher_html_head($GLOBALS['lang']['mesabonnements']);
+tpl_show_html_head($GLOBALS['lang']['mesabonnements']);
 
 echo '<div id="header">'."\n";
     echo '<div id="top">'."\n";
@@ -325,7 +341,14 @@ if (isset($_GET['config'])) {
     $out_html = send_rss_json($tableau);
     $out_html .= '<div id="rss-list">'."\n";
     $out_html .= "\t".'<div id="posts-wrapper">'."\n";
+
     $out_html .= "\t\t".'<ul id="feed-list">'."\n";
+    $out_html .= "\t\t\t".'<li><a style="text-align:center;font-weight:bold;font-size:1.8em;" href="feed.php?ttl='. ($ttl-86400) .'" title="Before"><</a></li>'."\n";
+    if (($ttl+86400) > time()) {
+        $out_html .= "\t\t\t".'<li><a style="text-align:center;font-weight:bold;font-size:1.8em;" disabled title="After">></a></li>'."\n";
+    } else {
+        $out_html .= "\t\t\t".'<li><a style="text-align:center;font-weight:bold;font-size:1.8em;" href="feed.php?ttl='. ($ttl+86400) .'" title="After">></a></li>'."\n";
+    }
     $out_html .= feed_list_html();
     $out_html .= "\t\t".'</ul>'."\n";
     $out_html .= "\t\t".'<div id="post-list-wrapper">'."\n";

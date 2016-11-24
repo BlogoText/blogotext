@@ -11,11 +11,10 @@
 #
 # *** LICENSE ***
 
-require_once dirname(getcwd()).'/inc/defines.php';
-require_once BT_ROOT.'admin/inc/inc.php';
+require_once 'inc/boot.php';
 
-$begin = microtime(true);
-auth_ttl();
+// dependancy
+require_once BT_ROOT.'admin/inc/addons.php';
 
 // traitement d’une action sur le module
 $erreurs = array();
@@ -49,7 +48,7 @@ foreach ($GLOBALS['addons'] as $addon) {
     $tableau[$addon['tag']]['status'] = $status;
 }
 
-afficher_html_head($GLOBALS['lang']['mesmodules']);
+tpl_show_html_head($GLOBALS['lang']['mesmodules']);
 
 echo '<div id="header">'."\n";
     echo '<div id="top">'."\n";

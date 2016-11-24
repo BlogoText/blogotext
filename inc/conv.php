@@ -11,55 +11,9 @@
 #
 # *** LICENSE ***
 
-function extraire_mots($texte)
-{
-    $texte = str_replace(array("\r", "\n", "\t"), array('', ' ', ' '), $texte); // removes \n, \r and tabs
-    $texte = strip_tags($texte); // removes HTML tags
-    $texte = preg_replace('#[!"\#$%&\'()*+,./:;<=>?@\[\]^_`{|}~«»“”…]#', ' ', $texte); // removes punctuation
-    $texte = trim(preg_replace('# {2,}#', ' ', $texte)); // remove consecutive spaces
-
-    $words = explode(' ', $texte);
-    foreach ($words as $i => $word) {
-        // remove short words & words with numbers
-        if (strlen($word) <= 4 or preg_match('#\d#', $word)) {
-            unset($words[$i]);
-        } elseif (preg_match('#\?#', utf8_decode(preg_replace('#&(.)(acute|grave|circ|uml|cedil|tilde|ring|slash|caron);#', '$1', $word)))) {
-            unset($words[$i]);
-        }
-    }
-
-    // keep only words that occure at least 3 times
-    $words = array_unique($words);
-    $keywords = array();
-    foreach ($words as $i => $word) {
-        if (substr_count($texte, $word) >= 3) {
-            $keywords[] = $word;
-        }
-    }
-    $keywords = array_unique($keywords);
-
-    natsort($keywords);
-    return implode($keywords, ', ');
-}
-
 function titre_url($title)
 {
     return trim(diacritique($title), '-');
-}
-
-// remove slashes if necessary
-function clean_txt($text)
-{
-    if (!get_magic_quotes_gpc()) {
-        return trim($text);
-    } else {
-        return trim(stripslashes($text));
-    }
-}
-
-function protect($text)
-{
-    return htmlspecialchars(clean_txt($text));
 }
 
 function diacritique($texte)
@@ -75,13 +29,6 @@ function diacritique($texte)
     $texte = strtolower($texte); // to lower case
     $texte = preg_replace('#[ ]+#', '-', $texte); // spaces => hyphens
     return $texte;
-}
-
-function rel2abs_admin($article)
-{
-    // if relative URI in path, make absolute paths (since /admin/ panel is 1 lv deeper) for href/src.
-    $article = preg_replace('#(src|href)=\"(?!(/|[a-z]+://))#i', '$1="../', $article);
-    return $article;
 }
 
 function parse_texte_paragraphs($texte)
@@ -154,90 +101,6 @@ function parse_texte_code($texte, $code_before)
         }
     }
     return $texte;
-}
-
-function markup_articles($texte)
-{
-    $texte = preg_replace("/(\r\n|\r\n\r|\n|\n\r|\r)/", "\r", $texte);
-    $tofind = array(
-        // Replace \r with \n when following HTML elements
-        '#<(.*?)>\r#',
-
-        // Jusitifications
-        /* left    */ '#\[left\](.*?)\[/left\]#s',
-        /* center  */ '#\[center\](.*?)\[/center\]#s',
-        /* right   */ '#\[right\](.*?)\[/right\]#s',
-        /* justify */ '#\[justify\](.*?)\[/justify\]#s',
-
-        // Misc
-        /* regex URL     */ '#([^"\[\]|])((http|ftp)s?://([^"\'\[\]<>\s]+))#i',
-        /* a href        */ '#\[([^[]+)\|([^[]+)\]#',
-        /* url           */ '#\[(https?://)([^[]+)\]#',
-        /* [img]         */ '#\[img\](.*?)(\|(.*?))?\[/img\]#s',
-        /* strong        */ '#\[b\](.*?)\[/b\]#s',
-        /* italic        */ '#\[i\](.*?)\[/i\]#s',
-        /* strike        */ '#\[s\](.*?)\[/s\]#s',
-        /* underline     */ '#\[u\](.*?)\[/u\]#s',
-        /* ul/li         */ '#\*\*(.*?)(\r|$)#s',  // br because of prev replace
-        /* ul/li         */ '#</ul>\r<ul>#s',
-        /* ol/li         */ '#\#\#(.*?)(\r|$)#s',  // br because of prev replace
-        /* ol/li         */ '#</ol>\r<ol>#s',
-        /* quote         */ '#\[quote\](.*?)\[/quote\]#s',
-        /* code          */ '#\[code\]\[/code\]#s',
-        /* code=language */ '#\[code=(\w+)\]\[/code\]#s',
-        /* color         */ '#\[color=(?:")?(\w+|\#(?:[0-9a-fA-F]{3}){1,2})(?:")?\](.*?)\[/color\]#s',
-        /* size          */ '#\[size=(\\\?")?([0-9]{1,})(\\\?")?\](.*?)\[/size\]#s',
-
-        // Adding some &nbsp;
-        '# (»|!|:|\?|;)#',
-        '#« #',
-    );
-    $toreplace = array(
-        // Replace \r with \n
-        '<$1>'."\n",
-
-        // Jusitifications
-        /* left    */ '<div style="text-align:left;">$1</div>',
-        /* center  */ '<div style="text-align:center;">$1</div>',
-        /* right   */ '<div style="text-align:right;">$1</div>',
-        /* justify */ '<div style="text-align:justify;">$1</div>',
-
-        // Misc
-        /* regex URL     */ '$1<a href="$2">$2</a>',
-        /* a href        */ '<a href="$2">$1</a>',
-        /* url           */ '<a href="$1$2">$2</a>',
-        /* [img]         */ '<img src="$1" alt="$3" />',
-        /* strong        */ '<b>$1</b>',
-        /* italic        */ '<em>$1</em>',
-        /* strike        */ '<del>$1</del>',
-        /* underline     */ '<u>$1</u>',
-        /* ul/li         */ '<ul><li>$1</li></ul>'."\r",
-        /* ul/li         */ "\r",
-        /* ol/li         */ '<ol><li>$1</li></ol>'."\r",
-        /* ol/li         */ '',
-        /* quote         */ '<blockquote>$1</blockquote>'."\r",
-        /* code          */ '<prebtcode></prebtcode>'."\r",
-        /* code=language */ '<prebtcode data-language="$1"></prebtcode>'."\r",
-        /* color         */ '<span style="color:$1;">$2</span>',
-        /* size          */ '<span style="font-size:$2pt;">$4</span>',
-
-        // Adding some &nbsp;
-        ' $1',
-        '« ',
-    );
-
-    // memorizes [code] tags contents before bbcode being appliyed
-    preg_match_all('#\[code(=(\w+))?\](.*?)\[/code\]#s', $texte, $code_contents, PREG_SET_ORDER);
-    // empty the [code] tags (content is in memory)
-    $texte_formate = preg_replace('#\[code(=(\w+))?\](.*?)\[/code\]#s', '[code$1][/code]', $texte);
-    // apply bbcode filter
-    $texte_formate = preg_replace($tofind, $toreplace, $texte_formate);
-    // apply <p>paragraphe</p> filter
-    $texte_formate = parse_texte_paragraphs($texte_formate);
-    // replace [code] elements with theire initial content
-    $texte_formate = parse_texte_code($texte_formate, $code_contents);
-
-    return $texte_formate;
 }
 
 function markup($texte)
@@ -321,47 +184,6 @@ function date_formate_iso($id)
     $timestamp = mktime($date['heure'], $date['minutes'], $date['secondes'], $date['mois'], $date['jour'], $date['annee']);
     $date_iso = date('c', $timestamp);
     return $date_iso;
-}
-
-// From a filesize (like "20M"), returns a size in bytes.
-function return_bytes($val)
-{
-    $val = trim($val);
-    $prefix = strtolower($val[strlen($val)-1]);
-    switch ($prefix) {
-        case 'g':
-            $val *= 1024;
-            break;
-        case 'm':
-            $val *= 1024;
-            break;
-        case 'k':
-            $val *= 1024;
-            break;
-    }
-    return $val;
-}
-
-// from a filesize in bytes, returns computed size in kiB, MiB, GiB…
-function taille_formate($taille)
-{
-    $prefixe = array (
-             $GLOBALS['lang']['byte_symbol'],
-        'ki'.$GLOBALS['lang']['byte_symbol'],
-        'Mi'.$GLOBALS['lang']['byte_symbol'],
-        'Gi'.$GLOBALS['lang']['byte_symbol'],
-        'Ti'.$GLOBALS['lang']['byte_symbol'],
-    );
-    $dix = 0;
-    while ($taille / (pow(2, 10*$dix)) > 1024) {
-        $dix++;
-    }
-    $taille = $taille / (pow(2, 10*$dix));
-    if ($dix != 0) {
-        $taille = sprintf('%.1f', $taille);
-    }
-
-    return $taille.' '.$prefixe[$dix];
 }
 
 function en_lettres($captchavalue)

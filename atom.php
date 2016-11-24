@@ -12,4 +12,4 @@
 # *** LICENSE ***
 
 $_GET['format'] = 'atom';
-include 'flux.php';
+include 'feed.php';

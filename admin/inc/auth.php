@@ -33,6 +33,11 @@ function auth_kill_session()
     redirection('auth.php');
 }
 
+function get_ip()
+{
+    return (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) ? htmlspecialchars($_SERVER['HTTP_X_FORWARDED_FOR']) : htmlspecialchars($_SERVER['REMOTE_ADDR']);
+}
+
 /**
  * check som stuff about the session
  *

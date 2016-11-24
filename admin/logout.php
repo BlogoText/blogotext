@@ -10,8 +10,6 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 #
 
-require_once dirname(getcwd()).'/inc/defines.php';
-require_once BT_ROOT.'admin/inc/inc.php';
+require_once 'inc/boot.php';
 
-auth_ttl();
 auth_kill_session();

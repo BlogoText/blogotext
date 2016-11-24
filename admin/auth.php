@@ -11,13 +11,10 @@
 #
 # *** LICENSE ***
 
-require_once dirname(getcwd()).'/inc/defines.php';
+// disallow temporary auth_ttl()
+define('BT_RUN_LOGIN', 1);
 
-if (!is_file(DIR_CONFIG.'user.ini') || !is_file(DIR_CONFIG.'prefs.php')) {
-    exit(header('Location: install.php'));
-}
-
-require_once BT_ROOT.'admin/inc/auth.php';
+require_once 'inc/boot.php';
 
 $max_attemps = 6; // max attempts before blocking login page
 $wait_time = 30;   // time to wait before unblocking login page, in minutes
@@ -71,7 +68,7 @@ if (isset($_POST['_verif_envoi']) and auth_is_valid($_POST['nom_utilisateur'], $
     exit(header('Location: '.$location));
 } else { // On sort…
     // …et affiche la page d'auth
-    afficher_html_head('Identification');
+    tpl_show_html_head('Identification');
     echo '<div id="axe">'."\n";
     echo '<div id="pageauth">'."\n";
     echo '<h1>'.BLOGOTEXT_NAME.'</h1>'."\n";

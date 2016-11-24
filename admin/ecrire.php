@@ -11,78 +11,226 @@
 #
 # *** LICENSE ***
 
-require_once dirname(getcwd()).'/inc/defines.php';
-require_once BT_ROOT.'admin/inc/inc.php';
+require_once 'inc/boot.php';
 
-$begin = microtime(true);
-auth_ttl();
+
 $GLOBALS['db_handle'] = open_base();
 
+
+// POST ARTICLE
+function markup_articles($texte)
+{
+    $texte = preg_replace("/(\r\n|\r\n\r|\n|\n\r|\r)/", "\r", $texte);
+    $tofind = array(
+        // Replace \r with \n when following HTML elements
+        '#<(.*?)>\r#',
+
+        // Jusitifications
+        /* left    */ '#\[left\](.*?)\[/left\]#s',
+        /* center  */ '#\[center\](.*?)\[/center\]#s',
+        /* right   */ '#\[right\](.*?)\[/right\]#s',
+        /* justify */ '#\[justify\](.*?)\[/justify\]#s',
+
+        // Misc
+        /* regex URL     */ '#([^"\[\]|])((http|ftp)s?://([^"\'\[\]<>\s]+))#i',
+        /* a href        */ '#\[([^[]+)\|([^[]+)\]#',
+        /* url           */ '#\[(https?://)([^[]+)\]#',
+        /* [img]         */ '#\[img\](.*?)(\|(.*?))?\[/img\]#s',
+        /* strong        */ '#\[b\](.*?)\[/b\]#s',
+        /* italic        */ '#\[i\](.*?)\[/i\]#s',
+        /* strike        */ '#\[s\](.*?)\[/s\]#s',
+        /* underline     */ '#\[u\](.*?)\[/u\]#s',
+        /* ul/li         */ '#\*\*(.*?)(\r|$)#s',  // br because of prev replace
+        /* ul/li         */ '#</ul>\r<ul>#s',
+        /* ol/li         */ '#\#\#(.*?)(\r|$)#s',  // br because of prev replace
+        /* ol/li         */ '#</ol>\r<ol>#s',
+        /* quote         */ '#\[quote\](.*?)\[/quote\]#s',
+        /* code          */ '#\[code\]\[/code\]#s',
+        /* code=language */ '#\[code=(\w+)\]\[/code\]#s',
+        /* color         */ '#\[color=(?:")?(\w+|\#(?:[0-9a-fA-F]{3}){1,2})(?:")?\](.*?)\[/color\]#s',
+        /* size          */ '#\[size=(\\\?")?([0-9]{1,})(\\\?")?\](.*?)\[/size\]#s',
+
+        // Adding some &nbsp;
+        '# (»|!|:|\?|;)#',
+        '#« #',
+    );
+    $toreplace = array(
+        // Replace \r with \n
+        '<$1>'."\n",
+
+        // Jusitifications
+        /* left    */ '<div style="text-align:left;">$1</div>',
+        /* center  */ '<div style="text-align:center;">$1</div>',
+        /* right   */ '<div style="text-align:right;">$1</div>',
+        /* justify */ '<div style="text-align:justify;">$1</div>',
+
+        // Misc
+        /* regex URL     */ '$1<a href="$2">$2</a>',
+        /* a href        */ '<a href="$2">$1</a>',
+        /* url           */ '<a href="$1$2">$2</a>',
+        /* [img]         */ '<img src="$1" alt="$3" />',
+        /* strong        */ '<b>$1</b>',
+        /* italic        */ '<em>$1</em>',
+        /* strike        */ '<del>$1</del>',
+        /* underline     */ '<u>$1</u>',
+        /* ul/li         */ '<ul><li>$1</li></ul>'."\r",
+        /* ul/li         */ "\r",
+        /* ol/li         */ '<ol><li>$1</li></ol>'."\r",
+        /* ol/li         */ '',
+        /* quote         */ '<blockquote>$1</blockquote>'."\r",
+        /* code          */ '<prebtcode></prebtcode>'."\r",
+        /* code=language */ '<prebtcode data-language="$1"></prebtcode>'."\r",
+        /* color         */ '<span style="color:$1;">$2</span>',
+        /* size          */ '<span style="font-size:$2pt;">$4</span>',
+
+        // Adding some &nbsp;
+        ' $1',
+        '« ',
+    );
+
+    // memorizes [code] tags contents before bbcode being appliyed
+    preg_match_all('#\[code(=(\w+))?\](.*?)\[/code\]#s', $texte, $code_contents, PREG_SET_ORDER);
+    // empty the [code] tags (content is in memory)
+    $texte_formate = preg_replace('#\[code(=(\w+))?\](.*?)\[/code\]#s', '[code$1][/code]', $texte);
+    // apply bbcode filter
+    $texte_formate = preg_replace($tofind, $toreplace, $texte_formate);
+    // apply <p>paragraphe</p> filter
+    $texte_formate = parse_texte_paragraphs($texte_formate);
+    // replace [code] elements with theire initial content
+    $texte_formate = parse_texte_code($texte_formate, $code_contents);
+
+    return $texte_formate;
+}
+
+function init_post_article()
+{
+    //no $mode : it's always admin.
+    $formated_contenu = markup_articles(clean_txt($_POST['contenu']));
+    if ($GLOBALS['automatic_keywords'] == '0') {
+        $keywords = protect($_POST['mots_cles']);
+    } else {
+        $keywords = extraire_mots($_POST['titre'].' '.$formated_contenu);
+    }
+
+    $date = str4($_POST['annee']).str2($_POST['mois']).str2($_POST['jour']).str2($_POST['heure']).str2($_POST['minutes']).str2($_POST['secondes']);
+    $id = (isset($_POST['article_id']) and preg_match('#\d{14}#', $_POST['article_id'])) ? $_POST['article_id'] : $date;
+
+    $article = array (
+        'bt_id'             => $id,
+        'bt_date'           => $date,
+        'bt_title'          => protect($_POST['titre']),
+        'bt_abstract'       => (empty($_POST['chapo'])) ? '' : clean_txt($_POST['chapo']),
+        'bt_notes'          => protect($_POST['notes']),
+        'bt_content'        => $formated_contenu,
+        'bt_wiki_content'   => clean_txt($_POST['contenu']),
+        'bt_link'           => '', // this one is not needed yet. Maybe in the futur. I dunno why it is still in the DB…
+        'bt_keywords'       => $keywords,
+        'bt_tags'           => (isset($_POST['categories'])) ? htmlspecialchars(traiter_tags($_POST['categories'])) : '', // htmlSpecialChars() nedded to escape the (") since tags are put in a <input/>. (') are escaped in form_categories(), with addslashes – not here because of JS problems :/
+        'bt_statut'         => $_POST['statut'],
+        'bt_allow_comments' => $_POST['allowcomment'],
+    );
+
+    if (isset($_POST['ID']) and is_numeric($_POST['ID'])) { // ID only added on edit.
+        $article['ID'] = $_POST['ID'];
+    }
+    return $article;
+}
+
+// once form is initiated, and no errors are found, treat it (save it to DB).
+function traiter_form_billet($billet)
+{
+    if (isset($_POST['enregistrer']) and !isset($billet['ID'])) {
+        $result = bdd_article($billet, 'enregistrer-nouveau');
+        $redir = basename($_SERVER['SCRIPT_NAME']).'?post_id='.$billet['bt_id'].'&msg=confirm_article_maj';
+    } elseif (isset($_POST['enregistrer']) and isset($billet['ID'])) {
+        $result = bdd_article($billet, 'modifier-existant');
+        $redir = basename($_SERVER['SCRIPT_NAME']).'?post_id='.$billet['bt_id'].'&msg=confirm_article_ajout';
+    } elseif (isset($_POST['supprimer']) and isset($_POST['ID']) and is_numeric($_POST['ID'])) {
+        $result = bdd_article($billet, 'supprimer-existant');
+        try {
+            $sql = '
+                DELETE FROM commentaires
+                 WHERE bt_article_id=?';
+            $req = $GLOBALS['db_handle']->prepare($sql);
+            $req->execute(array($_POST['article_id']));
+        } catch (Exception $e) {
+            die('Erreur Suppr Comm associés: '.$e->getMessage());
+        }
+
+        $redir = 'articles.php?msg=confirm_article_suppr';
+    }
+    if ($result === true) {
+        flux_refresh_cache_lv1();
+        redirection($redir);
+    } else {
+        die($result);
+    }
+}
+
+function form_annee($year_shown)
+{
+    return '<input type="number" name="annee" max="'.(date('Y') + 3).'" value="'.$year_shown.'">'."\n";
+}
+
+function form_mois($mois_affiche)
+{
+    $mois = array(
+        $GLOBALS['lang']['janvier'],
+        $GLOBALS['lang']['fevrier'],
+        $GLOBALS['lang']['mars'],
+        $GLOBALS['lang']['avril'],
+        $GLOBALS['lang']['mai'],
+        $GLOBALS['lang']['juin'],
+        $GLOBALS['lang']['juillet'],
+        $GLOBALS['lang']['aout'],
+        $GLOBALS['lang']['septembre'],
+        $GLOBALS['lang']['octobre'],
+        $GLOBALS['lang']['novembre'],
+        $GLOBALS['lang']['decembre']
+    );
+    $ret = '<select name="mois">'."\n" ;
+    foreach ($mois as $option => $label) {
+        $ret .= "\t".'<option value="'.htmlentities($option).'"'.(($mois_affiche == $option) ? ' selected="selected"' : '').'>'.$label.'</option>'."\n";
+    }
+    $ret .= '</select>'."\n";
+    return $ret;
+}
+
+function form_jour($jour_affiche)
+{
+    for ($jour = 1; $jour <= 31; ++$jour) {
+        $jours[str2($jour)] = $jour;
+    }
+    $ret = '<select name="jour">'."\n";
+    foreach ($jours as $option => $label) {
+        $ret .= "\t".'<option value="'.htmlentities($option).'"'.(($jour_affiche == $option) ? ' selected="selected"' : '').'>'.htmlentities($label).'</option>'."\n";
+    }
+    $ret .= '</select>'."\n";
+    return $ret;
+}
+
+function form_statut($etat)
+{
+    $choix = array(
+        $GLOBALS['lang']['label_invisible'],
+        $GLOBALS['lang']['label_publie']
+    );
+    return form_select('statut', $choix, $etat, $GLOBALS['lang']['label_dp_etat']);
+}
+
+function form_allow_comment($etat)
+{
+    $choix= array(
+        $GLOBALS['lang']['fermes'],
+        $GLOBALS['lang']['ouverts']
+    );
+    return form_select('allowcomment', $choix, $etat, $GLOBALS['lang']['label_dp_commentaires']);
+}
 
 // Post form
 function afficher_form_billet($article, $erreurs)
 {
     $html = '';
-
-    function form_annee($year_shown)
-    {
-        return '<input type="number" name="annee" max="'.(date('Y') + 3).'" value="'.$year_shown.'">'."\n";
-    }
-
-    function form_mois($mois_affiche)
-    {
-        $mois = array(
-            $GLOBALS['lang']['janvier'],
-            $GLOBALS['lang']['fevrier'],
-            $GLOBALS['lang']['mars'],
-            $GLOBALS['lang']['avril'],
-            $GLOBALS['lang']['mai'],
-            $GLOBALS['lang']['juin'],
-            $GLOBALS['lang']['juillet'],
-            $GLOBALS['lang']['aout'],
-            $GLOBALS['lang']['septembre'],
-            $GLOBALS['lang']['octobre'],
-            $GLOBALS['lang']['novembre'],
-            $GLOBALS['lang']['decembre']
-        );
-        $ret = '<select name="mois">'."\n" ;
-        foreach ($mois as $option => $label) {
-            $ret .= "\t".'<option value="'.htmlentities($option).'"'.(($mois_affiche == $option) ? ' selected="selected"' : '').'>'.$label.'</option>'."\n";
-        }
-        $ret .= '</select>'."\n";
-        return $ret;
-    }
-
-    function form_jour($jour_affiche)
-    {
-        for ($jour = 1; $jour <= 31; ++$jour) {
-            $jours[str2($jour)] = $jour;
-        }
-        $ret = '<select name="jour">'."\n";
-        foreach ($jours as $option => $label) {
-            $ret .= "\t".'<option value="'.htmlentities($option).'"'.(($jour_affiche == $option) ? ' selected="selected"' : '').'>'.htmlentities($label).'</option>'."\n";
-        }
-        $ret .= '</select>'."\n";
-        return $ret;
-    }
-
-    function form_statut($etat)
-    {
-        $choix = array(
-            $GLOBALS['lang']['label_invisible'],
-            $GLOBALS['lang']['label_publie']
-        );
-        return form_select('statut', $choix, $etat, $GLOBALS['lang']['label_dp_etat']);
-    }
-
-    function form_allow_comment($etat)
-    {
-        $choix= array(
-            $GLOBALS['lang']['fermes'],
-            $GLOBALS['lang']['ouverts']
-        );
-        return form_select('allowcomment', $choix, $etat, $GLOBALS['lang']['label_dp_commentaires']);
-    }
 
     if ($article != '') {
         $defaut_jour = $article['jour'];
@@ -223,7 +371,8 @@ if (!empty($post)) {
 }
 
 // Start page
-afficher_html_head($titre_ecrire);
+tpl_show_html_head($titre_ecrire);
+
 echo '<div id="header">'."\n";
     echo '<div id="top">'."\n";
     tpl_show_msg();

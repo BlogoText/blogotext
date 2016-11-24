@@ -11,17 +11,13 @@
 #
 # *** LICENSE ***
 
-require_once dirname(getcwd()).'/inc/defines.php';
-require_once BT_ROOT.'admin/inc/inc.php';
-
-$begin = microtime(true);
-auth_ttl();
+require_once 'inc/boot.php';
 
 $GLOBALS['db_handle'] = open_base();
 $GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);
 $GLOBALS['liste_flux'] = open_serialzd_file(FEEDS_DB);
 
-afficher_html_head($GLOBALS['lang']['titre_maintenance']);
+tpl_show_html_head($GLOBALS['lang']['titre_maintenance']);
 
 echo '<div id="header">'."\n";
     echo '<div id="top">'."\n";

@@ -22,7 +22,6 @@
  */
 
 
-
 /**
  * hook system
  * push a new hook
@@ -35,7 +34,7 @@
 function hook_push($hook_name, $function, $priority = 10)
 {
     // prevent hook on admin side
-    if (defined('DONT_USE_HOOK')) {
+    if (defined('IS_IN_ADMIN')) {
         return true;
     }
 
@@ -44,7 +43,6 @@ function hook_push($hook_name, $function, $priority = 10)
     }
     $GLOBALS['hooks'][$hook_name][$priority][] = $function;
 }
-
 
 /**
  * remove all function for a hook
@@ -55,7 +53,6 @@ function hook_clean($hook_name)
         unset($GLOBALS['hooks'][$hook_name]);
     }
 }
-
 
 /**
  * the hook trigger
@@ -70,7 +67,7 @@ function hook_trigger($hook_name)
     $args = func_get_args();
 
     // prevent hook on admin side
-    if (defined('DONT_USE_HOOK')) {
+    if (defined('IS_IN_ADMIN')) {
         return $args;
     }
 
@@ -106,7 +103,7 @@ function hook_trigger($hook_name)
 function hook_check($hook_name, $args_count, $args, $must_die = true)
 {
     // prevent hook on admin side
-    if (defined('DONT_USE_HOOK')) {
+    if (defined('IS_IN_ADMIN')) {
         return true;
     }
 
@@ -162,7 +159,7 @@ function hook_trigger_and_check($hook_name)
     $args = func_get_args();
 
     // prevent hook on admin side
-    if (defined('DONT_USE_HOOK')) {
+    if (defined('IS_IN_ADMIN')) {
         return $args;
     }
 

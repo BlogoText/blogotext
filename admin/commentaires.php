@@ -11,11 +11,8 @@
 #
 # *** LICENSE ***
 
-require_once dirname(getcwd()).'/inc/defines.php';
-require_once BT_ROOT.'admin/inc/inc.php';
+require_once 'inc/boot.php';
 
-$begin = microtime(true);
-auth_ttl();
 
 $GLOBALS['db_handle'] = open_base();
 
@@ -194,7 +191,8 @@ function afficher_commentaire($comment, $with_link)
 
 // DEBUT PAGE
 $msgg = $GLOBALS['lang']['titre_commentaires']. (!empty($article_title) ?' | '.$article_title : '');
-afficher_html_head($msgg);
+
+tpl_show_html_head($msgg);
 
 echo '<div id="header">'."\n";
     echo '<div id="top">'."\n";

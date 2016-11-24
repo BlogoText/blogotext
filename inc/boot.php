@@ -11,12 +11,38 @@
 #
 # *** LICENSE ***
 
-// Use UTF-8 for all
+// sources :
+// require_once 'inc/defines.php';
+// require_once BT_ROOT.'inc/conf.php';
+// require_once BT_ROOT.'inc/inc.php';
+
+// it's not for 0.00000002 sec ...
+$begin = microtime(true);
+
+/**
+ * reorder by needs/priority
+ */
+
+ // Use UTF-8 for all
 mb_internal_encoding('UTF-8');
 
-// Timezone
-date_default_timezone_set($GLOBALS['fuseau_horaire']);
+/**
+ * Error reporting
+ *   - false for prod
+ *   - eventually true for dev or testing
+*/
+define('DEBUG', true);
 
+
+
+/**
+ * No special need to edit under this line
+ * Except if it's a dev core
+ */
+
+/**
+ * function to keep here
+ */
 
 // Import several .ini config files with this function
 function import_ini_file($file_path)
@@ -116,7 +142,9 @@ function secure_host_to_path($http_host)
         if ($type == 'path') {
             $tmp = explode('/', $val);
             foreach ($tmp as &$v) {
-                $v = idn_to_ascii($v);
+                if (!empty($v)) {
+                    $v = idn_to_ascii($v);
+                }
             }
             $val = implode('/', $tmp);
         } else {
@@ -144,6 +172,79 @@ function secure_host_to_path($http_host)
     return $path;
 }
 
+
+
+/**
+ * dev mod
+ */
+ini_set('display_errors', (int) DEBUG);
+if (DEBUG) {
+    error_reporting(-1);
+} else {
+    error_reporting(0);
+}
+
+
+
+//
+//
+// ULTRA TEMPORARY TODO FIX ÇAVAPASDUTOUT!
+// Ca me parait bon maintenant ;)
+//
+// This is to disable addon hooks on the admin part ...
+//
+// RemRem, tu voulais du compliqué alors qu'on peut faire simple ? :D
+// Méhhh
+//
+
+
+
+// constant for absolute PATH
+define('BT_ROOT', dirname(dirname(__file__)).'/');
+
+/**
+ * todo : preparation v4
+ */
+// Constants: folders
+define('DIR_ADDONS', BT_ROOT.'addons/');
+define('DIR_ADMIN', BT_ROOT.'admin/');
+define('DIR_BACKUP', BT_ROOT.'bt_backup/');
+define('DIR_CACHE', BT_ROOT.'.cache/');
+define('DIR_CONFIG', BT_ROOT.'config/');
+define('DIR_DATABASES', BT_ROOT.'databases/');
+define('DIR_DOCUMENTS', BT_ROOT.'files/');
+define('DIR_IMAGES', BT_ROOT.'img/');
+define('DIR_THEMES', BT_ROOT.'themes/');
+
+// Constants: databases
+define('FILES_DB', DIR_DATABASES.'files.php');
+define('FEEDS_DB', DIR_DATABASES.'rss.php');
+
+// Constants: general
+define('BLOGOTEXT_NAME', 'BlogoText');
+define('BLOGOTEXT_SITE', 'https://github.com/BoboTiG/blogotext');
+define('BLOGOTEXT_VERSION', '3.7.0-dev');
+define('MINIMAL_PHP_REQUIRED_VERSION', '5.5');
+define('BLOGOTEXT_UA', 'Mozilla/5.0 (Windows NT 10; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0');
+
+/**
+ * more constants after advanced boot
+ */
+
+
+
+// system is installed 
+if (!is_file(DIR_CONFIG.'user.ini') || !is_file(DIR_CONFIG.'prefs.php')) {
+    // if this is install script, dont redirect
+    if (!defined('BT_RUN_INSTALL')) {
+        if (defined('IS_IN_ADMIN')) {
+            exit(header('Location: install.php'));
+        } else {
+            exit(header('Location: admin/install.php'));
+        }
+    }
+}
+
 // if this request is about install or reset password
 if (is_file(DIR_CONFIG.'prefs.php')) {
     $supposed_path = secure_host_to_path($_SERVER['HTTP_HOST']);
@@ -153,6 +254,9 @@ if (is_file(DIR_CONFIG.'prefs.php')) {
     }
 
     if (version_compare(BLOGOTEXT_VERSION, '4.0', '<')) {
+        // load prefs.php
+        require_once DIR_CONFIG.'prefs.php';
+
         // check the http_host with $GLOBALS['racine']
         if (strpos($GLOBALS['racine'], $_SERVER['HTTP_HOST']) === false) {
             die('Your HTTP HOST doesn\'t match the config of this BlogoText');
@@ -161,12 +265,17 @@ if (is_file(DIR_CONFIG.'prefs.php')) {
         define('DIR_VAR', BT_ROOT.'var/'.$supposed_path.'/');
         define('DIR_VAR_ADDONS', DIR_VAR.'addons/');
         // check the var/domain.tld/ exits
+        // must create it, ready for v4
         if (!is_dir(DIR_VAR_ADDONS)) {
             require_once BT_ROOT.'inc/filesystem.php';
             if (!create_folder(DIR_VAR_ADDONS, true, true)) {
                 die('BlogoText can\'t create '. DIR_VAR_ADDONS .', please check your file system rights for this folder.');
             }
         }
+
+        define('URL_ROOT', $GLOBALS['racine'] . ((strrpos($GLOBALS['racine'], '/', -1) === false) ? '/' : '' ));
+        define('URL_VAR', URL_ROOT); // $GLOBALS['racine'] must end with '/'
+
     // need testing
     } else if (version_compare(BLOGOTEXT_VERSION, '4.0', '>=')) {
         // check for folder
@@ -174,20 +283,35 @@ if (is_file(DIR_CONFIG.'prefs.php')) {
             die('BlogoText can\'t find the var fold for your HTTP HOST');
         }
         // check for prefs.php
-        if (!import_ini_file(BT_ROOT.'var/'.$supposed_path.'/settings/prefs.ini')) {
+        if (!is_file(BT_ROOT.'var/'.$supposed_path.'/settings/prefs.php')) {
             die('BlogoText can\'t find or read your prefs.ini');
         }
+        require_once BT_ROOT.'var/'.$supposed_path.'/settings/prefs.php';
+
         if (strpos($GLOBALS['racine'], $_SERVER['HTTP_HOST']) === false) {
             die('Your HTTP HOST doesn\'t match the config of this BlogoText');
         }
         // seem's good ;)
+        define('URL_ROOT', $GLOBALS['racine'] . ((strrpos($GLOBALS['racine'], '/', -1) === false) ? '/' : '' ));
         define('DIR_VAR', BT_ROOT.'var/'.$supposed_path.'/');
+        define('URL_VAR', URL_ROOT .'var/'.$supposed_path.'/'); // $GLOBALS['racine'] must end with '/'
         define('DIR_VAR_ADDONS', DIR_VAR.'addons/');
     }
+
+    // Timezone
+    date_default_timezone_set($GLOBALS['fuseau_horaire']);
+
+    define('URL_DATABASES', URL_VAR.'databases/');
+    define('URL_DOCUMENTS', URL_VAR.'files/');
+    define('URL_IMAGES', URL_VAR.'img/');
+    define('ULR_THEMES', URL_VAR.'themes/');
 }
 /**
  * END OF /var/ part
  */
+
+// Constant for HTTP URL
+
 
 // INIT SOME VARS
 $GLOBALS['addons'] = array();
@@ -237,3 +361,26 @@ $GLOBALS['files_ext'] = array(
     'video' => array('mp4', 'ogv', 'avi', 'mpeg', 'mpg', 'flv', 'webm', 'mov', 'divx', 'rm', 'rmvb', 'wmv'),
     'other' => array(''), // par défaut
 );
+
+
+/**
+ * All file in /inc/*.php must be included here (except boot.php).
+ * TODO optimise: for the v4.0
+ */
+require_once BT_ROOT.'inc/addons.php';
+require_once BT_ROOT.'inc/common.php';
+require_once BT_ROOT.'inc/conv.php';
+require_once BT_ROOT.'inc/filesystem.php';
+require_once BT_ROOT.'inc/form.php';
+require_once BT_ROOT.'inc/hook.php';
+require_once BT_ROOT.'inc/html.php';
+require_once BT_ROOT.'inc/sqli.php';
+require_once BT_ROOT.'inc/them.php';
+require_once BT_ROOT.'inc/tpl.php';
+require_once BT_ROOT.'inc/util.php';
+
+/**
+ * init lang
+ */
+lang_set_list();
+lang_load_land(defined('IS_IN_ADMIN'));

@@ -11,22 +11,14 @@
 #
 # *** LICENSE ***
 
-require_once dirname(getcwd()).'/inc/defines.php';
-require_once BT_ROOT.'inc/inc.php';
-require_once BT_ROOT.'admin/inc/inc.php';
+require_once 'inc/boot.php';
 
-if (!is_file(DIR_CONFIG.'user.ini') || !is_file(DIR_CONFIG.'prefs.php')) {
-    redirection('Location: install.php');
-}
-
-$begin = microtime(true);
-auth_ttl();
 
 // Open bases
 $GLOBALS['db_handle'] = open_base();
 $GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);
 
-afficher_html_head($GLOBALS['lang']['label_resume']);
+tpl_show_html_head($GLOBALS['lang']['label_resume']);
 
 echo '<div id="header">'."\n";
 echo '<div id="top">'."\n";

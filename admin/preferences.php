@@ -11,11 +11,9 @@
 #
 # *** LICENSE ***
 
-require_once dirname(getcwd()).'/inc/defines.php';
-require_once BT_ROOT.'admin/inc/inc.php';
+require_once 'inc/boot.php';
 
-$begin = microtime(true);
-auth_ttl();
+
 
 $erreurs_form = array();
 
@@ -424,7 +422,8 @@ if (isset($_POST['_verif_envoi'])) {
     }
 }
 
-afficher_html_head($GLOBALS['lang']['preferences']);
+tpl_show_html_head($GLOBALS['lang']['preferences']);
+
     echo '<div id="header">'."\n";
         echo '<div id="top">'."\n";
         tpl_show_msg();

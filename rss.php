@@ -12,4 +12,4 @@
 # *** LICENSE ***
 
 $_GET['format'] = 'rss';
-include 'flux.php';
+include 'feed.php';

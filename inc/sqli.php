@@ -11,6 +11,38 @@
 #
 # *** LICENSE ***
 
+
+function extraire_mots($texte)
+{
+    $texte = str_replace(array("\r", "\n", "\t"), array('', ' ', ' '), $texte); // removes \n, \r and tabs
+    $texte = strip_tags($texte); // removes HTML tags
+    $texte = preg_replace('#[!"\#$%&\'()*+,./:;<=>?@\[\]^_`{|}~«»“”…]#', ' ', $texte); // removes punctuation
+    $texte = trim(preg_replace('# {2,}#', ' ', $texte)); // remove consecutive spaces
+
+    $words = explode(' ', $texte);
+    foreach ($words as $i => $word) {
+        // remove short words & words with numbers
+        if (strlen($word) <= 4 or preg_match('#\d#', $word)) {
+            unset($words[$i]);
+        } elseif (preg_match('#\?#', utf8_decode(preg_replace('#&(.)(acute|grave|circ|uml|cedil|tilde|ring|slash|caron);#', '$1', $word)))) {
+            unset($words[$i]);
+        }
+    }
+
+    // keep only words that occure at least 3 times
+    $words = array_unique($words);
+    $keywords = array();
+    foreach ($words as $i => $word) {
+        if (substr_count($texte, $word) >= 3) {
+            $keywords[] = $word;
+        }
+    }
+    $keywords = array_unique($keywords);
+
+    natsort($keywords);
+    return implode($keywords, ', ');
+}
+
 /*  Creates a new BlogoText base.
     if file does not exists, it is created, as well as the tables.
     if file does exists, tables are checked and created if not exists
@@ -176,7 +208,7 @@ function liste_elements($query, $array, $data_type)
         }
 
         // prevent use hook on admin side
-        if (!defined('DONT_USE_HOOK')) {
+        if (!defined('IS_IN_ADMIN')) {
             $tmp_hook = hook_trigger_and_check('list_items', $return, $data_type);
             if ($tmp_hook !== false) {
                 $return = $tmp_hook['1'];
@@ -242,48 +274,6 @@ function init_list_comments($comment)
     $comment['bt_link'] = get_blogpath($comment['bt_article_id'], $comment['bt_title']).'#'.$comment['anchor'];
     $comment = array_merge($comment, decode_id($comment['bt_id']));
     return $comment;
-}
-
-// POST ARTICLE
-/*
- * On post of an article (always on admin sides)
- * gets posted informations and turn them into
- * an array
- *
- */
-
-function init_post_article()
-{
-    //no $mode : it's always admin.
-    $formated_contenu = markup_articles(clean_txt($_POST['contenu']));
-    if ($GLOBALS['automatic_keywords'] == '0') {
-        $keywords = protect($_POST['mots_cles']);
-    } else {
-        $keywords = extraire_mots($_POST['titre'].' '.$formated_contenu);
-    }
-
-    $date = str4($_POST['annee']).str2($_POST['mois']).str2($_POST['jour']).str2($_POST['heure']).str2($_POST['minutes']).str2($_POST['secondes']);
-    $id = (isset($_POST['article_id']) and preg_match('#\d{14}#', $_POST['article_id'])) ? $_POST['article_id'] : $date;
-
-    $article = array (
-        'bt_id'             => $id,
-        'bt_date'           => $date,
-        'bt_title'          => protect($_POST['titre']),
-        'bt_abstract'       => (empty($_POST['chapo'])) ? '' : clean_txt($_POST['chapo']),
-        'bt_notes'          => protect($_POST['notes']),
-        'bt_content'        => $formated_contenu,
-        'bt_wiki_content'   => clean_txt($_POST['contenu']),
-        'bt_link'           => '', // this one is not needed yet. Maybe in the futur. I dunno why it is still in the DB…
-        'bt_keywords'       => $keywords,
-        'bt_tags'           => (isset($_POST['categories'])) ? htmlspecialchars(traiter_tags($_POST['categories'])) : '', // htmlSpecialChars() nedded to escape the (") since tags are put in a <input/>. (') are escaped in form_categories(), with addslashes – not here because of JS problems :/
-        'bt_statut'         => $_POST['statut'],
-        'bt_allow_comments' => $_POST['allowcomment'],
-    );
-
-    if (isset($_POST['ID']) and is_numeric($_POST['ID'])) { // ID only added on edit.
-        $article['ID'] = $_POST['ID'];
-    }
-    return $article;
 }
 
 // POST COMMENT
@@ -633,23 +623,6 @@ function bdd_commentaire($commentaire, $what)
     }
 }
 
-// FOR COMMENTS : RETUNS nb_com per author
-function nb_entries_as($table, $what)
-{
-    $result = array();
-    $query = "
-        SELECT count($what) AS nb, $what
-          FROM $table
-         GROUP BY $what
-         ORDER BY nb DESC";
-    try {
-        $result = $GLOBALS['db_handle']->query($query)->fetchAll(PDO::FETCH_ASSOC);
-        return $result;
-    } catch (Exception $e) {
-        die('Erreur 0349 : '.$e->getMessage());
-    }
-}
-
 function list_all_tags($table, $statut)
 {
     try {
@@ -679,60 +652,4 @@ function list_all_tags($table, $statut)
     sort($tab_tags);
     unset($tab_tags['']);
     return array_count_values($tab_tags);
-}
-
-/* Enregistre le flux dans une BDD.
-   $flux est un Array avec les données dedans.
-    $flux ne contient que les entrées qui doivent être enregistrées
-     (la recherche de doublons est fait en amont)
-*/
-function bdd_rss($flux, $what)
-{
-    if ($what == 'enregistrer-nouveau') {
-        try {
-            $GLOBALS['db_handle']->beginTransaction();
-            foreach ($flux as $post) {
-                $req = $GLOBALS['db_handle']->prepare('INSERT INTO rss
-                (  bt_id,
-                    bt_date,
-                    bt_title,
-                    bt_link,
-                    bt_feed,
-                    bt_content,
-                    bt_statut,
-                    bt_bookmarked,
-                    bt_folder
-                )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
-                $req->execute(array(
-                    $post['bt_id'],
-                    $post['bt_date'],
-                    $post['bt_title'],
-                    $post['bt_link'],
-                    $post['bt_feed_url'],
-                    $post['bt_content'],
-                    1,
-                    0,
-                    $post['bt_folder']
-                ));
-            }
-            $GLOBALS['db_handle']->commit();
-            return true;
-        } catch (Exception $e) {
-            return 'Erreur 5867-rss-add-sql : '.$e->getMessage();
-        }
-    }
-}
-
-// FOR RSS : RETUNS list of GUID in whole DB
-function rss_list_guid()
-{
-    $result = array();
-    $query = 'SELECT bt_id FROM rss';
-    try {
-        $result = $GLOBALS['db_handle']->query($query)->fetchAll(PDO::FETCH_COLUMN, 0);
-        return $result;
-    } catch (Exception $e) {
-        die('Erreur 0329-rss-get_guid : '.$e->getMessage());
-    }
 }

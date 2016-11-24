@@ -11,7 +11,9 @@
 #
 # *** LICENSE ***
 
-require_once dirname(getcwd()).'/inc/defines.php';
+require_once 'inc/boot.php';
+
+// dependancy
 require_once BT_ROOT.'admin/inc/addons.php';
 
 /**
@@ -19,8 +21,8 @@ require_once BT_ROOT.'admin/inc/addons.php';
  * TODO FIX: file name is error prone (ambigue)
  */
 
-$begin = microtime(true);
-auth_ttl();
+
+
 
 // load addons
 $addons_status = addon_list_addons();
@@ -39,7 +41,7 @@ if (isset($_POST['_verif_envoi']) && isset($_POST['action_type'])) {
 }
 
 
-afficher_html_head($GLOBALS['lang']['mesmodules']);
+tpl_show_html_head($GLOBALS['lang']['mesmodules']);
 
 echo '<div id="header">'."\n";
     echo '<div id="top">'."\n";

@@ -11,6 +11,49 @@
 #
 # *** LICENSE ***
 
+/**
+ * return the absolute and clean path
+ * used for debug and for security
+ *
+ * @param string $path, the absolute path from your BT directory
+ * @param bool $check, run some check, and correct if possible (recommended for dev/debug use only !)
+ * @param bool $alert, show alert if something got wrong (recommended for dev/debug use only !)
+ * @return bool|string, the absolute path for your host
+ */
+function get_path($path, $check = false, $alert = false)
+{
+    if ($check === true) {
+        if (strpos($path, '/') !== 0) {
+            if ($alert === true) {
+                var_dump('get_path() : path not starting with "/" ('. $path .')');
+            }
+            return false;
+        }
+        if (strpos($path, BT_DIR) === 0) {
+            if ($alert === true) {
+                var_dump('get_path() : seem\'s already an absolute path ('. $path .')');
+            }
+            return false;
+        }
+        if (strpos($path, './') !== false) {
+            if ($alert === true) {
+                var_dump('get_path() : use of "./" or "../", try to hack ? ('. $path .')');
+            }
+            return false;
+        }
+    }
+
+    $return = BT_DIR .'/'. $path;
+    $return = str_replace(array('/', '\\', '/\\'), '/', $return);
+    while (strstr($return, '\\\\')) {
+        $return = str_replace('\\\\', '\\', $return);
+    }
+    while (strstr($return, '//')) {
+        $return = str_replace('//', '/', $return);
+    }
+    return $return;
+}
+
 
 /**
  * Note: put here because no one else use it.
