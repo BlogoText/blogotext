@@ -26,40 +26,40 @@ function create_folder($dossier, $make_htaccess = false, $recursive = false)
     if (is_dir($dossier)) {
         return true;
     }
-    if (mkdir($dossier, 0777, $recursive)) {
-        fichier_index($dossier); // file index.html to prevent directory listing
+    if (mkdir($dossier, 0755, $recursive)) {
+        create_index_file($dossier);
         if ($make_htaccess) {
-            fichier_htaccess($dossier); // to prevent direct access to files
+            create_htaccess($dossier);
         }
         return true;
     }
     return false;
 }
 
-function fichier_index($dossier)
+/**
+ * Prevent directory listing.
+ */
+function create_index_file($folder)
 {
-    $content = '<html>'."\n";
-    $content .= "\t".'<head>'."\n";
-    $content .= "\t\t".'<title>Access denied</title>'."\n";
-    $content .= "\t".'</head>'."\n";
-    $content .= "\t".'<body>'."\n";
-    $content .= "\t\t".'<a href="/">Retour a la racine du site</a>'."\n";
-    $content .= "\t".'</body>'."\n";
-    $content .= '</html>';
-    $index_html = $dossier.'/index.html';
+    $content = "<?php\nexit(header('Location: ../'));\n";
+    $file = $folder.'/index.php';
 
-    return file_put_contents($index_html, $content) !== false;
+    return file_put_contents($file, $content) !== false;
 }
 
-function fichier_htaccess($dossier)
+
+/**
+ * Prevent direct access to files.
+ */
+function create_htaccess($folder)
 {
     $content = '<Files *>'."\n";
     $content .= 'Order allow,deny'."\n";
     $content .= 'Deny from all'."\n";
     $content .= '</Files>'."\n";
-    $htaccess = $dossier.'/.htaccess';
+    $file = $folder.'/.htaccess';
 
-    return file_put_contents($htaccess, $content) !== false;
+    return file_put_contents($file, $content) !== false;
 }
 
 function flux_refresh_cache_lv1()
