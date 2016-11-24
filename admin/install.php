@@ -135,7 +135,7 @@ function install_form_2_echo($erreurs = '')
     // bug fix for DIRECTORY_SEPARATOR
     $lien = str_replace('\\', '/', $lien);
     echo '<p>';
-    echo '<label for="racine">'.$GLOBALS['lang']['pref_racine'].' </label><input type="text" name="racine" id="racine" size="30" value="'.$lien.'" class="text"  placeholder="'.$lien.'" required />'."\n";
+    echo '<label for="racine">'.$GLOBALS['lang']['pref_racine'].' </label><input type="url" name="racine" id="racine" size="30" value="'.$lien.'" class="text"  placeholder="'.$lien.'" required />'."\n";
     echo '</p>'."\n";
     echo hidden_input('comm_defaut_status', 1);
     echo hidden_input('langue', $GLOBALS['lang']['id']);
@@ -329,9 +329,12 @@ function install_form_3_proceed()
 function install_form_1_valid()
 {
     $erreurs = array();
-    if (!strlen(trim($_POST['langue']))) {
+    $lang = (string)filter_input(INPUT_POST, 'langue');
+
+    if (!$lang) {
         $erreurs[] = 'Vous devez choisir une langue / You have to choose a language';
     }
+
     return $erreurs;
 }
 
@@ -342,22 +345,26 @@ function install_form_1_valid()
 function install_form_2_valid()
 {
     $erreurs = array();
-    if (!strlen(trim($_POST['identifiant']))) {
+    $username = (string)filter_input(INPUT_POST, 'identifiant');
+    $password = (string)filter_input(INPUT_POST, 'mdp');
+    $url = (string)filter_input(INPUT_POST, 'racine', FILTER_VALIDATE_URL);
+
+    if (!$username) {
         $erreurs[] = $GLOBALS['lang']['err_prefs_identifiant'];
-    }
-    if (preg_match('#[=\'"\\\\|]#iu', $_POST['identifiant'])) {
+    } elseif (preg_match('#[=\'"\\\\|]#iu', $username)) {
         $erreurs[] = $GLOBALS['lang']['err_prefs_id_syntaxe'];
     }
-    if ((strlen($_POST['mdp']) < 6)) {
+
+    if ((strlen($password) < 6)) {
         $erreurs[] = $GLOBALS['lang']['err_prefs_mdp'] ;
     }
-    if (!strlen(trim($_POST['racine'])) or !preg_match('#^(https?://).*/$#', $_POST['racine'])) {
+
+    if (!$url) {
         $erreurs[] = $GLOBALS['lang']['err_prefs_racine'];
-    } elseif (!preg_match('/^https?:\/\//', $_POST['racine'])) {
-        $erreurs[] = $GLOBALS['lang']['err_prefs_racine_http'];
-    } elseif (!preg_match('/\/$/', $_POST['racine'])) {
+    } elseif (!preg_match('/\/$/', $url)) {
         $erreurs[] = $GLOBALS['lang']['err_prefs_racine_slash'];
     }
+
     return $erreurs;
 }
 
@@ -368,24 +375,32 @@ function install_form_2_valid()
 function install_form_3_valid()
 {
     $erreurs = array();
-    if ($_POST['sgdb'] == 'mysql') {
-        if (!strlen(trim($_POST['mysql_user']))) {
+    $sgdb = (string)filter_input(INPUT_POST, 'sgdb');
+
+    if ($sgdb == 'mysql') {
+        $user = (string)filter_input(INPUT_POST, 'mysql_user');
+        $password = (string)filter_input(INPUT_POST, 'mysql_passwd');
+        $database = (string)filter_input(INPUT_POST, 'mysql_db');
+        $host = (string)filter_input(INPUT_POST, 'mysql_host');
+
+        if (!$user) {
             $erreurs[] = $GLOBALS['lang']['install_err_mysql_usr_empty'];
         }
-        if (!strlen(trim($_POST['mysql_passwd']))) {
+        if (!$password) {
             $erreurs[] = $GLOBALS['lang']['install_err_mysql_pss_empty'];
         }
-        if (!strlen(trim($_POST['mysql_db']))) {
+        if (!$database) {
             $erreurs[] = $GLOBALS['lang']['install_err_mysql_dba_empty'];
         }
-        if (!strlen(trim($_POST['mysql_host']))) {
+        if (!$host) {
             $erreurs[] = $GLOBALS['lang']['install_err_mysql_hst_empty'];
         }
 
-        if (test_connection_mysql() == false) {
+        if (!test_connection_mysql()) {
             $erreurs[] = $GLOBALS['lang']['install_err_mysql_connect'];
         }
     }
+
     return $erreurs;
 }
 
