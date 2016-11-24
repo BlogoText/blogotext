@@ -1,14 +1,14 @@
 <?php
 # *** LICENSE ***
 # This file is part of BlogoText.
-# http://lehollandaisvolant.net/blogotext/
+# https://github.com/BoboTiG/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2013 Timo Van Neerden.
+# 2010-2016 Timo Van Neerden.
+# 2016-.... Mickaël Schoentgen and the community.
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
-#
 # *** LICENSE ***
 
 
@@ -50,7 +50,7 @@ function links_db_upd($link)
 {
     try {
         $req = $GLOBALS['db_handle']->prepare('
-             UPDATE links 
+             UPDATE links
                 SET
                     bt_content=?,
                     bt_wiki_content=?,
