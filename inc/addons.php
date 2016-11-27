@@ -1076,7 +1076,7 @@ function addon_hook_push()
 
 /**
  * perform action from button
- * must be call by 
+ * must be call by the form in /admin/addon-settings.php
  */
 function addon_buttons_action_process($addon_id)
 {

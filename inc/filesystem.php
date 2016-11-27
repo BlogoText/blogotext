@@ -29,7 +29,7 @@ function create_folder($path, $make_htaccess = false, $recursive = false)
     if (mkdir($path, 0755, $recursive)) {
         // "secure childs"
         if ($recursive === true) {
-            folder_secure_childs($path, $make_htaccess);
+            folder_secure_parents($path, $make_htaccess);
         }
 
         create_index_file($path);
@@ -44,7 +44,7 @@ function create_folder($path, $make_htaccess = false, $recursive = false)
 /**
  * secure childs
  */
-function folder_secure_childs($path, $make_htaccess = false)
+function folder_secure_parents($path, $make_htaccess = false)
 {
     $ctrl = mb_strlen(BT_ROOT);
     while (mb_strlen($path) > $ctrl) {
