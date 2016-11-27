@@ -18,12 +18,17 @@
 require_once __dir__.'/inc/boot.php';
 
 /**
+ * test, if something go wrong, display a 10x10px red png
+ */
+
+/**
  * Download an avatar or a favicon.
  *
  * favatar = FAVicon + avATAR
  */
 function favatar()
 {
+    // no test on result ? never fail ? common ...
     function download($url, $output)
     {
         /*$curl_handle = curl_init();
@@ -50,13 +55,14 @@ function favatar()
     $query = (string)filter_input(INPUT_GET, 'q');
 
     if (!$query && !in_array($what, array('avatar', 'favicon'))) {
-        exit(header('HTTP/1.1 400 Bad Request'));
+        // exit(header('HTTP/1.1 400 Bad Request'));
+        // 10/10px red png, better than a 404 or an 400 (SEO)
+        header('Content-Type: image/png');
+        exit(base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8zsHxn4EIwDiqkL4KAas0FEc2dAhHAAAAAElFTkSuQmCC'));
     }
 
 
     if ($what == 'favicon') {
-        $targetDir = DIR_CACHE.'favicons/';
-
         // Full URL given?
         $domain = parse_url($query, PHP_URL_HOST);
         // Or only domain name?
@@ -65,19 +71,24 @@ function favatar()
         }
         // Or some unusable crap?
         if ($domain === null) {
-            exit(header('HTTP/1.1 400 Bad Request'));
+            // exit(header('HTTP/1.1 400 Bad Request'));
+            // 10/10px red png, better than a 404 or an 400 (SEO)
+            header('Content-Type: image/png');
+            exit(base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8zsHxn4EIwDiqkL4KAas0FEc2dAhHAAAAAElFTkSuQmCC'));
         }
 
+        $targetDir = DIR_CACHE.'favicons/';
         $sourceFile = 'https://www.google.com/s2/favicons?domain='.$domain;
         $targetFile = $targetDir.md5($domain).'.png';
     } else {
-        $targetDir = DIR_CACHE.'avatars/';
-
         // Strip out anything that doesn't belong in a MD5 hash.
         // Still 32 characters? If no, given hash wasn't genuine. die.
         $hash = preg_replace('[^a-f0-9]', '', $query);
         if (strlen($hash) != 32) {
-            exit(header('HTTP/1.1 400 Bad Request'));
+            // exit(header('HTTP/1.1 400 Bad Request'));
+            // 10/10px red png, better than a 404 or an 400 (SEO)
+            header('Content-Type: image/png');
+            exit(base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8zsHxn4EIwDiqkL4KAas0FEc2dAhHAAAAAElFTkSuQmCC'));
         }
 
         // Try to get size
@@ -92,6 +103,7 @@ function favatar()
             $service = 'monsterid';
         }
 
+        $targetDir = DIR_CACHE.'avatars/';
         // We use the Libravatar service which will reditect to Gravatar if not found
         $sourceFile = 'http://cdn.libravatar.org/avatar/'.$hash.'?s='.$size.'&d='.$service;
         $targetFile = $targetDir.md5($hash).'.png';
@@ -102,11 +114,16 @@ function favatar()
 
     // No cached file or expired?
     if (!is_file($targetFile) || (time() - filemtime($targetFile)) > $expire) {
-        if (!is_dir($targetDir)) {
-            mkdir($targetDir);
+        if (!is_dir($targetDir) && !create_folder($targetDir, true, true)) {
+            // mkdir($targetDir);
+            header('Content-Type: image/png');
+            exit(base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8zsHxn4EIwDiqkL4KAas0FEc2dAhHAAAAAElFTkSuQmCC'));
+        } else {
+            // need a test/return false
+            download($sourceFile, $targetFile);
         }
-        download($sourceFile, $targetFile);
     }
+
 
     // Send file to browser
     header('Content-Type: image/png');

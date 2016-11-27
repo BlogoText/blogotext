@@ -17,6 +17,37 @@ require_once 'inc/boot.php';
 $GLOBALS['db_handle'] = open_base();
 
 
+function extraire_mots($texte)
+{
+    $texte = str_replace(array("\r", "\n", "\t"), array('', ' ', ' '), $texte); // removes \n, \r and tabs
+    $texte = strip_tags($texte); // removes HTML tags
+    $texte = preg_replace('#[!"\#$%&\'()*+,./:;<=>?@\[\]^_`{|}~«»“”…]#', ' ', $texte); // removes punctuation
+    $texte = trim(preg_replace('# {2,}#', ' ', $texte)); // remove consecutive spaces
+
+    $words = explode(' ', $texte);
+    foreach ($words as $i => $word) {
+        // remove short words & words with numbers
+        if (strlen($word) <= 4 or preg_match('#\d#', $word)) {
+            unset($words[$i]);
+        } elseif (preg_match('#\?#', utf8_decode(preg_replace('#&(.)(acute|grave|circ|uml|cedil|tilde|ring|slash|caron);#', '$1', $word)))) {
+            unset($words[$i]);
+        }
+    }
+
+    // keep only words that occure at least 3 times
+    $words = array_unique($words);
+    $keywords = array();
+    foreach ($words as $i => $word) {
+        if (substr_count($texte, $word) >= 3) {
+            $keywords[] = $word;
+        }
+    }
+    $keywords = array_unique($keywords);
+
+    natsort($keywords);
+    return implode($keywords, ', ');
+}
+
 // POST ARTICLE
 function markup_articles($texte)
 {

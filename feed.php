@@ -39,6 +39,33 @@ require_once 'inc/boot.php';
  * used of : _GET['format'] and _GET['mode'] => _GET['mode'] formatted with _GET['format']
  */
 
+$format = (string)filter_input(INPUT_GET, 'format');
+if (!in_array($format, array('rss', 'atom'))) {
+    $format = 'rss';
+}
+
+header('Content-Type: application/'. $format .'+xml; charset=UTF-8');
+
+/**
+ * second level caching file.
+ */
+$flux_cache_lv2_path = DIR_VHOST_CACHE.'cache2_'. $format .'_'.substr(md5((isset($_SERVER['QUERY_STRING'])) ? $_SERVER['QUERY_STRING'] : ''), 0, 8).'.dat';
+
+// if cache file exists
+if (is_file($flux_cache_lv2_path)) {
+    // if cache not too old
+    if (filemtime($flux_cache_lv2_path) > time()-(3600)) {
+        die(readfile($flux_cache_lv2_path));
+    }
+    // file too old: delete it and go on (and create new file)
+    unlink($flux_cache_lv2_path);
+}
+
+/**
+ * No lvl 2 cache available
+ */
+
+
 /**
  * functions
  */
@@ -190,29 +217,14 @@ function rel2abs($article)
 }
 /* functions : END */
 
-$format = (string)filter_input(INPUT_GET, 'format');
-if (!in_array($format, array('rss', 'atom'))) {
-    $format = 'rss';
-}
 
-header('Content-Type: application/'. $format .'+xml; charset=UTF-8');
 
-/**
- * second level caching file.
- */
-$flux_cache_lv2_path = DIR_CACHE.'c_'. $format .'_'.substr(md5((isset($_SERVER['QUERY_STRING'])) ? $_SERVER['QUERY_STRING'] : ''), 0, 8).'.dat';
 
-// if cache file exists
-if (is_file($flux_cache_lv2_path)) {
-    // if cache not too old
-    if (filemtime($flux_cache_lv2_path) > time()-(3600)) {
-        die(readfile($flux_cache_lv2_path));
-    }
-    // file too old: delete it and go on (and create new file)
-    unlink($flux_cache_lv2_path);
-}
-
+// dependancy
+require_once BT_ROOT.'inc/addons.php';
 hook_trigger('system-start');
+
+
 
 $xml = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
 if ($format == 'atom') {
@@ -257,7 +269,7 @@ if (preg_match('#^[0-9]{14}$#', $postId)) {
  * @echo the lastest of _GET['mode']
  */
 } else {
-    $fcache = DIR_CACHE.'cache_rss_array.dat';
+    $fcache = DIR_VHOST_CACHE.'cache1_feed.dat';
     $liste = open_serialzd_file($fcache);
     if (!is_file($fcache) or !is_array($liste)) {
         $GLOBALS['db_handle'] = open_base();
@@ -292,7 +304,7 @@ if (preg_match('#^[0-9]{14}$#', $postId)) {
             $modes_url .= 'comments-';
         }
         // 4 = links
-        if (strpos($$mode, 'links') !== false) {
+        if (strpos($mode, 'links') !== false) {
             $liste_rss = array_merge($liste_rss, $liste['l']);
             $found = 1;
             $modes_url .= 'links-';
@@ -304,7 +316,9 @@ if (preg_match('#^[0-9]{14}$#', $postId)) {
 
     // si pas de mode, on prend le blog.
     } else {
-        $liste_rss = $liste['a'];
+        $liste_rss = array_merge($liste_rss, $liste['a']);
+        // $found = 1;
+        $modes_url .= 'blog-';
     }
 
     // tri selon tags (si il y a)

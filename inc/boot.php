@@ -21,9 +21,11 @@ $begin = microtime(true);
 
 /**
  * reorder by needs/priority
+ * todo: reorder when 3.7 freeze
+ * todo: reorder when 4.0 dev
  */
 
- // Use UTF-8 for all
+// Use UTF-8 for all
 mb_internal_encoding('UTF-8');
 
 /**
@@ -34,17 +36,75 @@ mb_internal_encoding('UTF-8');
 define('DEBUG', true);
 
 
-
 /**
  * No special need to edit under this line
- * Except if it's a dev core
+ * Except if it's a dev core and working in a dev version or ...
  */
+
+
+// if dev mod
+ini_set('display_errors', (int) DEBUG);
+if (DEBUG) {
+    error_reporting(-1);
+} else {
+    error_reporting(0);
+}
+
+
+
+/** [POC] log system
+ * What about logrotate ?
+ *
+ * enable log and set custom log path for PHP
+ *
+ * if you want to push an error message use with addionals informations use log_error('your message')
+ *                                          without                       error_log('your message')
+ *
+ * if you want to remove this POC, make sure to remove all log_error() in BT
+ */
+ini_set('log_errors', 1);
+// BT_root not defined at this point
+ini_set('error_log', dirname(dirname(__file__)).'/var/php-error.log');
+
+// global for show error
+$GLOBALS['errors'] = array();
+
+/** [POC]
+ * like error_log($message) but with addionals informations
+ * push in $GLOBALS['errors']
+ * can be used to only push in $GLOBALS['errors']
+ *
+ * ! if removed, take care, used in [core/addon] and maybe in other process ...
+ *
+ * @param string $message
+ * @param bool $write, write in log file
+ */
+function log_error($message, $write = true)
+{
+    $GLOBALS['errors'][] = $message;
+
+    if ($write === true) {
+        $t = end((debug_backtrace()));
+        $log = ' v:'.BLOGOTEXT_VERSION.' in file '.$t['file'].' on line '.$t['line'];
+        error_log('BlogText: '.$message.$log);
+    }
+}
+// END OF [POC] log system
+
+
+
 
 /**
  * function to keep here
  */
 
-// Import several .ini config files with this function
+/**
+ * Import several .ini config files with this function
+ * and make ini var as a php constant
+ *
+ * @param string $file_path, the ini absolute path
+ * @return bool
+ */
 function import_ini_file($file_path)
 {
     if (is_file($file_path) and is_readable($file_path)) {
@@ -61,8 +121,8 @@ function import_ini_file($file_path)
 
 
 /**
- * /var/
- * This part will be modified and used for the BT v4.0
+ * https://example.com to /var/example_com/
+ * This part will be modified and used for the v3.7 and v4.0
  * I let the code aerate the time to fully validate the process
  *
  * - some security/test on _SERVER['HTTP_HOST'] which can be hacked client side
@@ -174,17 +234,6 @@ function secure_host_to_path($http_host)
 
 
 
-/**
- * dev mod
- */
-ini_set('display_errors', (int) DEBUG);
-if (DEBUG) {
-    error_reporting(-1);
-} else {
-    error_reporting(0);
-}
-
-
 
 // constant for absolute PATH
 define('BT_ROOT', dirname(dirname(__file__)).'/');
@@ -196,15 +245,14 @@ define('BT_ROOT', dirname(dirname(__file__)).'/');
 define('DIR_ADDONS', BT_ROOT.'addons/');
 define('DIR_ADMIN', BT_ROOT.'admin/');
 define('DIR_BACKUP', BT_ROOT.'bt_backup/');
-define('DIR_CACHE', BT_ROOT.'.cache/');
 define('DIR_CONFIG', BT_ROOT.'config/');
 define('DIR_DATABASES', BT_ROOT.'databases/');
 define('DIR_DOCUMENTS', BT_ROOT.'files/');
 define('DIR_IMAGES', BT_ROOT.'img/');
 define('DIR_THEMES', BT_ROOT.'themes/');
+define('DIR_VAR', BT_ROOT.'var/');
 
 // Constants: databases
-define('ADDONS_DB', DIR_DATABASES.'addons.php');
 define('FILES_DB', DIR_DATABASES.'files.php');
 define('FEEDS_DB', DIR_DATABASES.'rss.php');
 
@@ -238,7 +286,12 @@ if (!is_file(FILE_USER) || !is_file(FILE_SETTINGS)) {
     }
 }
 
-// if this request is about install or reset password
+/**
+ * must run if :
+ *   - user will reset is password
+ *   - install after the set of FILE_SETTINGS
+ *   - normal use
+ */
 if (is_file(FILE_SETTINGS)) {
     $supposed_path = secure_host_to_path($_SERVER['HTTP_HOST']);
 
@@ -246,6 +299,7 @@ if (is_file(FILE_SETTINGS)) {
         die($supposed_path['message']);
     }
 
+    // boot 3.7
     if (version_compare(BLOGOTEXT_VERSION, '4.0', '<')) {
         // load prefs.php
         require_once FILE_SETTINGS;
@@ -254,56 +308,75 @@ if (is_file(FILE_SETTINGS)) {
         if (strpos($GLOBALS['racine'], $_SERVER['HTTP_HOST']) === false) {
             die('Your HTTP HOST doesn\'t match the config of this BlogoText');
         }
-        // seem's good ;)
-        define('DIR_VAR', BT_ROOT.'var/'.$supposed_path.'/');
-        define('DIR_VAR_ADDONS', DIR_VAR.'addons/');
+
+        define('DIR_VHOST', DIR_VAR.$supposed_path.'/');
+        define('DIR_VHOST_ADDONS', DIR_VHOST.'addons/');
         // check the var/domain.tld/ exits
         // must create it, ready for v4
-        if (!is_dir(DIR_VAR_ADDONS)) {
+        if (!is_dir(DIR_VHOST_ADDONS)) {
             require_once BT_ROOT.'inc/filesystem.php';
-            if (!create_folder(DIR_VAR_ADDONS, true, true)) {
-                die('BlogoText can\'t create '. DIR_VAR_ADDONS .', please check your file system rights for this folder.');
+            if (!create_folder(DIR_VHOST_ADDONS, true, true)) {
+                die('BlogoText can\'t create '. DIR_VHOST_ADDONS .', please check your file system rights for this folder.');
             }
         }
 
         define('URL_ROOT', $GLOBALS['racine'] . ((strrpos($GLOBALS['racine'], '/', -1) === false) ? '/' : '' ));
         define('URL_VAR', URL_ROOT); // $GLOBALS['racine'] must end with '/'
 
-    // need testing
+    /**
+     * boot 4.X
+     *
+     * this part must be remove during 3.7 freeze
+     * Cette partie ne sert qu'à dessiner les contours du boot de la v4
+     * afin de réfléchir sur le long terme au refactor du boot qui sera nécessaire (sûr a 99%)
+     */
     } else if (version_compare(BLOGOTEXT_VERSION, '4.0', '>=')) {
         // check for folder
-        if (!is_dir(BT_ROOT.'var/'.$supposed_path.'/')) {
+        if (!is_dir(DIR_VAR.$supposed_path.'/')) {
             die('BlogoText can\'t find the var fold for your HTTP HOST');
         }
         // check for prefs.php
-        if (!is_file(BT_ROOT.'var/'.$supposed_path.'/settings/prefs.php')) {
+        if (!is_file(DIR_VAR.$supposed_path.'/settings/prefs.php')) {
             die('BlogoText can\'t find or read your prefs.ini');
         }
-        require_once BT_ROOT.'var/'.$supposed_path.'/settings/prefs.php';
+        require_once DIR_VAR.$supposed_path.'/settings/prefs.php';
 
         if (strpos($GLOBALS['racine'], $_SERVER['HTTP_HOST']) === false) {
             die('Your HTTP HOST doesn\'t match the config of this BlogoText');
         }
         // seem's good ;)
         define('URL_ROOT', $GLOBALS['racine'] . ((strrpos($GLOBALS['racine'], '/', -1) === false) ? '/' : '' ));
-        define('DIR_VAR', BT_ROOT.'var/'.$supposed_path.'/');
         define('URL_VAR', URL_ROOT .'var/'.$supposed_path.'/'); // $GLOBALS['racine'] must end with '/'
-        define('DIR_VAR_ADDONS', DIR_VAR.'addons/');
+
+        define('DIR_VHOST', DIR_VAR.$supposed_path.'/');
+        define('DIR_VHOST_ADDONS', DIR_VHOST.'addons/');
     }
 
     // Timezone
     date_default_timezone_set($GLOBALS['fuseau_horaire']);
 
-    define('URL_DATABASES', URL_VAR.'databases/');
+    /**
+     * defines [vhost ready]
+     */
+
+    // Constants: folders
+    define('DIR_VHOST_CACHE', DIR_VHOST.'cache/');
+    // we can break cache safely for 3.7, it's just cache
+    define('DIR_CACHE', DIR_VAR.'cache/');
+
+    // Constants: databases
+    define('DIR_VHOST_DATABASES', DIR_VHOST.'databases/');
+    define('ADDONS_DB', DIR_VHOST_DATABASES.'addons.php'); // added in 3.7, must be [vhost ready]
+
+    // Constants: HTTP URL
+    // define('URL_DATABASES', URL_VAR.'databases/'); // useless ?
     define('URL_DOCUMENTS', URL_VAR.'files/');
     define('URL_IMAGES', URL_VAR.'img/');
-    define('ULR_THEMES', URL_VAR.'themes/');
+    // define('URL_THEMES', URL_VAR.'themes/');// not already used + see issues #155
 }
 /**
  * END OF /var/ part
  */
-
-// Constant for HTTP URL
 
 
 // INIT SOME VARS
@@ -338,29 +411,14 @@ if (isset($GLOBALS['theme_choisi'])) {
     $GLOBALS['rss'] = $GLOBALS['racine'].'rss.php';
 }
 
-// table of recognized filetypes, for file-upload script.
-$GLOBALS['files_ext'] = array(
-    'archive' => array('zip', '7z', 'rar', 'tar', 'gz', 'bz', 'bz2', 'xz', 'lzma'),
-    'executable' => array('exe', 'e', 'bin', 'run'),
-    'android-apk' => array('apk'),
-    'html-xml' => array('html', 'htm', 'xml', 'mht'),
-    'image' => array('png', 'gif', 'bmp', 'jpg', 'jpeg', 'ico', 'svg', 'tif', 'tiff'),
-    'music' => array('mp3', 'wave', 'wav', 'ogg', 'wma', 'flac', 'aac', 'mid', 'midi', 'm4a'),
-    'presentation' => array('ppt', 'pptx', 'pps', 'ppsx', 'odp'),
-    'pdf' => array('pdf', 'ps', 'psd'),
-    'spreadsheet' => array('xls', 'xlsx', 'xlt', 'xltx', 'ods', 'ots', 'csv'),
-    'text_document'=> array('doc', 'docx', 'rtf', 'odt', 'ott'),
-    'text-code' => array('txt', 'css', 'py', 'c', 'cpp', 'dat', 'ini', 'inf', 'text', 'conf', 'sh'),
-    'video' => array('mp4', 'ogv', 'avi', 'mpeg', 'mpg', 'flv', 'webm', 'mov', 'divx', 'rm', 'rmvb', 'wmv'),
-    'other' => array(''), // par défaut
-);
+
 
 
 /**
  * All file in /inc/*.php must be included here (except boot.php).
  * TODO optimise: for the v4.0
  */
-require_once BT_ROOT.'inc/addons.php';
+// require_once BT_ROOT.'inc/addons.php'; // push in file who need it
 require_once BT_ROOT.'inc/common.php';
 require_once BT_ROOT.'inc/conv.php';
 require_once BT_ROOT.'inc/filesystem.php';

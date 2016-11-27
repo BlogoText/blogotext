@@ -14,12 +14,14 @@
 require_once 'inc/boot.php';
 
 // dependancy
-require_once BT_ROOT.'admin/inc/addons.php';
+require_once BT_ROOT.'inc/addons.php';
+// require_once BT_ROOT.'admin/inc/addons.php'; // dont remove, just the time to clean the rewrited addon's function
+
 
 // traitement d’une action sur le module
 if (isset($_POST['_verif_envoi']) && isset($_POST['action_type'])) {
     if ($_POST['action_type'] == 'settings') {
-        $form_process = addon_edit_settings_form_process($_GET['addon']);
+        $form_process = addon_form_edit_settings_proceed($_GET['addon']);
     } else if ($_POST['action_type'] == 'buttons') {
         $form_process = addon_buttons_action_process($_GET['addon']);
     }
@@ -39,7 +41,7 @@ echo '<div id="page">'."\n";
 
 // echo erreurs($erreurs);
 
-echo addon_edit_settings_form($_GET['addon']);
+echo addon_form_edit_settings($_GET['addon']);
 
 echo "\n".'<script src="style/javascript.js"></script>'."\n";
 echo '<script>';

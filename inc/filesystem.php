@@ -21,19 +21,43 @@
  *           inc/sql.php
  * ..
  */
-function create_folder($dossier, $make_htaccess = false, $recursive = false)
+function create_folder($path, $make_htaccess = false, $recursive = false)
 {
-    if (is_dir($dossier)) {
+    if (is_dir($path)) {
         return true;
     }
-    if (mkdir($dossier, 0755, $recursive)) {
-        create_index_file($dossier);
+    if (mkdir($path, 0755, $recursive)) {
+        // "secure childs"
+        if ($recursive === true) {
+            folder_secure_childs($path, $make_htaccess);
+        }
+
+        create_index_file($path);
         if ($make_htaccess) {
-            create_htaccess($dossier);
+            create_htaccess($path);
         }
         return true;
     }
     return false;
+}
+
+/**
+ * secure childs
+ */
+function folder_secure_childs($path, $make_htaccess = false)
+{
+    $ctrl = mb_strlen(BT_ROOT);
+    while (mb_strlen($path) > $ctrl) {
+        if ($make_htaccess && !is_file($path.'.htaccess')) {
+            create_htaccess($path);
+        }
+        if (!is_file($path.'index.php')) {
+            create_index_file($path);
+        }
+        $path = dirname($path).'/';
+    }
+
+    return true;
 }
 
 /**
@@ -46,7 +70,6 @@ function create_index_file($folder)
 
     return file_put_contents($file, $content) !== false;
 }
-
 
 /**
  * Prevent direct access to files.
@@ -62,12 +85,14 @@ function create_htaccess($folder)
     return file_put_contents($file, $content) !== false;
 }
 
-
+/**
+ *
+ */
 function flux_refresh_cache_lv1()
 {
-    create_folder(DIR_CACHE, 1);
+    create_folder(DIR_VHOST_CACHE, 1);
     $arr_a = liste_elements("SELECT * FROM articles WHERE bt_statut=1 ORDER BY bt_date DESC LIMIT 0, 20", array(), 'articles');
     $arr_c = liste_elements("SELECT c.*, a.bt_title FROM commentaires AS c, articles AS a WHERE c.bt_statut=1 AND c.bt_article_id=a.bt_id ORDER BY c.bt_id DESC LIMIT 0, 20", array(), 'commentaires');
     $arr_l = liste_elements("SELECT * FROM links WHERE bt_statut=1 ORDER BY bt_id DESC LIMIT 0, 20", array(), 'links');
-    return create_file_dtb(DIR_CACHE.'cache_rss_array.dat', array('c' => $arr_c, 'a' => $arr_a, 'l' => $arr_l));
+    return create_file_dtb(DIR_VHOST_CACHE.'cache1_feed.dat', array('c' => $arr_c, 'a' => $arr_a, 'l' => $arr_l));
 }

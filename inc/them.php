@@ -335,46 +335,33 @@ function afficher_liste($tableau)
 // Include Addons and converts {tags} to HTML (specified in addons)
 function conversion_theme_addons($texte)
 {
-    // include all addons
-    $addons_ = array();
-    if (is_file(ADDONS_DB)) {
-        $addons_ = include ADDONS_DB;
-    }
 
     // Parse the $texte and replace {tags} with html generated in addon.
     // Generate CSS and JS includes too.
     $css = "<style>\n\t\t@charset 'utf-8';";
     $js = '';
     $hasStyle = false;
-    foreach ($addons_ as $addon => $state) {
-        if (!$state) {
+
+    // proceed addons tags
+    foreach ($GLOBALS['addons'] as $addon) {
+        if (!$addon['enabled'] || !isset($addon['tag'])) {
             continue;
         };
 
-        $inc = sprintf('%s%s/%s.php', DIR_ADDONS, $addon, $addon);
-        if (!is_file($inc)) {
-            continue;
-        }
-        require_once $inc;
-
-        $addon = addon_get_infos($addon);
         $lookFor = '{addon_'.$addon['tag'].'}';
-        //$addPublicFile = false;  // JS and CSS
 
         if (strpos($texte, $lookFor) !== false) {
-            $callback = 'addon_'.$addon['tag'];
-            $toReplace = '';
+            $callback = 'a_'.$addon['tag'];
             if (function_exists($callback)) {
                 while (($pos = strpos($texte, $lookFor)) !== false) {
                     $texte = substr_replace($texte, call_user_func($callback), $pos, strlen($lookFor));
                 }
-                $addPublicFile = true;
             } else {
                 $texte = str_replace($lookFor, '', $texte);
             }
         }
 
-        if (isset($addon['css'])/* && $addPublicFile == true*/) {
+        if (isset($addon['css'])) {
             if (!is_array($addon['css'])) {
                 $addon['css'] = array($addon['css']);
             }
@@ -388,7 +375,7 @@ function conversion_theme_addons($texte)
             }
         }
 
-        if (isset($addon['js'])/* && $addPublicFile == true*/) {
+        if (isset($addon['js'])) {
             if (!is_array($addon['js'])) {
                 $addon['js'] = array($addon['js']);
             }
