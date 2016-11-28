@@ -41,6 +41,7 @@ echo '<div id="page">'."\n";
 
 // echo erreurs($erreurs);
 
+echo addon_form_buttons($_GET['addon']);
 echo addon_form_edit_settings($_GET['addon']);
 
 echo "\n".'<script src="style/javascript.js"></script>'."\n";

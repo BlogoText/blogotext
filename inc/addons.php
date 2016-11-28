@@ -274,7 +274,7 @@ function addon_test_exists($addon_id)
  */
 function addon_test_enabled($addon_id)
 {
-    return (is_file(addon_get_enabled_file_path($addon_id)));
+    return (is_file(addon_get_enabled_file_path($addon_id, false)));
 }
 
 /**
@@ -412,7 +412,10 @@ function addon_load($addon_id, $db_declaration = null)
     $GLOBALS['addons'][$addon_id]['enabled'] = addon_test_enabled($addon_id);
     $GLOBALS['addons'][$addon_id]['_loaded'] = true; // mark it loaded
     if ($already_loaded !== true) {
-        $GLOBALS['addons'][$addon_id]['settings'] = addon_get_settings($addon_id, $declaration);
+        $settings = addon_get_settings($addon_id, $declaration);
+        if (is_array($settings)) {
+            $GLOBALS['addons'][$addon_id]['settings'] = $settings;
+        }
     }
 
     // new version of an addon
@@ -499,12 +502,12 @@ function addon_get_settings($addon_id, $declaration = null)
 
     // addon dont have $GLOBALS['addons'][]['setting']
     if (!isset($declaration['settings']) || is_null($declaration['settings']) || !is_array($declaration['settings'])) {
-        return array();
+        return null;
     }
 
     // if user have saved settings
     // todo : replace the old ini files (no data in .ini)
-    $user_file_path = addon_get_vhost_path($addon_id).'settings.php';
+    $user_file_path = addon_get_vhost_path($addon_id, false).'settings.php';
 
     if (is_file($user_file_path)) {
         $saved_settings = array();
@@ -573,7 +576,7 @@ function addon_get_translation($info)
 function addon_get_vhost_path($addon_id, $check_create = false)
 {
     $path = DIR_VHOST_ADDONS.$addon_id.'/';
-    if ($check_create === true && !create_folder($path)) {
+    if ($check_create === true && !create_folder($path, true, true)) {
         return false;
     }
     return $path;
@@ -611,7 +614,7 @@ function addon_set_enabled($addon_id)
  */
 function addon_set_disabled($addon_id)
 {
-    $file = addon_get_enabled_file_path($addon_id);
+    $file = addon_get_enabled_file_path($addon_id, false);
     if (!is_file($file)) {
         return true;
     }
@@ -640,6 +643,8 @@ function addon_set_settings($addon_id, $settings)
  */
 function addons_db_refresh()
 {
+    // addons_db_del();
+
     // in case of ... dont break the other process after this function
     $used_global = $GLOBALS['addons'];
 
@@ -747,12 +752,13 @@ function addons_html_get_list_addons($tableau, $filtre)
 {
     if (!empty($tableau)) {
         $out = '<ul id="modules">'."\n";
-        foreach ($GLOBALS['addons'] as $i => $addon) {
+        foreach ($tableau as $i => $addon) {
+            $addon = $GLOBALS['addons'][$addon];
             // addon
             $out .= "\t".'<li>'."\n";
 
             // addon checkbox activation
-            $out .= "\t\t".'<span><input type="checkbox" class="checkbox-toggle" name="module_'.$i.'" id="module_'.$i.'" '.(($addon['enabled']) ? 'checked' : '').' onchange="activate_mod(this);" /><label for="module_'.$i.'"></label></span>'."\n";
+            $out .= "\t\t".'<span><input type="checkbox" class="checkbox-toggle" name="module_'.$addon['tag'].'" id="module_'.$addon['tag'].'" '.(($addon['enabled']) ? 'checked' : '').' onchange="activate_mod(this);" /><label for="module_'.$addon['tag'].'"></label></span>'."\n";
 
             // addon name
             $out .= "\t\t".'<span>'.addon_get_translation($addon['name']).'</span>'."\n";
@@ -774,7 +780,7 @@ function addons_html_get_list_addons($tableau, $filtre)
             $out .= "\t\t".'<p>';
 
             // addon params or buttons
-            if (isset($addon['settings']) || isset($addon['buttons'])) {
+            if (isset($addon['settings']) || isset($addon['buttons']) || (is_dir(addon_get_vhost_cache_path($addon['tag'], false)))) {
                 $out .= '<a href="addon-settings.php?addon='. $addon['tag'] .'">'.$GLOBALS['lang']['addons_settings_link_title'].'</a>';
                 if (!empty($addon['url'])) {
                     $out .= ' | ';
@@ -938,6 +944,55 @@ function addon_form_edit_settings_proceed($addon_id)
 }
 
 /**
+ * Get the addon button form
+ */
+function addon_form_buttons($addon_id)
+{
+    $loaded = addon_load($addon_id);
+    if ($loaded === false) {
+        echo $loaded;
+    }
+    $return_form = false;
+
+    // button
+    $out = '';
+    $out .= '<form id="preferences" method="post" action="?addon='. $addon_id .'" onsubmit="return confirm(\''. addslashes($GLOBALS['lang']['addons_confirm_buttons_action']) .'\');" >';
+    $out .= '<div role="group" class="pref">'; /* no fieldset because browset can’t style them correctly */
+    $out .= '<div class="form-legend"><legend class="legend-user">'.$GLOBALS['lang']['addons_settings_legend'].addon_get_translation($GLOBALS['addons'][$addon_id]['name']).'</legend></div>'."\n";
+
+    $out .= '<div class="form-lines">'."\n";
+    if (isset($GLOBALS['addons'][$addon_id]['buttons'])) {
+        $return_form = true;
+        foreach ($GLOBALS['addons'][$addon_id]['buttons'] as $btnId => $btn) {
+            $out .= '<p>'. form_checkbox($btnId, false, addon_get_translation($btn['label'])) .'</p>'."\n";
+        }
+    }
+    if (is_dir(addon_get_vhost_cache_path($addon_id, false))) {
+        $return_form = true;
+        $out .= '<p>'. form_checkbox('addon_clean_cache', false, $GLOBALS['lang']['addons_clean_cache_label']) .'</p>'."\n";
+    }
+    $out .= '</div">'."\n";
+        // submit box
+    $out .= '<div class="submit-bttns">'."\n";
+    $out .= hidden_input('_verif_envoi', '1');
+    $out .= hidden_input('token', new_token());
+    $out .= hidden_input('action_type', 'buttons');
+    $out .= '<input type="hidden" name="addon_action" value="buttons" />';
+    $out .= '<button class="submit button-cancel" type="button" onclick="annuler(\'addons.php\');" >'.$GLOBALS['lang']['annuler'].'</button>'."\n";
+    $out .= '<button class="submit button-submit" type="submit" name="enregistrer">'.$GLOBALS['lang']['valider'].'</button>'."\n";
+    $out .= '</div>'."\n";
+    // END submit box
+    $out .= '</div>'."\n";
+    $out .= '</div>'."\n";
+    $out .= '</form>';
+
+    if ($return_form === true) {
+        return $out;
+    }
+    return '';
+}
+
+/**
  * Get the addon config form
  *
  * @param string $addon, the addon name
@@ -950,33 +1005,7 @@ function addon_form_edit_settings($addon_id)
         echo $loaded;
     }
 
-    // button
     $out = '';
-    $out .= '<form id="preferences" method="post" action="?addon='. $addon_id .'" onsubmit="return confirm(\''. addslashes($GLOBALS['lang']['addons_confirm_buttons_action']) .'\');" >';
-    $out .= '<div role="group" class="pref">'; /* no fieldset because browset can’t style them correctly */
-    $out .= '<div class="form-legend"><legend class="legend-user">'.$GLOBALS['lang']['addons_settings_legend'].addon_get_translation($GLOBALS['addons'][$addon_id]['name']).'</legend></div>'."\n";
-
-    $out .= '<div class="form-lines">'."\n";
-    if (isset($GLOBALS['addons'][$addon_id]['buttons'])) {
-        foreach ($GLOBALS['addons'][$addon_id]['buttons'] as $btnId => $btn) {
-            $out .= '<p>'. form_checkbox($btnId, false, addon_get_translation($btn['label'])) .'</p>'."\n";
-        }
-    }
-    $out .= '<p>'. form_checkbox('addon_clean_cache', false, $GLOBALS['lang']['addons_clean_cache_label']) .'</p>'."\n";
-    $out .= '</div">'."\n";
-        // submit box
-    $out .= '<div class="submit-bttns">'."\n";
-    $out .= hidden_input('_verif_envoi', '1');
-    $out .= hidden_input('token', new_token());
-    $out .= hidden_input('action_type', 'buttons');
-    $out .= '<input type="hidden" name="addon_action" value="params" />';
-    $out .= '<button class="submit button-submit" type="submit" name="enregistrer">'.$GLOBALS['lang']['valider'].'</button>'."\n";
-    $out .= '</div>'."\n";
-    // END submit box
-    $out .= '</div>'."\n";
-    $out .= '</div>'."\n";
-    $out .= '</form>';
-
     if (isset($GLOBALS['addons'][$addon_id]['settings']) && count($GLOBALS['addons'][$addon_id]['settings']) > 0) {
         // settings
         $out .= '<form id="preferences" method="post" action="?addon='. $addon_id .'" >';
@@ -1077,6 +1106,8 @@ function addon_hook_push()
     }
 }
 
+
+// addon -> buttons
 
 /**
  * perform action from button

@@ -51,7 +51,7 @@ if ($filtre == 'disabled') {
 } else if ($filtre == 'enabled') {
     $tableau = addons_list_enabled();
 } else {
-    $tableau = addons_list_all(true);
+    $tableau = addons_list_all();
 }
 
 
