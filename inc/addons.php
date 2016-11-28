@@ -619,8 +619,8 @@ function addon_set_disabled($addon_id)
 }
 
 /**
- * get 1 setting about 1 addon
- * can be use in the addon inside a_*()
+ * set settings for 1 addon
+ * related to /admin/addon-settings.php
  */
 function addon_set_settings($addon_id, $settings)
 {
@@ -922,7 +922,7 @@ function addon_form_edit_settings_proceed($addon_id)
         $GLOBALS['addons'][$addon_id]['settings'][$k]['value'] = $v;
     }
 
-    // refresh addon\'s database
+    // refresh addon's database
     if (!addons_db_refresh()) {
         $errors['info'] = 'fail to refresh addon\'s database';
         // try to delete

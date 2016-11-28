@@ -122,7 +122,7 @@ function import_ini_file($file_path)
 
 
 /**
- * https://example.com to /var/example_com/
+ * https://example.com to /var/example.com/
  * This part will be modified and used for the v3.7 and v4.0
  * I let the code aerate the time to fully validate the process
  *
@@ -236,8 +236,6 @@ function secure_host_to_path($http_host)
 }
 
 
-
-
 // constant for absolute PATH
 define('BT_ROOT', dirname(dirname(__file__)).'/');
 
@@ -272,10 +270,10 @@ define('BLOGOTEXT_VERSION', '3.7.0-dev');
 define('MINIMAL_PHP_REQUIRED_VERSION', '5.5');
 define('BLOGOTEXT_UA', 'Mozilla/5.0 (Windows NT 10; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0');
 
-
 /**
  * more constants after advanced boot
  */
+
 
 // system is installed
 if (!is_file(FILE_USER) || !is_file(FILE_SETTINGS)) {
@@ -422,6 +420,7 @@ import_ini_file(FILE_MYSQL);
 
 // USER LOGIN + PW HASH
 import_ini_file(FILE_USER);
+
 
 // regenerate captcha (always)
 if (!isset($GLOBALS['captcha'])) {

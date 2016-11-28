@@ -49,7 +49,7 @@ $filtre = (!empty($_GET['filtre'])) ? htmlspecialchars($_GET['filtre']) : '';
 if ($filtre == 'disabled') {
     $tableau = addons_list_disabled();
 } else if ($filtre == 'enabled') {
-    $tableau = addons_list_ensabled();
+    $tableau = addons_list_enabled();
 } else {
     $tableau = addons_list_all(true);
 }
