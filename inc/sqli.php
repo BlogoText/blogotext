@@ -228,7 +228,7 @@ function init_list_articles($article)
     if ($article) {
         $dec_id = decode_id($article['bt_id']);
         $article = array_merge($article, decode_id($article['bt_date']));
-        $article['bt_link'] = $GLOBALS['racine'].'?d='.$dec_id['annee'].'/'.$dec_id['mois'].'/'.$dec_id['jour'].'/'.$dec_id['heure'].'/'.$dec_id['minutes'].'/'.$dec_id['secondes'].'-'.titre_url($article['bt_title']);
+        $article['bt_link'] = URL_ROOT.'?d='.$dec_id['annee'].'/'.$dec_id['mois'].'/'.$dec_id['jour'].'/'.$dec_id['heure'].'/'.$dec_id['minutes'].'/'.$dec_id['secondes'].'-'.titre_url($article['bt_title']);
     }
     return $article;
 }

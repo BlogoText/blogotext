@@ -35,7 +35,7 @@ function afficher_form_commentaire($article_id, $mode, $erreurs, $edit_comm)
             // non-edit : new comment from admin
             $form_cont['author'] = $GLOBALS['auteur'];
             $form_cont['e_mail'] = $GLOBALS['email'];
-            $form_cont['webpage'] = $GLOBALS['racine'];
+            $form_cont['webpage'] = URL_ROOT;
         }
     } // public mode
     else {
@@ -200,7 +200,7 @@ function decode_id($id)
 function get_blogpath($id, $titre)
 {
     $date = decode_id($id);
-    $path = $GLOBALS['racine'].'?d='.$date['annee'].'/'.$date['mois'].'/'.$date['jour'].'/'.$date['heure'].'/'.$date['minutes'].'/'.$date['secondes'].'-'.titre_url($titre);
+    $path = URL_ROOT.'?d='.$date['annee'].'/'.$date['mois'].'/'.$date['jour'].'/'.$date['heure'].'/'.$date['minutes'].'/'.$date['secondes'].'-'.titre_url($titre);
     return $path;
 }
 

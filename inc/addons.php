@@ -324,7 +324,7 @@ function addon_test_declaration($addon_id, $declaration)
     }
     // test tag
     if (!isset($declaration['tag']) || empty($declaration['tag']) || $addon_id != $declaration['tag']) {
-        log_error('addon '. $addon_id .' fail on tag test '. $declaration['tag']);
+        log_error('addon '. $addon_id .' fail on tag test');
         return 'undefined tag or not valid ('. $addon_id .')';
     }
     // check if has title
@@ -517,11 +517,9 @@ function addon_get_settings($addon_id, $declaration = null)
         if (is_array($saved_settings)) {
             foreach ($declaration['settings'] as $key => &$vals) {
                 // if saved setting, overwrite the default
-                // if ($vals['type'] == 'bool') {
-                    // $vals['value'] = (isset($saved_settings[$key]) || $saved_settings[$key] == 1);
-                // } else {
+                if (isset($saved_settings[$key])) {
                     $vals['value'] = $saved_settings[$key];
-                // }
+                }
             }
         }
     }
@@ -554,8 +552,12 @@ function addon_get_addon_file_path($addon_id)
  */
 function addon_get_translation($info)
 {
-    if (is_array($info) && isset($info[$GLOBALS['lang']['id']])) {
-        return $info[$GLOBALS['lang']['id']];
+    if (is_array($info)) {
+        if (isset($info[$GLOBALS['lang']['id']])) {
+            return $info[$GLOBALS['lang']['id']];
+        } elseif (isset($info['en'])) {
+            return $info['en'];
+        }
     }
     return $info;
 }
@@ -957,7 +959,7 @@ function addon_form_edit_settings($addon_id)
     $out .= '<div class="form-lines">'."\n";
     if (isset($GLOBALS['addons'][$addon_id]['buttons'])) {
         foreach ($GLOBALS['addons'][$addon_id]['buttons'] as $btnId => $btn) {
-            $out .= '<p>'. form_checkbox($btnId, false, $btn['label'][$GLOBALS['lang']['id']]) .'</p>'."\n";
+            $out .= '<p>'. form_checkbox($btnId, false, addon_get_translation($btn['label'])) .'</p>'."\n";
         }
     }
     $out .= '<p>'. form_checkbox('addon_clean_cache', false, $GLOBALS['lang']['addons_clean_cache_label']) .'</p>'."\n";
@@ -975,51 +977,53 @@ function addon_form_edit_settings($addon_id)
     $out .= '</div>'."\n";
     $out .= '</form>';
 
-    // settings
-    $out .= '<form id="preferences" method="post" action="?addon='. $addon_id .'" >';
-    $out .= '<div role="group" class="pref">'; /* no fieldset because browset can’t style them correctly */
-    $out .= '<div class="form-legend"><legend class="legend-user">'.$GLOBALS['lang']['addons_settings_legend'].addon_get_translation($GLOBALS['addons'][$addon_id]['name']).'</legend></div>'."\n";
+    if (isset($GLOBALS['addons'][$addon_id]['settings']) && count($GLOBALS['addons'][$addon_id]['settings']) > 0) {
+        // settings
+        $out .= '<form id="preferences" method="post" action="?addon='. $addon_id .'" >';
+        $out .= '<div role="group" class="pref">'; /* no fieldset because browset can’t style them correctly */
+        $out .= '<div class="form-legend"><legend class="legend-user">'.$GLOBALS['lang']['addons_settings_legend'].addon_get_translation($GLOBALS['addons'][$addon_id]['name']).'</legend></div>'."\n";
 
-    // build the config form
-    $out .= '<div class="form-lines">'."\n";
+        // build the config form
+        $out .= '<div class="form-lines">'."\n";
 
-    foreach ($GLOBALS['addons'][$addon_id]['settings'] as $key => $param) {
-        $out .= '<p>';
-        if ($param['type'] == 'bool') {
-            $out .= form_checkbox($key, ($param['value'] === true || $param['value'] == 1), $param['label'][ $GLOBALS['lang']['id'] ]);
-        } else if ($param['type'] == 'int') {
-            $val_min = (isset($param['value_min'])) ? ' min="'.$param['value_min'].'" ' : '' ;
-            $val_max = (isset($param['value_max'])) ? ' max="'.$param['value_max'].'" ' : '' ;
-            $out .= "\t".'<label for="'.$key.'">'.$param['label'][ $GLOBALS['lang']['id'] ].'</label>'."\n";
-            $out .= "\t".'<input type="number" id="'.$key.'" name="'.$key.'" size="30" '. $val_min . $val_max .' value="'.$param['value'].'" class="text" />'."\n";
-        } else if ($param['type'] == 'text') {
-            $out .= "\t".'<label for="'.$key.'">'.$param['label'][ $GLOBALS['lang']['id'] ].'</label>'."\n";
-            $out .= "\t".'<input type="text" id="'.$key.'" name="'.$key.'" size="30" value="'.$param['value'].'" class="text" />'."\n";
-        } else if ($param['type'] == 'select') {
-            $out .= "\t".'<label for="'.$key.'">'.$param['label'][ $GLOBALS['lang']['id'] ].'</label>'."\n";
-            $out .= "\t".'<select id="'.$key.'" name="'.$key.'">'."\n";
-            foreach ($param['options'] as $opt_key => $label_lang) {
-                $selected = ($opt_key == $param['value']) ? ' selected' : '';
-                $out .= "\t\t".'<option value="'. $opt_key .'"'. $selected .'>'. $label_lang[ $GLOBALS['lang']['id'] ] .'</option>';
+        foreach ($GLOBALS['addons'][$addon_id]['settings'] as $key => $param) {
+            $out .= '<p>';
+            if ($param['type'] == 'bool') {
+                $out .= form_checkbox($key, ($param['value'] === true || $param['value'] == 1), addon_get_translation($param['label']));
+            } else if ($param['type'] == 'int') {
+                $val_min = (isset($param['value_min'])) ? ' min="'.$param['value_min'].'" ' : '' ;
+                $val_max = (isset($param['value_max'])) ? ' max="'.$param['value_max'].'" ' : '' ;
+                $out .= "\t".'<label for="'.$key.'">'.addon_get_translation($param['label']).'</label>'."\n";
+                $out .= "\t".'<input type="number" id="'.$key.'" name="'.$key.'" size="30" '. $val_min . $val_max .' value="'.$param['value'].'" class="text" />'."\n";
+            } else if ($param['type'] == 'text') {
+                $out .= "\t".'<label for="'.$key.'">'.addon_get_translation($param['label']).'</label>'."\n";
+                $out .= "\t".'<input type="text" id="'.$key.'" name="'.$key.'" size="30" value="'.$param['value'].'" class="text" />'."\n";
+            } else if ($param['type'] == 'select') {
+                $out .= "\t".'<label for="'.$key.'">'.addon_get_translation($param['label']).'</label>'."\n";
+                $out .= "\t".'<select id="'.$key.'" name="'.$key.'">'."\n";
+                foreach ($param['options'] as $opt_key => $label_lang) {
+                    $selected = ($opt_key == $param['value']) ? ' selected' : '';
+                    $out .= "\t\t".'<option value="'. $opt_key .'"'. $selected .'>'. addon_get_translation($label_lang) .'</option>';
+                }
+                $out .= "\t".'</select>'."\n";
             }
-            $out .= "\t".'</select>'."\n";
+            $out .= '</p>';
         }
-        $out .= '</p>';
+        $out .= '</div>';
+        // submit box
+        $out .= '<div class="submit-bttns">'."\n";
+        $out .= hidden_input('_verif_envoi', '1');
+        $out .= hidden_input('token', new_token());
+        $out .= hidden_input('action_type', 'settings');
+        $out .= '<input type="hidden" name="addon_action" value="params" />';
+        $out .= '<button class="submit button-cancel" type="button" onclick="annuler(\'addons.php\');" >'.$GLOBALS['lang']['annuler'].'</button>'."\n";
+        $out .= '<button class="submit button-submit" type="submit" name="enregistrer">'.$GLOBALS['lang']['enregistrer'].'</button>'."\n";
+        $out .= '</div>'."\n";
+        // END submit box
+        $out .= '</div>'."\n";
+        $out .= '</div>'."\n";
+        $out .= '</form>';
     }
-    $out .= '</div>';
-    // submit box
-    $out .= '<div class="submit-bttns">'."\n";
-    $out .= hidden_input('_verif_envoi', '1');
-    $out .= hidden_input('token', new_token());
-    $out .= hidden_input('action_type', 'settings');
-    $out .= '<input type="hidden" name="addon_action" value="params" />';
-    $out .= '<button class="submit button-cancel" type="button" onclick="annuler(\'addons.php\');" >'.$GLOBALS['lang']['annuler'].'</button>'."\n";
-    $out .= '<button class="submit button-submit" type="submit" name="enregistrer">'.$GLOBALS['lang']['enregistrer'].'</button>'."\n";
-    $out .= '</div>'."\n";
-    // END submit box
-    $out .= '</div>'."\n";
-    $out .= '</div>'."\n";
-    $out .= '</form>';
 
     return $out;
 }

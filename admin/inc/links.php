@@ -127,7 +127,7 @@ function init_post_link2()
         'bt_content'      => markup(htmlspecialchars(clean_txt($_POST['description']), ENT_NOQUOTES)),
         'bt_wiki_content' => protect($_POST['description']),
         'bt_title'        => protect($_POST['title']),
-        'bt_link'         => (empty($_POST['url'])) ? $GLOBALS['racine'].'?mode=links&amp;id='.$id : protect($_POST['url']),
+        'bt_link'         => (empty($_POST['url'])) ? URL_ROOT.'?mode=links&amp;id='.$id : protect($_POST['url']),
         'bt_tags'         => htmlspecialchars(traiter_tags($_POST['categories'])),
         'bt_statut'       => (isset($_POST['statut'])) ? 0 : 1
     );
@@ -168,7 +168,7 @@ function afficher_form_link($step, $erreurs, $editlink = '')
         if (empty($url) or (strpos($url, 'http') !== 0)) {
             $type = 'note';
             $title = 'Note'.(!empty($url) ? ' : '.html_entity_decode($url, ENT_QUOTES | ENT_HTML5, 'UTF-8') : '');
-            $url = $GLOBALS['racine'].'?mode=links&amp;id='.$new_id;
+            $url = URL_ROOT.'?mode=links&amp;id='.$new_id;
             $form .= hidden_input('url', $url);
             $form .= hidden_input('type', 'note');
         // URL is not empty
@@ -286,7 +286,7 @@ function afficher_lien($link)
     $list .= "\t".'<div class="link-options">';
     $list .= "\t\t".'<ul>'."\n";
     $list .= "\t\t\t".'<li class="ll-edit"><a href="'.basename($_SERVER['SCRIPT_NAME']).'?id='.$link['bt_id'].'">'.$GLOBALS['lang']['editer'].'</a></li>'."\n";
-    $list .= ($link['bt_statut'] == '1') ? "\t\t\t".'<li class="ll-seepost"><a href="'.$GLOBALS['racine'].'?mode=links&amp;id='.$link['bt_id'].'">'.$GLOBALS['lang']['voir_sur_le_blog'].'</a></li>'."\n" : "";
+    $list .= ($link['bt_statut'] == '1') ? "\t\t\t".'<li class="ll-seepost"><a href="'.URL_ROOT.'?mode=links&amp;id='.$link['bt_id'].'">'.$GLOBALS['lang']['voir_sur_le_blog'].'</a></li>'."\n" : "";
     $list .= "\t\t".'</ul>'."\n";
     $list .= "\t".'</div>'."\n";
     $list .=  '</div>'."\n";

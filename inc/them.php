@@ -90,7 +90,7 @@ function conversions_theme($texte, $solo_art, $cnt_mode)
     $texte = str_replace($GLOBALS['balises']['version'], BLOGOTEXT_VERSION, $texte);
     $texte = str_replace($GLOBALS['balises']['app_name'], BLOGOTEXT_NAME, $texte);
     $texte = str_replace($GLOBALS['balises']['style'], $GLOBALS['theme_style'], $texte);
-    $texte = str_replace($GLOBALS['balises']['racine_du_site'], $GLOBALS['racine'], $texte);
+    $texte = str_replace($GLOBALS['balises']['racine_du_site'], URL_ROOT, $texte);
     $texte = str_replace($GLOBALS['balises']['blog_auteur'], $GLOBALS['auteur'], $texte);
     $texte = str_replace($GLOBALS['balises']['blog_email'], $GLOBALS['email'], $texte);
     $texte = str_replace($GLOBALS['balises']['blog_nom'], $GLOBALS['nom_du_site'], $texte);
@@ -116,7 +116,7 @@ function conversions_theme($texte, $solo_art, $cnt_mode)
     $texte = str_replace($GLOBALS['balises']['article_titre_page'], '', $texte);
     $texte = str_replace($GLOBALS['balises']['blog_motscles'], $GLOBALS['keywords'], $texte);
     $texte = str_replace($GLOBALS['balises']['article_titre_echape'], '', $texte);
-    $texte = str_replace($GLOBALS['balises']['article_lien'], $GLOBALS['racine'], $texte);
+    $texte = str_replace($GLOBALS['balises']['article_lien'], URL_ROOT, $texte);
     $texte = str_replace($GLOBALS['balises']['article_chapo'], $GLOBALS['description'], $texte);
 
     $texte = str_replace($GLOBALS['balises']['pagination'], lien_pagination(), $texte);
@@ -349,11 +349,15 @@ function conversion_theme_addons($texte)
         };
 
         $lookFor = '{addon_'.$addon['tag'].'}';
+        // var_dump($lookFor);
 
         if (strpos($texte, $lookFor) !== false) {
             $callback = 'a_'.$addon['tag'];
+            // var_dump($callback);
             if (function_exists($callback)) {
+                // var_dump(__line__);
                 while (($pos = strpos($texte, $lookFor)) !== false) {
+                    // var_dump(__line__);
                     $texte = substr_replace($texte, call_user_func($callback), $pos, strlen($lookFor));
                 }
             } else {

@@ -84,7 +84,8 @@ function log_error($message, $write = true)
     $GLOBALS['errors'][] = $message;
 
     if ($write === true) {
-        $t = end((debug_backtrace()));
+        $z = debug_backtrace(); // DEBUG_BACKTRACE_IGNORE_ARGS
+        $t = (end($z));
         $log = ' v:'.BLOGOTEXT_VERSION.' in file '.$t['file'].' on line '.$t['line'];
         error_log('BlogText: '.$message.$log);
     }
@@ -216,9 +217,11 @@ function secure_host_to_path($http_host)
     // format, clean up, secure
     $path = strtolower($path);
     $path = trim($path);
-    $path = preg_replace("/[^a-z0-9-_]/", '-', $path);
+    $path = preg_replace("/[^a-z0-9-_\.]/", '-', $path);
     // clean first and last char when -
     $path = trim($path, '-');
+    // clean first and last char when . (prevent toto.onion./addons)
+    $path = trim($path, '.');
 
 
     // empty or
@@ -293,10 +296,30 @@ if (!is_file(FILE_USER) || !is_file(FILE_SETTINGS)) {
  *   - normal use
  */
 if (is_file(FILE_SETTINGS)) {
-    $supposed_path = secure_host_to_path($_SERVER['HTTP_HOST']);
+    $vhost = secure_host_to_path($_SERVER['HTTP_HOST']);
 
-    if (is_array($supposed_path)) {
-        die($supposed_path['message']);
+    if (is_array($vhost)) {
+        die($vhost['message']);
+    }
+
+    // POC VALIAS
+    // valias
+    if (is_file(DIR_VAR.$vhost.'/settings/valias.php')) {
+        include DIR_VAR.$vhost.'/settings/valias.php';
+        /**
+         * for the poc, just put an
+         *  <?php
+         *  $valias = 'http://l-url-de-l-alias/';
+         *  $vhost = 'the-name-of-the-vhost-dir'; // /var/the-name-of-the-vhost-dir/
+         *  ?>
+         *
+         * alt. on pourrais aussi jouer avec $vhost = 'http://url-du-vost/ et le passer dans secure_host_to_path()
+         */
+
+        // petit test
+        if (!is_dir(DIR_VAR.'/'.$vhost.'/')) {
+            die('VHOST declared for this VALIAS doesn\'t exists :/');
+        }
     }
 
     // boot 3.7
@@ -309,7 +332,7 @@ if (is_file(FILE_SETTINGS)) {
             die('Your HTTP HOST doesn\'t match the config of this BlogoText');
         }
 
-        define('DIR_VHOST', DIR_VAR.$supposed_path.'/');
+        define('DIR_VHOST', DIR_VAR.$vhost.'/');
         define('DIR_VHOST_ADDONS', DIR_VHOST.'addons/');
         // check the var/domain.tld/ exits
         // must create it, ready for v4
@@ -320,7 +343,11 @@ if (is_file(FILE_SETTINGS)) {
             }
         }
 
-        define('URL_ROOT', $GLOBALS['racine'] . ((strrpos($GLOBALS['racine'], '/', -1) === false) ? '/' : '' ));
+        if (isset($valias)) { // [POC] valias
+            define('URL_ROOT', $valias . ((strrpos($valias, '/', -1) === false) ? '/' : '' ));
+        } else {
+            define('URL_ROOT', $GLOBALS['racine'] . ((strrpos($GLOBALS['racine'], '/', -1) === false) ? '/' : '' ));
+        }
         define('URL_VAR', URL_ROOT); // $GLOBALS['racine'] must end with '/'
 
     /**
@@ -332,23 +359,27 @@ if (is_file(FILE_SETTINGS)) {
      */
     } else if (version_compare(BLOGOTEXT_VERSION, '4.0', '>=')) {
         // check for folder
-        if (!is_dir(DIR_VAR.$supposed_path.'/')) {
+        if (!is_dir(DIR_VAR.$vhost.'/')) {
             die('BlogoText can\'t find the var fold for your HTTP HOST');
         }
         // check for prefs.php
-        if (!is_file(DIR_VAR.$supposed_path.'/settings/prefs.php')) {
+        if (!is_file(DIR_VAR.$vhost.'/settings/prefs.php')) {
             die('BlogoText can\'t find or read your prefs.ini');
         }
-        require_once DIR_VAR.$supposed_path.'/settings/prefs.php';
+        require_once DIR_VAR.$vhost.'/settings/prefs.php';
 
         if (strpos($GLOBALS['racine'], $_SERVER['HTTP_HOST']) === false) {
             die('Your HTTP HOST doesn\'t match the config of this BlogoText');
         }
         // seem's good ;)
-        define('URL_ROOT', $GLOBALS['racine'] . ((strrpos($GLOBALS['racine'], '/', -1) === false) ? '/' : '' ));
-        define('URL_VAR', URL_ROOT .'var/'.$supposed_path.'/'); // $GLOBALS['racine'] must end with '/'
+        if (isset($valias)) { // [POC] valias
+            define('URL_ROOT', $valias . ((strrpos($valias, '/', -1) === false) ? '/' : '' ));
+        } else {
+            define('URL_ROOT', $GLOBALS['racine'] . ((strrpos($GLOBALS['racine'], '/', -1) === false) ? '/' : '' ));
+        }
+        define('URL_VAR', URL_ROOT .'var/'.$vhost.'/'); // URL_ROOT must end with '/'
 
-        define('DIR_VHOST', DIR_VAR.$supposed_path.'/');
+        define('DIR_VHOST', DIR_VAR.$vhost.'/');
         define('DIR_VHOST_ADDONS', DIR_VHOST.'addons/');
     }
 
@@ -408,7 +439,7 @@ if (isset($GLOBALS['theme_choisi'])) {
     $GLOBALS['theme_post_comm'] = $GLOBALS['theme_style'].'/template/commentaire.html';
     $GLOBALS['theme_post_link'] = $GLOBALS['theme_style'].'/template/link.html';
     $GLOBALS['theme_post_post'] = $GLOBALS['theme_style'].'/template/post.html';
-    $GLOBALS['rss'] = $GLOBALS['racine'].'rss.php';
+    $GLOBALS['rss'] = URL_ROOT.'rss.php';
 }
 
 
