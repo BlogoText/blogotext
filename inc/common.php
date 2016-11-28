@@ -15,10 +15,10 @@
 /**
  * Create database like file.
  */
-function create_file_dtb($output, $data)
+function create_file_dtb($filename, $data)
 {
     $data = '<?php /* '.chunk_split(base64_encode(serialize($data)), 76, "\n")."*/\n";
-    return file_put_contents($output, $data, LOCK_EX) !== false;
+    return file_put_contents($filename, $data, LOCK_EX) !== false;
 }
 
 /**

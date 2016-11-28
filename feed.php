@@ -134,7 +134,7 @@ function flux_comments_for_article_rss($liste)
     }
 }
 
-function flux_all_kind_rss($list)
+function flux_all_kind_rss($list, $invert)
 {
     $xml = '';
     foreach ($list as $elem) {
@@ -169,7 +169,7 @@ function flux_all_kind_rss($list)
     return $xml;
 }
 
-function flux_all_kind_atom($list)
+function flux_all_kind_atom($list, $invert)
 {
     $xml_post = '';
     $main_updated = 0; // useless ?
@@ -365,12 +365,12 @@ if (preg_match('#^[0-9]{14}$#', $postId)) {
         $xml .= '<description><![CDATA['.$GLOBALS['description'].']]></description>'."\n";
         $xml .= '<language>fr</language>'."\n";
         $xml .= '<copyright>'.$GLOBALS['auteur'].'</copyright>'."\n";
-        $xml .= flux_all_kind_rss($liste_rss);
+        $xml .= flux_all_kind_rss($liste_rss, $invert);
     } else {
         $xml .= '<title>'.$GLOBALS['nom_du_site'].'</title>'."\n";
         $xml .= '<link href="'.URL_ROOT.'?mode='.(trim($modes_url, '-')).'"/>'."\n";
         $xml .= '<id>'.URL_ROOT.'?mode='.$modes_url.'</id>'."\n";
-        $xml .= flux_all_kind_atom($liste_rss);
+        $xml .= flux_all_kind_atom($liste_rss, $invert);
     }
 }
 
