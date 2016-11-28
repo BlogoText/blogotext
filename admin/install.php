@@ -28,6 +28,20 @@ require_once BT_ROOT.'admin/inc/links.php';
  *   no need to be in /inc/*
  */
 
+
+/**
+ * pour l'instant on doit garder cette partie en cas de perte de mot de passe
+ */
+/*
+// install or reinstall with same config ?
+$step3 = (is_file(DIR_CONFIG.'mysql.ini') and file_get_contents(DIR_CONFIG.'mysql.ini') != '');
+
+// install is already done
+if (is_file(DIR_CONFIG.'user.ini') and is_file(DIR_CONFIG.'prefs.php') and !$step3) {
+    redirection('Location: auth.php');
+}
+*/
+
 // some constants definition
 $GLOBALS['fuseau_horaire'] = 'UTC';
 
@@ -120,11 +134,19 @@ function install_form_2_echo($erreurs = '')
     echo '<p>';
     echo '<label for="mdp">'.$GLOBALS['lang']['install_mdp'].' </label><input type="password" name="mdp" id="mdp" size="30" value="" class="text" autocomplete="off" placeholder="••••••••••••" required /><button type="button" class="unveilmdp" onclick="return revealpass(\'mdp\');"></button>'."\n";
     echo '</p>'."\n";
-    $lien = 'http://'.$_SERVER['SERVER_NAME'].dirname(dirname($_SERVER['SCRIPT_NAME'])).'/';
+    // plz, keep commented code, in case of reverse before v3.7
+    // $lien = str_replace(DIR_ADMIN.'/install.php', '', 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['SCRIPT_NAME']); // https > http :/
+    // $lien = 'http://'.$_SERVER['SERVER_NAME'].dirname(dirname($_SERVER['SCRIPT_NAME'])); // https > http :/
+    $lien = ((isset($_SERVER['HTTPS']) || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)) ? 'https://' : 'http://');
+    $lien .= htmlentities($_SERVER['HTTP_HOST'].dirname(dirname($_SERVER['REQUEST_URI'])));
+    // bug fix for the last /
+    $lien .= ((strrpos($lien, '/', -1) === false) ? '/' : '' );
     // bug fix for DIRECTORY_SEPARATOR
     $lien = str_replace('\\', '/', $lien);
+    
     echo '<p>';
-    echo '<label for="racine">'.$GLOBALS['lang']['pref_racine'].' </label><input type="url" name="racine" id="racine" size="30" value="'.$lien.'" class="text"  placeholder="'.$lien.'" required />'."\n";
+    // remove placeholder="'.$lien.'", redondant avec value=""
+    echo '<label for="racine">'.$GLOBALS['lang']['pref_racine'].' </label><input type="url" name="racine" id="racine" size="30" value="'.$lien.'" class="text" required />'."\n";
     echo '</p>'."\n";
     echo hidden_input('comm_defaut_status', 1);
     echo hidden_input('langue', $GLOBALS['lang']['id']);
@@ -334,6 +356,10 @@ function install_form_2_valid()
     $erreurs = array();
     $username = (string)filter_input(INPUT_POST, 'identifiant');
     $password = (string)filter_input(INPUT_POST, 'mdp');
+    /**
+     * FILTER_VALIDATE_URL se base sur la rfc2396 : ftp:, ssh: (...) if faut vérifier que c'est
+     * bien du http(s)
+     */
     $url = (string)filter_input(INPUT_POST, 'racine', FILTER_VALIDATE_URL);
 
     if (!$username) {
@@ -346,8 +372,11 @@ function install_form_2_valid()
         $erreurs[] = $GLOBALS['lang']['err_prefs_mdp'] ;
     }
 
-    if (!$url) {
+    $url = trim($url);
+    if (empty($url) or !preg_match('#^(https?://).*/$#', $url)) {
         $erreurs[] = $GLOBALS['lang']['err_prefs_racine'];
+    } elseif (!preg_match('/^https?:\/\//', $url)) {
+        $erreurs[] = $GLOBALS['lang']['err_prefs_racine_http'];
     } elseif (!preg_match('/\/$/', $url)) {
         $erreurs[] = $GLOBALS['lang']['err_prefs_racine_slash'];
     }

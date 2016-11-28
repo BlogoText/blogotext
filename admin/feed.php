@@ -398,7 +398,7 @@ if (isset($_GET['config'])) {
 
     echo 'var list = document.querySelectorAll("a[data-feed-domain]");'."\n";
     echo 'for (var i = 0, len=list.length; i < len; i++) {'."\n";
-    echo '  list[i].style.backgroundImage="url(\'" + "'.$GLOBALS['racine'].'favatar.php?w=favicon&q="+ list[i].getAttribute(\'data-feed-domain\') + "\')";'."\n";
+    echo '  list[i].style.backgroundImage="url(\'" + "'.URL_ROOT.'favatar.php?w=favicon&q="+ list[i].getAttribute(\'data-feed-domain\') + "\')";'."\n";
     echo '}'."\n\n";
 
     echo php_lang_to_js(0);

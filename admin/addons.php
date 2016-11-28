@@ -14,51 +14,46 @@
 require_once 'inc/boot.php';
 
 // dependancy
-require_once BT_ROOT.'admin/inc/addons.php';
+require_once BT_ROOT.'inc/addons.php';
+// require_once BT_ROOT.'admin/inc/addons.php'; // dont remove, just the time to clean the rewrited addon's function
+
+
+// load all addons without cache
+$t = addons_load_all(false);
+
+
 
 // traitement d’une action sur le module
 $erreurs = array();
 if (isset($_POST['_verif_envoi'])) {
-    $module = addon_retrieve_posted_addon();
+    $module = array (
+            'addon_id' => htmlspecialchars($_POST['addon_id']),
+            'status' => (isset($_POST['statut']) and $_POST['statut'] == 'on') ? 1 : 0,
+        );
     $erreurs = valider_form_module($module);
-
     if (isset($_POST['mod_activer'])) {
         if (!empty($erreurs)) {
             echo 'Error';
             echo implode("\n", $erreurs);
             die;
         } else {
-            addon_show_list_addons_form_proceed($module); // FIXME: this should not return anything. Put a is_readable() in valider_form_module, or somewhere more appropriate.  Or simply die with error, since this is critical error that shouldn’t allow BT to run.
+            addon_ajax_switch_enabled_proceed($module); // FIXME: this should not return anything. Put a is_readable() in valider_form_module, or somewhere more appropriate.  Or simply die with error, since this is critical error that shouldn’t allow BT to run.
         }
     } else {
-        $erreurs = addon_show_list_addons_form_proceed($module); // FIXME: same here.
+        $erreurs = addon_ajax_switch_enabled_proceed($module); // FIXME: same here.
     }
 }
 
 $filtre = (!empty($_GET['filtre'])) ? htmlspecialchars($_GET['filtre']) : '';
 
-$addons_status = addon_list_addons();
-
-// Export the list
-if (!is_file(ADDONS_DB)) {
-    $addons_ = array();
-    foreach ($GLOBALS['addons'] as $addon) {
-        $status = $addons_status[$addon['tag']];
-        $addons_[$addon['tag']] = $status;
-    }
-    addons_export_list($addons_);
+if ($filtre == 'disabled') {
+    $tableau = addons_list_disabled();
+} else if ($filtre == 'enabled') {
+    $tableau = addons_list_enabled();
+} else {
+    $tableau = addons_list_all(true);
 }
 
-// Filter the list
-$tableau = array();
-foreach ($GLOBALS['addons'] as $addon) {
-    $status = $addons_status[$addon['tag']];
-    if (($filtre == 'disabled' && $status) || ($filtre == 'enabled' && !$status)) {
-        continue;
-    }
-    $tableau[$addon['tag']] = $addon;
-    $tableau[$addon['tag']]['status'] = $status;
-}
 
 tpl_show_html_head($GLOBALS['lang']['mesmodules']);
 
@@ -75,18 +70,35 @@ echo '<div id="page">'."\n";
 echo erreurs($erreurs);
 // SUBNAV
 echo '<div id="subnav">'."\n";
-    addon_show_list_addons_form_filters($filtre);
+    echo addon_form_list_addons_filter($filtre);
     echo '<div class="nombre-elem">'."\n";
     echo ucfirst(nombre_objets(count($tableau), 'module')).' '.$GLOBALS['lang']['sur'].' '.count($addons);
     echo '</div>'."\n";
 echo '</div>'."\n";
 
-addon_show_list_addons($tableau, $filtre);
+echo addons_html_get_list_addons($tableau, $filtre);
 
 echo "\n".'<script src="style/javascript.js"></script>'."\n";
 echo '<script>';
 echo php_lang_to_js(0);
 echo 'var csrf_token = \''.new_token().'\'';
 echo '</script>';
+
+// [POC] by RemRem, preview of an alternative view
+echo '<script>'."\n";
+echo'     // [POC] by RemRem, preview of an alternative view'."\n";
+echo '    if ("querySelector" in document && "addEventListener" in window){'."\n";
+echo '       [].forEach.call(document.querySelectorAll("#modules div"), function (el) {'."\n";
+echo '        el.style.display = "none";'."\n";
+echo '    });'."\n";
+echo '    [].forEach.call(document.querySelectorAll("#modules li"), function (el) {'."\n";
+echo '        el.addEventListener("click",function(e){'."\n";
+echo '            // e.preventDefault();'."\n";
+echo '            this.nextElementSibling.style.display = (this.nextElementSibling.style.display === "none") ? "" : "none";'."\n";
+echo '            return;'."\n";
+echo '        }, false);'."\n";
+echo '    });'."\n";
+echo '}'."\n";
+echo '</script>'."\n";
 
 footer($begin);

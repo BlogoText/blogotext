@@ -90,7 +90,7 @@ function conversions_theme($texte, $solo_art, $cnt_mode)
     $texte = str_replace($GLOBALS['balises']['version'], BLOGOTEXT_VERSION, $texte);
     $texte = str_replace($GLOBALS['balises']['app_name'], BLOGOTEXT_NAME, $texte);
     $texte = str_replace($GLOBALS['balises']['style'], $GLOBALS['theme_style'], $texte);
-    $texte = str_replace($GLOBALS['balises']['racine_du_site'], $GLOBALS['racine'], $texte);
+    $texte = str_replace($GLOBALS['balises']['racine_du_site'], URL_ROOT, $texte);
     $texte = str_replace($GLOBALS['balises']['blog_auteur'], $GLOBALS['auteur'], $texte);
     $texte = str_replace($GLOBALS['balises']['blog_email'], $GLOBALS['email'], $texte);
     $texte = str_replace($GLOBALS['balises']['blog_nom'], $GLOBALS['nom_du_site'], $texte);
@@ -116,7 +116,7 @@ function conversions_theme($texte, $solo_art, $cnt_mode)
     $texte = str_replace($GLOBALS['balises']['article_titre_page'], '', $texte);
     $texte = str_replace($GLOBALS['balises']['blog_motscles'], $GLOBALS['keywords'], $texte);
     $texte = str_replace($GLOBALS['balises']['article_titre_echape'], '', $texte);
-    $texte = str_replace($GLOBALS['balises']['article_lien'], $GLOBALS['racine'], $texte);
+    $texte = str_replace($GLOBALS['balises']['article_lien'], URL_ROOT, $texte);
     $texte = str_replace($GLOBALS['balises']['article_chapo'], $GLOBALS['description'], $texte);
 
     $texte = str_replace($GLOBALS['balises']['pagination'], lien_pagination(), $texte);
@@ -335,46 +335,37 @@ function afficher_liste($tableau)
 // Include Addons and converts {tags} to HTML (specified in addons)
 function conversion_theme_addons($texte)
 {
-    // include all addons
-    $addons_ = array();
-    if (is_file(ADDONS_DB)) {
-        $addons_ = include ADDONS_DB;
-    }
 
     // Parse the $texte and replace {tags} with html generated in addon.
     // Generate CSS and JS includes too.
     $css = "<style>\n\t\t@charset 'utf-8';";
     $js = '';
     $hasStyle = false;
-    foreach ($addons_ as $addon => $state) {
-        if (!$state) {
+
+    // proceed addons tags
+    foreach ($GLOBALS['addons'] as $addon) {
+        if (!$addon['enabled'] || !isset($addon['tag'])) {
             continue;
         };
 
-        $inc = sprintf('%s%s/%s.php', DIR_ADDONS, $addon, $addon);
-        if (!is_file($inc)) {
-            continue;
-        }
-        require_once $inc;
-
-        $addon = addon_get_infos($addon);
         $lookFor = '{addon_'.$addon['tag'].'}';
-        //$addPublicFile = false;  // JS and CSS
+        // var_dump($lookFor);
 
         if (strpos($texte, $lookFor) !== false) {
-            $callback = 'addon_'.$addon['tag'];
-            $toReplace = '';
+            $callback = 'a_'.$addon['tag'];
+            // var_dump($callback);
             if (function_exists($callback)) {
+                // var_dump(__line__);
                 while (($pos = strpos($texte, $lookFor)) !== false) {
+                    // var_dump(__line__);
                     $texte = substr_replace($texte, call_user_func($callback), $pos, strlen($lookFor));
                 }
-                $addPublicFile = true;
             } else {
                 $texte = str_replace($lookFor, '', $texte);
             }
         }
 
-        if (isset($addon['css'])/* && $addPublicFile == true*/) {
+        if (isset($addon['css'])) {
             if (!is_array($addon['css'])) {
                 $addon['css'] = array($addon['css']);
             }
@@ -388,7 +379,7 @@ function conversion_theme_addons($texte)
             }
         }
 
-        if (isset($addon['js'])/* && $addPublicFile == true*/) {
+        if (isset($addon['js'])) {
             if (!is_array($addon['js'])) {
                 $addon['js'] = array($addon['js']);
             }

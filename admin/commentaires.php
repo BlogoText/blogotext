@@ -151,7 +151,7 @@ function afficher_commentaire($comment, $with_link)
     echo '<div class="commentbloc'.((!$comment['bt_statut']) ? ' privatebloc' : '').'" id="'.article_anchor($comment['bt_id']).'">'."\n";
     echo '<div class="comm-side-icon">'."\n";
         echo "\t".'<div class="comm-title">'."\n";
-        echo "\t\t".'<img class="author-icon" width=48" height="48" src="'.$GLOBALS['racine'].'favatar.php?q='.md5(((!empty($comment['bt_email'])) ? $comment['bt_email'] : $comment['bt_author'] )).'"/>'."\n";
+        echo "\t\t".'<img class="author-icon" width=48" height="48" src="'.URL_ROOT.'favatar.php?q='.md5(((!empty($comment['bt_email'])) ? $comment['bt_email'] : $comment['bt_author'] )).'"/>'."\n";
         echo "\t\t".'<span class="date">'.date_formate($comment['bt_id']).'<span>'.heure_formate($comment['bt_id']).'</span></span>'."\n" ;
 
         echo "\t\t".'<span class="reply" onclick="reply(\'[b]@['.str_replace('\'', '\\\'', $comment['bt_author']).'|#'.article_anchor($comment['bt_id']).'] :[/b] \'); ">Reply</span> ';
@@ -214,7 +214,7 @@ if (isset($_GET['filtre'])) {
     echo '<div class="nombre-elem">'."\n";
 if ($param_makeup['menu_theme'] == 'for_article') {
     $dec_id = decode_id($article_id);
-    $article_link = $GLOBALS['racine'].'?d='.$dec_id['annee'].'/'.$dec_id['mois'].'/'.$dec_id['jour'].'/'.$dec_id['heure'].'/'.$dec_id['minutes'].'/'.$dec_id['secondes'].'-'.titre_url($article_title);
+    $article_link = URL_ROOT.'?d='.$dec_id['annee'].'/'.$dec_id['mois'].'/'.$dec_id['jour'].'/'.$dec_id['heure'].'/'.$dec_id['minutes'].'/'.$dec_id['secondes'].'-'.titre_url($article_title);
     echo '<ul>'."\n";
     echo "\t".'<li><a href="ecrire.php?post_id='.$article_id.'">'.$GLOBALS['lang']['ecrire'].$article_title.'</a></li>'."\n";
     echo "\t".'<li><a href="'.$article_link.'">'.$GLOBALS['lang']['post_link'].'</a></li>'."\n";

@@ -13,7 +13,11 @@
 
 require_once 'inc/boot.php';
 
+// dependancy
+require_once BT_ROOT.'inc/addons.php';
 
+// launch addons
+addons_init_public();
 
 /**
  * feed.php replace atom.php and rss.php
@@ -39,6 +43,33 @@ require_once 'inc/boot.php';
  * used of : _GET['format'] and _GET['mode'] => _GET['mode'] formatted with _GET['format']
  */
 
+$format = (string)filter_input(INPUT_GET, 'format');
+if (!in_array($format, array('rss', 'atom'))) {
+    $format = 'rss';
+}
+
+header('Content-Type: application/'. $format .'+xml; charset=UTF-8');
+
+/**
+ * second level caching file.
+ */
+$flux_cache_lv2_path = DIR_VHOST_CACHE.'cache2_'. $format .'_'.substr(md5((isset($_SERVER['QUERY_STRING'])) ? $_SERVER['QUERY_STRING'] : ''), 0, 8).'.dat';
+
+// if cache file exists
+if (is_file($flux_cache_lv2_path)) {
+    // if cache not too old
+    if (filemtime($flux_cache_lv2_path) > time()-(3600)) {
+        die(readfile($flux_cache_lv2_path));
+    }
+    // file too old: delete it and go on (and create new file)
+    unlink($flux_cache_lv2_path);
+}
+
+/**
+ * No lvl 2 cache available
+ */
+
+
 /**
  * functions
  */
@@ -52,7 +83,7 @@ function flux_comments_for_article_atom($liste)
 
         foreach ($liste as $comment) {
             $dec = decode_id($comment['bt_id']);
-            $tag = 'tag:'.parse_url($GLOBALS['racine'], PHP_URL_HOST).''.$dec['annee'].'-'.$dec['mois'].'-'.$dec['jour'].':'.$comment['bt_id'];
+            $tag = 'tag:'.parse_url(URL_ROOT, PHP_URL_HOST).''.$dec['annee'].'-'.$dec['mois'].'-'.$dec['jour'].':'.$comment['bt_id'];
             $xml .= '<entry>'."\n";
                 $xml .= '<title>'.$comment['bt_author'].'</title>'."\n";
                 $xml .= '<link href="'.$comment['bt_link'].'"/>'."\n";
@@ -64,8 +95,8 @@ function flux_comments_for_article_atom($liste)
     } else {
         $xml .= '<entry>'."\n";
             $xml .= '<title>'.$GLOBALS['lang']['note_no_commentaire'].'</title>'."\n";
-            $xml .= '<id>'.$GLOBALS['racine'].'</id>'."\n";
-            $xml .= '<link href="'.$GLOBALS['racine'].'" />'."\n";
+            $xml .= '<id>'.URL_ROOT.'</id>'."\n";
+            $xml .= '<link href="'.URL_ROOT.'" />'."\n";
             $xml .= '<updated>'.date('r').'</updated>'."\n";
             $xml .= '<content type="html">'.$GLOBALS['lang']['no_comments'].'</content>'."\n";
         $xml .= '</entry>'."\n";
@@ -95,8 +126,8 @@ function flux_comments_for_article_rss($liste)
     } else {
         $xml .= '<item>'."\n";
             $xml .= '<title>'.$GLOBALS['lang']['note_no_commentaire'].'</title>'."\n";
-            $xml .= '<guid isPermaLink="false">'.$GLOBALS['racine'].'</guid>'."\n";
-            $xml .= '<link>'.$GLOBALS['racine'].'</link>'."\n";
+            $xml .= '<guid isPermaLink="false">'.URL_ROOT.'</guid>'."\n";
+            $xml .= '<link>'.URL_ROOT.'</link>'."\n";
             $xml .= '<pubDate>'.date('r').'</pubDate>'."\n";
             $xml .= '<description>'.$GLOBALS['lang']['no_comments'].'</description>'."\n";
         $xml .= '</item>'."\n";
@@ -119,11 +150,11 @@ function flux_all_kind_rss($list)
         $xml_post .= '<pubDate>'.date_create_from_format('YmdHis', $time)->format('r').'</pubDate>'."\n";
         if ($elem['bt_type'] == 'link') {
             if ($invert) {
-                $xml_post .= '<link>'.$GLOBALS['racine'].'?id='.$elem['bt_id'].'</link>'."\n";
+                $xml_post .= '<link>'.URL_ROOT.'?id='.$elem['bt_id'].'</link>'."\n";
                 $xml_post .= '<description><![CDATA['.rel2abs($elem['bt_content']). '<br/> — (<a href="'.$elem['bt_link'].'">link</a>)]]></description>'."\n";
             } else {
                 $xml_post .= '<link>'.$elem['bt_link'].'</link>'."\n";
-                $xml_post .= '<description><![CDATA['.rel2abs($elem['bt_content']).'<br/> — (<a href="'.$GLOBALS['racine'].'?id='.$elem['bt_id'].'">permalink</a>)]]></description>'."\n";
+                $xml_post .= '<description><![CDATA['.rel2abs($elem['bt_content']).'<br/> — (<a href="'.URL_ROOT.'?id='.$elem['bt_id'].'">permalink</a>)]]></description>'."\n";
             }
         } else {
             $xml_post .= '<link>'.$elem['bt_link'].'</link>'."\n";
@@ -149,7 +180,7 @@ function flux_all_kind_atom($list)
             continue;
         }
         $title = (in_array($elem['bt_type'], array('article', 'link', 'note'))) ? $elem['bt_title'] : $elem['bt_author'];
-        $tag = 'tag:'.parse_url($GLOBALS['racine'], PHP_URL_HOST).','.date_create_from_format('YmdHis', $time)->format('Y-m-d').':'.$elem['bt_type'].'-'.$elem['bt_id'];
+        $tag = 'tag:'.parse_url(URL_ROOT, PHP_URL_HOST).','.date_create_from_format('YmdHis', $time)->format('Y-m-d').':'.$elem['bt_type'].'-'.$elem['bt_id'];
 
 
         // normal code
@@ -160,11 +191,11 @@ function flux_all_kind_atom($list)
 
         if ($elem['bt_type'] == 'link') {
             if ($invert) {
-                $xml_post .= '<link href="'.$GLOBALS['racine'].'?id='.$elem['bt_id'].'"/>'."\n";
+                $xml_post .= '<link href="'.URL_ROOT.'?id='.$elem['bt_id'].'"/>'."\n";
                 $xml_post .= '<content type="html">'.htmlspecialchars(rel2abs($elem['bt_content']).'<br/> — (<a href="'.$elem['bt_link'].'">link</a>)').'</content>'."\n";
             } else {
                 $xml_post .= '<link href="'.$elem['bt_link'].'"/>'."\n";
-                $xml_post .= '<content type="html">'.htmlspecialchars(rel2abs($elem['bt_content']).'<br/> — (<a href="'.$GLOBALS['racine'].'?id='.$elem['bt_id'].'">permalink</a>)').'</content>'."\n";
+                $xml_post .= '<content type="html">'.htmlspecialchars(rel2abs($elem['bt_content']).'<br/> — (<a href="'.URL_ROOT.'?id='.$elem['bt_id'].'">permalink</a>)').'</content>'."\n";
             }
         } else {
             $xml_post .= '<link href="'.$elem['bt_link'].'"/>'."\n";
@@ -182,47 +213,34 @@ function flux_all_kind_atom($list)
 function rel2abs($article)
 {
     // convertit les URL relatives en absolues
-    $article = str_replace(' src="/', ' src="http://'.$_SERVER['HTTP_HOST'].'/', $article);
-    $article = str_replace(' href="/', ' href="http://'.$_SERVER['HTTP_HOST'].'/', $article);
-    $base = $GLOBALS['racine'];
+    // $article = str_replace(' src="/', ' src="http://'.$_SERVER['HTTP_HOST'].'/', $article);
+    $article = str_replace(' src="/', ' src="http://'.URL_ROOT.'/', $article);
+    // $article = str_replace(' href="/', ' href="http://'.$_SERVER['HTTP_HOST'].'/', $article);
+    $article = str_replace(' href="/', ' href="http://'.URL_ROOT.'/', $article);
+    $base = URL_ROOT;
     $article = preg_replace('#(src|href)=\"(?!http)#i', '$1="'.$base, $article);
     return $article;
 }
 /* functions : END */
 
-$format = (string)filter_input(INPUT_GET, 'format');
-if (!in_array($format, array('rss', 'atom'))) {
-    $format = 'rss';
-}
 
-header('Content-Type: application/'. $format .'+xml; charset=UTF-8');
 
-/**
- * second level caching file.
- */
-$flux_cache_lv2_path = DIR_CACHE.'c_'. $format .'_'.substr(md5((isset($_SERVER['QUERY_STRING'])) ? $_SERVER['QUERY_STRING'] : ''), 0, 8).'.dat';
 
-// if cache file exists
-if (is_file($flux_cache_lv2_path)) {
-    // if cache not too old
-    if (filemtime($flux_cache_lv2_path) > time()-(3600)) {
-        die(readfile($flux_cache_lv2_path));
-    }
-    // file too old: delete it and go on (and create new file)
-    unlink($flux_cache_lv2_path);
-}
-
+// dependancy
+require_once BT_ROOT.'inc/addons.php';
 hook_trigger('system-start');
+
+
 
 $xml = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
 if ($format == 'atom') {
     $xml .= '<feed xmlns="http://www.w3.org/2005/Atom">'."\n";
     $xml .= '<author><name>'.$GLOBALS['auteur'].'</name></author>'."\n";
-    $xml .= '<link rel="self" href="'.$GLOBALS['racine'].'atom.php'.((!empty($_SERVER['QUERY_STRING'])) ? '?'.(htmlspecialchars($_SERVER['QUERY_STRING'])) : '').'" />'."\n";
+    $xml .= '<link rel="self" href="'.URL_ROOT.'atom.php'.((!empty($_SERVER['QUERY_STRING'])) ? '?'.(htmlspecialchars($_SERVER['QUERY_STRING'])) : '').'" />'."\n";
 } else {
     $xml .= '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">'."\n";
     $xml .= '<channel>'."\n";
-    $xml .= '<atom:link href="'.$GLOBALS['racine'].'rss.php'.((!empty($_SERVER['QUERY_STRING'])) ? '?'.(htmlspecialchars($_SERVER['QUERY_STRING'])) : '').'" rel="self" type="application/rss+xml" />';
+    $xml .= '<atom:link href="'.URL_ROOT.'rss.php'.((!empty($_SERVER['QUERY_STRING'])) ? '?'.(htmlspecialchars($_SERVER['QUERY_STRING'])) : '').'" rel="self" type="application/rss+xml" />';
 }
 
 /**
@@ -257,7 +275,7 @@ if (preg_match('#^[0-9]{14}$#', $postId)) {
  * @echo the lastest of _GET['mode']
  */
 } else {
-    $fcache = DIR_CACHE.'cache_rss_array.dat';
+    $fcache = DIR_VHOST_CACHE.'cache1_feed.dat';
     $liste = open_serialzd_file($fcache);
     if (!is_file($fcache) or !is_array($liste)) {
         $GLOBALS['db_handle'] = open_base();
@@ -292,7 +310,7 @@ if (preg_match('#^[0-9]{14}$#', $postId)) {
             $modes_url .= 'comments-';
         }
         // 4 = links
-        if (strpos($$mode, 'links') !== false) {
+        if (strpos($mode, 'links') !== false) {
             $liste_rss = array_merge($liste_rss, $liste['l']);
             $found = 1;
             $modes_url .= 'links-';
@@ -304,7 +322,9 @@ if (preg_match('#^[0-9]{14}$#', $postId)) {
 
     // si pas de mode, on prend le blog.
     } else {
-        $liste_rss = $liste['a'];
+        $liste_rss = array_merge($liste_rss, $liste['a']);
+        // $found = 1;
+        $modes_url .= 'blog-';
     }
 
     // tri selon tags (si il y a)
@@ -323,7 +343,7 @@ if (preg_match('#^[0-9]{14}$#', $postId)) {
 
     // tri selon la date (qui est une sous-clé du tableau, d’où cette manœuvre)
     foreach ($liste_rss as $key => $item) {
-         $bt_id[$key] = (isset($item['bt_date'])) ? $item['bt_date'] : $item['bt_id'];
+        $bt_id[$key] = (isset($item['bt_date'])) ? $item['bt_date'] : $item['bt_id'];
     }
     if (!empty($liste_rss)) {
         array_multisort($bt_id, SORT_DESC, $liste_rss);
@@ -341,15 +361,15 @@ if (preg_match('#^[0-9]{14}$#', $postId)) {
 
     if ($format == 'rss') {
         $xml .= '<title>'.$GLOBALS['nom_du_site'].'</title>'."\n";
-        $xml .= '<link>'.$GLOBALS['racine'].((trim($modes_url, '-') == '') ? '' : '?mode='.(trim($modes_url, '-'))).'</link>'."\n";
+        $xml .= '<link>'.URL_ROOT.((trim($modes_url, '-') == '') ? '' : '?mode='.(trim($modes_url, '-'))).'</link>'."\n";
         $xml .= '<description><![CDATA['.$GLOBALS['description'].']]></description>'."\n";
         $xml .= '<language>fr</language>'."\n";
         $xml .= '<copyright>'.$GLOBALS['auteur'].'</copyright>'."\n";
         $xml .= flux_all_kind_rss($liste_rss);
     } else {
         $xml .= '<title>'.$GLOBALS['nom_du_site'].'</title>'."\n";
-        $xml .= '<link href="'.$GLOBALS['racine'].'?mode='.(trim($modes_url, '-')).'"/>'."\n";
-        $xml .= '<id>'.$GLOBALS['racine'].'?mode='.$modes_url.'</id>'."\n";
+        $xml .= '<link href="'.URL_ROOT.'?mode='.(trim($modes_url, '-')).'"/>'."\n";
+        $xml .= '<id>'.URL_ROOT.'?mode='.$modes_url.'</id>'."\n";
         $xml .= flux_all_kind_atom($liste_rss);
     }
 }

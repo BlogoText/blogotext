@@ -41,7 +41,7 @@ function tpl_show_topnav($titre)
     $html .=  "\t".'<ul>'."\n";
     $html .=  "\t\t".'<li><a href="preferences.php" id="lien-preferences">'.$GLOBALS['lang']['preferences'].'</a></li>'."\n";
     $html .=  "\t\t".'<li><a href="addons.php" id="lien-modules">'.ucfirst($GLOBALS['lang']['label_modules']).'</a></li>'."\n";
-    $html .=  "\t\t".'<li><a href="'.$GLOBALS['racine'].'" id="lien-site">'.$GLOBALS['lang']['blog_link'].'</a></li>'."\n";
+    $html .=  "\t\t".'<li><a href="'.URL_ROOT.'" id="lien-site">'.$GLOBALS['lang']['blog_link'].'</a></li>'."\n";
     $html .=  "\t\t".'<li><a href="logout.php" id="lien-deconnexion">'.$GLOBALS['lang']['deconnexion'].'</a></li>'."\n";
     $html .=  "\t".'</ul>'."\n";
     $html .=  '</div>'."\n";

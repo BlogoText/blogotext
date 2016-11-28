@@ -12,37 +12,6 @@
 # *** LICENSE ***
 
 
-function extraire_mots($texte)
-{
-    $texte = str_replace(array("\r", "\n", "\t"), array('', ' ', ' '), $texte); // removes \n, \r and tabs
-    $texte = strip_tags($texte); // removes HTML tags
-    $texte = preg_replace('#[!"\#$%&\'()*+,./:;<=>?@\[\]^_`{|}~«»“”…]#', ' ', $texte); // removes punctuation
-    $texte = trim(preg_replace('# {2,}#', ' ', $texte)); // remove consecutive spaces
-
-    $words = explode(' ', $texte);
-    foreach ($words as $i => $word) {
-        // remove short words & words with numbers
-        if (strlen($word) <= 4 or preg_match('#\d#', $word)) {
-            unset($words[$i]);
-        } elseif (preg_match('#\?#', utf8_decode(preg_replace('#&(.)(acute|grave|circ|uml|cedil|tilde|ring|slash|caron);#', '$1', $word)))) {
-            unset($words[$i]);
-        }
-    }
-
-    // keep only words that occure at least 3 times
-    $words = array_unique($words);
-    $keywords = array();
-    foreach ($words as $i => $word) {
-        if (substr_count($texte, $word) >= 3) {
-            $keywords[] = $word;
-        }
-    }
-    $keywords = array_unique($keywords);
-
-    natsort($keywords);
-    return implode($keywords, ', ');
-}
-
 /*  Creates a new BlogoText base.
     if file does not exists, it is created, as well as the tables.
     if file does exists, tables are checked and created if not exists
@@ -259,7 +228,7 @@ function init_list_articles($article)
     if ($article) {
         $dec_id = decode_id($article['bt_id']);
         $article = array_merge($article, decode_id($article['bt_date']));
-        $article['bt_link'] = $GLOBALS['racine'].'?d='.$dec_id['annee'].'/'.$dec_id['mois'].'/'.$dec_id['jour'].'/'.$dec_id['heure'].'/'.$dec_id['minutes'].'/'.$dec_id['secondes'].'-'.titre_url($article['bt_title']);
+        $article['bt_link'] = URL_ROOT.'?d='.$dec_id['annee'].'/'.$dec_id['mois'].'/'.$dec_id['jour'].'/'.$dec_id['heure'].'/'.$dec_id['minutes'].'/'.$dec_id['secondes'].'-'.titre_url($article['bt_title']);
     }
     return $article;
 }
@@ -319,94 +288,6 @@ function init_post_comment($id, $mode)
     }
 
     return $comment;
-}
-
-function bdd_article($billet, $what)
-{
-    // l'article n'existe pas, on le crée
-    if ($what == 'enregistrer-nouveau') {
-        try {
-            $req = $GLOBALS['db_handle']->prepare('INSERT INTO articles
-                (   bt_type,
-                    bt_id,
-                    bt_date,
-                    bt_title,
-                    bt_abstract,
-                    bt_link,
-                    bt_notes,
-                    bt_content,
-                    bt_wiki_content,
-                    bt_tags,
-                    bt_keywords,
-                    bt_allow_comments,
-                    bt_nb_comments,
-                    bt_statut
-                )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-            $req->execute(array(
-                'article',
-                $billet['bt_id'],
-                $billet['bt_date'],
-                $billet['bt_title'],
-                $billet['bt_abstract'],
-                $billet['bt_link'],
-                $billet['bt_notes'],
-                $billet['bt_content'],
-                $billet['bt_wiki_content'],
-                $billet['bt_tags'],
-                $billet['bt_keywords'],
-                $billet['bt_allow_comments'],
-                0,
-                $billet['bt_statut']
-            ));
-            return true;
-        } catch (Exception $e) {
-            return 'Erreur ajout article: '.$e->getMessage();
-        }
-    // l'article existe, et il faut le mettre à jour alors.
-    } elseif ($what == 'modifier-existant') {
-        try {
-            $req = $GLOBALS['db_handle']->prepare('UPDATE articles SET
-                bt_date=?,
-                bt_title=?,
-                bt_link=?,
-                bt_abstract=?,
-                bt_notes=?,
-                bt_content=?,
-                bt_wiki_content=?,
-                bt_tags=?,
-                bt_keywords=?,
-                bt_allow_comments=?,
-                bt_statut=?
-                WHERE ID=?');
-            $req->execute(array(
-                $billet['bt_date'],
-                $billet['bt_title'],
-                $billet['bt_link'],
-                $billet['bt_abstract'],
-                $billet['bt_notes'],
-                $billet['bt_content'],
-                $billet['bt_wiki_content'],
-                $billet['bt_tags'],
-                $billet['bt_keywords'],
-                $billet['bt_allow_comments'],
-                $billet['bt_statut'],
-                $_POST['ID']
-            ));
-            return true;
-        } catch (Exception $e) {
-            return 'Erreur mise à jour de l’article: '.$e->getMessage();
-        }
-    // Suppression d'un article
-    } elseif ($what == 'supprimer-existant') {
-        try {
-            $req = $GLOBALS['db_handle']->prepare('DELETE FROM articles WHERE ID=?');
-            $req->execute(array($_POST['ID']));
-            return true;
-        } catch (Exception $e) {
-            return 'Erreur 123456 : '.$e->getMessage();
-        }
-    }
 }
 
 // Called when a new comment is posted (public side or admin side) or on edit/activating/removing
