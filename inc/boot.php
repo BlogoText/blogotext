@@ -37,6 +37,13 @@ define('DEBUG', true);
 
 
 /**
+ * Constant for absolute PATH
+ * Defined early for error logging purpose.
+ */
+define('BT_ROOT', dirname(dirname(__file__)).'/');
+
+
+/**
  * No special need to edit under this line
  * Except if it's a dev core and working in a dev version or ...
  */
@@ -62,14 +69,10 @@ if (DEBUG) {
  *
  * if you want to remove this POC, make sure to remove all log_error() in BT
  */
-ini_set('log_errors', 1);
+// TODO dev: do we really need these two parameters?
 ini_set('ignore_repeated_errors', 1);
 ini_set('ignore_repeated_source', 1);
-// BT_root not defined at this point
-ini_set('error_log', dirname(dirname(__file__)).'/var/php-error.log');
 
-// global for show error
-$GLOBALS['errors'] = array();
 
 /** [POC]
  * like error_log($message) but with addionals informations
@@ -83,13 +86,42 @@ $GLOBALS['errors'] = array();
  */
 function log_error($message, $write = true)
 {
-    $GLOBALS['errors'][] = $message;
-
     if ($write === true) {
-        $z = debug_backtrace(); // DEBUG_BACKTRACE_IGNORE_ARGS
-        $t = (end($z));
-        $log = ' v:'.BLOGOTEXT_VERSION.' in file '.$t['file'].' on line '.$t['line'];
-        error_log('BlogText: '.$message.$log);
+        $trace = debug_backtrace();
+        $trace = $trace[1];
+        $where = str_replace(BT_ROOT, '', $trace['file']);
+        $log = sprintf(
+            '[%s, v%s] %s in %s() at [%s:%d]',
+            date('Y-m-d H:i:s T'),
+            BLOGOTEXT_VERSION,
+            $message,
+            $trace['function'],
+            $where,
+            $trace['line']
+        );
+
+        if (DEBUG) {
+            ob_start();
+            debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+            $stack = ob_get_contents();
+            ob_end_clean();
+
+            // Remove the first item from backtrace as it's redundant.
+            $stack = explode("\n", trim($stack));
+            array_shift($stack);
+            $stack = array_reverse($stack);
+            $stack = implode("\n", $stack);
+
+            // Remove numbers, not interesting
+            $stack = preg_replace('/#\d+\s+/', '    -> ', $stack);
+
+            // Anon paths (cleaner and smaller paths)
+            $stack = str_replace(BT_ROOT, '', $stack);
+
+            $log .= "\n".'Stack trace:'."\n".$stack;
+        }
+
+        error_log(addslashes($log)."\n", 3, BT_ROOT.'var/php-error.log');
     }
 }
 // END OF [POC] log system
@@ -236,10 +268,6 @@ function secure_host_to_path($http_host)
 
     return $path;
 }
-
-
-// constant for absolute PATH
-define('BT_ROOT', dirname(dirname(__file__)).'/');
 
 /**
  * todo : preparation v4
