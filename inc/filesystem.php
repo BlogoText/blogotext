@@ -68,7 +68,7 @@ function create_index_file($folder)
     $content = "<?php\nexit(header('Location: ../'));\n";
     $file = $folder.'/index.php';
 
-    return file_put_contents($file, $content) !== false;
+    return (file_put_contents($file, $content, LOCK_EX) !== false);
 }
 
 /**
@@ -82,7 +82,7 @@ function create_htaccess($folder)
     $content .= '</Files>'."\n";
     $file = $folder.'/.htaccess';
 
-    return file_put_contents($file, $content) !== false;
+    return (file_put_contents($file, $content, LOCK_EX) !== false);
 }
 
 /**

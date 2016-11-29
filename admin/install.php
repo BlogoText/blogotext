@@ -60,7 +60,7 @@ function fichier_adv_conf()
     $conf .= 'BLOG_UID = \''.sha1(uniqid(mt_rand(), true)).'\''."\n";
     $conf .= 'USE_IP_IN_SESSION = 1'."\n";
 
-    return file_put_contents(FILE_SETTINGS_ADV, $conf) !== false;
+    return (file_put_contents(FILE_SETTINGS_ADV, $conf, LOCK_EX) !== false);
 }
 
 /**
@@ -143,7 +143,7 @@ function install_form_2_echo($erreurs = '')
     $lien .= ((strrpos($lien, '/', -1) === false) ? '/' : '' );
     // bug fix for DIRECTORY_SEPARATOR
     $lien = str_replace('\\', '/', $lien);
-    
+
     echo '<p>';
     // remove placeholder="'.$lien.'", redondant avec value=""
     echo '<label for="racine">'.$GLOBALS['lang']['pref_racine'].' </label><input type="url" name="racine" id="racine" size="30" value="'.$lien.'" class="text" required />'."\n";
@@ -214,7 +214,7 @@ function fichier_mysql($sgdb)
         $data .= 'DBMS = \''.$sgdb.'\''."\n";
     }
 
-    return file_put_contents(FILE_MYSQL, $data) !== false;
+    return (file_put_contents(FILE_MYSQL, $data, LOCK_EX) !== false);
 }
 
 /**

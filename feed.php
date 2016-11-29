@@ -386,5 +386,5 @@ if ($format == 'rss') {
     $xml .= '</feed>';
 }
 
-file_put_contents($flux_cache_lv2_path, $xml);
+file_put_contents($flux_cache_lv2_path, $xml, LOCK_EX);
 echo $xml;

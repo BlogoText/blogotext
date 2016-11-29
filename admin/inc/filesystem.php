@@ -192,7 +192,7 @@ function fichier_prefs()
     $prefs .= "\$GLOBALS['max_linx_admin'] = ".$nombre_liens_admin.";\n";
     $prefs .= "\$GLOBALS['dl_link_to_files'] = ".$auto_dl_liens_fichiers.";\n";
 
-    return file_put_contents(FILE_SETTINGS, $prefs) !== false;
+    return file_put_contents(FILE_SETTINGS, $prefs, LOCK_EX) !== false;
 }
 
 // TRAITEMENT DU FORMULAIRE DE FICHIER, CÔTÉ BDD

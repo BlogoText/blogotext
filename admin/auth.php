@@ -27,7 +27,7 @@ if (isset($_POST['nom_utilisateur'])) {
     $ip .= (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) ? '_'.htmlspecialchars($_SERVER['HTTP_X_FORWARDED_FOR']) : '';
     $curent_time = date('r'); // heure : Wed, 18 Jan 2012 20:42:12 +0100
     $data = '<?php die(\'no.\'); // '.$curent_time.' - '.$ip.' - '.((auth_check_session()) ? 'login succes' : 'login fail') ." ?>\n";
-    file_put_contents(DIR_CONFIG.'xauthlog.php', $data, FILE_APPEND);
+    file_put_contents(DIR_CONFIG.'xauthlog.php', $data, FILE_APPEND | LOCK_EX);
 }
 
 if (auth_check_session()) { // return to index if session is already open.

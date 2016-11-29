@@ -148,5 +148,5 @@ function auth_write_user_login_file($login, $pass)
     $content .= 'USER_LOGIN = \''. $login .'\''."\n";
     $content .= 'USER_PWHASH = \''. $pass .'\''."\n";
 
-    return (file_put_contents(FILE_USER, $content) !== false);
+    return (file_put_contents(FILE_USER, $content, LOCK_EX) !== false);
 }

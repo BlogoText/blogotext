@@ -388,7 +388,7 @@ function afficher_form_prefs($erreurs = '')
             $response = request_external_files(array($version_hit_url), 6);
             $version = trim($response[$version_hit_url]['body']);
             $last_version = (is_valid_version($version)) ? $version : BLOGOTEXT_VERSION;
-            file_put_contents($version_file, $last_version);
+            file_put_contents($version_file, $last_version, LOCK_EX);
         }
 
         // Compare versions

@@ -183,7 +183,7 @@ function creer_fich_html($nb_links)
         $html .= '<DT><A HREF="'.$link['bt_link'].'" ADD_DATE="'.$timestamp.'" PRIVATE="'.abs(1-$link['bt_statut']).'" TAGS="'.$link['bt_tags'].'">'.$link['bt_title'].'</A>'."\n";
         $html .= '<DD>'.strip_tags($link['bt_wiki_content'])."\n";
     }
-    return (file_put_contents($path, $html) === false) ? false : $path; // écriture du fichier
+    return (file_put_contents($path, $html, LOCK_EX) === false) ? false : $path; // écriture du fichier
 }
 
 /*
@@ -366,7 +366,7 @@ function creer_fichier_zip($dossiers)
 function creer_fichier_json($data_array)
 {
     $path = DIR_BACKUP.'backup-data-'.date('Ymd-His').'.json';
-    return (file_put_contents($path, json_encode($data_array)) === false) ? false : $path;
+    return (file_put_contents($path, json_encode($data_array), LOCK_EX) === false) ? false : $path;
 }
 
 /* Crée la liste des RSS et met tout ça dans un fichier OPML */
@@ -408,7 +408,7 @@ function creer_fichier_opml()
 
     $html .= "\t".'</body>'."\n".'</opml>';
 
-    return (file_put_contents($path, $html) === false) ? false : $path;
+    return (file_put_contents($path, $html, LOCK_EX) === false) ? false : $path;
 }
 
 /* CONVERTI UN FICHIER AU FORMAT xml DE WORDPRESS en un tableau (sans enregistrer le fichier BT) */
