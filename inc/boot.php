@@ -63,6 +63,8 @@ if (DEBUG) {
  * if you want to remove this POC, make sure to remove all log_error() in BT
  */
 ini_set('log_errors', 1);
+ini_set('ignore_repeated_errors', 1);
+ini_set('ignore_repeated_source', 1);
 // BT_root not defined at this point
 ini_set('error_log', dirname(dirname(__file__)).'/var/php-error.log');
 
