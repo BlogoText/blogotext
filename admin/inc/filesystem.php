@@ -120,6 +120,7 @@ function fichier_prefs()
         $max_bill_acceuil = htmlspecialchars($_POST['nb_maxi']);
         $max_bill_admin = (int) $_POST['nb_list'];
         $max_comm_admin = (int) $_POST['nb_list_com'];
+        $max_rss_admin = (int) $_POST['nb_list_rss'];
         $format_date = (int) $_POST['format_date'];
         $format_heure = (int) $_POST['format_heure'];
         $fuseau_horaire = addslashes(clean_txt(htmlspecialchars($_POST['fuseau_horaire'])));
@@ -146,6 +147,7 @@ function fichier_prefs()
         $max_bill_acceuil = 10;
         $max_bill_admin = 25;
         $max_comm_admin = 50;
+        $max_rss_admin = 25;
         $format_date = 0;
         $format_heure = 0;
         $fuseau_horaire = 'UTC';
@@ -173,6 +175,7 @@ function fichier_prefs()
     $prefs .= "\$GLOBALS['max_bill_acceuil'] = ".$max_bill_acceuil.";\n";
     $prefs .= "\$GLOBALS['max_bill_admin'] = ".$max_bill_admin.";\n";
     $prefs .= "\$GLOBALS['max_comm_admin'] = ".$max_comm_admin.";\n";
+    $prefs .= "\$GLOBALS['max_rss_admin'] = ".$max_rss_admin.";\n";
     $prefs .= "\$GLOBALS['format_date'] = ".$format_date.";\n";
     $prefs .= "\$GLOBALS['format_heure'] = ".$format_heure.";\n";
     $prefs .= "\$GLOBALS['fuseau_horaire'] = '".$fuseau_horaire."';\n";

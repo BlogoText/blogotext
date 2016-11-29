@@ -254,53 +254,45 @@ if (isset($_POST['verif_envoi'])) {
 
 $tableau = array();
 
-/**
- * add $ttl for POC
- * It's dirty ...
- * remrem
- */
-$ttl = time();
-$sql_where = '';
-if (!empty($_GET['ttl']) && is_numeric($_GET['ttl'])) {
-    $ttl = $_GET['ttl'];
+// Show N items per page
+$page = (int)filter_input(INPUT_GET, 'p');
+if ($page < 0) {
+    $page = 0;
 }
-
-$sql_where = 'bt_date < "'. $ttl .'" AND bt_date > "'. ($ttl - 86400) .'" ';
-
+$sql_limit = $GLOBALS['max_rss_admin'].' OFFSET '.($page * $GLOBALS['max_rss_admin']);
 
 if (!empty($_GET['q'])) {
     $sql_where_status = '';
-    $q_query = (isset($_GET['q'])) ? $_GET['q'] : '';
+    $q_query = (string)filter_input(INPUT_GET, 'q');
 
     if (!empty($q_query)) {
         // search "in:read"
-        if (substr($_GET['q'], -8) === ' in:read') {
-            $sql_where_status = 'AND bt_statut=0 ';
-            $q_query = substr($_GET['q'], 0, strlen($_GET['q'])-8);
+        if (substr($q_query, -8) === ' in:read') {
+            $sql_where_status = 'AND bt_statut = 0 ';
+            $q_query = substr($q_query, 0, strlen($q_query) - 8);
         }
         // search "in:unread"
-        if (substr($_GET['q'], -10) === ' in:unread') {
-            $sql_where_status = 'AND bt_statut=1 ';
-            $q_query = substr($_GET['q'], 0, strlen($_GET['q'])-10);
+        if (substr($q_query, -10) === ' in:unread') {
+            $sql_where_status = 'AND bt_statut = 1 ';
+            $q_query = substr($q_query, 0, strlen($q_query) - 10);
         }
         $arr = parse_search($q_query);
-        $sql_where .= 'AND '. implode(array_fill(0, count($arr), '( bt_content || bt_title ) LIKE ?'), 'AND'); // AND operator between words
+        $sql_where = 'AND '. implode(array_fill(0, count($arr), '( bt_content || bt_title ) LIKE ?'), 'AND'); // AND operator between words
     }
 
     $query = '
         SELECT * FROM rss
          WHERE '.$sql_where.$sql_where_status.'
-         ORDER BY bt_date DESC';
+         ORDER BY bt_date DESC
+         LIMIT '.$sql_limit;
     $tableau = liste_elements($query, $arr, 'rss');
 } else {
     $sql = '
         SELECT * FROM rss
-         WHERE (
-                   bt_statut = 1
-                OR bt_bookmarked = 1
-               )
-               AND '. $sql_where .'
-      ORDER BY bt_date DESC';
+         WHERE bt_statut = 1
+               OR bt_bookmarked = 1
+         ORDER BY bt_date DESC
+         LIMIT '.$sql_limit;
     $tableau = liste_elements($sql, array(), 'rss');
 }
 
@@ -343,12 +335,21 @@ if (isset($_GET['config'])) {
     $out_html .= "\t".'<div id="posts-wrapper">'."\n";
 
     $out_html .= "\t\t".'<ul id="feed-list">'."\n";
-    $out_html .= "\t\t\t".'<li><a style="text-align:center;font-weight:bold;font-size:1.8em;" href="feed.php?ttl='. ($ttl-86400) .'" title="Before"><</a></li>'."\n";
-    if (($ttl+86400) > time()) {
-        $out_html .= "\t\t\t".'<li><a style="text-align:center;font-weight:bold;font-size:1.8em;" disabled title="After">></a></li>'."\n";
+
+    // Navigation: previous/next pages
+    $out_html .= "\t\t\t".'<li class="feed-nav">'."\n";
+    if ($page < 1) {
+        $out_html .= "\t\t\t\t".'<a disabled>&lt;</a>'."\n";
     } else {
-        $out_html .= "\t\t\t".'<li><a style="text-align:center;font-weight:bold;font-size:1.8em;" href="feed.php?ttl='. ($ttl+86400) .'" title="After">></a></li>'."\n";
+        $out_html .= "\t\t\t\t".'<a href="feed.php?p='.($page - 1).'" title="'.$GLOBALS['lang']['previous_page'].'">&lt;</a>'."\n";
     }
+    if ($page >= 0 && count($tableau) == $GLOBALS['max_rss_admin']) {
+        $out_html .= "\t\t\t\t".'<a href="feed.php?p='.($page + 1).'" title="'.$GLOBALS['lang']['next_page'].'">&gt;</a>'."\n";
+    } else {
+        $out_html .= "\t\t\t\t".'<a disabled>&gt;</a>'."\n";
+    }
+    $out_html .= "\t\t\t".'</li>'."\n";
+
     $out_html .= feed_list_html();
     $out_html .= "\t\t".'</ul>'."\n";
     $out_html .= "\t\t".'<div id="post-list-wrapper">'."\n";

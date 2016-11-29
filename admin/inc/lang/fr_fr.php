@@ -478,6 +478,8 @@ $GLOBALS['lang'] = array(
 
 'succes' => 'Succès',
 'echec' => 'Échec',
+'previous_page' => 'Page précédente',
+'next_page' => 'Page suivante',
 
 // Chiffres 0 à 9 pour captcha
 '0' => 'zéro',

@@ -334,6 +334,11 @@ function afficher_form_prefs($erreurs = '')
         $fld_cfg_rss .= '<div class="form-legend"><legend class="legend-rss">'.$GLOBALS['lang']['prefs_legend_configrss'].'</legend></div>'."\n";
         $fld_cfg_rss .= '<div class="form-lines">'."\n";
 
+        $nbs = array(10 => 10, 25 => 25, 50 => 50, 100 => 100, 300 => 300);
+        $fld_cfg_rss .= '<p>'."\n";
+        $fld_cfg_rss .= form_select('nb_list_rss', $nbs, $GLOBALS['max_rss_admin'], $GLOBALS['lang']['pref_nb_list']);
+        $fld_cfg_rss .= '</p>'."\n";
+
         $fld_cfg_rss .= '<p>'."\n";
         $a = explode('/', dirname($_SERVER['SCRIPT_NAME']));
         $fld_cfg_rss .= '<label>'.$GLOBALS['lang']['pref_label_crontab_rss'].'</label>'."\n";
