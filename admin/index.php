@@ -21,9 +21,13 @@ $GLOBALS['db_handle'] = open_base();
 // transforme les valeurs numériques d’un tableau pour les ramener la valeur max du tableau à $maximum. Les autres valeurs du tableau sont à l’échelle
 function scaled_size($tableau, $maximum)
 {
+    $return = array();
+    if (!$tableau) {
+        return $return;
+    }
+
     $ratio = max(array_values($tableau))/$maximum;
 
-    $return = array();
     foreach ($tableau as $key => $value) {
         if ($ratio != 0) {
             $return[] = array('nb'=> $value, 'nb_scale' => floor($value/$ratio), 'date' => $key);
@@ -73,6 +77,10 @@ function get_tableau_date($data_type)
         }
     } catch (Exception $e) {
         die('Erreur 86459: '.$e->getMessage());
+    }
+
+    if (!$table_months) {
+        return $table_months;
     }
 
     $start_at = min(array_keys($table_months));
@@ -237,7 +245,7 @@ echo "\n".'</script>'."\n";
 <script>
     /**
      * [poc] try to set the width properly
-     *       if it's ok : 
+     *       if it's ok :
      *          - set the with threw css
      */
     Clen=containers.length;
