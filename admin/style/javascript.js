@@ -311,8 +311,26 @@ function activate_comm(button)
     ADD-ONS HANDLING
 **************************************************************************************************************************************/
 
-// hide/unhide a comm
-function activate_mod(button)
+// show/hide for addons list
+function addons_showhide_list()
+{
+    if ("querySelector" in document && "addEventListener" in window) {
+        [].forEach.call(document.querySelectorAll("#modules div"), function (el) {
+            el.style.display = "none";
+        });
+
+        [].forEach.call(document.querySelectorAll("#modules li"), function (el) {
+            el.addEventListener("click",function (e) {
+                // e.preventDefault();
+                this.nextElementSibling.style.display = (this.nextElementSibling.style.display === "none") ? "" : "none";
+                return;
+            }, false);
+        });
+    }
+}
+
+// enabled/disable an addon
+function addon_switch_enabled(button)
 {
     var notifDiv = document.createElement('div');
 
@@ -338,14 +356,15 @@ function activate_mod(button)
     var formData = new FormData();
     formData.append('token', csrf_token);
     formData.append('_verif_envoi', 1);
+    formData.append('mod_activer', button.id);
 
     formData.append('addon_id', button.id.substr(7));
     formData.append('statut', ((button.checked) ? 'on' : ''));
-    formData.append('mod_activer', button.id);
+    formData.append('format', 'ajax');
 
     xhr.send(formData);
-
 }
+
 
 /**************************************************************************************************************************************
     LINKS AND ARTICLE FORMS : TAGS HANDLING

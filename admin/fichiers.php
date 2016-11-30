@@ -37,7 +37,6 @@ function taille_formate($taille)
     return $taille.' '.$prefixe[$dix];
 }
 
-
 function afficher_form_fichier($erreurs, $fichiers, $what)
 {
     // ajout d’un fichier
@@ -447,7 +446,7 @@ if (isset($_POST['_verif_envoi'])) {
     }
 }
 
-tpl_show_html_head($GLOBALS['lang']['titre_fichier']);
+echo tpl_get_html_head($GLOBALS['lang']['titre_fichier']);
 
 echo '<div id="header">'."\n";
     echo '<div id="top">'."\n";
@@ -531,4 +530,4 @@ echo 'document.body.addEventListener(\'dragend\', handleDragEnd, false);'."\n";
 echo php_lang_to_js(0);
 echo "\n".'</script>'."\n";
 
-footer($begin);
+echo tpl_get_footer($begin);

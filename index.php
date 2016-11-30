@@ -20,7 +20,6 @@ require_once BT_ROOT.'inc/addons.php';
 addons_init_public();
 
 
-
 // Anti XSS : /index.php/%22onmouseover=prompt(971741)%3E or /index.php/ redirects all on index.php
 // If there is a slash after the "index.php", the file is considered as a folder, but the code inside it still executed.
 if (strpos($_SERVER['REQUEST_URI'], $_SERVER['SCRIPT_NAME'].'/') === 0) {
@@ -42,9 +41,6 @@ session_start();
 $GLOBALS['db_handle'] = open_base();
 $GLOBALS['tpl_class'] = '';
 
-
-// load addons and load addon's hook
-// addon_boot_hook_push();
 
 // hookTrigger
 hook_trigger('system-start');

@@ -68,7 +68,7 @@ if (isset($_POST['_verif_envoi']) and auth_is_valid($_POST['nom_utilisateur'], $
     exit(header('Location: '.$location));
 } else { // On sort…
     // …et affiche la page d'auth
-    tpl_show_html_head('Identification');
+    echo tpl_get_html_head('Identification');
     echo '<div id="axe">'."\n";
     echo '<div id="pageauth">'."\n";
     echo '<h1>'.BLOGOTEXT_NAME.'</h1>'."\n";
@@ -84,4 +84,4 @@ if (isset($_POST['_verif_envoi']) and auth_is_valid($_POST['nom_utilisateur'], $
 }
 
 echo "\n".'<script src="style/javascript.js"></script>'."\n";
-footer();
+echo tpl_get_footer();

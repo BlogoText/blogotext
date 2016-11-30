@@ -30,14 +30,26 @@ if (isset($_POST['_verif_envoi'])) {
             'addon_id' => htmlspecialchars($_POST['addon_id']),
             'status' => (isset($_POST['statut']) and $_POST['statut'] == 'on') ? 1 : 0,
         );
-    $erreurs = valider_form_module($module);
+    $erreurs = addon_ajax_check_request($module['addon_id'], 'mod_activer');
+    if (!isset($module['status'])) {
+        $erreurs[] = $GLOBALS['lang']['err_addon_status'];
+    }
     if (isset($_POST['mod_activer'])) {
         if (!empty($erreurs)) {
             echo 'Error';
             echo implode("\n", $erreurs);
             die;
         } else {
-            addon_ajax_switch_enabled_proceed($module); // FIXME: this should not return anything. Put a is_readable() in valider_form_module, or somewhere more appropriate.  Or simply die with error, since this is critical error that shouldn’t allow BT to run.
+            /**
+             * FIXME: this should not return anything. Put a is_readable() in addon_ajax_check_request(),
+             *        or somewhere more appropriate. Or simply die with error, since this is
+             *        critical error that shouldn’t allow BT to run.
+             */
+            /**
+             * From : RemRem
+             * Depuis la maj de core/addon et les modifs que j'ai fait, c'est bon non ?
+             */
+            addon_ajax_switch_enabled_proceed($module);
         }
     } else {
         $erreurs = addon_ajax_switch_enabled_proceed($module); // FIXME: same here.
@@ -55,7 +67,11 @@ if ($filtre == 'disabled') {
 }
 
 
-tpl_show_html_head($GLOBALS['lang']['mesmodules']);
+/**
+ * echo
+ */
+
+echo tpl_get_html_head($GLOBALS['lang']['mesmodules']);
 
 echo '<div id="header">'."\n";
     echo '<div id="top">'."\n";
@@ -80,25 +96,9 @@ echo addons_html_get_list_addons($tableau, $filtre);
 
 echo "\n".'<script src="style/javascript.js"></script>'."\n";
 echo '<script>';
+echo 'addons_showhide_list();';
 echo php_lang_to_js(0);
 echo 'var csrf_token = \''.new_token().'\'';
 echo '</script>';
 
-// [POC] by RemRem, preview of an alternative view
-echo '<script>'."\n";
-echo'     // [POC] by RemRem, preview of an alternative view'."\n";
-echo '    if ("querySelector" in document && "addEventListener" in window){'."\n";
-echo '       [].forEach.call(document.querySelectorAll("#modules div"), function (el) {'."\n";
-echo '        el.style.display = "none";'."\n";
-echo '    });'."\n";
-echo '    [].forEach.call(document.querySelectorAll("#modules li"), function (el) {'."\n";
-echo '        el.addEventListener("click",function(e){'."\n";
-echo '            // e.preventDefault();'."\n";
-echo '            this.nextElementSibling.style.display = (this.nextElementSibling.style.display === "none") ? "" : "none";'."\n";
-echo '            return;'."\n";
-echo '        }, false);'."\n";
-echo '    });'."\n";
-echo '}'."\n";
-echo '</script>'."\n";
-
-footer($begin);
+echo tpl_get_footer($begin);

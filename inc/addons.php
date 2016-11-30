@@ -35,49 +35,32 @@
 
 
 
-
 /**
- * return the absolute and clean path
- * used for debug and for security
- *
- * @param string $path, the absolute path from your BT directory
- * @param bool $check, run some check, and correct if possible (recommended for dev/debug use only !)
- * @param bool $alert, show alert if something got wrong (recommended for dev/debug use only !)
- * @return bool|string, the absolute path for your host
+ * some test & clean up to a path
+ * DevNote (RemRem) - useless ?
+ *                  - safe enought for rmdir_recursive() ?
+ *                  - maybe use if with rmdir() ?
  */
-function get_path($path, $check = false, $alert = false)
+function get_safe_path($path)
 {
-    if ($check === true) {
-        if (strpos($path, '/') !== 0) {
-            if ($alert === true) {
-                // var_dump('get_path() : path not starting with "/" ('. $path .')');
-            }
-            return false;
-        }
-        if (strpos($path, BT_ROOT) === 0) {
-            if ($alert === true) {
-                // var_dump('get_path() : seem\'s already an absolute path ('. $path .')');
-            }
-            return false;
-        }
-        if (strpos($path, './') !== false) {
-            if ($alert === true) {
-                // var_dump('get_path() : use of "./" or "../", try to hack ? ('. $path .')');
-            }
-            return false;
-        }
+    // no relative path allowed
+    if (strpos($path, './') !== false) {
+        return false;
     }
 
-    $return = BT_ROOT .'/'. str_replace(BT_ROOT, '', $path);
-    $return = str_replace(array('/', '\\', '/\\'), '/', $return);
-    while (strstr($return, '\\\\')) {
-        $return = str_replace('\\\\', '\\', $return);
+    // make sure of absolute url
+    $path = BT_ROOT .'/'. str_replace(BT_ROOT, '', $path);
+
+    // prevent var\\log\test.php -> var/log/test.php
+    while (strstr($path, '\\')) {
+        $path = str_replace('\\', '/', $path);
     }
-    while (strstr($return, '//')) {
-        $return = str_replace('//', '/', $return);
+    // prevent var//log/test.php -> var/log/test.php
+    while (strstr($path, '//')) {
+        $path = str_replace('//', '/', $path);
     }
 
-    return $return;
+    return $path;
 }
 
 /**
@@ -88,24 +71,40 @@ function get_path($path, $check = false, $alert = false)
  * use of get_path(), try to prevent the end of the world...
  *
  * @params string $path, the relative path to BT_DIR
+ * @return bool
  */
 function rmdir_recursive($path)
 {
-    // TODO FIX: use of get_path() ?
-    $abs = get_path($path);
-    $dir = opendir($abs);
+    $error = 0;
+
+    // secure and test the path
+    // just trying to avoid to delete the world or cause a zombie apocalypse
+    if (($path = get_safe_path($path)) === false) {
+        return false;
+    }
+
+    $dir = opendir($path);
     while (($file = readdir($dir)) !== false) {
         if (($file == '.') || ($file == '..')) {
             continue;
         }
-        if (is_dir($abs.$file.'/')) {
-            rmdir_recursive($path.$file.'/');
+        if (is_dir($path.$file.'/')) {
+            if (!rmdir_recursive($path.$file.'/')) {
+                ++$error;
+            }
         } else {
-            unlink($abs.$file);
+            if (!unlink($path.$file)) {
+                ++$error;
+            }
         }
     }
     closedir($dir);
-    rmdir($abs);
+    rmdir($path);
+    if (is_dir($path)) {
+        ++$error;
+    }
+
+    return ($error === 0);
 }
 
 
@@ -294,8 +293,8 @@ function addon_test_compliancy($addon_compliancy)
         return true;
     }
 
-    $bt_major_version = explode('.', BLOGOTEXT_VERSION, 2);
-    return ((int)version_compare($addon_compliancy, $bt_major_version['0']) !== 1);
+    $bt = explode('.', BLOGOTEXT_VERSION, 4);
+    return (version_compare($addon_compliancy, ($bt['0'].'.'.$bt['1']), '>=') && version_compare($addon_compliancy, ($bt['0'].'.'.($bt['1']+1)), '<'));
 }
 
 /**
@@ -606,7 +605,11 @@ function addon_get_vhost_cache_path($addon_id, $create = true)
  */
 function addon_set_enabled($addon_id)
 {
-    return (file_put_contents(addon_get_enabled_file_path($addon_id, true), '', LOCK_EX) !== false);
+    $success = (file_put_contents(addon_get_enabled_file_path($addon_id, true), '', LOCK_EX) !== false);
+    if ($success === true && isset($GLOBALS['addons'][$addon_id])) {
+        $GLOBALS['addons'][$addon_id]['enabled'] = true;
+    }
+    return $success;
 }
 
 /**
@@ -618,7 +621,11 @@ function addon_set_disabled($addon_id)
     if (!is_file($file)) {
         return true;
     }
-    return unlink($file);
+    $success = unlink($file);
+    if ($success === true && isset($GLOBALS['addons'][$addon_id])) {
+        $GLOBALS['addons'][$addon_id]['enabled'] = false;
+    }
+    return $success;
 }
 
 /**
@@ -756,26 +763,22 @@ function addons_html_get_list_addons($tableau, $filtre)
             $addon = $GLOBALS['addons'][$addon];
             // addon
             $out .= "\t".'<li>'."\n";
-
             // addon checkbox activation
-            $out .= "\t\t".'<span><input type="checkbox" class="checkbox-toggle" name="module_'.$addon['tag'].'" id="module_'.$addon['tag'].'" '.(($addon['enabled']) ? 'checked' : '').' onchange="activate_mod(this);" /><label for="module_'.$addon['tag'].'"></label></span>'."\n";
-
+            $out .= "\t\t".'<span><input type="checkbox" class="checkbox-toggle" name="module_'.$addon['tag'].'" id="module_'.$addon['tag'].'" '.(($addon['enabled']) ? 'checked' : '').' onchange="addon_switch_enabled(this);" /><label for="module_'.$addon['tag'].'"></label></span>'."\n";
             // addon name
             $out .= "\t\t".'<span>'.addon_get_translation($addon['name']).'</span>'."\n";
-
             // addon version
             $out .= "\t\t".'<span>'.$addon['version'].'</span>'."\n";
-
             $out .= "\t".'</li>'."\n";
 
             // other infos and params
             $out .= "\t".'<div>'."\n";
 
-            // addon tag
-            if (function_exists('addon_'.$addon['tag'])) {
-                $out .= "\t\t".'<p><code title="'.$GLOBALS['lang']['label_code_theme'].'">'.'{addon_'.$addon['tag'].'}'.'</code>'.addon_get_translation($addon['desc']).'</p>'."\n";
+            // addon tag + desc
+            if (function_exists('a_'.$addon['tag'])) {
+                $out .= "\t\t".'<p>'.addon_get_translation($addon['desc']).'<br /><br /><small>'.$GLOBALS['lang']['label_code_theme'].'</small> <code title="'.$GLOBALS['lang']['label_code_theme'].'">'.'{addon_'.$addon['tag'].'}'.'</code></p>'."\n";
             } else {
-                $out .= "\t\t".'<p>'.$GLOBALS['lang']['label_no_code_theme'].'</p>';
+                $out .= "\t\t".'<p>'.addon_get_translation($addon['desc']).'<br /><br /><small>'.$GLOBALS['lang']['label_no_code_theme'].'</small></p>';
             }
             $out .= "\t\t".'<p>';
 
@@ -810,7 +813,7 @@ function addons_html_get_list_addons($tableau, $filtre)
  */
 function addon_ajax_switch_enabled_proceed($addon)
 {
-    $erreurs = array();
+    $errors = array();
 
     $is_enabled = addon_test_enabled($addon['addon_id']);
     $new_status = (bool)$addon['status'];
@@ -819,36 +822,169 @@ function addon_ajax_switch_enabled_proceed($addon)
         if ($new_status) {
             // Addon enabled: we create .enabled
             if (!addon_set_enabled($addon['addon_id'])) {
-                $erreurs[] = sprintf($GLOBALS['lang']['err_addon_enabled'], $addon['addon_id']);
+                $errors[] = sprintf($GLOBALS['lang']['err_addon_enabled'], $addon['addon_id']);
             }
         } else {
             // Addon disabled: we delete .enabled
             if (!addon_set_disabled($addon['addon_id'])) {
-                $erreurs[] = sprintf($GLOBALS['lang']['err_addon_disabled'], $addon['addon_id']);
+                $errors[] = sprintf($GLOBALS['lang']['err_addon_disabled'], $addon['addon_id']);
             }
         }
 
         if (!addons_db_refresh()) {
-            $errors['info'] = 'fail to refresh cache';
+            $errors['db'] = 'fail to refresh cache';
             // try to delete
             if (!addons_db_del()) {
-                $errors['info'] = ' and fail to delete cache, please check your file system rights.';
+                $errors['db'] = ' and fail to delete cache, please check your file system rights.';
             } else {
                 // return message
-                $errors['info'] = ', but delete the cache, it will recreate later.';
+                $errors['db'] = ', but delete the cache, it will recreate later.';
             }
         }
+    } else {
+        $errors[] = 'no change detected';
     }
 
     if (isset($_POST['mod_activer'])) {
-        if (empty($erreurs)) {
+        if (empty($errors)) {
             die('Success'.new_token());
         } else {
-            die('Error'.new_token().implode("\n", $erreurs));
+            die('Error'.new_token().implode("\n", $errors));
         }
     }
 
-    return $erreurs;
+    return $errors;
+}
+
+/**
+ *
+ */
+function addon_ajax_check_request($addon_id, $check_key)
+{
+    $errors = array();
+    // do not check token on ajax request
+    if (!(isset($_POST[$check_key]))) {
+        if (!( isset($_POST['token']) and check_token($_POST['token']))) {
+            $errors[] = $GLOBALS['lang']['err_wrong_token'];
+        }
+    }
+    if (empty($addon_id) || preg_match('/^[\w\-]+$/', $addon_id) === false || !addon_test_exists($addon_id)) {
+        $errors[] = $GLOBALS['lang']['err_addon_name'];
+    }
+    return $errors;
+}
+
+/**
+ *
+ */
+function addon_ajax_button_action_process($addon_id, $button_id)
+{
+    $loaded = addon_load($addon_id);
+    if ($loaded === false) {
+        // to do
+        return $loaded;
+    }
+
+    if ($button_id == 'addon_clean_cache') {
+        $cleaner = addon_clean_cache($addon_id); // must be tested
+        if ($cleaner === true) {
+            die(
+                json_encode(
+                    array(
+                        'success' => true,
+                        'token' => new_token(),
+                        'message' => 'Cache for this addon has been clean !'
+                    )
+                )
+            );
+        } else {
+            die(
+                json_encode(
+                    array(
+                        'success' => false,
+                        'token' => new_token(),
+                        'message' => 'Fail to clean all the cache :/'
+                    )
+                )
+            );
+        }
+    }
+
+    if (!isset($GLOBALS['addons'][$addon_id]['buttons'])) {
+        die(
+            json_encode(
+                array(
+                    'success' => false,
+                    'token' => new_token(),
+                    'message' => 'this addon don\'t have button'
+                )
+            )
+        );
+    }
+    if (!isset($GLOBALS['addons'][$addon_id]['buttons'][$button_id])) {
+        die(
+            json_encode(
+                array(
+                    'success' => false,
+                    'token' => new_token(),
+                    'message' => 'this addon don\'t have this button'
+                )
+            )
+        );
+    }
+    if (!isset($GLOBALS['addons'][$addon_id]['buttons'][$button_id]['callback'])) {
+        die(
+            json_encode(
+                array(
+                    'success' => false,
+                    'token' => new_token(),
+                    'message' => 'this addon doesn\'t have callback function'
+                )
+            )
+        );
+    }
+    if (!function_exists($GLOBALS['addons'][$addon_id]['buttons'][$button_id]['callback'])) {
+        die(
+            json_encode(
+                array(
+                    'success' => false,
+                    'token' => new_token(),
+                    'message' => 'the callback to this button doesn\'t not exists'
+                )
+            )
+        );
+    }
+
+    // prevent echo() ...
+    ob_start();
+    $return = call_user_func($GLOBALS['addons'][$addon_id]['buttons'][$button_id]['callback']);
+    ob_end_clean();
+
+    if ($return === false) {
+        die(
+            json_encode(
+                array(
+                    'success' => false,
+                    'token' => new_token(),
+                    'message' => 'the callback function fail !'
+                )
+            )
+        );
+    }
+    if ($return === true) {
+        die(
+            json_encode(
+                array(
+                    'success' => true,
+                    'token' => new_token(),
+                    'message' => 'the callback function success !'
+                )
+            )
+        );
+    }
+    // allow string ? or array ?
+
+    $return = array();
 }
 
 
@@ -964,12 +1100,14 @@ function addon_form_buttons($addon_id)
     if (isset($GLOBALS['addons'][$addon_id]['buttons'])) {
         $return_form = true;
         foreach ($GLOBALS['addons'][$addon_id]['buttons'] as $btnId => $btn) {
-            $out .= '<p>'. form_checkbox($btnId, false, addon_get_translation($btn['label'])) .'</p>'."\n";
+            // $out .= '<p>'. form_checkbox($btnId, false, addon_get_translation($btn['label'])) .'</p>'."\n";
+            $out .= "\t\t".'<p><input type="checkbox" class="checkbox-toggle" name="'.$btnId.'" id="addon_'.$btnId.'" onchange="addon_button_action(this,\''.$addon_id.'\',\''.$btnId.'\');" /><label for="addon_'.$btnId.'">'. addon_get_translation($btn['label']) .'</label></p>'."\n";
         }
     }
     if (is_dir(addon_get_vhost_cache_path($addon_id, false))) {
         $return_form = true;
-        $out .= '<p>'. form_checkbox('addon_clean_cache', false, $GLOBALS['lang']['addons_clean_cache_label']) .'</p>'."\n";
+        // $out .= '<p>'. form_checkbox('addon_clean_cache', false, $GLOBALS['lang']['addons_clean_cache_label']) .'</p>'."\n";
+        $out .= "\t\t".'<p><input type="checkbox" class="checkbox-toggle" name="addon_clean_cache" id="addon_clean_cache" onchange="addon_button_action(this,\''.$addon_id.'\',\'addon_clean_cache\');" /><label for="addon_clean_cache">'. $GLOBALS['lang']['addons_clean_cache_label'] .'</label></p>'."\n";
     }
     $out .= '</div">'."\n";
         // submit box
@@ -1131,8 +1269,8 @@ function addon_buttons_action_process($addon_id)
 
             // prevent echo() ...
             ob_start();
-            call_user_func($btn['callback']);
-            $return['addon'][$btnId]['return'] = ob_get_contents();
+            $return['addon'][$btnId]['return'] = call_user_func($btn['callback']);
+            // $return['addon'][$btnId]['return'] = ob_get_contents();
             ob_end_clean();
             $return['addon'][$btnId]['run'] = true;
         }

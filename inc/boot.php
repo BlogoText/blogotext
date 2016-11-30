@@ -200,7 +200,7 @@ function secure_host_to_path($http_host)
         );
     }
 
-    $http_host = htmlentities($http_host, ENT_QUOTES);
+    $http_host = htmlspecialchars($http_host, ENT_QUOTES);
 
     /**
      * for test purporse only !
@@ -220,12 +220,13 @@ function secure_host_to_path($http_host)
     }
 
     $exploded = parse_url($http_host);
+
     if (empty($exploded['path'])) {
         $exploded['path'] = '';
     }
 
     // is admin url ? (remove the last "folder/")
-    if (!empty($exploded['path'])) {
+    if (defined('IS_IN_ADMIN') && !empty($exploded['path'])) {
         $tmp = trim($exploded['path'], '/');
         $tmp = explode('/', $tmp);
         array_pop($tmp);
@@ -251,7 +252,7 @@ function secure_host_to_path($http_host)
     // format, clean up, secure
     $path = strtolower($path);
     $path = trim($path);
-    $path = preg_replace("/[^a-z0-9-_\.]/", '-', $path);
+    $path = preg_replace("/[^a-z0-9-_\.\~]/", '-', $path);
     // clean first and last char when -
     $path = trim($path, '-');
     // clean first and last char when . (prevent toto.onion./addons)

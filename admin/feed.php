@@ -146,7 +146,6 @@ function rss_count_feed()
     }
 }
 
-
 /* From DB : returns a HTML list with the feeds (the left panel) */
 function feed_list_html()
 {
@@ -296,7 +295,7 @@ if (!empty($_GET['q'])) {
     $tableau = liste_elements($sql, array(), 'rss');
 }
 
-tpl_show_html_head($GLOBALS['lang']['mesabonnements']);
+echo tpl_get_html_head($GLOBALS['lang']['mesabonnements']);
 
 echo '<div id="header">'."\n";
     echo '<div id="top">'."\n";
@@ -406,4 +405,4 @@ if (isset($_GET['config'])) {
     echo "\n".'</script>'."\n";
 }
 
-footer($begin);
+echo tpl_get_footer($begin);

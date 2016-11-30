@@ -192,7 +192,7 @@ function afficher_commentaire($comment, $with_link)
 // DEBUT PAGE
 $msgg = $GLOBALS['lang']['titre_commentaires']. (!empty($article_title) ?' | '.$article_title : '');
 
-tpl_show_html_head($msgg);
+echo tpl_get_html_head($msgg);
 
 echo '<div id="header">'."\n";
     echo '<div id="top">'."\n";
@@ -255,4 +255,4 @@ echo php_lang_to_js(0);
 echo 'var csrf_token = \''.new_token().'\'';
 echo '</script>'."\n";
 
-footer($begin);
+echo tpl_get_footer($begin);
