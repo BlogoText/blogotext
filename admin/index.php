@@ -87,7 +87,7 @@ function get_tableau_date($data_type)
     } else {
         // start for 1 first month
         // dirty
-        $d1 = new DateTime(implode('-',str_split($start_at, 4)));
+        $d1 = new DateTime(implode('-', str_split($start_at, 4)));
         $d2 = new DateTime(date('Y-m'));
         $i = ($d1->diff($d2)->m) + ($d1->diff($d2)->y*12) + 1;
         while (--$i) {

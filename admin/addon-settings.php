@@ -28,34 +28,27 @@ if (isset($_POST['_verif_envoi'])) {
     $erreurs = addon_ajax_check_request(htmlspecialchars($_POST['addon_id']), 'addon_button_action');
     if (!empty($erreurs)) {
         echo json_encode(
-                array(
-                    'success' => false,
-                    'message' => $erreurs['0'],
-                    'token'
-                )
-            );
-        die;
-        echo 'Error';
-        echo implode("\n", $erreurs);
+            array(
+                'success' => false,
+                'message' => $erreurs['0'],
+                'token'
+            )
+        );
         die;
     } else {
-        $process = addon_ajax_button_action_process(htmlspecialchars($_POST['addon_id']),htmlspecialchars($_POST['button_id']));
+        $process = addon_ajax_button_action_process(htmlspecialchars($_POST['addon_id']), htmlspecialchars($_POST['button_id']));
         // if (!$process) {
             // die('Error'.new_token().'<p><strong>:/</strong> Fail to process</p>');
         // }
         echo json_encode(
-                array(
-                    'success' => false,
-                    'message' => $erreurs,
-                    'token'
-                )
-            );
+            array(
+                'success' => false,
+                'message' => $erreurs,
+                'token'
+            )
+        );
         die();
-        var_dump($form_process);
-        exit();
     }
-    echo 'Error';
-    exit();
 }
 
 // traitement d’une action sur le module

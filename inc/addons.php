@@ -875,7 +875,7 @@ function addon_ajax_check_request($addon_id, $check_key)
 }
 
 /**
- * 
+ *
  */
 function addon_ajax_button_action_process($addon_id, $button_id)
 {

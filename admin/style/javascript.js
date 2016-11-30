@@ -314,13 +314,13 @@ function activate_comm(button)
 // show/hide for addons list
 function addons_showhide_list()
 {
-    if ("querySelector" in document && "addEventListener" in window){
-        [].forEach.call(document.querySelectorAll("#modules div"), function(el) {
+    if ("querySelector" in document && "addEventListener" in window) {
+        [].forEach.call(document.querySelectorAll("#modules div"), function (el) {
             el.style.display = "none";
         });
 
-        [].forEach.call(document.querySelectorAll("#modules li"), function(el) {
-            el.addEventListener("click",function(e) {
+        [].forEach.call(document.querySelectorAll("#modules li"), function (el) {
+            el.addEventListener("click",function (e) {
                 // e.preventDefault();
                 this.nextElementSibling.style.display = (this.nextElementSibling.style.display === "none") ? "" : "none";
                 return;
