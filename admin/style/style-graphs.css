@@ -26,7 +26,7 @@
 
 .graph-container .graphique {
     position: relative;
-    top: -181px;
+    top: -180px;
     height: 180px;
     padding: 30px 0 0;
     text-align: center;
@@ -70,10 +70,6 @@
     content: none;
 }
 
-.graph-container .month-bar {
-    min-height: 1px;
-}
-
 .graph-container .month-name {
     bottom: 0;
     display: block;
@@ -89,7 +85,7 @@
     top: -25px;
     left: 0px;
     position: absolute;
-    width: 30px;
+    width: 100%;
     color: #777;
     font-weight: bold;
 }
@@ -99,8 +95,16 @@
     background: white;
 }
 
+/* Hover line */
+.graph-container .month-bar {
+    min-height: 1px;
+}
 .graph-container .month:hover .month-bar {
-    background: linear-gradient(to left, transparent 13px, rgba(33,150,243,1) 10px, rgba(33,150,243,1) 15px, transparent 15px);
+    /*background: linear-gradient(to left, transparent 13px, rgba(33,150,243,1) 10px, rgba(33,150,243,1) 15px, transparent 15px);*/
+    background-image: linear-gradient(to right, rgba(33,150,243,1) 100%, transparent);
+    background-size: 2px;
+    background-position: 50%;
+    background-repeat: no-repeat;
 }
 
 .graph-container .month:hover .month-name {

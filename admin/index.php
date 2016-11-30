@@ -246,22 +246,12 @@ echo "\n".'</script>'."\n";
     /**
      * [poc] try to set the width properly
      *       if it's ok :
-     *          - set the with threw css
+     *          - set the with threw css (BoboTiG: partily done for month numbers)
      */
-    Clen=containers.length;
-    for (var i=0; i<Clen; i++) {
-        var monthsnb = containers[i].querySelectorAll('.month-nb');
-        var t = monthsnb.length;
-        for (var j=0; j<t; j++) {
-            monthsnb[j].style.width = '100%';
-        }
-    }
-    console.log( containers.length );
-    for (var i=0; i<Clen; i++) {
+    for (var i = 0, clen = containers.length; i < clen; i++) {
         var months = containers[i].querySelectorAll('.month');
-        var t = monthsnb.length;
-         for (var j=0; j<t; j++) {
-            months[j].style.width = (100 / (months.length)) +'%';
+        for (var j = 0, t = months.length; j < t; j++) {
+            months[j].style.width = (100 / (t)) + '%';
         }
     }
     respondCanvas();
