@@ -226,6 +226,7 @@ function install_form_2_proceed()
     create_folder(DIR_IMAGES, 0); // todo : change for v4
     create_folder(DIR_DOCUMENTS, 0); // todo : change for v4
     create_folder(DIR_DATABASES, 1); // todo : change for v4
+    create_folder(DIR_LOG, 1); // todo : change for v4
     auth_write_user_login_file($_POST['identifiant'], $_POST['mdp']);
     import_ini_file(FILE_USER); // todo : change for v4
     if (!is_file(FILE_SETTINGS)) {

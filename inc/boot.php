@@ -86,14 +86,18 @@ ini_set('ignore_repeated_source', 1);
  */
 function log_error($message, $write = true)
 {
-    if ($write === true) {
+    // TODO: remove for the freeze, puts here to avoid to reinstall another time
+    create_folder(DIR_LOG, 1);
+
+    if ($write === true && defined('DIR_LOG')) {
+        $logFile = DIR_LOG.'errors-'.date('Ymd').'.log';
         $trace = debug_backtrace();
         $trace = $trace[1];
         $where = str_replace(BT_ROOT, '', $trace['file']);
         $log = sprintf(
-            '[%s, v%s] %s in %s() at [%s:%d]',
-            date('Y-m-d H:i:s T'),
+            '[v%s, %s] %s in %s() at [%s:%d]',
             BLOGOTEXT_VERSION,
+            date('H:i:s'),
             $message,
             $trace['function'],
             $where,
@@ -121,7 +125,7 @@ function log_error($message, $write = true)
             $log .= "\n".'Stack trace:'."\n".$stack;
         }
 
-        error_log(addslashes($log)."\n", 3, BT_ROOT.'var/php-error.log');
+        error_log(addslashes($log)."\n", 3, $logFile);
     }
 }
 // END OF [POC] log system
@@ -283,6 +287,7 @@ define('DIR_DOCUMENTS', BT_ROOT.'files/');
 define('DIR_IMAGES', BT_ROOT.'img/');
 define('DIR_THEMES', BT_ROOT.'themes/');
 define('DIR_VAR', BT_ROOT.'var/');
+define('DIR_LOG', DIR_VAR.'log/');
 
 // Constants: databases
 define('FILES_DB', DIR_DATABASES.'files.php');
