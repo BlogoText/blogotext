@@ -79,7 +79,7 @@ function tpl_show_preview($article)
 }
 
 // function afficher_html_head($titre)
-function tpl_show_html_head($titre)
+function tpl_get_html_head($title)
 {
     $html = '<!DOCTYPE html>'."\n";
     $html .= '<html>'."\n";
@@ -87,13 +87,13 @@ function tpl_show_html_head($titre)
     $html .= "\t".'<meta charset="UTF-8" />'."\n";
     $html .= "\t".'<link type="text/css" rel="stylesheet" href="style/style.css.php" />'."\n";
     $html .= "\t".'<meta name="viewport" content="initial-scale=1.0, user-scalable=yes" />'."\n";
-    $html .= "\t".'<title>'.$titre.' | '.BLOGOTEXT_NAME.'</title>'."\n";
+    $html .= "\t".'<title>'.$title.' | '.BLOGOTEXT_NAME.'</title>'."\n";
     $html .= '</head>'."\n";
     $html .= '<body id="body">'."\n\n";
-    echo $html;
+    return $html;
 }
 
-function footer($begin_time = '')
+function tpl_get_footer($begin_time = '')
 {
     $msg = '';
     if ($begin_time != '') {

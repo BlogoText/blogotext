@@ -368,6 +368,41 @@ function afficher_form_billet($article, $erreurs)
     echo $html;
 }
 
+function valider_form_billet($billet)
+{
+    $date = decode_id($billet['bt_id']);
+    $erreurs = array();
+    if (isset($_POST['supprimer']) and !(isset($_POST['token']) and check_token($_POST['token']))) {
+        $erreurs[] = $GLOBALS['lang']['err_wrong_token'];
+    }
+    if (!strlen(trim($billet['bt_title']))) {
+        $erreurs[] = $GLOBALS['lang']['err_titre'];
+    }
+    if (!strlen(trim($billet['bt_content']))) {
+        $erreurs[] = $GLOBALS['lang']['err_contenu'];
+    }
+    if (!preg_match('/\d{4}/', $date['annee'])) {
+        $erreurs[] = $GLOBALS['lang']['err_annee'];
+    }
+    if ((!preg_match('/\d{2}/', $date['mois'])) or ($date['mois'] > '12')) {
+        $erreurs[] = $GLOBALS['lang']['err_mois'];
+    }
+    if ((!preg_match('/\d{2}/', $date['jour'])) or ($date['jour'] > date('t', mktime(0, 0, 0, $date['mois'], 1, $date['annee'])))) {
+        $erreurs[] = $GLOBALS['lang']['err_jour'];
+    }
+    if ((!preg_match('/\d{2}/', $date['heure'])) or ($date['heure'] > 23)) {
+        $erreurs[] = $GLOBALS['lang']['err_heure'];
+    }
+    if ((!preg_match('/\d{2}/', $date['minutes'])) or ($date['minutes'] > 59)) {
+        $erreurs[] = $GLOBALS['lang']['err_minutes'];
+    }
+    if ((!preg_match('/\d{2}/', $date['secondes'])) or ($date['secondes'] > 59)) {
+        $erreurs[] = $GLOBALS['lang']['err_secondes'];
+    }
+    return $erreurs;
+}
+
+
 
 // Traitment
 $erreurs_form = array();
@@ -402,7 +437,7 @@ if (!empty($post)) {
 }
 
 // Start page
-tpl_show_html_head($titre_ecrire);
+echo tpl_get_html_head($titre_ecrire);
 
 echo '<div id="header">'."\n";
     echo '<div id="top">'."\n";
@@ -445,4 +480,4 @@ window.addEventListener("beforeunload", function (e) {
 
 echo '</script>';
 
-footer($begin);
+echo tpl_get_footer($begin);

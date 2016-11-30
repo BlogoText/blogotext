@@ -12,78 +12,6 @@
 # *** LICENSE ***
 
 
-function valider_form_billet($billet)
-{
-    $date = decode_id($billet['bt_id']);
-    $erreurs = array();
-    if (isset($_POST['supprimer']) and !(isset($_POST['token']) and check_token($_POST['token']))) {
-        $erreurs[] = $GLOBALS['lang']['err_wrong_token'];
-    }
-    if (!strlen(trim($billet['bt_title']))) {
-        $erreurs[] = $GLOBALS['lang']['err_titre'];
-    }
-    if (!strlen(trim($billet['bt_content']))) {
-        $erreurs[] = $GLOBALS['lang']['err_contenu'];
-    }
-    if (!preg_match('/\d{4}/', $date['annee'])) {
-        $erreurs[] = $GLOBALS['lang']['err_annee'];
-    }
-    if ((!preg_match('/\d{2}/', $date['mois'])) or ($date['mois'] > '12')) {
-        $erreurs[] = $GLOBALS['lang']['err_mois'];
-    }
-    if ((!preg_match('/\d{2}/', $date['jour'])) or ($date['jour'] > date('t', mktime(0, 0, 0, $date['mois'], 1, $date['annee'])))) {
-        $erreurs[] = $GLOBALS['lang']['err_jour'];
-    }
-    if ((!preg_match('/\d{2}/', $date['heure'])) or ($date['heure'] > 23)) {
-        $erreurs[] = $GLOBALS['lang']['err_heure'];
-    }
-    if ((!preg_match('/\d{2}/', $date['minutes'])) or ($date['minutes'] > 59)) {
-        $erreurs[] = $GLOBALS['lang']['err_minutes'];
-    }
-    if ((!preg_match('/\d{2}/', $date['secondes'])) or ($date['secondes'] > 59)) {
-        $erreurs[] = $GLOBALS['lang']['err_secondes'];
-    }
-    return $erreurs;
-}
-
-function valider_form_preferences()
-{
-    $erreurs = array();
-    if (!( isset($_POST['token']) and check_token($_POST['token']))) {
-        $erreurs[] = $GLOBALS['lang']['err_wrong_token'];
-    }
-    if (!strlen(trim($_POST['auteur']))) {
-        $erreurs[] = $GLOBALS['lang']['err_prefs_auteur'];
-    }
-    if ($GLOBALS['require_email'] == 1) {
-        if (!preg_match('#^[\w.+~\'*-]+@[\w.-]+\.[a-zA-Z]{2,6}$#i', trim($_POST['email']))) {
-            $erreurs[] = $GLOBALS['lang']['err_prefs_email'] ;
-        }
-    }
-    if (!preg_match('#^(https?://).*/$#', $_POST['racine'])) {
-        $erreurs[] = $GLOBALS['lang']['err_prefs_racine_slash'];
-    }
-    if (!strlen(trim($_POST['identifiant']))) {
-        $erreurs[] = $GLOBALS['lang']['err_prefs_identifiant'];
-    }
-    if ($_POST['identifiant'] != USER_LOGIN and (!strlen($_POST['mdp']))) {
-        $erreurs[] = $GLOBALS['lang']['err_prefs_id_mdp'];
-    }
-    if (preg_match('#[=\'"\\\\|]#iu', $_POST['identifiant'])) {
-        $erreurs[] = $GLOBALS['lang']['err_prefs_id_syntaxe'];
-    }
-    if ((!empty($_POST['mdp'])) and (!password_verify($_POST['mdp'], USER_PWHASH))) {
-        $erreurs[] = $GLOBALS['lang']['err_prefs_oldmdp'];
-    }
-    if ((!empty($_POST['mdp'])) and (strlen($_POST['mdp_rep']) < '6')) {
-        $erreurs[] = $GLOBALS['lang']['err_prefs_mdp'];
-    }
-    if ((empty($_POST['mdp_rep'])) xor (empty($_POST['mdp']))) {
-        $erreurs[] = $GLOBALS['lang']['err_prefs_newmdp'] ;
-    }
-    return $erreurs;
-}
-
 function valider_form_fichier($fichier)
 {
     $erreurs = array();
@@ -109,24 +37,6 @@ function valider_form_fichier($fichier)
         if ('' == $fichier['bt_filename']) {
             $erreurs[] = 'nom de fichier invalide';
         }
-    }
-    return $erreurs;
-}
-
-function valider_form_module($module)
-{
-    $erreurs = array();
-    // do not check token on ajax request
-    if (!(isset($_POST['mod_activer']))) {
-        if (!( isset($_POST['token']) and check_token($_POST['token']))) {
-            $erreurs[] = $GLOBALS['lang']['err_wrong_token'];
-        }
-    }
-    if (!isset($module['addon_id']) || preg_match('/^[\w\-]+$/', $module['addon_id']) === false) {
-        $erreurs[] = $GLOBALS['lang']['err_addon_name'];
-    }
-    if (!isset($module['status'])) {
-        $erreurs[] = $GLOBALS['lang']['err_addon_status'];
     }
     return $erreurs;
 }
@@ -159,30 +69,6 @@ function valider_form_rss()
     return $erreurs;
 }
 
-function valider_form_link()
-{
-    $erreurs = array();
-    if (!( isset($_POST['token']) and check_token($_POST['token']))) {
-        $erreurs[] = $GLOBALS['lang']['err_wrong_token'];
-    }
-
-    if (!preg_match('#^\d{14}$#', $_POST['bt_id'])) {
-        $erreurs[] = 'Erreur id.';
-    }
-    return $erreurs;
-}
-
-function valider_form_maintenance()
-{
-    $erreurs = array();
-    $token = (isset($_POST['token'])) ? $_POST['token'] : (isset($_GET['token']) ? $_GET['token'] : 'false');
-    if (!check_token($token)) {
-        $erreurs[] = $GLOBALS['lang']['err_wrong_token'];
-    }
-    return $erreurs;
-}
-
-
 function form_select($id, $choix, $defaut, $label)
 {
     $form = '<label for="'.$id.'">'.$label.'</label>'."\n";
@@ -203,37 +89,6 @@ function form_select_no_label($id, $choix, $defaut)
     }
     $form .= '</select>'."\n";
     return $form;
-}
-
-// Check SemVer validity
-// source: https://github.com/morrisonlevi/SemVer/blob/master/src/League/SemVer/RegexParser.php
-function is_valid_version($version)
-{
-    $regex = '/^
-        (?#major)(0|(?:[1-9][0-9]*))
-        \\.
-        (?#minor)(0|(?:[1-9][0-9]*))
-        \\.
-        (?#patch)(0|(?:[1-9][0-9]*))
-        (?:
-            -
-            (?#pre-release)(
-                (?:(?:0|(?:[1-9][0-9]*))|(?:[0-9]*[a-zA-Z-][a-zA-Z0-9-]*))
-                (?:
-                    \\.
-                    (?:(?:0|(?:[1-9][0-9]*))|(?:[0-9]*[a-zA-Z-][a-zA-Z0-9-]*))
-                )*
-            )
-        )?
-        (?:
-            \\+
-            (?#build)(
-                [0-9a-zA-Z-]+
-                (?:\\.[a-zA-Z0-9-]+)*
-            )
-        )?
-    $/x';
-    return preg_match($regex, $version);
 }
 
 function form_categories_links($where, $tags_post)

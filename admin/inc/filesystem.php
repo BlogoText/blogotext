@@ -15,11 +15,10 @@
 /*
  * Notez que la liste des fichiers n’est pas intrégrée dans la base de données SQLITE.
  * Ceci pour une raison simple : les fichiers (contrairement aux articles et aux commentaires)
- *  sont indépendants. Utiliser une BDD pour les lister est beaucoup moins rapide
- *  qu’utiliser un fichier txt normal.
+ * sont indépendants. Utiliser une BDD pour les lister est beaucoup moins rapide
+ * qu’utiliser un fichier txt normal.
  * Pour le stockage, j’utilise un tableau PHP que j’enregistre directement dans un fichier :
- *  base64_encode(serialize($tableau)) # pompée sur Shaarli, by Sebsauvage.
- *
+ *   base64_encode(serialize($tableau)) # pompée sur Shaarli, by Sebsauvage.
  */
 
 // From a filesize (like "20M"), returns a size in bytes.
@@ -29,10 +28,10 @@ function return_bytes($val)
     $prefix = strtolower($val[strlen($val)-1]);
     switch ($prefix) {
         case 'g':
-            $val *= 1024;
+            $val *= 1024*1024*1024;
             break;
         case 'm':
-            $val *= 1024;
+            $val *= 1024*1024;
             break;
         case 'k':
             $val *= 1024;
@@ -192,7 +191,7 @@ function fichier_prefs()
     $prefs .= "\$GLOBALS['max_linx_admin'] = ".$nombre_liens_admin.";\n";
     $prefs .= "\$GLOBALS['dl_link_to_files'] = ".$auto_dl_liens_fichiers.";\n";
 
-    return file_put_contents(FILE_SETTINGS, $prefs, LOCK_EX) !== false;
+    return (file_put_contents(FILE_SETTINGS, $prefs, LOCK_EX) !== false);
 }
 
 // TRAITEMENT DU FORMULAIRE DE FICHIER, CÔTÉ BDD

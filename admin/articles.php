@@ -101,7 +101,7 @@ function afficher_liste_articles($tableau)
     echo $out;
 }
 
-tpl_show_html_head($GLOBALS['lang']['mesarticles']);
+echo tpl_get_html_head($GLOBALS['lang']['mesarticles']);
 
 echo '<div id="header">'."\n";
     echo '<div id="top">'."\n";
@@ -134,4 +134,4 @@ echo "\n".'<script src="style/javascript.js"></script>'."\n";
     echo 'window.addEventListener(\'scroll\', function(){ scrollingFabHideShow() });'."\n";
     echo "\n".'</script>'."\n";
 
-footer($begin);
+echo tpl_get_footer($begin);

@@ -17,7 +17,7 @@ $GLOBALS['db_handle'] = open_base();
 $GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);
 $GLOBALS['liste_flux'] = open_serialzd_file(FEEDS_DB);
 
-tpl_show_html_head($GLOBALS['lang']['titre_maintenance']);
+echo tpl_get_html_head($GLOBALS['lang']['titre_maintenance']);
 
 echo '<div id="header">'."\n";
     echo '<div id="top">'."\n";
@@ -32,6 +32,16 @@ echo '<div id="page">'."\n";
 // création du dossier des backups
 create_folder(DIR_BACKUP, 0);
 
+
+function valider_form_maintenance()
+{
+    $erreurs = array();
+    $token = (isset($_POST['token'])) ? $_POST['token'] : (isset($_GET['token']) ? $_GET['token'] : 'false');
+    if (!check_token($token)) {
+        $erreurs[] = $GLOBALS['lang']['err_wrong_token'];
+    }
+    return $erreurs;
+}
 
 function select_yes_no($name, $defaut, $label)
 {
@@ -899,4 +909,4 @@ echo "il.addEventListener('change', function() { document.getElementById('nb-lin
 
 echo '</script>';
 
-footer($begin);
+echo tpl_get_footer($begin);

@@ -18,6 +18,37 @@ require_once 'inc/boot.php';
 $erreurs_form = array();
 
 
+// Check SemVer validity
+// source: https://github.com/morrisonlevi/SemVer/blob/master/src/League/SemVer/RegexParser.php
+function is_valid_version($version)
+{
+    $regex = '/^
+        (?#major)(0|(?:[1-9][0-9]*))
+        \\.
+        (?#minor)(0|(?:[1-9][0-9]*))
+        \\.
+        (?#patch)(0|(?:[1-9][0-9]*))
+        (?:
+            -
+            (?#pre-release)(
+                (?:(?:0|(?:[1-9][0-9]*))|(?:[0-9]*[a-zA-Z-][a-zA-Z0-9-]*))
+                (?:
+                    \\.
+                    (?:(?:0|(?:[1-9][0-9]*))|(?:[0-9]*[a-zA-Z-][a-zA-Z0-9-]*))
+                )*
+            )
+        )?
+        (?:
+            \\+
+            (?#build)(
+                [0-9a-zA-Z-]+
+                (?:\\.[a-zA-Z0-9-]+)*
+            )
+        )?
+    $/x';
+    return preg_match($regex, $version);
+}
+
 function form_format_date($defaut)
 {
     $jour_l = jour_en_lettres(date('d'), date('m'), date('Y'));
@@ -118,7 +149,43 @@ function liste_themes($chemin)
     }
 }
 
-
+function valider_form_preferences()
+{
+    $erreurs = array();
+    if (!( isset($_POST['token']) and check_token($_POST['token']))) {
+        $erreurs[] = $GLOBALS['lang']['err_wrong_token'];
+    }
+    if (!strlen(trim($_POST['auteur']))) {
+        $erreurs[] = $GLOBALS['lang']['err_prefs_auteur'];
+    }
+    if ($GLOBALS['require_email'] == 1) {
+        if (!preg_match('#^[\w.+~\'*-]+@[\w.-]+\.[a-zA-Z]{2,6}$#i', trim($_POST['email']))) {
+            $erreurs[] = $GLOBALS['lang']['err_prefs_email'] ;
+        }
+    }
+    if (!preg_match('#^(https?://).*/$#', $_POST['racine'])) {
+        $erreurs[] = $GLOBALS['lang']['err_prefs_racine_slash'];
+    }
+    if (!strlen(trim($_POST['identifiant']))) {
+        $erreurs[] = $GLOBALS['lang']['err_prefs_identifiant'];
+    }
+    if ($_POST['identifiant'] != USER_LOGIN and (!strlen($_POST['mdp']))) {
+        $erreurs[] = $GLOBALS['lang']['err_prefs_id_mdp'];
+    }
+    if (preg_match('#[=\'"\\\\|]#iu', $_POST['identifiant'])) {
+        $erreurs[] = $GLOBALS['lang']['err_prefs_id_syntaxe'];
+    }
+    if ((!empty($_POST['mdp'])) and (!password_verify($_POST['mdp'], USER_PWHASH))) {
+        $erreurs[] = $GLOBALS['lang']['err_prefs_oldmdp'];
+    }
+    if ((!empty($_POST['mdp'])) and (strlen($_POST['mdp_rep']) < '6')) {
+        $erreurs[] = $GLOBALS['lang']['err_prefs_mdp'];
+    }
+    if ((empty($_POST['mdp_rep'])) xor (empty($_POST['mdp']))) {
+        $erreurs[] = $GLOBALS['lang']['err_prefs_newmdp'] ;
+    }
+    return $erreurs;
+}
 
 // Preferences form
 function afficher_form_prefs($erreurs = '')
@@ -427,7 +494,7 @@ if (isset($_POST['_verif_envoi'])) {
     }
 }
 
-tpl_show_html_head($GLOBALS['lang']['preferences']);
+echo tpl_get_html_head($GLOBALS['lang']['preferences']);
 
     echo '<div id="header">'."\n";
         echo '<div id="top">'."\n";
@@ -442,4 +509,4 @@ afficher_form_prefs($erreurs_form);
 
 echo "\n".'<script src="style/javascript.js"></script>'."\n";
 
-footer($begin);
+echo tpl_get_footer($begin);

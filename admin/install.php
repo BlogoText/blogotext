@@ -32,7 +32,7 @@ require_once BT_ROOT.'admin/inc/links.php';
 /**
  * pour l'instant on doit garder cette partie en cas de perte de mot de passe
  */
-/*
+
 // install or reinstall with same config ?
 $step3 = (is_file(DIR_CONFIG.'mysql.ini') and file_get_contents(DIR_CONFIG.'mysql.ini') != '');
 
@@ -40,7 +40,7 @@ $step3 = (is_file(DIR_CONFIG.'mysql.ini') and file_get_contents(DIR_CONFIG.'mysq
 if (is_file(DIR_CONFIG.'user.ini') and is_file(DIR_CONFIG.'prefs.php') and !$step3) {
     redirection('Location: auth.php');
 }
-*/
+
 
 // some constants definition
 $GLOBALS['fuseau_horaire'] = 'UTC';
@@ -69,7 +69,7 @@ function fichier_adv_conf()
  */
 function install_form_1_echo($erreurs = '')
 {
-    tpl_show_html_head('Install');
+    echo tpl_get_html_head('Install');
     echo '<div id="axe">'."\n";
     echo '<div id="pageauth">'."\n";
     echo '<h1>'.BLOGOTEXT_NAME.'</h1>'."\n";
@@ -120,7 +120,7 @@ function install_form_1_echo($erreurs = '')
  */
 function install_form_2_echo($erreurs = '')
 {
-    tpl_show_html_head('Install');
+    echo tpl_get_html_head('Install');
     echo '<div id="axe">'."\n";
     echo '<div id="pageauth">'."\n";
     echo '<h1>'.BLOGOTEXT_NAME.'</h1>'."\n";
@@ -162,7 +162,7 @@ function install_form_2_echo($erreurs = '')
  */
 function install_form_3_echo($erreurs = '')
 {
-    tpl_show_html_head('Install');
+    echo tpl_get_html_head('Install');
     echo '<div id="axe">'."\n";
     echo '<div id="pageauth">'."\n";
     echo '<h1>'.BLOGOTEXT_NAME.'</h1>'."\n";
@@ -504,4 +504,4 @@ function revealpass(fieldId) {
 
 </script>'."\n";
 
-footer();
+echo tpl_get_footer();

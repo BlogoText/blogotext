@@ -20,6 +20,21 @@ $GLOBALS['db_handle'] = open_base();
 $step = 0;
 
 
+function valider_form_link()
+{
+    $erreurs = array();
+    if (!( isset($_POST['token']) and check_token($_POST['token']))) {
+        $erreurs[] = $GLOBALS['lang']['err_wrong_token'];
+    }
+
+    if (!preg_match('#^\d{14}$#', $_POST['bt_id'])) {
+        $erreurs[] = 'Erreur id.';
+    }
+    return $erreurs;
+}
+
+
+
 // TRAITEMENT
 $erreurs_form = array();
 if (!isset($_GET['url'])) { // rien : on affiche le premier FORM
@@ -121,7 +136,7 @@ if (!isset($_GET['url']) and !isset($_GET['ajout'])) {
 // count total nb of links
 $nb_links_displayed = count($tableau);
 
-tpl_show_html_head($GLOBALS['lang']['mesliens']);
+echo tpl_get_html_head($GLOBALS['lang']['mesliens']);
 
 echo '<div id="header">'."\n";
     echo '<div id="top">'."\n";
@@ -185,4 +200,4 @@ echo 'var scrollPos = 0;'."\n";
 echo 'window.addEventListener(\'scroll\', function(){ scrollingFabHideShow() });'."\n";
 echo '</script>';
 
-footer($begin);
+echo tpl_get_footer($begin);

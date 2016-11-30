@@ -51,7 +51,7 @@
 
 .graph-container .month:first-of-type {
     background: red;
-    width: 0px;
+    width: 0px !important;
 }
 
 .graph-container .month::before {

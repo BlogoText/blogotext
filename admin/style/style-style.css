@@ -35,6 +35,17 @@
 
 /* ANIMATIONS
 ------------------------------------------------------------*/
+/* loading bar */
+@keyframes loadingBar {
+    from {left:-200px;width:33%;}
+    50% {width:25%;}
+    70% {width:75%;}
+    80% {left:50%;}
+    95% {left:120%;}
+    to {left:100%;}
+}
+
+
 /* rotating loading spinner */
 @keyframes spinnerLoading {
   0% {
@@ -256,6 +267,119 @@ q, blockquote {
     margin: 0 0 15px 0;
 }
 
+
+.Notification
+{
+    /* border-left: 1px #dedede solid; */
+    border-bottom:1px solid rgba(0,0,0,0.1);
+    max-width: 480px;
+    margin: 0 auto;
+    padding:0;
+    width: 90%;
+}
+.Notification button
+{
+    cursor: pointer;
+}
+
+.Notification-modal
+{
+    /* WIP */
+    /* display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -moz-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -moz-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center; */
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height:100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 1000;
+    background-color:rgba(0,0,0,0.4);
+    max-width:100%;
+    width:100%;
+    height:100%;
+    -webkit-transition: background 0.5s ease 0.06s;
+    -moz-transition: background 0.5s ease 0.06s;
+    -ms-transition: background 0.5s ease 0.06s;
+    -o-transition: background 0.5s ease 0.06s;
+    transition: background 0.5s ease 0.06s;
+}
+
+
+.Notification .Notification-content
+{
+    display:block;
+    padding:16px;
+    width:100%;
+    position:relative;
+}
+.notification-footer
+{
+    height:50px;
+    line-height:50px;
+}
+.Notification-modal .notification-footer
+{
+    border-top:1px solid rgba(0,0,0,0.1);
+}
+.Notification-modal .Notification-box
+{
+    /* WIP */
+    position:absolute;
+    background-color:white;
+    border-radius: 2px;
+    top:10%;
+    max-height:80%;
+    top:calc(50% - attr(height) / 2);
+    max-width:640px;
+    min-width:320px;
+    left:50%;
+    margin-left:-calc(50% - attr(width) / 2);
+}
+.Notification-modal .Notification-content
+{
+    /* WIP */
+    max-height:calc(100% - 50px);
+    overflow-y: auto;
+}
+.Notification.loadingOn .Notification-content
+{
+    display:none !important;
+}
+
+
+.loading_bar {
+    height: 4px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    background-color: #ddd;
+}
+.loading_bar:before{
+    display: block;
+    position: absolute;
+    content: "";
+    left: -200px;
+    width: 200px;
+    height: 4px;
+    background-color: #4285F4;
+    animation: loadingBar 2s linear infinite;
+}
 
 /* TOP
 ------------------------------------------------------------------------ */
@@ -842,6 +966,11 @@ select optgroup::before {
 
 .checkbox-toggle:focus+label::after {
     box-shadow: 0px 3px 3px rgba(0,0,0,0.2), 0 0 0 5px rgba(0, 0, 0, .1);
+}
+
+.checkbox-toggle:disabled + label:before,
+.checkbox-toggle:disabled+label::after {
+    background:#BDBDBD;
 }
 
 .checkbox-toggle:not(:disabled):active + label::after {
