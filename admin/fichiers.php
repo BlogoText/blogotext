@@ -88,15 +88,15 @@ function afficher_form_fichier($erreurs, $fichiers, $what)
             $url_relative = str_replace(URL_ROOT, '/', URL_IMAGES);
             // $simple_URI = rtrim($url_relative, '/').$myfile['bt_path'].'/'.$myfile['bt_filename'];
             // $absolute_URI = rtrim(URL_IMAGES, '/').$myfile['bt_path'].'/'.$myfile['bt_filename'];
-            $simple_URI = $url_relative.$myfile['bt_path'].'/'.$myfile['bt_filename'];
-            $absolute_URI = URL_IMAGES.$myfile['bt_path'].'/'.$myfile['bt_filename'];
+            $simple_URI = $url_relative.$myfile['bt_path'].$myfile['bt_filename'];
+            $absolute_URI = URL_IMAGES.$myfile['bt_path'].$myfile['bt_filename'];
         } else {
             // dirty, todo : need a way to get relative url for images/documents
             $url_relative = str_replace(URL_ROOT, '/', URL_DOCUMENTS);
             // $simple_URI = rtrim($url_relative, '/').$myfile['bt_path'].'/'.$myfile['bt_filename'];
             // $absolute_URI = rtrim(URL_DOCUMENTS, '/').$myfile['bt_path'].'/'.$myfile['bt_filename'];
-            $simple_URI = $url_relative.$myfile['bt_path'].'/'.$myfile['bt_filename'];
-            $absolute_URI = URL_DOCUMENTS.$myfile['bt_path'].'/'.$myfile['bt_filename'];
+            $simple_URI = $url_relative.$myfile['bt_path'].$myfile['bt_filename'];
+            $absolute_URI = URL_DOCUMENTS.$myfile['bt_path'].$myfile['bt_filename'];
         }
 
         $form .= '<div class="edit-fichier">'."\n";
@@ -132,7 +132,7 @@ function afficher_form_fichier($erreurs, $fichiers, $what)
         $form .= '<div id="interg-codes">'."\n";
         $form .= '<p><strong>'.$GLOBALS['lang']['label_codes'].'</strong></p>'."\n";
         $form .= '<input onfocus="this.select()" class="text" type="text" value=\''.$absolute_URI.'\' />'."\n";
-        $form .= '<input onfocus="this.select()" class="text" type="text" value=\'<a href="'.$absolute_URI.'" />'.$myfile['bt_filename'].'</a>\' />'."\n";
+        $form .= '<input onfocus="this.select()" class="text" type="text" value=\'<a href="'.$absolute_URI.'">'.$myfile['bt_filename'].'</a>\' />'."\n";
         // for images
         if ($myfile['bt_type'] == 'image') {
             $form .= '<input onfocus="this.select()" class="text" type="text" value=\'<img src="'.$simple_URI.'" alt="i" width="'.$myfile['bt_dim_w'].'" height="'.$myfile['bt_dim_h'].'" />\' />'."\n";
