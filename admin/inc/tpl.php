@@ -85,7 +85,7 @@ function tpl_get_html_head($title)
     $html .= '<html>'."\n";
     $html .= '<head>'."\n";
     $html .= "\t".'<meta charset="UTF-8" />'."\n";
-    $html .= "\t".'<link type="text/css" rel="stylesheet" href="style/style.css.php" />'."\n";
+    $html .= "\t".'<link type="text/css" rel="stylesheet" href="style/style.css.php?v='.BLOGOTEXT_VERSION.'" />'."\n";
     $html .= "\t".'<meta name="viewport" content="initial-scale=1.0, user-scalable=yes" />'."\n";
     $html .= "\t".'<title>'.$title.' | '.BLOGOTEXT_NAME.'</title>'."\n";
     $html .= '</head>'."\n";
