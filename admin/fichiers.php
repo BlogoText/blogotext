@@ -82,37 +82,42 @@ function afficher_form_fichier($erreurs, $fichiers, $what)
     elseif (!empty($fichiers) and isset($_GET['file_id']) and preg_match('/\d{14}/', ($_GET['file_id']))) {
         $myfile = $fichiers[0];
 
-        // image or doc ?
-        if ($myfile['bt_type'] == 'image') {
+        // TODO: delete this entire block if OK.
+        /*if ($myfile['bt_type'] == 'image') {
             // dirty, todo : need a way to get relative url for images/documents
-            $url_relative = str_replace(URL_ROOT, '/', URL_IMAGES);
-            // $simple_URI = rtrim($url_relative, '/').$myfile['bt_path'].'/'.$myfile['bt_filename'];
-            // $absolute_URI = rtrim(URL_IMAGES, '/').$myfile['bt_path'].'/'.$myfile['bt_filename'];
-            $simple_URI = $url_relative.$myfile['bt_path'].$myfile['bt_filename'];
-            $absolute_URI = URL_IMAGES.$myfile['bt_path'].$myfile['bt_filename'];
+            // $UrlRelative = str_replace(URL_ROOT, '/', URL_IMAGES);
+            $UrlRelative = rtrim(parse_url(URL_IMAGES, PHP_URL_PATH), '/').'/';
+            // $UrlRelative = rtrim($UrlRelative, '/').$myfile['bt_path'].'/'.$myfile['bt_filename'];
+            // $UrlAbsolute = rtrim(URL_IMAGES, '/').$myfile['bt_path'].'/'.$myfile['bt_filename'];
+            // $UrlRelative = $UrlRelative.$myfile['bt_path'].'/'.$myfile['bt_filename'];
+            $UrlAbsolute = URL_IMAGES.$myfile['bt_path'].'/'.$myfile['bt_filename'];
         } else {
             // dirty, todo : need a way to get relative url for images/documents
-            $url_relative = str_replace(URL_ROOT, '/', URL_DOCUMENTS);
-            // $simple_URI = rtrim($url_relative, '/').$myfile['bt_path'].'/'.$myfile['bt_filename'];
-            // $absolute_URI = rtrim(URL_DOCUMENTS, '/').$myfile['bt_path'].'/'.$myfile['bt_filename'];
-            $simple_URI = $url_relative.$myfile['bt_path'].$myfile['bt_filename'];
-            $absolute_URI = URL_DOCUMENTS.$myfile['bt_path'].$myfile['bt_filename'];
-        }
+            // $UrlRelative = str_replace(URL_ROOT, '/', URL_DOCUMENTS);
+            $UrlRelative = rtrim(parse_url(URL_DOCUMENTS, PHP_URL_PATH), '/').'/';
+            // $UrlRelative = rtrim($UrlRelative, '/').$myfile['bt_path'].'/'.$myfile['bt_filename'];
+            $UrlAbsolute = rtrim(URL_DOCUMENTS, '/').$myfile['bt_path'].'/'.$myfile['bt_filename'];
+        }*/
+        // Retrieve relative and absolute file paths
+        $folderPath = ($myfile['bt_type'] == 'image') ? URL_IMAGES : URL_DOCUMENTS;
+        $filePath = (empty($myfile['bt_path']) ? '' : $myfile['bt_path'].'/').$myfile['bt_filename'];
+        $UrlRelative = parse_url($folderPath, PHP_URL_PATH).$filePath;
+        $UrlAbsolute = $folderPath.$filePath;
 
         $form .= '<div class="edit-fichier">'."\n";
 
         // codes d’intégrations pour les médias
         // Video
         if ($myfile['bt_type'] == 'video') {
-            $form .= '<div class="display-media"><video class="media" src="'.$simple_URI.'" type="video/'.$myfile['bt_fileext'].'" load controls="controls"></video></div>'."\n";
+            $form .= '<div class="display-media"><video class="media" src="'.$UrlRelative.'" type="video/'.$myfile['bt_fileext'].'" load controls="controls"></video></div>'."\n";
         }
         // image
         if ($myfile['bt_type'] == 'image') {
-            $form .= '<div class="display-media"><a href="'.$simple_URI.'"><img class="media" src="'.$simple_URI.'" alt="'.$myfile['bt_filename'].'" width="'.$myfile['bt_dim_w'].'" height="'.$myfile['bt_dim_h'].'" /></a></div>'."\n";
+            $form .= '<div class="display-media"><a href="'.$UrlRelative.'"><img class="media" src="'.$UrlRelative.'" alt="'.$myfile['bt_filename'].'" width="'.$myfile['bt_dim_w'].'" height="'.$myfile['bt_dim_h'].'" /></a></div>'."\n";
         }
         // audio
         if ($myfile['bt_type'] == 'music') {
-            $form .= '<div class="display-media"><audio class="media" src="'.$simple_URI.'" type="audio/'.$myfile['bt_fileext'].'" load controls="controls"></audio></div>'."\n";
+            $form .= '<div class="display-media"><audio class="media" src="'.$UrlRelative.'" type="audio/'.$myfile['bt_fileext'].'" load controls="controls"></audio></div>'."\n";
         }
 
         // la partie listant les infos du fichier.
@@ -131,21 +136,21 @@ function afficher_form_fichier($erreurs, $fichiers, $what)
         // Integration codes.
         $form .= '<div id="interg-codes">'."\n";
         $form .= '<p><strong>'.$GLOBALS['lang']['label_codes'].'</strong></p>'."\n";
-        $form .= '<input onfocus="this.select()" class="text" type="text" value=\''.$absolute_URI.'\' />'."\n";
-        $form .= '<input onfocus="this.select()" class="text" type="text" value=\'<a href="'.$absolute_URI.'">'.$myfile['bt_filename'].'</a>\' />'."\n";
+        $form .= '<input onfocus="this.select()" class="text" type="text" value=\''.$UrlAbsolute.'\' />'."\n";
+        $form .= '<input onfocus="this.select()" class="text" type="text" value=\'<a href="'.$UrlAbsolute.'">'.$myfile['bt_filename'].'</a>\' />'."\n";
         // for images
         if ($myfile['bt_type'] == 'image') {
-            $form .= '<input onfocus="this.select()" class="text" type="text" value=\'<img src="'.$simple_URI.'" alt="i" width="'.$myfile['bt_dim_w'].'" height="'.$myfile['bt_dim_h'].'" />\' />'."\n";
-            $form .= '<input onfocus="this.select()" class="text" type="text" value=\'[img]'.$simple_URI.'[/img]\' />'."\n";
-            $form .= '<input onfocus="this.select()" class="text" type="text" value=\'[spoiler][img]'.$simple_URI.'[/img][/spoiler]\' />'."\n";
+            $form .= '<input onfocus="this.select()" class="text" type="text" value=\'<img src="'.$UrlRelative.'" alt="i" width="'.$myfile['bt_dim_w'].'" height="'.$myfile['bt_dim_h'].'" />\' />'."\n";
+            $form .= '<input onfocus="this.select()" class="text" type="text" value=\'[img]'.$UrlRelative.'[/img]\' />'."\n";
+            $form .= '<input onfocus="this.select()" class="text" type="text" value=\'[spoiler][img]'.$UrlRelative.'[/img][/spoiler]\' />'."\n";
         // video
         } elseif ($myfile['bt_type'] == 'video') {
-            $form .= '<input onfocus="this.select()" class="text" type="text" value=\'<video src="'.$simple_URI.'" type="video/'.$myfile['bt_fileext'].'" load="" controls="controls"></video>\' />'."\n";
+            $form .= '<input onfocus="this.select()" class="text" type="text" value=\'<video src="'.$UrlRelative.'" type="video/'.$myfile['bt_fileext'].'" load="" controls="controls"></video>\' />'."\n";
         // audio
         } elseif ($myfile['bt_type'] == 'music') {
-            $form .= '<input onfocus="this.select()" class="text" type="text" value=\'<audio src="'.$simple_URI.'" type="audio/'.$myfile['bt_fileext'].'" load="" controls="controls"></audio>\' />'."\n";
+            $form .= '<input onfocus="this.select()" class="text" type="text" value=\'<audio src="'.$UrlRelative.'" type="audio/'.$myfile['bt_fileext'].'" load="" controls="controls"></audio>\' />'."\n";
         } else {
-            $form .= '<input onfocus="this.select()" class="text" type="text" value=\'[url]'.$simple_URI.'[/url]\' />'."\n";
+            $form .= '<input onfocus="this.select()" class="text" type="text" value=\'[url]'.$UrlRelative.'[/url]\' />'."\n";
         }
 
         $form .= '</div>'."\n";
