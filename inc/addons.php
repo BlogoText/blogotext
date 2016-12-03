@@ -704,4 +704,3 @@ function addon_hook_push()
         }
     }
 }
-
