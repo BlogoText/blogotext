@@ -13,7 +13,9 @@
 
 require_once 'inc/boot.php';
 
-
+/**
+ * functions
+ */
 
 // RSS feeds form: allow changing feeds (title, url) or remove a feed
 function afficher_form_rssconf($errors = '')
@@ -240,6 +242,11 @@ function send_rss_json($rss_entries)
 }
 
 
+
+/**
+ * process
+ */
+
 $GLOBALS['db_handle'] = open_base();
 $GLOBALS['liste_flux'] = open_serialzd_file(FEEDS_DB);
 
@@ -294,6 +301,12 @@ if (!empty($_GET['q'])) {
          LIMIT '.$sql_limit;
     $tableau = liste_elements($sql, array(), 'rss');
 }
+
+
+/**
+ * echo
+ */
+
 
 echo tpl_get_html_head($GLOBALS['lang']['mesabonnements']);
 

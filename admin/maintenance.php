@@ -13,25 +13,10 @@
 
 require_once 'inc/boot.php';
 
-$GLOBALS['db_handle'] = open_base();
-$GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);
-$GLOBALS['liste_flux'] = open_serialzd_file(FEEDS_DB);
 
-echo tpl_get_html_head($GLOBALS['lang']['titre_maintenance']);
-
-echo '<div id="header">'."\n";
-    echo '<div id="top">'."\n";
-    tpl_show_msg();
-    tpl_show_topnav('preferences.php', $GLOBALS['lang']['titre_maintenance']);
-    echo '</div>'."\n";
-echo '</div>'."\n";
-
-echo '<div id="axe">'."\n";
-echo '<div id="page">'."\n";
-
-// création du dossier des backups
-create_folder(DIR_BACKUP, 0);
-
+/**
+ * functions
+ */
 
 function valider_form_maintenance()
 {
@@ -607,6 +592,37 @@ function parse_html($content)
     return $out_array;
 }
 
+
+
+/**
+ * process
+ */
+
+$GLOBALS['db_handle'] = open_base();
+$GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);
+$GLOBALS['liste_flux'] = open_serialzd_file(FEEDS_DB);
+
+
+/**
+ * echo
+ */
+
+echo tpl_get_html_head($GLOBALS['lang']['titre_maintenance']);
+
+echo '<div id="header">'."\n";
+    echo '<div id="top">'."\n";
+    tpl_show_msg();
+    tpl_show_topnav('preferences.php', $GLOBALS['lang']['titre_maintenance']);
+    echo '</div>'."\n";
+echo '</div>'."\n";
+
+echo '<div id="axe">'."\n";
+echo '<div id="page">'."\n";
+
+// création du dossier des backups
+create_folder(DIR_BACKUP, 0);
+
+
 /*
  * Affiches les formulaires qui demandent quoi faire. (!isset($do))
  * Font le traitement dans les autres cas.
@@ -903,10 +919,8 @@ echo "\n".'<script src="style/javascript.js"></script>'."\n";
 echo '<script>';
 echo 'var ia = document.getElementById(\'incl-artic\');';
 echo "ia.addEventListener('change', function() { document.getElementById('nb-artic').style.display = ( ia.value == 1 ? 'inline-block' : 'none'); });";
-
 echo 'var il = document.getElementById(\'incl-links\');';
 echo "il.addEventListener('change', function() { document.getElementById('nb-links').style.display = ( il.value == 1 ? 'inline-block' : 'none'); });";
-
 echo '</script>';
 
 echo tpl_get_footer($begin);

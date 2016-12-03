@@ -857,7 +857,7 @@ body > footer a {
         flex: 0 0 70px;
     }
     .comment:not(:last-of-type) .comm-icon-side::after {
-        left: 32px;
+        /* left: 32px; */ /* why? */
     }
     .form-commentaire > .infos label {
         text-align: left;

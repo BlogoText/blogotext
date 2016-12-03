@@ -107,7 +107,7 @@ function get_tableau_date($data_type)
     }
 
     // order
-    asort($table_months);
+    ksort($table_months);
 
     return $table_months;
 }

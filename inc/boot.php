@@ -88,7 +88,6 @@ function log_error($message, $write = true)
 {
     // TODO: remove for the freeze, puts here to avoid to reinstall another time
     create_folder(DIR_LOG, 1);
-
     if ($write === true && defined('DIR_LOG')) {
         $logFile = DIR_LOG.'errors-'.date('Ymd').'.log';
         $trace = debug_backtrace();
@@ -103,28 +102,22 @@ function log_error($message, $write = true)
             $where,
             $trace['line']
         );
-
         if (DEBUG) {
             ob_start();
             debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
             $stack = ob_get_contents();
             ob_end_clean();
-
             // Remove the first item from backtrace as it's redundant.
             $stack = explode("\n", trim($stack));
             array_shift($stack);
             $stack = array_reverse($stack);
             $stack = implode("\n", $stack);
-
             // Remove numbers, not interesting
             $stack = preg_replace('/#\d+\s+/', '    -> ', $stack);
-
             // Anon paths (cleaner and smaller paths)
             $stack = str_replace(BT_ROOT, '', $stack);
-
             $log .= "\n".'Stack trace:'."\n".$stack;
         }
-
         error_log(addslashes($log)."\n", 3, $logFile);
     }
 }
@@ -287,7 +280,6 @@ define('DIR_DOCUMENTS', BT_ROOT.'files/');
 define('DIR_IMAGES', BT_ROOT.'img/');
 define('DIR_THEMES', BT_ROOT.'themes/');
 define('DIR_VAR', BT_ROOT.'var/');
-define('DIR_LOG', DIR_VAR.'log/');
 
 // Constants: databases
 define('FILES_DB', DIR_DATABASES.'files.php');
@@ -351,8 +343,13 @@ if (is_file(FILE_SETTINGS)) {
          */
 
         // petit test
+        if (!is_isset($vhost) || !is_isset($valias)) {
+            log_error('Wrong VALIAS config for '. $vhost, true);
+            die('Wrong VALIAS config');
+        }
         if (!is_dir(DIR_VAR.'/'.$vhost.'/')) {
-            die('VHOST declared for this VALIAS doesn\'t exists :/');
+            log_error('VHOST handler for '. $vhost .' doesn\'t exists', true);
+            die('VHOST handler for this VALIAS doesn\'t exists :/');
         }
     }
 
@@ -484,8 +481,6 @@ if (isset($GLOBALS['theme_choisi'])) {
  * All file in /inc/*.php must be included here (except boot.php).
  * TODO optimise: for the v4.0
  */
-// require_once BT_ROOT.'inc/addons.php'; // push in file who need it
-require_once BT_ROOT.'inc/common.php';
 require_once BT_ROOT.'inc/conv.php';
 require_once BT_ROOT.'inc/filesystem.php';
 require_once BT_ROOT.'inc/form.php';
@@ -493,7 +488,6 @@ require_once BT_ROOT.'inc/hook.php';
 require_once BT_ROOT.'inc/html.php';
 require_once BT_ROOT.'inc/sqli.php';
 require_once BT_ROOT.'inc/them.php';
-require_once BT_ROOT.'inc/tpl.php';
 require_once BT_ROOT.'inc/util.php';
 
 /**
