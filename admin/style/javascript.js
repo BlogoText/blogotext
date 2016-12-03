@@ -231,7 +231,7 @@ class Notification {
             return this;
         }
         var self = this;
-        setTimeout(function() {
+        setTimeout(function () {
             el.classList.remove('loading_bar');
             el.classList.remove('loadingOn');
             if (self.type == 'dialog') {
@@ -264,7 +264,7 @@ class Notification {
             this.container.classList.add('Notification-destroy-'+effect);
         }
         var self = this;
-        setTimeout(function() {
+        setTimeout(function () {
             self.container.parentNode.removeChild(self.container);
             if (self.btnClose != null) {
                 self.btnClose.removeEventListener("click");
@@ -278,7 +278,7 @@ class Notification {
     addCloseTimer(ttl, effect, callback)
     {
         var self = this;
-        setTimeout(function() {
+        setTimeout(function () {
             self.destroy(effect);
             if (typeof callback === "function") {
                 callback();
@@ -301,7 +301,7 @@ class Notification {
         this.box.appendChild(this.btnCloseBar);
 
         var self = this;
-        this.btnCloseBtn.addEventListener("click",function(e) {
+        this.btnCloseBtn.addEventListener("click", function (e) {
             e.preventDefault();
             self.destroy();
             return;
@@ -312,8 +312,12 @@ class Notification {
     merge(obj1, obj2)
     {
         var obj3 = {};
-        for (var a in obj1) { obj3[a] = obj1[a]; }
-        for (var a in obj2) { obj3[a] = obj2[a]; }
+        for (var a in obj1) {
+            obj3[a] = obj1[a];
+        }
+        for (var a in obj2) {
+            obj3[a] = obj2[a];
+        }
         return obj3;
     }
 
@@ -370,8 +374,12 @@ class Notification {
         document.body.appendChild(this.container);
         this.dialogSetPosition(this.box);
 
-        window.addEventListener("scroll", function(){self.dialogSetPosition(self.box);}, false);
-        window.addEventListener("resize", function(){self.dialogSetPosition(self.box);}, false);
+        window.addEventListener("scroll", function () {
+            self.dialogSetPosition(self.box);
+        }, false);
+        window.addEventListener("resize", function () {
+            self.dialogSetPosition(self.box);
+        }, false);
     }
     // WIP
     insertAfter(insertAfter)
