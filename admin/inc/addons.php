@@ -267,7 +267,6 @@ function addon_ajax_button_action_process($addon_id, $button_id)
 
     if ($fn === false) {
         $return['message'] = 'The action fail :/';
-        
     } elseif ($fn === true) {
         $return['message'] = 'The action is done with success !';
         $return['success'] = true;
