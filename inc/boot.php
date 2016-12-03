@@ -344,7 +344,7 @@ if (is_file(FILE_SETTINGS)) {
 
         // petit test
         if (!is_isset($vhost) || !is_isset($valias)) {
-            log_error('Wrong VALIAS config for '. $vhost , true);
+            log_error('Wrong VALIAS config for '. $vhost, true);
             die('Wrong VALIAS config');
         }
         if (!is_dir(DIR_VAR.'/'.$vhost.'/')) {
