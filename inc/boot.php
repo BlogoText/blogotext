@@ -86,42 +86,39 @@ ini_set('ignore_repeated_source', 1);
  */
 function log_error($message, $write = true)
 {
-    if ($write === true) {
+    // TODO: remove for the freeze, puts here to avoid to reinstall another time
+    create_folder(DIR_LOG, 1);
+    if ($write === true && defined('DIR_LOG')) {
+        $logFile = DIR_LOG.'errors-'.date('Ymd').'.log';
         $trace = debug_backtrace();
         $trace = $trace[1];
         $where = str_replace(BT_ROOT, '', $trace['file']);
         $log = sprintf(
-            '[%s, v%s] %s in %s() at [%s:%d]',
-            date('Y-m-d H:i:s T'),
+            '[v%s, %s] %s in %s() at [%s:%d]',
             BLOGOTEXT_VERSION,
+            date('H:i:s'),
             $message,
             $trace['function'],
             $where,
             $trace['line']
         );
-
         if (DEBUG) {
             ob_start();
             debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
             $stack = ob_get_contents();
             ob_end_clean();
-
             // Remove the first item from backtrace as it's redundant.
             $stack = explode("\n", trim($stack));
             array_shift($stack);
             $stack = array_reverse($stack);
             $stack = implode("\n", $stack);
-
             // Remove numbers, not interesting
             $stack = preg_replace('/#\d+\s+/', '    -> ', $stack);
-
             // Anon paths (cleaner and smaller paths)
             $stack = str_replace(BT_ROOT, '', $stack);
-
             $log .= "\n".'Stack trace:'."\n".$stack;
         }
-
-        error_log(addslashes($log)."\n", 3, BT_ROOT.'var/php-error.log');
+        error_log(addslashes($log)."\n", 3, $logFile);
     }
 }
 // END OF [POC] log system
