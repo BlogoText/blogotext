@@ -27,7 +27,7 @@ if (strpos($_SERVER['REQUEST_URI'], $_SERVER['SCRIPT_NAME'].'/') === 0) {
 }
 
 // GZip compression
-if (extension_loaded('zlib')) {
+if (!DEBUG && extension_loaded('zlib')) {
     if (ob_get_length() > 0) {
         ob_end_clean();
     }
@@ -99,10 +99,10 @@ if (isset($_GET['d']) and preg_match('#^\d{4}/\d{2}/\d{2}/\d{2}/\d{2}/\d{2}#', $
     // Same for article posted with a date in the future.
     // Same for shared drafts or private pages (append '&share' to the URL.
     if (empty($_SESSION['user_id']) and !isset($_GET['share'])) {
-        $query = "SELECT * FROM articles WHERE bt_id=? AND bt_date <=? AND bt_statut=1 LIMIT 1";
+        $query = 'SELECT * FROM articles WHERE bt_id=? AND bt_date <=? AND bt_statut=1 LIMIT 1';
         $billets = liste_elements($query, array($id, date('YmdHis')), 'articles');
     } else {
-        $query = "SELECT * FROM articles WHERE bt_id=? LIMIT 1";
+        $query = 'SELECT * FROM articles WHERE bt_id=? LIMIT 1';
         $billets = liste_elements($query, array($id), 'articles');
     }
     if (!empty($billets[0])) {
@@ -147,7 +147,7 @@ if (isset($_GET['d']) and preg_match('#^\d{4}/\d{2}/\d{2}/\d{2}/\d{2}/\d{2}#', $
     }
 } // single link post
 elseif (isset($_GET['id']) and preg_match('#\d{14}#', $_GET['id'])) {
-    $tableau = liste_elements("SELECT * FROM links WHERE bt_id=? AND bt_statut=1", array($_GET['id']), 'links');
+    $tableau = liste_elements('SELECT * FROM links WHERE bt_id=? AND bt_statut=1', array($_GET['id']), 'links');
     if (!empty($tableau[0])) {
         $GLOBALS['tpl_class'] = 'content-links content-item';
         afficher_index($tableau, 'list');
@@ -159,7 +159,7 @@ elseif (isset($_GET['id']) and preg_match('#\d{14}#', $_GET['id'])) {
     }
 } // List of all articles
 elseif (isset($_GET['liste'])) {
-    $query = "SELECT bt_date,bt_id,bt_title,bt_nb_comments,bt_link FROM articles WHERE bt_date <= ".date('YmdHis')." AND bt_statut=1 ORDER BY bt_date DESC";
+    $query = 'SELECT bt_date,bt_id,bt_title,bt_nb_comments,bt_link FROM articles WHERE bt_date <= '.date('YmdHis').' AND bt_statut=1 ORDER BY bt_date DESC';
     $tableau = liste_elements($query, array(), 'articles');
     if (!empty($tableau[0])) {
         $GLOBALS['tpl_class'] = 'content-blog content-list content-list-all';
@@ -243,18 +243,18 @@ else {
         if (!empty($date)) {
             switch ($where) {
                 case 'articles':
-                    $sql_date = "bt_date LIKE ? ";
+                    $sql_date = 'bt_date LIKE ? ';
                     break;
                 case 'commentaires':
-                    $sql_date = "c.bt_id LIKE ? ";
+                    $sql_date = 'c.bt_id LIKE ? ';
                     break;
                 default:
-                    $sql_date = "bt_id LIKE ? ";
+                    $sql_date = 'bt_id LIKE ? ';
                     break;
             }
             $array[] = $date.'%';
         } else {
-            $sql_date = "";
+            $sql_date = '';
         }
     }
 
@@ -284,14 +284,14 @@ else {
         $GLOBALS['tpl_class'] .= 'content-tag ';
         switch ($where) {
             case 'articles':
-                $sql_tag = "( bt_tags LIKE ? OR bt_tags LIKE ? OR bt_tags LIKE ? OR bt_tags LIKE ? ) ";
+                $sql_tag = '( bt_tags LIKE ? OR bt_tags LIKE ? OR bt_tags LIKE ? OR bt_tags LIKE ? ) ';
                 $array[] = $_GET['tag'];
                 $array[] = $_GET['tag'].', %';
                 $array[] = '%, '.$_GET['tag'].', %';
                 $array[] = '%, '.$_GET['tag'];
                 break;
             case 'links':
-                $sql_tag = "( bt_tags LIKE ? OR bt_tags LIKE ? OR bt_tags LIKE ? OR bt_tags LIKE ? ) ";
+                $sql_tag = '( bt_tags LIKE ? OR bt_tags LIKE ? OR bt_tags LIKE ? OR bt_tags LIKE ? ) ';
                 $array[] = $_GET['tag'];
                 $array[] = $_GET['tag'].', %';
                 $array[] = '%, '.$_GET['tag'].', %';
@@ -308,26 +308,26 @@ else {
     // paramètre ORDER BY (pas un paramètre, mais ajouté à la $query quand même)
     switch ($where) {
         case 'articles':
-            $sql_order = "ORDER BY bt_date DESC ";
+            $sql_order = 'ORDER BY bt_date DESC ';
             break;
         case 'commentaires':
-            $sql_order = "ORDER BY c.bt_id DESC ";
+            $sql_order = 'ORDER BY c.bt_id DESC ';
             break;
         default:
-            $sql_order = "ORDER BY bt_id DESC ";
+            $sql_order = 'ORDER BY bt_id DESC ';
             break;
     }
 
     // paramètre de filtrage date (pas un paramètre, mais ajouté quand même)
     switch ($where) {
         case 'articles':
-            $sql_a_p = "bt_date <= ".date('YmdHis')." ";
+            $sql_a_p = 'bt_date <= '.date('YmdHis').' ';
             break;
         case 'commentaires':
-            $sql_a_p = "c.bt_id <= ".date('YmdHis')." AND c.bt_article_id=a.bt_id ";
+            $sql_a_p = 'c.bt_id <= '.date('YmdHis').' AND c.bt_article_id=a.bt_id ';
             break;
         default:
-            $sql_a_p = "bt_id <= ".date('YmdHis')." ";
+            $sql_a_p = 'bt_id <= '.date('YmdHis').' ';
             break;
     }
 
@@ -362,3 +362,4 @@ else {
 
 $end = microtime(true);
 echo ' <!-- Rendered in '.round(($end - $begin), 6).' seconds -->';
+

@@ -238,6 +238,9 @@ q, blockquote {
     margin: 0;
 }
 
+
+
+
 /* Message de confirmation ou d’erreur */
 .confirmation, .no_confirmation {
     max-width: 400px;
@@ -268,9 +271,40 @@ q, blockquote {
 }
 
 
+/**
+ * used for dialog overlay
+ */
+@keyframes Notification-fadeOut {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes Notification-bottomTop {
+    0% {
+        opacity: 0;
+        top: -200px;
+    }
+    20% {
+        opacity: 1;
+        top:0;
+    }
+    80% {
+        top:0;
+        bottom:0;
+    }
+    100%{
+        opacity: 0;
+        top: 200px;
+    }
+}
+
 .Notification
 {
-    /* border-left: 1px #dedede solid; */
     border-bottom:1px solid rgba(0,0,0,0.1);
     max-width: 480px;
     margin: 0 auto;
@@ -282,24 +316,74 @@ q, blockquote {
     cursor: pointer;
 }
 
-.Notification-modal
+.Notification-content
+{
+    display:block;
+    padding:0;
+    width:100%;
+    position:relative;
+}
+.notification-footer
+{
+    height:60px;
+    line-height:58px;
+    margin:0 !important;
+}
+
+/* .Notification-destroy */
+/* { */
+    /* animation: slideright 0.5s; */
+    /* animation-fill-mode: forwards; */
+/* } */
+.Notification-destroy
+{
+    animation: Notification-fadeOut 1s;
+    animation-fill-mode: forwards;
+}
+
+.Notification-destroy-slideRight .Notification-box
+    {
+        animation: slideright 0.5s;
+        animation-fill-mode: forwards;
+    }
+
+
+.Notification-sticker
+{
+    border:0;
+    background-color:transparent;
+    position:absolute;
+    max-width:400px;
+    height:1px;
+    z-index:1000;
+}
+    .Notification-sticker .Notification-box
+    {
+        padding:0;
+        margin:0;
+        border:0;
+        background-color:transparent;
+        position:absolute;
+    }
+    .Notification-sticker .Notification-content
+        {
+        padding:3px 5px;
+        margin:0;
+        position:absolute;
+        border:1px solid rgba(0,0,0,0.1);
+        background-color:white;
+        border-radius:2px;
+        text-align:center;
+        box-shadow: 0 7px 8px -4px rgba(0,0,0,.2),
+            0 13px 19px 2px rgba(0,0,0,.14),
+            0 5px 24px 4px rgba(0,0,0,.12);
+        /* animation: Notification-bottomTop 10s;
+        animation-fill-mode: forwards; */
+    }
+
+.Notification-dialog
 {
     /* WIP */
-    /* display: -webkit-box;
-    display: -webkit-flex;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-    -webkit-align-items: center;
-    -moz-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    -webkit-box-pack: center;
-    -webkit-justify-content: center;
-    -moz-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center; */
     position: fixed;
     top: 0;
     right: 0;
@@ -309,60 +393,132 @@ q, blockquote {
     overflow-y: auto;
     overflow-x: hidden;
     z-index: 1000;
-    background-color:rgba(0,0,0,0.4);
+    background-color:rgba(0,0,0,0.2);
     max-width:100%;
     width:100%;
     height:100%;
-    -webkit-transition: background 0.5s ease 0.06s;
-    -moz-transition: background 0.5s ease 0.06s;
-    -ms-transition: background 0.5s ease 0.06s;
-    -o-transition: background 0.5s ease 0.06s;
-    transition: background 0.5s ease 0.06s;
+    transition: all .4s cubic-bezier(.25,.8,.25,1);
 }
+    .Notification-dialog .Notification-footer
+    {
+        border-top:1px solid rgba(0,0,0,0.1);
+        padding: 14px 20px !important;
+        margin: 0 !important;
+    }
+    .Notification-dialog .Notification-box
+    {
+        position:absolute;
+        background-color:white;
+        border-radius: 2px;
+        top:10%;
+        width:100%;
+        max-width:640px;
+        min-width:320px;
+        left:50%;
+        padding:0 !important;
+        box-shadow: 0 7px 8px -4px rgba(0,0,0,.2),
+                    0 13px 19px 2px rgba(0,0,0,.14),
+                    0 5px 24px 4px rgba(0,0,0,.12);
+    }
+    .Notification-dialog .Notification-content
+    {
+        padding:24px !important;
+        width: calc(100% - 48px);
+    }
 
-
-.Notification .Notification-content
-{
-    display:block;
-    padding:16px;
-    width:100%;
-    position:relative;
-}
-.notification-footer
-{
-    height:50px;
-    line-height:50px;
-}
-.Notification-modal .notification-footer
-{
-    border-top:1px solid rgba(0,0,0,0.1);
-}
-.Notification-modal .Notification-box
-{
-    /* WIP */
-    position:absolute;
-    background-color:white;
-    border-radius: 2px;
-    top:10%;
-    max-height:80%;
-    top:calc(50% - attr(height) / 2);
-    max-width:640px;
-    min-width:320px;
-    left:50%;
-    margin-left:-calc(50% - attr(width) / 2);
-}
-.Notification-modal .Notification-content
-{
-    /* WIP */
-    max-height:calc(100% - 50px);
-    overflow-y: auto;
-}
 .Notification.loadingOn .Notification-content
 {
     display:none !important;
 }
 
+#Notification-BigToast
+{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+}
+#Notification-BigToast .Notification
+{
+    width:100%;
+    max-width:100%;
+    padding:0;
+    display:block;
+    color:#fff;
+    border:0;
+}
+#Notification-BigToast .Notification-box
+{
+    max-width:980px;
+    margin:0 auto;
+    display: flex;
+    width: 100%;
+    padding:0;
+    background-color:rgba(0,0,0,0.85);
+    border-bottom:1px solid rgba(0,0,0,0.2);
+}
 
+#Notification-BigToast .Notification-content
+{
+    flex: 3 0 0;
+}
+#Notification-BigToast .Notification-footer
+{
+    flex: 1 0 0;
+}
+#Notification-BigToast .Notification-footer,
+#Notification-BigToast .Notification-content
+{
+    padding:14px 24px !important;
+    margin:0 !important;
+    width:auto !important;
+}
+#Notification-BigToast .Notification-footer .button-submit,
+#Notification-BigToast .Notification-footer .button-submit:hover,
+#Notification-BigToast .Notification-footer .button-submit:active
+{
+    padding:0 !important;
+    margin:0 !important;
+    background-color:transparent !important;
+    border:0 !important;
+    width:auto !important;
+    color:#2196F3;
+}
+#Notification-BigToast .Notification-footer .button-submit .red
+{
+    color:#F44336;
+}
+#Notification-BigToast .Notification-footer .button-submit .green
+{
+    color:#4CAF50;
+}
+#Notification-BigToast .Notification-footer .button-submit .blue
+{
+    color:#2196F3;
+}
+
+
+@media (max-width: 480px) {
+    .Notification-dialog .Notification-box
+    {
+        left:1% !important;
+        right:1% !important;
+        width:98% !important;
+    }
+    #Notification-BigToast .Notification-content,
+    #Notification-BigToast .Notification-footer
+    {
+        flex: 1 0 0;
+    }
+}
+
+.loading_bar_absolute {
+    position: absolute !important;
+    left: 0;
+    right:0;
+    bottom: -4px;
+    z-index:1000;
+}
 .loading_bar {
     height: 4px;
     width: 100%;

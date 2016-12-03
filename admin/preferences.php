@@ -14,9 +14,9 @@
 require_once 'inc/boot.php';
 
 
-
-$erreurs_form = array();
-
+/**
+ * functions
+ */
 
 // Check SemVer validity
 // source: https://github.com/morrisonlevi/SemVer/blob/master/src/League/SemVer/RegexParser.php
@@ -482,6 +482,12 @@ function afficher_form_prefs($erreurs = '')
 }
 
 
+/**
+ * process
+ */
+
+$erreurs_form = array();
+
 if (isset($_POST['_verif_envoi'])) {
     $erreurs_form = valider_form_preferences();
     if (empty($erreurs_form)) {
@@ -493,6 +499,11 @@ if (isset($_POST['_verif_envoi'])) {
         }
     }
 }
+
+
+/**
+ * echo
+ */
 
 echo tpl_get_html_head($GLOBALS['lang']['preferences']);
 

@@ -15,8 +15,13 @@ require_once 'inc/boot.php';
 
 // dependancy
 require_once BT_ROOT.'inc/addons.php';
-// require_once BT_ROOT.'admin/inc/addons.php'; // dont remove, just the time to clean the rewrited addon's function
+require_once BT_ROOT.'admin/inc/addons.php';
 
+
+
+/**
+ * process
+ */
 
 // load all addons without cache
 $t = addons_load_all(false);
@@ -55,6 +60,7 @@ if (isset($_POST['_verif_envoi'])) {
         $erreurs = addon_ajax_switch_enabled_proceed($module); // FIXME: same here.
     }
 }
+
 
 $filtre = (!empty($_GET['filtre'])) ? htmlspecialchars($_GET['filtre']) : '';
 

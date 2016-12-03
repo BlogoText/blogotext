@@ -40,7 +40,7 @@ if (isset($_FILES['fichier'])) {
     // on success
     if (empty($erreurs)) {
         $new_fichier = bdd_fichier($fichier, 'ajout-nouveau', 'upload', $_FILES['fichier']);
-        $fichier = (is_null($new_fichier)) ? $fichier : $new_fichier;
+        $fichier = ($new_fichier === null) ? $fichier : $new_fichier;
         echo '{';
             echo '"url": "fichiers.php?file_id='.$fichier['bt_id'].'&amp;edit",';
             echo '"status": "success",';
