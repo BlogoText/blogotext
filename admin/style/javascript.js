@@ -420,14 +420,14 @@ class Notification {
  */
 function checkboxToggleReset(chk)
 {
-    setTimeout(function(){
+    setTimeout(function () {
         chk.classList.remove('checkbox-toggle');
         chk.removeAttribute('disabled');
         chk.removeAttribute('active');
         chk.removeAttribute('checked');
         chk.checked = false;
     }, 400);
-    setTimeout(function(){
+    setTimeout(function () {
         chk.classList.add('checkbox-toggle');
     }, 400);
 }
