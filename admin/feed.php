@@ -287,10 +287,10 @@ if (!empty($_GET['q'])) {
         $sql_where = 'AND '. implode(array_fill(0, count($arr), '( bt_content || bt_title ) LIKE ?'), 'AND'); // AND operator between words
     }
 
-         // WHERE '. trim( trim($sql_where.$sql_where_status, ' '), 'AND').'
+         // WHERE '.$sql_where.$sql_where_status.'
     $query = '
         SELECT * FROM rss
-         WHERE '.$sql_where.$sql_where_status.'
+         WHERE '. trim( trim($sql_where.$sql_where_status, ' '), 'AND').'
          ORDER BY bt_date DESC
          LIMIT '.$sql_limit;
 
