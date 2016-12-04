@@ -50,7 +50,7 @@ function bdd_rss($flux, $what)
                     0,
                     $post['bt_folder']
                 ));
-                if ($t !== true){
+                if ($t !== true) {
                     log_error($post['bt_feed_url']);
                 }
             }
