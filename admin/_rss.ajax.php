@@ -37,8 +37,8 @@ function bdd_rss($flux, $what)
                 )
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
             foreach ($flux as $post) {
-                $post['bt_title'] = preg_replace('/(([\xE0-\xEF][\x00-\xFF][\x00-\xFF])|([\xF0-\xF4][\x00-\xFF][\x00-\xFF][\x00-\xFF]))/','',$post['bt_title']);
-                $post['bt_content'] = preg_replace('/(([\xE0-\xEF][\x00-\xFF][\x00-\xFF])|([\xF0-\xF4][\x00-\xFF][\x00-\xFF][\x00-\xFF]))/','',$post['bt_content']);
+                $post['bt_title'] = preg_replace('/(([\xE0-\xEF][\x00-\xFF][\x00-\xFF])|([\xF0-\xF4][\x00-\xFF][\x00-\xFF][\x00-\xFF]))/', '', $post['bt_title']);
+                $post['bt_content'] = preg_replace('/(([\xE0-\xEF][\x00-\xFF][\x00-\xFF])|([\xF0-\xF4][\x00-\xFF][\x00-\xFF][\x00-\xFF]))/', '', $post['bt_content']);
                 $t = $req->execute(array(
                     $post['bt_id'],
                     $post['bt_date'],
@@ -100,14 +100,14 @@ function refresh_rss($feeds)
             foreach ($feed_elmts['items'] as $key => $item) {
                 $new_feed_elems[$key] = $item;
             }
-                // if list of new elements is !empty, save new elements
-                $count_new = count($new_feed_elems);
-                if ($count_new > 0) {
-                    $ret = bdd_rss($new_feed_elems, 'enregistrer-nouveau');
-                    if ($ret !== true) {
-                        echo $ret;
-                    }
+            // if list of new elements is !empty, save new elements
+            $count_new = count($new_feed_elems);
+            if ($count_new > 0) {
+                $ret = bdd_rss($new_feed_elems, 'enregistrer-nouveau');
+                if ($ret !== true) {
+                    echo $ret;
                 }
+            }
         }
     }
 

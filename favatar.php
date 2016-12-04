@@ -28,16 +28,17 @@ DEFINE('EXPIRE_PNG', 0 * 60 * 24 * 7 * 365);
 
 
 
-function download($url, $target, $referer = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:34.0) Gecko/20100101 Firefox/34.0'){
+function download($url, $target, $referer = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:34.0) Gecko/20100101 Firefox/34.0')
+{
     $success = false;
 
     // Open the target file for writing
-    if (false == ($local_file = @fopen($target, 'w'))){
+    if (false == ($local_file = @fopen($target, 'w'))) {
         return false;
     }
 
     // Use curl to download, if available
-    if (is_callable('curl_init')){
+    if (is_callable('curl_init')) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_REFERER, $referer);
@@ -45,7 +46,7 @@ function download($url, $target, $referer = 'Mozilla/5.0 (X11; Ubuntu; Linux x86
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_FILE, $local_file);
-        if (curl_exec($ch)){
+        if (curl_exec($ch)) {
             $success = true;
             fclose($local_file);
         }
@@ -71,7 +72,7 @@ function download($url, $target, $referer = 'Mozilla/5.0 (X11; Ubuntu; Linux x86
         return false;
     }
 
-    while (!feof($remote)){
+    while (!feof($remote)) {
         fwrite($local_file, fread($remote, 8192));
     }
     fclose($remote);
