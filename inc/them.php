@@ -349,15 +349,11 @@ function conversion_theme_addons($texte)
         };
 
         $lookFor = '{addon_'.$addon['tag'].'}';
-        // var_dump($lookFor);
 
         if (strpos($texte, $lookFor) !== false) {
             $callback = 'a_'.$addon['tag'];
-            // var_dump($callback);
             if (function_exists($callback)) {
-                // var_dump(__line__);
                 while (($pos = strpos($texte, $lookFor)) !== false) {
-                    // var_dump(__line__);
                     $texte = substr_replace($texte, call_user_func($callback), $pos, strlen($lookFor));
                 }
             } else {

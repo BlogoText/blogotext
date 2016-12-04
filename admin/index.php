@@ -50,7 +50,7 @@ function get_tableau_date($data_type)
         // $table_months[date('Ym', mktime(0, 0, 0, date("m")-$i, 1, date("Y")))] = 0;
     // }
 
-    $show_max = 96; // (int) older to show (in month)
+    $show_max = 36; // (int) older to show (in month)
     $show_min = 12; // (int) min month to show
 
     // met tout ça au format YYYYMMDDHHIISS où DDHHMMSS vaut 00000000 (pour correspondre au format de l’ID de BT qui est \d{14}

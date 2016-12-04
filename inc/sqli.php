@@ -12,6 +12,9 @@
 # *** LICENSE ***
 
 
+// function db_search()
+
+
 /*  Creates a new BlogoText base.
     if file does not exists, it is created, as well as the tables.
     if file does exists, tables are checked and created if not exists
@@ -86,10 +89,9 @@ function create_tables()
             bt_folder TEXT
         ); CREATE INDEX $if_not_exists dateidR ON rss ( bt_date, bt_id$index_limit_size );";
 
-    /*
-    * SQLite
-    *
-    */
+    /**
+     * SQLite
+     */
     switch (DBMS) {
         case 'sqlite':
             if (!is_file(DIR_DATABASES.'/database.sqlite')) {
@@ -113,14 +115,14 @@ function create_tables()
             }
             break;
 
-        /*
-        * MySQL
-        *
-        */
+        /**
+         * MySQL
+         */
         case 'mysql':
             try {
                 $options_pdo[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
-                $db_handle = new PDO('mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DB.";charset=utf8;sql_mode=PIPES_AS_CONCAT;", MYSQL_LOGIN, MYSQL_PASS, $options_pdo);
+                $db_handle = new PDO('mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DB.";charset=utf8;", MYSQL_LOGIN, MYSQL_PASS, $options_pdo);
+                $db_handle->query('SET sql_mode="PIPES_AS_CONCAT"');
                 // check each wanted table
                 $wanted_tables = array('commentaires', 'articles', 'links', 'rss');
                 foreach ($wanted_tables as $i => $name) {
@@ -246,7 +248,6 @@ function init_list_comments($comment)
 /*
  * Same as init_post_article()
  * but, this one can be used on admin side and on public side.
- *
  */
 function init_post_comment($id, $mode)
 {

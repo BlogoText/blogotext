@@ -206,6 +206,7 @@ function form_annee($year_shown)
 function form_mois($mois_affiche)
 {
     $mois = array(
+        '',
         $GLOBALS['lang']['janvier'],
         $GLOBALS['lang']['fevrier'],
         $GLOBALS['lang']['mars'],
@@ -295,6 +296,7 @@ function afficher_form_billet($article, $erreurs)
         $statutdefaut = 1;
         $allowcommentdefaut = 1;
     }
+
     if ($erreurs) {
         $html .= erreurs($erreurs);
     }
