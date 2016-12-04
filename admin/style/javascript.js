@@ -271,9 +271,9 @@ class Notification {
             }
         }, 1000);
 
-        if (typeof self.callbackOnClose === "function") {
+    if (typeof self.callbackOnClose === "function") {
             self.callbackOnClose();
-        }
+    }
     }
 
     addCloseTimer(ttl, effect, callback)
