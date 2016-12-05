@@ -17,48 +17,86 @@
 
 require_once __dir__.'/inc/boot.php';
 
+
+
+header('Content-Type: image/png');
 /**
  * test, if something go wrong, display a 10x10px red png
  */
+DEFINE('WRONG_PNG', 'iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8zsHxn4EIwDiqkL4KAas0FEc2dAhHAAAAAElFTkSuQmCC');
+DEFINE('EXPIRE_PNG', 0 * 60 * 24 * 7 * 365);
+
+
+
+function download($url, $target, $referer = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:34.0) Gecko/20100101 Firefox/34.0')
+{
+    $success = false;
+
+    // Open the target file for writing
+    if (false == ($local_file = @fopen($target, 'w'))) {
+        return false;
+    }
+
+    // Use curl to download, if available
+    if (is_callable('curl_init')) {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_REFERER, $referer);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_FILE, $local_file);
+        if (curl_exec($ch)) {
+            $success = true;
+            fclose($local_file);
+        }
+        curl_close($ch);
+    }
+
+    if ($success === true) {
+        return true;
+    }
+    
+    // use fopen as fallback
+    $opts = array(
+        'http' => array(
+            'method' => "GET",
+            'header' => "Referer: $referer\r\n"
+        )
+    );
+
+    $context = stream_context_create($opts);
+    $remote = @fopen($url, 'r', false, $context);
+    if (!$remote) {
+        fclose($local_file);
+        return false;
+    }
+
+    while (!feof($remote)) {
+        fwrite($local_file, fread($remote, 8192));
+    }
+    fclose($remote);
+    fclose($local_file);
+
+    return true;
+}
+
+
 
 /**
  * Download an avatar or a favicon.
  *
  * favatar = FAVicon + avATAR
  */
+
 function favatar()
 {
-    // no test on result ? never fail ? common ...
-    function download($url, $output)
-    {
-        /*$curl_handle = curl_init();
-        curl_setopt($curl_handle, CURLOPT_URL, $avatar_url);
-        curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl_handle, CURLOPT_TIMEOUT, 5);
-        $file_content = curl_exec($curl_handle);
-        curl_close($curl_handle);*/
-
-        $fp = fopen($output, 'wb');
-        flock($fp, LOCK_EX);
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_FILE, $fp);
-        curl_setopt($ch, CURLOPT_ENCODING, 'gzip');
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0');
-        curl_exec($ch);
-        curl_close($ch);
-        fclose($fp);
-    }
 
     $what = (string)filter_input(INPUT_GET, 'w');
     $query = (string)filter_input(INPUT_GET, 'q');
 
     if (!$query && !in_array($what, array('avatar', 'favicon'))) {
-        // exit(header('HTTP/1.1 400 Bad Request'));
-        // 10/10px red png, better than a 404 or an 400 (SEO)
-        header('Content-Type: image/png');
-        exit(base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8zsHxn4EIwDiqkL4KAas0FEc2dAhHAAAAAElFTkSuQmCC'));
+        exit(base64_decode(WRONG_PNG));
     }
 
 
@@ -71,10 +109,7 @@ function favatar()
         }
         // Or some unusable crap?
         if ($domain === null) {
-            // exit(header('HTTP/1.1 400 Bad Request'));
-            // 10/10px red png, better than a 404 or an 400 (SEO)
-            header('Content-Type: image/png');
-            exit(base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8zsHxn4EIwDiqkL4KAas0FEc2dAhHAAAAAElFTkSuQmCC'));
+            exit(base64_decode(WRONG_PNG));
         }
 
         $targetDir = DIR_CACHE.'favicons/';
@@ -85,10 +120,7 @@ function favatar()
         // Still 32 characters? If no, given hash wasn't genuine. die.
         $hash = preg_replace('[^a-f0-9]', '', $query);
         if (strlen($hash) != 32) {
-            // exit(header('HTTP/1.1 400 Bad Request'));
-            // 10/10px red png, better than a 404 or an 400 (SEO)
-            header('Content-Type: image/png');
-            exit(base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8zsHxn4EIwDiqkL4KAas0FEc2dAhHAAAAAElFTkSuQmCC'));
+            exit(base64_decode(WRONG_PNG));
         }
 
         // Try to get size
@@ -109,26 +141,21 @@ function favatar()
         $targetFile = $targetDir.md5($hash).'.png';
     }
 
-    // Expires in one year
-    $expire = 60 * 60 * 24 * 7 * 365 ;
-
     // No cached file or expired?
-    if (!is_file($targetFile) || (time() - filemtime($targetFile)) > $expire) {
+    if (!is_file($targetFile) || (time() - filemtime($targetFile)) > EXPIRE_PNG) {
         if (!is_dir($targetDir) && !create_folder($targetDir, true, true)) {
-            // mkdir($targetDir);
-            header('Content-Type: image/png');
-            exit(base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8zsHxn4EIwDiqkL4KAas0FEc2dAhHAAAAAElFTkSuQmCC'));
-        } else {
-            // need a test/return false
-            download($sourceFile, $targetFile);
+            exit(base64_decode(WRONG_PNG));
+        }
+
+        // need a test/return false
+        if (!download($sourceFile, $targetFile)) {
+            exit(base64_decode(WRONG_PNG));
         }
     }
 
-
     // Send file to browser
-    header('Content-Type: image/png');
     header('Content-Length: '.filesize($targetFile));
-    header('Cache-Control: public, max-age='.$expire);
+    header('Cache-Control: public, max-age='.EXPIRE_PNG);
     header('Last-Modified: '.gmdate('D, d M Y H:i:s', filemtime($targetFile)).' GMT');
     exit(readfile($targetFile));
 }

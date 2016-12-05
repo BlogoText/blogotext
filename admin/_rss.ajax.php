@@ -24,8 +24,7 @@ function bdd_rss($flux, $what)
     if ($what == 'enregistrer-nouveau') {
         try {
             $GLOBALS['db_handle']->beginTransaction();
-            foreach ($flux as $post) {
-                $req = $GLOBALS['db_handle']->prepare('INSERT INTO rss
+            $req = $GLOBALS['db_handle']->prepare('INSERT INTO rss
                 (  bt_id,
                     bt_date,
                     bt_title,
@@ -37,7 +36,10 @@ function bdd_rss($flux, $what)
                     bt_folder
                 )
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
-                $req->execute(array(
+            foreach ($flux as $post) {
+                $post['bt_title'] = preg_replace('/(([\xE0-\xEF][\x00-\xFF][\x00-\xFF])|([\xF0-\xF4][\x00-\xFF][\x00-\xFF][\x00-\xFF]))/', '', $post['bt_title']);
+                $post['bt_content'] = preg_replace('/(([\xE0-\xEF][\x00-\xFF][\x00-\xFF])|([\xF0-\xF4][\x00-\xFF][\x00-\xFF][\x00-\xFF]))/', '', $post['bt_content']);
+                $t = $req->execute(array(
                     $post['bt_id'],
                     $post['bt_date'],
                     $post['bt_title'],
@@ -48,6 +50,9 @@ function bdd_rss($flux, $what)
                     0,
                     $post['bt_folder']
                 ));
+                if ($t !== true) {
+                    log_error($post['bt_feed_url']);
+                }
             }
             $GLOBALS['db_handle']->commit();
             return true;
@@ -71,6 +76,7 @@ function refresh_rss($feeds)
     }
 
     foreach ($retrieved_elements as $feed_url => $feed_elmts) {
+        $new_feed_elems = array();
         if ($feed_elmts === false) {
             continue;
         } else {
@@ -87,21 +93,25 @@ function refresh_rss($feeds)
                     $GLOBALS['liste_flux'][$feeds[$feed_url]['link']]['time'] = $item['bt_date'];
                 }
             }
-            if (!empty($feed_elmts['items'])) {
+            // if (!empty($feed_elmts['items'])) {
                 // populates the list of post we keep, to be saved in DB
-                $new_feed_elems = array_merge($new_feed_elems, $feed_elmts['items']);
+                // $new_feed_elems = array_merge($new_feed_elems, $feed_elmts['items']);
+            // }
+            foreach ($feed_elmts['items'] as $key => $item) {
+                $new_feed_elems[$key] = $item;
+            }
+            // if list of new elements is !empty, save new elements
+            $count_new = count($new_feed_elems);
+            if ($count_new > 0) {
+                $ret = bdd_rss($new_feed_elems, 'enregistrer-nouveau');
+                if ($ret !== true) {
+                    echo $ret;
+                }
             }
         }
     }
 
-    // if list of new elements is !empty, save new elements
-    if (!empty($new_feed_elems)) {
-        $count_new = count($new_feed_elems);
-        $ret = bdd_rss($new_feed_elems, 'enregistrer-nouveau');
-        if ($ret !== true) {
-            echo $ret;
-        }
-    }
+
 
     // save last success time in the feed list
     create_file_dtb(FEEDS_DB, $GLOBALS['liste_flux']);
@@ -248,6 +258,10 @@ function feed2array($feed_content, $feedlink)
                     $flux['items'][$c]['bt_id'] = (string)$item->id;
                 } else {
                     $flux['items'][$c]['bt_id'] = microtime();
+                }
+                // dirty fix
+                if (empty($flux['items'][$c]['bt_link'])) {
+                    $flux['items'][$c]['bt_link'] = $flux['items'][$c]['bt_id'];
                 }
 
                 if (!empty($item->pubDate)) {

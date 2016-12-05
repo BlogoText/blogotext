@@ -13,6 +13,7 @@
 
 require_once 'inc/boot.php';
 
+
 /**
  * functions
  */
@@ -286,11 +287,13 @@ if (!empty($_GET['q'])) {
         $sql_where = 'AND '. implode(array_fill(0, count($arr), '( bt_content || bt_title ) LIKE ?'), 'AND'); // AND operator between words
     }
 
+         // WHERE '.$sql_where.$sql_where_status.'
     $query = '
         SELECT * FROM rss
-         WHERE '.$sql_where.$sql_where_status.'
+         WHERE '. trim(trim($sql_where.$sql_where_status, ' '), 'AND').'
          ORDER BY bt_date DESC
          LIMIT '.$sql_limit;
+
     $tableau = liste_elements($query, $arr, 'rss');
 } else {
     $sql = '
@@ -299,13 +302,9 @@ if (!empty($_GET['q'])) {
                OR bt_bookmarked = 1
          ORDER BY bt_date DESC
          LIMIT '.$sql_limit;
+
     $tableau = liste_elements($sql, array(), 'rss');
 }
-
-
-/**
- * echo
- */
 
 
 echo tpl_get_html_head($GLOBALS['lang']['mesabonnements']);
@@ -409,10 +408,12 @@ if (isset($_GET['config'])) {
     echo 'var scrollPos = 0;'."\n";
     echo 'window.addEventListener(\'scroll\', function(){ scrollingFabHideShow() });'."\n";
 
+    echo 'window.addEventListener(\'load\', function(){';
     echo 'var list = document.querySelectorAll("a[data-feed-domain]");'."\n";
     echo 'for (var i = 0, len=list.length; i < len; i++) {'."\n";
     echo '  list[i].style.backgroundImage="url(\'" + "'.URL_ROOT.'favatar.php?w=favicon&q="+ list[i].getAttribute(\'data-feed-domain\') + "\')";'."\n";
     echo '}'."\n\n";
+    echo '});'."\n";
 
     echo php_lang_to_js(0);
     echo "\n".'</script>'."\n";
