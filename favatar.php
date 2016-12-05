@@ -24,7 +24,8 @@ header('Content-Type: image/png');
  * test, if something go wrong, display a 10x10px red png
  */
 DEFINE('WRONG_PNG', 'iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8zsHxn4EIwDiqkL4KAas0FEc2dAhHAAAAAElFTkSuQmCC');
-DEFINE('EXPIRE_PNG', 0 * 60 * 24 * 7 * 365);
+// cache for 1 year, too much ?
+DEFINE('EXPIRE_PNG', 60 * 60 * 24 * 365);
 
 
 
