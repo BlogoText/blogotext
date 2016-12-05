@@ -161,10 +161,12 @@ function feed_list_html()
     }
 
     // First item : link all feeds
-    $html = "\t\t".'<li class="all-feeds"><a href="#" onclick="document.getElementById(\'markasread\').onclick=function(){markAsRead(\'all\', true);}; sortAll(); return false;">'.$GLOBALS['lang']['rss_label_all_feeds'].' <span id="global-post-counter" data-nbrun="'.$total_unread.'">('.$total_unread.')</span></a></li>'."\n";
+    // onclick="document.getElementById(\'markasread\').onclick=function(){markAsRead(\'all\', true);}; sortAll(); return false;"
+    $html = "\t\t".'<li class="all-feeds"><a href="feed.php">'.$GLOBALS['lang']['rss_label_all_feeds'].' <span id="global-post-counter" data-nbrun="'.$total_unread.'">('.$total_unread.')</span></a></li>'."\n";
 
     // Next item : favorites items
-    $html .= "\t\t".'<li class="fav-feeds"><a href="#" onclick="document.getElementById(\'markasread\').onclick=function(){markAsRead(\'favs\', true);}; return sortFavs(); return false;">'.$GLOBALS['lang']['rss_label_favs_feeds'].' <span id="favs-post-counter" data-nbrun="'.$total_favs.'">('.$total_favs.')</span></a></li>'."\n";
+    // onclick="document.getElementById(\'markasread\').onclick=function(){markAsRead(\'favs\', true);}; return sortFavs(); return false;"
+    $html .= "\t\t".'<li class="fav-feeds"><a href="feed.php?bookmarked">'.$GLOBALS['lang']['rss_label_favs_feeds'].' <span id="favs-post-counter" data-nbrun="'.$total_favs.'">('.$total_favs.')</span></a></li>'."\n";
 
     $feed_urls = array();
     foreach ($feeds_nb as $i => $feed) {
@@ -187,7 +189,8 @@ function feed_list_html()
         foreach ($folder as $j => $feed) {
             $js = 'onclick="document.getElementById(\'markasread\').onclick=function(){sendMarkReadRequest(\'site\', \''.$feed['link'].'\', true);}; sortSite(this);"';
                 $li_html .= "\t\t".'<li class="" data-nbrun="'.$feed['nbrun'].'" data-feedurl="'.$feed['link'].'" title="'.$feed['link'].'">';
-                $li_html .= '<a href="#" '.(($feed['iserror'] > 2) ? 'class="feed-error" ': ' ' ).$js.' data-feed-domain="'.parse_url($feed['link'], PHP_URL_HOST).'">'.$feed['title'].'</a>';
+                // $li_html .= '<a href="#" '.(($feed['iserror'] > 2) ? 'class="feed-error" ': ' ' ).$js.' data-feed-domain="'.parse_url($feed['link'], PHP_URL_HOST).'">'.$feed['title'].'</a>';
+                $li_html .= '<a href="?site='.parse_url($feed['link'], PHP_URL_HOST).'" '.(($feed['iserror'] > 2) ? 'class="feed-error" ': ' ' ).' data-feed-domain="'.parse_url($feed['link'], PHP_URL_HOST).'">'.$feed['title'].'</a>';
                 $li_html .= '<span>('.$feed['nbrun'].')</span>';
                 $li_html .= '</li>'."\n";
                 $folder_count += $feed['nbrun'];
@@ -268,6 +271,22 @@ if ($page < 0) {
 }
 $sql_limit = $GLOBALS['max_rss_admin'].' OFFSET '.($page * $GLOBALS['max_rss_admin']);
 
+$arr = array();
+
+// for a site ?
+$site = filter_input(INPUT_GET, 'site');
+$bookmarked = isset($_GET['bookmarked']);
+$sql_where = '';
+$param_url = '';
+if (!empty($site)) {
+    $sql_where = 'bt_feed LIKE ? AND ';
+    $arr[] = '%'.$site.'%';
+    $param_url = 'site='.$site.'&';
+} elseif (!empty($bookmarked)) {
+    $sql_where = 'bt_bookmarked = 1 AND ';
+    $param_url = 'bookmarked&';
+}
+
 if (!empty($_GET['q'])) {
     $sql_where_status = '';
     $q_query = (string)filter_input(INPUT_GET, 'q');
@@ -283,28 +302,26 @@ if (!empty($_GET['q'])) {
             $sql_where_status = 'AND bt_statut = 1 ';
             $q_query = substr($q_query, 0, strlen($q_query) - 10);
         }
-        $arr = parse_search($q_query);
-        $sql_where = 'AND '. implode(array_fill(0, count($arr), '( bt_content || bt_title ) LIKE ?'), 'AND'); // AND operator between words
+        $arr = array_push($arr, parse_search($q_query));
+        $sql_where .= 'AND '. implode(array_fill(0, count($arr), '( bt_content || bt_title ) LIKE ?'), 'AND'); // AND operator between words
     }
 
-         // WHERE '.$sql_where.$sql_where_status.'
     $query = '
         SELECT * FROM rss
-         WHERE '. trim(trim($sql_where.$sql_where_status, ' '), 'AND').'
+         WHERE '.$sql_where.trim( trim($sql_where.$sql_where_status, ' '), 'AND').'
          ORDER BY bt_date DESC
          LIMIT '.$sql_limit;
-
-    $tableau = liste_elements($query, $arr, 'rss');
 } else {
-    $sql = '
+    $query = '
         SELECT * FROM rss
-         WHERE bt_statut = 1
+         WHERE '. $sql_where .'(bt_statut = 1
                OR bt_bookmarked = 1
+               )
          ORDER BY bt_date DESC
          LIMIT '.$sql_limit;
-
-    $tableau = liste_elements($sql, array(), 'rss');
 }
+
+$tableau = liste_elements($query, $arr, 'rss');
 
 
 echo tpl_get_html_head($GLOBALS['lang']['mesabonnements']);
@@ -352,10 +369,10 @@ if (isset($_GET['config'])) {
     if ($page < 1) {
         $out_html .= "\t\t\t\t".'<a disabled>&lt;</a>'."\n";
     } else {
-        $out_html .= "\t\t\t\t".'<a href="feed.php?p='.($page - 1).'" title="'.$GLOBALS['lang']['previous_page'].'">&lt;</a>'."\n";
+        $out_html .= "\t\t\t\t".'<a href="feed.php?'.$param_url.'p='.($page - 1).'" title="'.$GLOBALS['lang']['previous_page'].'">&lt;</a>'."\n";
     }
     if ($page >= 0 && count($tableau) == $GLOBALS['max_rss_admin']) {
-        $out_html .= "\t\t\t\t".'<a href="feed.php?p='.($page + 1).'" title="'.$GLOBALS['lang']['next_page'].'">&gt;</a>'."\n";
+        $out_html .= "\t\t\t\t".'<a href="feed.php?'.$param_url.'p='.($page + 1).'" title="'.$GLOBALS['lang']['next_page'].'">&gt;</a>'."\n";
     } else {
         $out_html .= "\t\t\t\t".'<a disabled>&gt;</a>'."\n";
     }
