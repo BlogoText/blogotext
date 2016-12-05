@@ -308,7 +308,7 @@ if (!empty($_GET['q'])) {
 
     $query = '
         SELECT * FROM rss
-         WHERE '.$sql_where.trim( trim($sql_where.$sql_where_status, ' '), 'AND').'
+         WHERE '.$sql_where.trim(trim($sql_where.$sql_where_status, ' '), 'AND').'
          ORDER BY bt_date DESC
          LIMIT '.$sql_limit;
 } else {
