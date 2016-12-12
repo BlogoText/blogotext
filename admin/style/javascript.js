@@ -271,9 +271,9 @@ class Notification {
             }
         }, 1000);
 
-    if (typeof self.callbackOnClose === "function") {
+        if (typeof self.callbackOnClose === "function") {
             self.callbackOnClose();
-    }
+        }
     }
 
     addCloseTimer(ttl, effect, callback)
@@ -2062,23 +2062,24 @@ function handleTouchStart(evt)
 /* Swipe on slideshow to change images */
 function swipeSlideshow(evt)
 {
-    if ( !xDown || !yDown || doTouchBreak || document.getElementById('slider').style.display != 'block' ) {
-        return; }
-    var xUp = evt.touches[0].clientX;
-    var xDiff = xDown - xUp;
+    if (!xDown || !yDown || doTouchBreak || document.getElementById('slider').style.display != 'block') {
+        return;
+    }
+    var xUp = evt.touches[0].clientX,
+        xDiff = xDown - xUp;
 
     if (Math.abs(xDiff) > minDelta) {
         var newEvent = document.createEvent("MouseEvents");
         newEvent.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 
-        if ( xDiff > minDelta ) {
-            /* left swipe */
+        if (xDiff > minDelta) {
+            // left swipe
             var button = document.getElementById('slider-next');
             evt.preventDefault();
             button.dispatchEvent(newEvent);
             doTouchBreak = true;
-        } else if ( xDiff < -minDelta) {
-            /* right swipe */
+        } else if (xDiff < -minDelta) {
+            // right swipe
             var button = document.getElementById('slider-prev');
             evt.preventDefault();
             button.dispatchEvent(newEvent);
