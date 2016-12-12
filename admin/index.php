@@ -79,7 +79,8 @@ function get_tableau_date($dataType)
 /**
  * Display one graphic.
  */
-function display_graph($arr, $title, $cls) {
+function display_graph($arr, $title, $cls)
+{
     $txt = '<div class="graph">';
     $txt .= '<div class="form-legend">'.ucfirst($title).'</div>';
     $txt .= '<div class="graph-container" id="graph-container-'.$cls.'">';
