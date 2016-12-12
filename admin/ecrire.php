@@ -14,17 +14,40 @@
 require_once 'inc/boot.php';
 
 
-$GLOBALS['db_handle'] = open_base();
+$vars = filter_input_array(INPUT_POST, array(
+    'contenu' => FILTER_DEFAULT,
+    'mots_cles' => FILTER_DEFAULT,
+    'titre' => FILTER_DEFAULT,
+    'chapo' => FILTER_DEFAULT,
+    'categories' => FILTER_DEFAULT,
+    'notes' => FILTER_DEFAULT,
+
+    'token' => FILTER_SANITIZE_STRING,
+
+    'annee' => FILTER_VALIDATE_INT,
+    'mois' => FILTER_VALIDATE_INT,
+    'jour' => FILTER_VALIDATE_INT,
+    'heure' => FILTER_VALIDATE_INT,
+    'minutes' => FILTER_VALIDATE_INT,
+    'secondes' => FILTER_VALIDATE_INT,
+    'statut' => FILTER_VALIDATE_INT,
+    'allowcomment' => FILTER_VALIDATE_INT,
+    'ID' => FILTER_VALIDATE_INT,
+    'article_id' => FILTER_VALIDATE_INT,
+));
+$vars['enregistrer'] = (filter_input(INPUT_POST, 'enregistrer') !== null);
+$vars['supprimer'] = (filter_input(INPUT_POST, 'supprimer') !== null);
+$vars['_verif_envoi'] = (filter_input(INPUT_POST, '_verif_envoi') !== null);
 
 
-function extraire_mots($texte)
+function extact_words($text)
 {
-    $texte = str_replace(array("\r", "\n", "\t"), array('', ' ', ' '), $texte); // removes \n, \r and tabs
-    $texte = strip_tags($texte); // removes HTML tags
-    $texte = preg_replace('#[!"\#$%&\'()*+,./:;<=>?@\[\]^_`{|}~«»“”…]#', ' ', $texte); // removes punctuation
-    $texte = trim(preg_replace('# {2,}#', ' ', $texte)); // remove consecutive spaces
+    $text = str_replace(array("\r", "\n", "\t"), array('', ' ', ' '), $text);
+    $text = strip_tags($text);
+    $text = preg_replace('#[!"\#$%&\'()*+,./:;<=>?@\[\]^_`{|}~«»“”…]#', ' ', $text);
+    $text = trim(preg_replace('# {2,}#', ' ', $text));
 
-    $words = explode(' ', $texte);
+    $words = explode(' ', $text);
     foreach ($words as $i => $word) {
         // remove short words & words with numbers
         if (strlen($word) <= 4 or preg_match('#\d#', $word)) {
@@ -38,7 +61,7 @@ function extraire_mots($texte)
     $words = array_unique($words);
     $keywords = array();
     foreach ($words as $i => $word) {
-        if (substr_count($texte, $word) >= 3) {
+        if (substr_count($text, $word) >= 3) {
             $keywords[] = $word;
         }
     }
@@ -48,11 +71,10 @@ function extraire_mots($texte)
     return implode($keywords, ', ');
 }
 
-// POST ARTICLE
-function markup_articles($texte)
+function post_markup($text)
 {
-    $texte = preg_replace("/(\r\n|\r\n\r|\n|\n\r|\r)/", "\r", $texte);
-    $tofind = array(
+    $text = preg_replace("/(\r\n|\r\n\r|\n|\n\r|\r)/", "\r", $text);
+    $toFind = array(
         // Replace \r with \n when following HTML elements
         '#<(.*?)>\r#',
 
@@ -85,9 +107,9 @@ function markup_articles($texte)
         '# (»|!|:|\?|;)#',
         '#« #',
     );
-    $toreplace = array(
+    $toReplace = array(
         // Replace \r with \n
-        '<$1>'."\n",
+        '<$1>',
 
         // Jusitifications
         /* left    */ '<div style="text-align:left;">$1</div>',
@@ -120,93 +142,86 @@ function markup_articles($texte)
     );
 
     // memorizes [code] tags contents before bbcode being appliyed
-    preg_match_all('#\[code(=(\w+))?\](.*?)\[/code\]#s', $texte, $code_contents, PREG_SET_ORDER);
+    preg_match_all('#\[code(=(\w+))?\](.*?)\[/code\]#s', $text, $codeContents, PREG_SET_ORDER);
     // empty the [code] tags (content is in memory)
-    $texte_formate = preg_replace('#\[code(=(\w+))?\](.*?)\[/code\]#s', '[code$1][/code]', $texte);
+    $textFormated = preg_replace('#\[code(=(\w+))?\](.*?)\[/code\]#s', '[code$1][/code]', $text);
     // apply bbcode filter
-    $texte_formate = preg_replace($tofind, $toreplace, $texte_formate);
+    $textFormated = preg_replace($toFind, $toReplace, $textFormated);
     // apply <p>paragraphe</p> filter
-    $texte_formate = parse_texte_paragraphs($texte_formate);
+    $textFormated = parse_texte_paragraphs($textFormated);
     // replace [code] elements with theire initial content
-    $texte_formate = parse_texte_code($texte_formate, $code_contents);
+    $textFormated = parse_texte_code($textFormated, $codeContents);
 
-    return $texte_formate;
+    return $textFormated;
 }
 
-function init_post_article()
+function init_post_post()
 {
-    //no $mode : it's always admin.
-    $formated_contenu = markup_articles(clean_txt($_POST['contenu']));
-    if ($GLOBALS['automatic_keywords'] == '0') {
-        $keywords = protect($_POST['mots_cles']);
-    } else {
-        $keywords = extraire_mots($_POST['titre'].' '.$formated_contenu);
-    }
-
-    $date = str4($_POST['annee']).str2($_POST['mois']).str2($_POST['jour']).str2($_POST['heure']).str2($_POST['minutes']).str2($_POST['secondes']);
-    $id = (isset($_POST['article_id']) and preg_match('#\d{14}#', $_POST['article_id'])) ? $_POST['article_id'] : $date;
-
-    $article = array (
-        'bt_id'             => $id,
-        'bt_date'           => $date,
-        'bt_title'          => protect($_POST['titre']),
-        'bt_abstract'       => (empty($_POST['chapo'])) ? '' : clean_txt($_POST['chapo']),
-        'bt_notes'          => protect($_POST['notes']),
-        'bt_content'        => $formated_contenu,
-        'bt_wiki_content'   => clean_txt($_POST['contenu']),
-        'bt_link'           => '', // this one is not needed yet. Maybe in the futur. I dunno why it is still in the DB…
-        'bt_keywords'       => $keywords,
-        'bt_tags'           => (isset($_POST['categories'])) ? htmlspecialchars(traiter_tags($_POST['categories'])) : '', // htmlSpecialChars() nedded to escape the (") since tags are put in a <input/>. (') are escaped in form_categories(), with addslashes – not here because of JS problems :/
-        'bt_statut'         => $_POST['statut'],
-        'bt_allow_comments' => $_POST['allowcomment'],
+    global $vars;
+    $contentFormated = post_markup(clean_txt($vars['contenu']));
+    $keywords = (!$GLOBALS['automatic_keywords']) ? protect($vars['mots_cles']) : extact_words($vars['titre'].' '.$contentFormated);
+    $date = sprintf(
+        '%04d%02d%02d%02d%02d%02d',
+        $vars['annee'],
+        $vars['mois'],
+        $vars['jour'],
+        $vars['heure'],
+        $vars['minutes'],
+        $vars['secondes']
     );
 
-    if (isset($_POST['ID']) and is_numeric($_POST['ID'])) { // ID only added on edit.
-        $article['ID'] = $_POST['ID'];
+    $post = array (
+        'bt_id' => (preg_match('#\d{14}#', $vars['article_id'])) ? $vars['article_id'] : $date,
+        'bt_date' => $date,
+        'bt_title' => protect($vars['titre']),
+        'bt_abstract' => clean_txt($vars['chapo']),
+        'bt_notes' => protect($vars['notes']),
+        'bt_content' => $contentFormated,
+        'bt_wiki_content' => clean_txt($vars['contenu']),
+        'bt_link' => '',  // this one is not needed yet. Maybe in the futur. I dunno why it is still in the DB…
+        'bt_keywords' => $keywords,
+        'bt_tags' => htmlspecialchars(traiter_tags($vars['categories'])), // htmlSpecialChars() nedded to escape the (") since tags are put in a <input/>. (') are escaped in form_categories(), with addslashes – not here because of JS problems :/
+        'bt_statut' => $vars['statut'],
+        'bt_allow_comments' => $vars['allowcomment'],
+    );
+
+    if ($vars['ID'] > 0) {
+        // ID only added on edit
+        $post['ID'] = $vars['ID'];
     }
-    return $article;
+    return $post;
 }
 
 // once form is initiated, and no errors are found, treat it (save it to DB).
-function traiter_form_billet($billet)
+function traitment_form_post($post)
 {
-    if (isset($_POST['enregistrer']) and !isset($billet['ID'])) {
-        $result = bdd_article($billet, 'enregistrer-nouveau');
-        $redir = basename($_SERVER['SCRIPT_NAME']).'?post_id='.$billet['bt_id'].'&msg=confirm_article_maj';
-    } elseif (isset($_POST['enregistrer']) and isset($billet['ID'])) {
-        $result = bdd_article($billet, 'modifier-existant');
-        $redir = basename($_SERVER['SCRIPT_NAME']).'?post_id='.$billet['bt_id'].'&msg=confirm_article_ajout';
-    } elseif (isset($_POST['supprimer']) and isset($_POST['ID']) and is_numeric($_POST['ID'])) {
-        $result = bdd_article($billet, 'supprimer-existant');
-        try {
-            $sql = '
-                DELETE FROM commentaires
-                 WHERE bt_article_id=?';
-            $req = $GLOBALS['db_handle']->prepare($sql);
-            $req->execute(array($_POST['article_id']));
-        } catch (Exception $e) {
-            die('Erreur Suppr Comm associés: '.$e->getMessage());
-        }
-
+    global $vars;
+    if ($vars['enregistrer']) {
+        $result = bdd_article($post, ($post['ID']) ? 'modifier-existant' : 'enregistrer-nouveau');
+        $redir = basename($_SERVER['SCRIPT_NAME']).'?post_id='.$post['bt_id'].'&msg='.(($post['ID']) ? 'confirm_article_maj' : 'confirm_article_ajout');
+    } elseif ($vars['supprimer'] && $vars['ID']) {
+        $result = bdd_article($post, 'supprimer-existant');
         $redir = 'articles.php?msg=confirm_article_suppr';
+        $sql = '
+            DELETE FROM commentaires
+             WHERE bt_article_id = ?';
+        $req = $GLOBALS['db_handle']->prepare($sql);
+        $req->execute(array($vars['article_id']));
     }
-    if ($result === true) {
+    if (isset($result)) {
         flux_refresh_cache_lv1();
         redirection($redir);
-    } else {
-        die($result);
     }
 }
 
-function form_annee($year_shown)
+function form_years($displayedYear)
 {
-    return '<input type="number" name="annee" max="'.(date('Y') + 3).'" value="'.$year_shown.'">'."\n";
+    return '<input type="number" name="annee" max="'.(date('Y') + 3).'" value="'.$displayedYear.'">';
 }
 
-function form_mois($mois_affiche)
+function form_months($displayedMonth)
 {
-    $mois = array(
-        '',
+    $months = array(
         $GLOBALS['lang']['janvier'],
         $GLOBALS['lang']['fevrier'],
         $GLOBALS['lang']['mars'],
@@ -220,24 +235,27 @@ function form_mois($mois_affiche)
         $GLOBALS['lang']['novembre'],
         $GLOBALS['lang']['decembre']
     );
-    $ret = '<select name="mois">'."\n" ;
-    foreach ($mois as $option => $label) {
-        $ret .= "\t".'<option value="'.htmlentities($option).'"'.(($mois_affiche == $option) ? ' selected="selected"' : '').'>'.$label.'</option>'."\n";
+
+    $ret = '<select name="mois">' ;
+    foreach ($months as $option => $label) {
+        $ret .= '<option value="'.htmlentities($option).'"'.(($displayedMonth - 1 == $option) ? ' selected="selected"' : '').'>'.$label.'</option>';
     }
-    $ret .= '</select>'."\n";
+    $ret .= '</select>';
     return $ret;
 }
 
-function form_jour($jour_affiche)
+function form_days($displayedDay)
 {
-    for ($jour = 1; $jour <= 31; ++$jour) {
-        $jours[str2($jour)] = $jour;
+    $ret = '<select name="jour">';
+    for ($day = 1; $day <= 31; ++$day) {
+        $ret .= sprintf(
+            '<option value="%02d"%s>%s</option>',
+            $day,
+            ($displayedDay == $day) ? ' selected="selected"' : '',
+            htmlentities($day)
+        );
     }
-    $ret = '<select name="jour">'."\n";
-    foreach ($jours as $option => $label) {
-        $ret .= "\t".'<option value="'.htmlentities($option).'"'.(($jour_affiche == $option) ? ' selected="selected"' : '').'>'.htmlentities($label).'</option>'."\n";
-    }
-    $ret .= '</select>'."\n";
+    $ret .='</select>';
     return $ret;
 }
 
@@ -250,236 +268,220 @@ function form_statut($etat)
     return form_select('statut', $choix, $etat, $GLOBALS['lang']['label_dp_etat']);
 }
 
-function form_allow_comment($etat)
+function form_allow_comment($state)
 {
-    $choix= array(
+    $choice = array(
         $GLOBALS['lang']['fermes'],
         $GLOBALS['lang']['ouverts']
     );
-    return form_select('allowcomment', $choix, $etat, $GLOBALS['lang']['label_dp_commentaires']);
+    return form_select('allowcomment', $choice, $state, $GLOBALS['lang']['label_dp_commentaires']);
 }
 
 // Post form
-function afficher_form_billet($article, $erreurs)
+function display_form_post($post, $errors)
 {
+    $defaultDay = date('d');
+    $defaultMonth = date('m');
+    $defaultYear = date('Y');
+    $defaultHour = date('H');
+    $defaultMinutes = date('i');
+    $defaultSeconds = date('s');
+    $defaultAbstract = '';
+    $defaultContent = '';
+    $defaultKeywords = '';
+    $defaultTags = '';
+    $defaultTitle = '';
+    $defaultNotes = '';
+    $defaultStatus = 1;
+    $defaultAllowComment = 1;
+
+    if ($post) {
+        $defaultDay = $post['jour'];
+        $defaultMonth = $post['mois'];
+        $defaultYear = $post['annee'];
+        $defaultHour = $post['heure'];
+        $defaultMinutes = $post['minutes'];
+        $defaultSeconds = $post['secondes'];
+        $defaultTitle = $post['bt_title'];
+        // abstract: if empty, it is generated but not added to the DTB
+        $defaultAbstract = get_entry($GLOBALS['db_handle'], 'articles', 'bt_abstract', $post['bt_id'], 'return');
+        $defaultNotes = $post['bt_notes'];
+        $defaultTags = $post['bt_tags'];
+        $defaultContent = htmlspecialchars($post['bt_wiki_content']);
+        $defaultKeywords = $post['bt_keywords'];
+        $defaultStatus = $post['bt_statut'];
+        $defaultAllowComment = $post['bt_allow_comments'];
+    }
+
     $html = '';
-
-    if ($article != '') {
-        $defaut_jour = $article['jour'];
-        $defaut_mois = $article['mois'];
-        $defaut_annee = $article['annee'];
-        $defaut_heure = $article['heure'];
-        $defaut_minutes = $article['minutes'];
-        $defaut_secondes = $article['secondes'];
-        $titredefaut = $article['bt_title'];
-        // abstract : s’il est vide, il est regénéré à l’affichage, mais reste vide dans la BDD)
-        $chapodefaut = get_entry($GLOBALS['db_handle'], 'articles', 'bt_abstract', $article['bt_id'], 'return');
-        $notesdefaut = $article['bt_notes'];
-        $tagsdefaut = $article['bt_tags'];
-        $contenudefaut = htmlspecialchars($article['bt_wiki_content']);
-        $motsclesdefaut = $article['bt_keywords'];
-        $statutdefaut = $article['bt_statut'];
-        $allowcommentdefaut = $article['bt_allow_comments'];
-    } else {
-        $defaut_jour = date('d');
-        $defaut_mois = date('m');
-        $defaut_annee = date('Y');
-        $defaut_heure = date('H');
-        $defaut_minutes = date('i');
-        $defaut_secondes = date('s');
-        $chapodefaut = '';
-        $contenudefaut = '';
-        $motsclesdefaut = '';
-        $tagsdefaut = '';
-        $titredefaut = '';
-        $notesdefaut = '';
-        $statutdefaut = 1;
-        $allowcommentdefaut = 1;
+    if ($errors) {
+        $html .= erreurs($errors);
     }
-
-    if ($erreurs) {
-        $html .= erreurs($erreurs);
-    }
-    if (isset($article['bt_id'])) {
-        $html .= '<form id="form-ecrire" method="post" onsubmit="return moveTag();" action="'.basename($_SERVER['SCRIPT_NAME']).'?post_id='.$article['bt_id'].'" >'."\n";
-    } else {
-        $html .= '<form id="form-ecrire" method="post" onsubmit="return moveTag();" action="'.basename($_SERVER['SCRIPT_NAME']).'" >'."\n";
-    }
+    $html .= sprintf(
+        '<form id="form-ecrire" method="post" onsubmit="return moveTag();" action="%s%s">',
+        basename($_SERVER['SCRIPT_NAME']),
+        (isset($post['bt_id'])) ? '?post_id='.$post['bt_id'] : ''
+    );
     $html .= '<div class="main-form">';
-    $html .= '<input id="titre" name="titre" type="text" size="50" value="'.$titredefaut.'" required="" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_titre']).'" tabindex="30" class="text" spellcheck="true" />'."\n" ;
-    $html .= '<div id="chapo_note">'."\n";
-    $html .= '<textarea id="chapo" name="chapo" rows="5" cols="20" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_chapo']).'" tabindex="35" class="text" >'.$chapodefaut.'</textarea>'."\n" ;
-    $html .= '<textarea id="notes" name="notes" rows="5" cols="20" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_notes']).'" tabindex="40" class="text" >'.$notesdefaut.'</textarea>'."\n" ;
-    $html .= '</div>'."\n";
+    $html .= '<input id="titre" name="titre" type="text" size="50" value="'.$defaultTitle.'" required="" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_titre']).'" tabindex="30" class="text" spellcheck="true" />' ;
+    $html .= '<div id="chapo_note">';
+    $html .= '<textarea id="chapo" name="chapo" rows="5" cols="20" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_chapo']).'" tabindex="35" class="text" >'.$defaultAbstract.'</textarea>' ;
+    $html .= '<textarea id="notes" name="notes" rows="5" cols="20" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_notes']).'" tabindex="40" class="text" >'.$defaultNotes.'</textarea>' ;
+    $html .= '</div>';
 
     $html .= form_formatting_toolbar(true);
+    $html .= '<textarea id="contenu" name="contenu" rows="20" cols="60" required="" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_contenu']).'" tabindex="55" class="text">'.$defaultContent.'</textarea>' ;
 
-    $html .= '<textarea id="contenu" name="contenu" rows="20" cols="60" required="" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_contenu']).'" tabindex="55" class="text">'.$contenudefaut.'</textarea>'."\n" ;
-
-    if ($GLOBALS['activer_categories'] == 1) {
-        $html .= "\t".'<div id="tag_bloc">'."\n";
-        $html .= form_categories_links('articles', $tagsdefaut);
-        $html .= "\t\t".'<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'" tabindex="65"/>'."\n";
-        $html .= "\t\t".'<input type="hidden" id="categories" name="categories" value="" />'."\n";
-        $html .= "\t".'</div>'."\n";
+    if ($GLOBALS['activer_categories']) {
+        $html .= '<div id="tag_bloc">';
+        $html .= form_categories_links('articles', $defaultTags);
+        $html .= '<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'" tabindex="65"/>';
+        $html .= '<input type="hidden" id="categories" name="categories" value="" />';
+        $html .= '</div>';
     }
 
-    if ($GLOBALS['automatic_keywords'] == '0') {
-        $html .= '<input id="mots_cles" name="mots_cles" type="text" size="50" value="'.$motsclesdefaut.'" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_motscle']).'" tabindex="67" class="text" />'."\n";
+    if (!$GLOBALS['automatic_keywords']) {
+        $html .= '<input id="mots_cles" name="mots_cles" type="text" size="50" value="'.$defaultKeywords.'" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_motscle']).'" tabindex="67" class="text" />';
     }
     $html .= '</div>';
 
-    $html .= '<div id="date-and-opts">'."\n";
-    $html .= '<div id="date">'."\n";
-        $html .= '<span id="formdate">'."\n";
-            $html .= form_annee($defaut_annee);
-            $html .= form_mois($defaut_mois);
-            $html .= form_jour($defaut_jour);
-        $html .= '</span>'."\n\n";
+    $html .= '<div id="date-and-opts">';
+    $html .= '<div id="date">';
+        $html .= '<span id="formdate">'.form_years($defaultYear).form_months($defaultMonth).form_days($defaultDay).'</span>';
         $html .= '<span id="formheure">';
-            $html .= '<input name="heure" type="text" size="2" maxlength="2" value="'.$defaut_heure.'" required="" /> : ';
-            $html .= '<input name="minutes" type="text" size="2" maxlength="2" value="'.$defaut_minutes.'" required="" /> : ';
-            $html .= '<input name="secondes" type="text" size="2" maxlength="2" value="'.$defaut_secondes.'" required="" />';
-        $html .= '</span>'."\n";
-        $html .= '</div>'."\n";
-        $html .= '<div id="opts">'."\n";
-            $html .= '<span id="formstatut">'."\n";
-                $html .= form_statut($statutdefaut);
-            $html .= '</span>'."\n";
-            $html .= '<span id="formallowcomment">'."\n";
-                $html .= form_allow_comment($allowcommentdefaut);
-            $html .= '</span>'."\n";
-        $html .= '</div>'."\n";
+            $html .= '<input name="heure" type="text" size="2" maxlength="2" value="'.$defaultHour.'" required="" /> : ';
+            $html .= '<input name="minutes" type="text" size="2" maxlength="2" value="'.$defaultMinutes.'" required="" /> : ';
+            $html .= '<input name="secondes" type="text" size="2" maxlength="2" value="'.$defaultSeconds.'" required="" />';
+        $html .= '</span>';
+        $html .= '</div>';
+        $html .= '<div id="opts">';
+            $html .= '<span id="formstatut">'.form_statut($defaultStatus).'</span>';
+            $html .= '<span id="formallowcomment">'.form_allow_comment($defaultAllowComment).'</span>';
+        $html .= '</div>';
 
-    $html .= '</div>'."\n";
-    $html .= '<p class="submit-bttns">'."\n";
+    $html .= '</div>';
+    $html .= '<p class="submit-bttns">';
 
-    if ($article) {
-        $html .= hidden_input('article_id', $article['bt_id']);
-        $html .= hidden_input('article_date', $article['bt_date']);
-        $html .= hidden_input('ID', $article['ID']);
-        $html .= "\t".'<button class="submit button-delete" type="button" name="supprimer" onclick="contenuLoad = document.getElementById(\'contenu\').value; rmArticle(this)" />'.$GLOBALS['lang']['supprimer'].'</button>'."\n";
+    if ($post) {
+        $html .= hidden_input('article_id', $post['bt_id']);
+        $html .= hidden_input('article_date', $post['bt_date']);
+        $html .= hidden_input('ID', $post['ID']);
+        $html .= '<button class="submit button-delete" type="button" name="supprimer" onclick="contenuLoad = document.getElementById(\'contenu\').value; rmArticle(this)" />'.$GLOBALS['lang']['supprimer'].'</button>';
     }
-    $html .= "\t".'<button class="submit button-cancel" type="button" onclick="annuler(\'articles.php\');">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
-    $html .= "\t".'<button class="submit button-submit" type="submit" name="enregistrer" onclick="contenuLoad=document.getElementById(\'contenu\').value" tabindex="70">'.$GLOBALS['lang']['envoyer'].'</button>'."\n";
-    $html .= '</p>'."\n";
-    $html .= hidden_input('_verif_envoi', '1');
+    $html .= '<button class="submit button-cancel" type="button" onclick="annuler(\'articles.php\');">'.$GLOBALS['lang']['annuler'].'</button>';
+    $html .= '<button class="submit button-submit" type="submit" name="enregistrer" onclick="contenuLoad=document.getElementById(\'contenu\').value" tabindex="70">'.$GLOBALS['lang']['envoyer'].'</button>';
+    $html .= '</p>';
+    $html .= hidden_input('_verif_envoi', 1);
     $html .= hidden_input('token', new_token());
 
-    $html .= '</form>'."\n";
+    $html .= '</form>';
     echo $html;
 }
 
-function valider_form_billet($billet)
+function validate_form_post($post)
 {
-    $date = decode_id($billet['bt_id']);
-    $erreurs = array();
-    if (isset($_POST['supprimer']) and !(isset($_POST['token']) and check_token($_POST['token']))) {
-        $erreurs[] = $GLOBALS['lang']['err_wrong_token'];
+    global $vars;
+    $date = decode_id($post['bt_id']);
+    $errors = array();
+    if ($vars['supprimer'] && !check_token($vars['token'])) {
+        $errors[] = $GLOBALS['lang']['err_wrong_token'];
     }
-    if (!strlen(trim($billet['bt_title']))) {
-        $erreurs[] = $GLOBALS['lang']['err_titre'];
+    if (!strlen(trim($post['bt_title']))) {
+        $errors[] = $GLOBALS['lang']['err_titre'];
     }
-    if (!strlen(trim($billet['bt_content']))) {
-        $erreurs[] = $GLOBALS['lang']['err_contenu'];
+    if (!strlen(trim($post['bt_content']))) {
+        $errors[] = $GLOBALS['lang']['err_contenu'];
     }
     if (!preg_match('/\d{4}/', $date['annee'])) {
-        $erreurs[] = $GLOBALS['lang']['err_annee'];
+        $errors[] = $GLOBALS['lang']['err_annee'];
     }
-    if ((!preg_match('/\d{2}/', $date['mois'])) or ($date['mois'] > '12')) {
-        $erreurs[] = $GLOBALS['lang']['err_mois'];
+    if ((!preg_match('/\d{2}/', $date['mois'])) || ($date['mois'] > '12')) {
+        $errors[] = $GLOBALS['lang']['err_mois'];
     }
-    if ((!preg_match('/\d{2}/', $date['jour'])) or ($date['jour'] > date('t', mktime(0, 0, 0, $date['mois'], 1, $date['annee'])))) {
-        $erreurs[] = $GLOBALS['lang']['err_jour'];
+    if ((!preg_match('/\d{2}/', $date['jour'])) || ($date['jour'] > date('t', mktime(0, 0, 0, $date['mois'], 1, $date['annee'])))) {
+        $errors[] = $GLOBALS['lang']['err_jour'];
     }
-    if ((!preg_match('/\d{2}/', $date['heure'])) or ($date['heure'] > 23)) {
-        $erreurs[] = $GLOBALS['lang']['err_heure'];
+    if ((!preg_match('/\d{2}/', $date['heure'])) || ($date['heure'] > 23)) {
+        $errors[] = $GLOBALS['lang']['err_heure'];
     }
-    if ((!preg_match('/\d{2}/', $date['minutes'])) or ($date['minutes'] > 59)) {
-        $erreurs[] = $GLOBALS['lang']['err_minutes'];
+    if ((!preg_match('/\d{2}/', $date['minutes'])) || ($date['minutes'] > 59)) {
+        $errors[] = $GLOBALS['lang']['err_minutes'];
     }
-    if ((!preg_match('/\d{2}/', $date['secondes'])) or ($date['secondes'] > 59)) {
-        $erreurs[] = $GLOBALS['lang']['err_secondes'];
+    if ((!preg_match('/\d{2}/', $date['secondes'])) || ($date['secondes'] > 59)) {
+        $errors[] = $GLOBALS['lang']['err_secondes'];
     }
-    return $erreurs;
+    return $errors;
 }
-
 
 
 // Traitment
-$erreurs_form = array();
-if (isset($_POST['_verif_envoi'])) {
-    $billet = init_post_article();
-    $erreurs_form = valider_form_billet($billet);
-    if (empty($erreurs_form)) {
-        traiter_form_billet($billet);
+$errorsForm = array();
+if ($vars['_verif_envoi']) {
+    $post = init_post_post();
+    $errorsForm = validate_form_post($post);
+    if (!$errorsForm) {
+        traitment_form_post($post);
     }
 }
 
-// Retrieve post's informations if ID
-$post = '';
-$article_id = '';
-if (isset($_GET['post_id'])) {
-    $article_id = htmlspecialchars($_GET['post_id']);
+// Retrieve post's informations on given ID
+$post = null;
+$postId = (string)filter_input(INPUT_GET, 'post_id');
+if ($postId) {
+    $postId = htmlspecialchars($postId);
     $query = 'SELECT * FROM articles WHERE bt_id LIKE ?';
-    $posts = liste_elements($query, array($article_id), 'articles');
+    $posts = liste_elements($query, array($postId), 'articles');
     if (isset($posts[0])) {
         $post = $posts[0];
     }
 }
 
 // Page's title
-if (!empty($post)) {
-    $titre_ecrire_court = $GLOBALS['lang']['titre_maj'];
-    $titre_ecrire = $titre_ecrire_court.' : '.$post['bt_title'];
-} else {
-    $post = '';
-    $titre_ecrire_court = $GLOBALS['lang']['titre_ecrire'];
-    $titre_ecrire = $titre_ecrire_court;
-}
+$writeTitleLight = ($post) ? $GLOBALS['lang']['titre_maj'] : $GLOBALS['lang']['titre_ecrire'];
+$writeTitle = ($post) ? $writeTitleLight.' : '.$post['bt_title'] : $writeTitleLight;
 
-// Start page
-echo tpl_get_html_head($titre_ecrire);
+echo tpl_get_html_head($writeTitle);
 
-echo '<div id="header">'."\n";
-    echo '<div id="top">'."\n";
-    tpl_show_msg();
-    tpl_show_topnav($titre_ecrire_court);
-    echo '</div>'."\n";
-echo '</div>'."\n";
+echo '<div id="header">';
+    echo '<div id="top">';
+        tpl_show_msg();
+        tpl_show_topnav($writeTitleLight);
+    echo '</div>';
+echo '</div>';
 
 // Subnav
-echo '<div id="axe">'."\n";
-if ($post != '') {
-    echo '<div id="subnav">'."\n";
+echo '<div id="axe">';
+if ($post) {
+    echo '<div id="subnav">';
         echo '<div class="nombre-elem">';
         echo '<a href="'.$post['bt_link'].'">'.$GLOBALS['lang']['post_link'].'</a> &nbsp; – &nbsp; ';
         echo '<a href="'.$post['bt_link'].'&share">'.$GLOBALS['lang']['post_share'].'</a> &nbsp; – &nbsp; ';
-        echo '<a href="commentaires.php?post_id='.$article_id.'">'.ucfirst(nombre_objets($post['bt_nb_comments'], 'commentaire')).'</a>';
-        echo '</div>'."\n";
-    echo '</div>'."\n";
+        echo '<a href="commentaires.php?post_id='.$postId.'">'.ucfirst(nombre_objets($post['bt_nb_comments'], 'commentaire')).'</a>';
+        echo '</div>';
+    echo '</div>';
 }
 
-echo '<div id="page">'."\n";
+echo '<div id="page">';
 
 // Show the post
-if ($post != '') {
+if ($post) {
     tpl_show_preview($post);
 }
-afficher_form_billet($post, $erreurs_form);
+display_form_post($post, $errorsForm);
 
-echo "\n".'<script src="style/javascript.js"></script>'."\n";
+echo '<script src="style/javascript.js"></script>';
 echo '<script>';
 echo php_lang_to_js(0);
 echo 'var contenuLoad = document.getElementById("contenu").value;
 window.addEventListener("beforeunload", function (e) {
     // From https://developer.mozilla.org/en-US/docs/Web/Reference/Events/beforeunload
     var confirmationMessage = BTlang.questionQuitPage;
-    if(document.getElementById("contenu").value == contenuLoad) { return true; };
-    (e || window.event).returnValue = confirmationMessage || \'\' ; //Gecko + IE
-    return confirmationMessage;                                                 // Webkit : ignore this.
+    if (document.getElementById("contenu").value == contenuLoad) {
+        return true;
+    };
+    (e || window.event).returnValue = confirmationMessage || ""   //Gecko + IE
+    return confirmationMessage;  // Webkit: ignore this.
 });';
-
 echo '</script>';
 
 echo tpl_get_footer($begin);
