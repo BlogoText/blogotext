@@ -29,10 +29,11 @@ $GLOBALS['files_ext'] = array(
     'music' => array('mp3', 'wave', 'wav', 'ogg', 'wma', 'flac', 'aac', 'mid', 'midi', 'm4a'),
     'presentation' => array('ppt', 'pptx', 'pps', 'ppsx', 'odp'),
     'pdf' => array('pdf', 'ps', 'psd'),
+    'ebook' => array('epub', 'mobi'),
     'spreadsheet' => array('xls', 'xlsx', 'xlt', 'xltx', 'ods', 'ots', 'csv'),
     'text_document'=> array('doc', 'docx', 'rtf', 'odt', 'ott'),
     'text-code' => array('txt', 'css', 'py', 'c', 'cpp', 'dat', 'ini', 'inf', 'text', 'conf', 'sh'),
-    'video' => array('mp4', 'ogv', 'avi', 'mpeg', 'mpg', 'flv', 'webm', 'mov', 'divx', 'rm', 'rmvb', 'wmv'),
+    'video' => array('mkv', 'mp4', 'ogv', 'avi', 'mpeg', 'mpg', 'flv', 'webm', 'mov', 'divx', 'rm', 'rmvb', 'wmv'),
     'other' => array(''), // par défaut
 );
 

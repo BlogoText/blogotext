@@ -199,7 +199,7 @@ function afficher_liste_fichiers($tableau)
         foreach ($tableau as $file) {
             $lstype[$file['bt_type']] = (isset($lstype[$file['bt_type']])) ? $lstype[$file['bt_type']]+1 : 1 ;
         }
-        $lstype = array_unique($lstype);
+        // $lstype = array_unique($lstype);
 
         $out .= '<div id="files-section">'."\n";
         // buttons
