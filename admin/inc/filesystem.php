@@ -88,6 +88,7 @@ function liste_base_files($tri_selon, $motif, $nombre)
             break;
 
         case 'recherche':
+            $GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);
             foreach ($GLOBALS['liste_fichiers'] as $id => $file) {
                 if (strpos($file['bt_content'].' '.$file['bt_filename'], $motif)) {
                     $tableau_sortie[$id] = $file;

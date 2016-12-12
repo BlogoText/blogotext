@@ -14,249 +14,170 @@
 require_once 'inc/boot.php';
 
 
-// Open bases
-$GLOBALS['db_handle'] = open_base();
-
-
-// transforme les valeurs numériques d’un tableau pour les ramener la valeur max du tableau à $maximum. Les autres valeurs du tableau sont à l’échelle
-function scaled_size($tableau, $maximum)
+// Scale numeric values based on $maximum.
+function scaled_size($arr, $maximum)
 {
     $return = array();
-    if (!$tableau) {
+    if (!$arr) {
         return $return;
     }
 
-    $ratio = max(array_values($tableau))/$maximum;
-
-    foreach ($tableau as $key => $value) {
-        if ($ratio != 0) {
-            $return[] = array('nb'=> $value, 'nb_scale' => floor($value/$ratio), 'date' => $key);
-        } else {
-            $return[] = array('nb'=> $value, 'nb_scale' => 0, 'date' => $key);
-        }
+    $ratio = max(array_values($arr)) / $maximum;
+    if ($ratio <= 0) {
+        $ratio = 1;
+    }
+    foreach ($arr as $key => $value) {
+        $return[] = array('nb' => $value, 'nb_scale' => floor($value / $ratio), 'date' => $key);
     }
 
     return $return;
 }
 
 /**
- * compte le nombre d’éléments dans la base, pour chaque mois les 12 derniers mois.
- * retourne un tableau YYYYMM => nb;
+ * Count the number of items into the DTB for the Nth last months.
+ * Return an associated array: YYYYMM => number
  */
-function get_tableau_date($data_type)
+function get_tableau_date($dataType)
 {
-    $table_months = array();
-    // for ($i = 96; $i >= 0; $i--) {
-        // $table_months[date('Ym', mktime(0, 0, 0, date("m")-$i, 1, date("Y")))] = 0;
-    // }
+    $showMin = 12;  // (int) minimal number of months to show
+    $showMax = 36;  // (int) maximal number of months to show
+    $tableMonths = array();
 
-    $show_max = 36; // (int) older to show (in month)
-    $show_min = 12; // (int) min month to show
-
-    // met tout ça au format YYYYMMDDHHIISS où DDHHMMSS vaut 00000000 (pour correspondre au format de l’ID de BT qui est \d{14}
-    $min = date('Ym', mktime(0, 0, 0, date("m")-$show_max, 1, date("Y"))).'00000000';
+    // Uniformize date format. YYYYMMDDHHIISS where DDHHMMSS is 00000000 (to match with the ID format which is \d{14})
+    $min = date('Ym', mktime(0, 0, 0, date('m') - $showMax, 1, date('Y'))).'00000000';
     $max = date('Ym').date('dHis');
 
-    $bt_date = ($data_type == 'articles') ? 'bt_date' : 'bt_id';
+    $btDate = ($dataType == 'articles') ? 'bt_date' : 'bt_id';
 
-    $query = '
-        SELECT substr('.$bt_date.', 1, 6) AS date, count(*) AS idbydate
-          FROM '.$data_type.'
-         WHERE '.$bt_date.' BETWEEN '.$min.' AND '.$max.'
+    $sql = '
+        SELECT substr('.$btDate.', 1, 6) AS date, count(*) AS idbydate
+          FROM '.$dataType.'
+         WHERE '.$btDate.' BETWEEN '.$min.' AND '.$max.'
          GROUP BY date
          ORDER BY date';
-
-    try {
-        $req = $GLOBALS['db_handle']->prepare($query);
-        $req->execute();
-        $tab = $req-> fetchAll(PDO::FETCH_ASSOC);
-        foreach ($tab as $i => $month) {
-            // if (isset($table_months[$month['date']])) {
-                $table_months[$month['date']] = $month['idbydate'];
-            // }
-        }
-    } catch (Exception $e) {
-        die('Erreur 86459: '.$e->getMessage());
+    $req = $GLOBALS['db_handle']->prepare($sql);
+    $req->execute();
+    $tab = $req-> fetchAll(PDO::FETCH_ASSOC);
+    foreach ($tab as $i => $month) {
+        $tableMonths[$month['date']] = $month['idbydate'];
     }
 
-    if (!$table_months) {
-        return $table_months;
-    }
-
-    $start_at = min(array_keys($table_months));
-    // is first month younger than $show_min months
-    if ($start_at > date('Ym', mktime(0, 0, 0, date("m")-$show_min, 1, date("Y")))) {
-        for ($i = $show_min; $i >= 0; $i--) {
-            $month = date('Ym', mktime(0, 0, 0, date("m")-$i, 1, date("Y")));
-            if (!isset($table_months[$month])) {
-                $table_months[$month] = 0;
-            }
-        }
-    } else {
-        // start for 1 first month
-        // dirty
-        $d1 = new DateTime(implode('-', str_split($start_at, 4)));
-        $d2 = new DateTime(date('Y-m'));
-        $i = ($d1->diff($d2)->m) + ($d1->diff($d2)->y*12) + 1;
-        while (--$i) {
-            $month = date('Ym', mktime(0, 0, 0, date("m")-$i, 1, date("Y")));
-            if (!isset($table_months[$month])) {
-                $table_months[$month] = 0;
-            }
+    // Fill empty months
+    for ($i = $showMin; $i >= 0; $i--) {
+        $month = date('Ym', mktime(0, 0, 0, date('m') - $i, 1, date('Y')));
+        if (!isset($tableMonths[$month])) {
+            $tableMonths[$month] = 0;
         }
     }
 
     // order
-    ksort($table_months);
+    ksort($tableMonths);
 
-    return $table_months;
+    return $tableMonths;
+}
+
+/**
+ * Display one graphic.
+ */
+function display_graph($arr, $title, $cls) {
+    $txt = '<div class="graph">';
+    $txt .= '<div class="form-legend">'.ucfirst($title).'</div>';
+    $txt .= '<div class="graph-container" id="graph-container-'.$cls.'">';
+    $txt .= '<canvas height="150" width="400"></canvas>';
+    $txt .= '<div class="graphique" id="'.$cls.'">';
+    $txt .= '<div class="month"><div class="month-bar"></div></div>';
+    foreach ($arr as $idx => $data) {
+        $txt .= '<div class="month"><div class="month-bar" style="height:'.$data['nb_scale'].'px;margin-top:'.max(3 - $data['nb_scale'], 0).'px"></div>';
+        $txt .= '<span class="month-nb">'.$data['nb'].'</span><a href="articles.php?filtre='.$data['date'].'"><span class="month-name">'.mb_substr(mois_en_lettres(substr($data['date'], 4, 2)), 0, 3).'<br>'.substr($data['date'], 2, 2).'</span></a></div>';
+    }
+    $txt .= '</div>';
+    $txt .= '</div>';
+    $txt .= '</div>';
+
+    echo $txt;
 }
 
 // process
-if (!empty($_GET['q'])) {
-    $GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);
-    $total_nb_fichiers = sizeof($GLOBALS['liste_fichiers']);
-
-    $q = htmlspecialchars($_GET['q']);
-    $nb_articles = liste_elements_count('SELECT count(ID) AS nbr FROM articles WHERE ( bt_content || bt_title ) LIKE ?', array('%'.$q.'%'));
-    $nb_liens = liste_elements_count('SELECT count(ID) AS nbr FROM links WHERE ( bt_content || bt_title || bt_link ) LIKE ?', array('%'.$q.'%'));
-    $nb_commentaires = liste_elements_count('SELECT count(ID) AS nbr FROM commentaires WHERE bt_content LIKE ?', array('%'.$q.'%'));
-    $nb_feeds = liste_elements_count('SELECT count(ID) AS nbr FROM rss WHERE ( bt_content || bt_title ) LIKE ?', array('%'.$q.'%'));
-    $nb_files = sizeof(liste_base_files('recherche', urldecode($_GET['q']), ''));
+$query = (string)filter_input(INPUT_GET, 'q');
+if ($query) {
+    $query = htmlspecialchars($query);
+    $numberOfPosts = liste_elements_count('SELECT count(ID) AS nbr FROM articles WHERE ( bt_content || bt_title ) LIKE ?', array('%'.$query.'%'));
+    $numberOfLinks = liste_elements_count('SELECT count(ID) AS nbr FROM links WHERE ( bt_content || bt_title || bt_link ) LIKE ?', array('%'.$query.'%'));
+    $numberOfComments = liste_elements_count('SELECT count(ID) AS nbr FROM commentaires WHERE bt_content LIKE ?', array('%'.$query.'%'));
+    $numberOfFeeds = liste_elements_count('SELECT count(ID) AS nbr FROM rss WHERE ( bt_content || bt_title ) LIKE ?', array('%'.$query.'%'));
+    $numberOfFiles = sizeof(liste_base_files('recherche', urldecode($query), ''));
 } else {
-    $total_artic = liste_elements_count('SELECT count(ID) AS nbr FROM articles', array());
-    $total_links = liste_elements_count('SELECT count(ID) AS nbr FROM links', array());
-    $total_comms = liste_elements_count('SELECT count(ID) AS nbr FROM commentaires', array());
-    // useless ?
-    // $total_rss = liste_elements_count('SELECT count(ID) AS nbr FROM rss', array());
+    $numberOfPosts = liste_elements_count('SELECT count(ID) AS nbr FROM articles', array());
+    $numberOfLinks = liste_elements_count('SELECT count(ID) AS nbr FROM links', array());
+    $numberOfComments = liste_elements_count('SELECT count(ID) AS nbr FROM commentaires', array());
 
-    $table_article = scaled_size(get_tableau_date('articles'), 150);
-    $table_article = array_reverse($table_article);
-    $table_links = scaled_size(get_tableau_date('links'), 150);
-    $table_links = array_reverse($table_links);
-    $table_comms = scaled_size(get_tableau_date('commentaires'), 150);
-    $table_comms = array_reverse($table_comms);
+    $posts = scaled_size(get_tableau_date('articles'), 150);
+    $posts = array_reverse($posts);
+    $links = scaled_size(get_tableau_date('links'), 150);
+    $links = array_reverse($links);
+    $comments = scaled_size(get_tableau_date('commentaires'), 150);
+    $comments = array_reverse($comments);
 }
 
 
 echo tpl_get_html_head($GLOBALS['lang']['label_resume']);
 
-echo '<div id="header">'."\n";
-echo '<div id="top">'."\n";
-tpl_show_msg();
-echo moteur_recherche();
-tpl_show_topnav($GLOBALS['lang']['label_resume']);
-echo '</div>'."\n";
-echo '</div>'."\n";
+echo '<div id="header">';
+    echo '<div id="top">';
+        tpl_show_msg();
+        echo moteur_recherche();
+        tpl_show_topnav($GLOBALS['lang']['label_resume']);
+    echo '</div>';
+echo '</div>';
 
-echo '<div id="axe">'."\n";
-echo '<div id="page">'."\n";
-echo '<div id="graphs">'."\n";
+echo '<div id="axe">';
+echo '<div id="page">';
+echo '<div id="graphs">';
 
-
-// show search results
-if (!empty($_GET['q'])) {
-    echo '<div class="graph">'."\n";
-    echo '<div class="form-legend">'.$GLOBALS['lang']['recherche'].'  <span style="font-style: italic">'.htmlspecialchars($_GET['q']).'</span></div>'."\n";
+if ($query) {
+    // Show search results
+    echo '<div class="graph">';
+    echo '<div class="form-legend">'.$GLOBALS['lang']['recherche'].'  <span style="font-style: italic">'.$query.'</span></div>';
     echo '<ul id="resultat-recherche">';
-    echo "\t".'<li><a href="articles.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_objets($nb_articles, 'article').'</a></li>';
-    echo "\t".'<li><a href="links.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_objets($nb_liens, 'link').'</a></li>';
-    echo "\t".'<li><a href="commentaires.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_objets($nb_commentaires, 'commentaire').'</a></li>';
-    echo "\t".'<li><a href="fichiers.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_objets($nb_files, 'fichier').'</a></li>';
-    echo "\t".'<li><a href="feed.php?q='.htmlspecialchars($_GET['q']).'">'.nombre_objets($nb_feeds, 'feed_entry').'</a></li>';
+        echo '<li><a href="articles.php?q='.$query.'">'.nombre_objets($numberOfPosts, 'article').'</a></li>';
+        echo '<li><a href="links.php?q='.$query.'">'.nombre_objets($numberOfLinks, 'link').'</a></li>';
+        echo '<li><a href="commentaires.php?q='.$query.'">'.nombre_objets($numberOfComments, 'commentaire').'</a></li>';
+        echo '<li><a href="fichiers.php?q='.$query.'">'.nombre_objets($numberOfFiles, 'fichier').'</a></li>';
+        echo '<li><a href="feed.php?q='.$query.'">'.nombre_objets($numberOfFeeds, 'feed_entry').'</a></li>';
     echo '</ul>';
-    echo '</div>'."\n";
-// Main Dashboard
+    echo '</div>';
 } else {
-    $nothingyet = 0;
-
-    if ($total_artic > 0) {
-        echo '<div class="graph">'."\n";
-        // print sur chaque div pour les articles.
-        echo '<div class="form-legend">'.ucfirst($GLOBALS['lang']['label_articles']).'</div>'."\n";
-        echo '<div class="graph-container" id="graph-container-article">'."\n";
-            echo '<canvas height="150" width="400"></canvas>'."\n";
-            echo '<div class="graphique" id="articles">'."\n";
-                echo '<div class="month"><div class="month-bar" style="height:151px;margin-top:20px;"></div></div>';
-        foreach ($table_article as $i => $data) {
-            echo '<div class="month"><div class="month-bar" style="height:'.$data['nb_scale'].'px;margin-top:'.max(3-$data['nb_scale'], 0).'px"></div><span class="month-nb">'.$data['nb'].'</span><a href="articles.php?filtre='.$data['date'].'"><span class="month-name">'.mb_substr(mois_en_lettres(substr($data['date'], 4, 2)), 0, 3)."\n".substr($data['date'], 2, 2).'</span></a></div>';
-        }
-            echo '</div>'."\n";
-        echo '</div>'."\n";
-        echo '</div>'."\n";
-    } else {
-        $nothingyet++;
+    // Main Dashboard
+    if ($numberOfPosts) {
+        display_graph($posts, $GLOBALS['lang']['label_articles'], 'posts');
     }
-
-    if ($total_comms > 0) {
-        echo '<div class="graph">'."\n";
-        // print sur chaque div pour les com.
-        echo '<div class="form-legend">'.ucfirst($GLOBALS['lang']['label_commentaires']).'</div>'."\n";
-        echo '<div class="graph-container" id="graph-container-commentaires">'."\n";
-            echo '<canvas height="150" width="400"></canvas>'."\n";
-            echo '<div class="graphique" id="commentaires">'."\n";
-                echo '<div class="month"><div class="month-bar" style="height:151px;margin-top:20px;"></div></div>';
-        foreach ($table_comms as $i => $data) {
-            echo '<div class="month"><div class="month-bar" style="height:'.$data['nb_scale'].'px;margin-top:'.max(3-$data['nb_scale'], 0).'px"></div><span class="month-nb">'.$data['nb'].'</span><a href="commentaires.php?filtre='.$data['date'].'"><span class="month-name">'.mb_substr(mois_en_lettres(substr($data['date'], 4, 2)), 0, 3)."\n".substr($data['date'], 2, 2).'</span></a></div>';
-        }
-            echo '</div>'."\n";
-        echo '</div>'."\n";
-        echo '</div>'."\n";
-    } else {
-        $nothingyet++;
+    if ($numberOfComments) {
+        display_graph($comments, $GLOBALS['lang']['label_commentaires'], 'comments');
     }
-
-    if ($total_links > 0) {
-        echo '<div class="graph">'."\n";
-        // print sur chaque div pour les liens.
-        echo '<div class="form-legend">'.ucfirst($GLOBALS['lang']['label_links']).'</div>'."\n";
-        echo '<div class="graph-container" id="graph-container-links">'."\n";
-            echo '<canvas height="150" width="400"></canvas>'."\n";
-            echo '<div class="graphique" id="links">'."\n";
-                echo '<div class="month"><div class="month-bar" style="height:151px;margin-top:20px;"></div></div>';
-        foreach ($table_links as $i => $data) {
-            echo '<div class="month"><div class="month-bar" style="height:'.$data['nb_scale'].'px; margin-top:'.max(3-$data['nb_scale'], 0).'px"></div><span class="month-nb">'.$data['nb'].'</span><a href="links.php?filtre='.$data['date'].'"><span class="month-name">'.mb_substr(mois_en_lettres(substr($data['date'], 4, 2)), 0, 3)."\n".substr($data['date'], 2, 2).'</span></a></div>';
-        }
-            echo '</div>'."\n";
-        echo '</div>'."\n";
-        echo '</div>'."\n";
-    } else {
-        $nothingyet++;
+    if ($numberOfLinks) {
+        display_graph($links, $GLOBALS['lang']['label_links'], 'links');
     }
-
-    if ($nothingyet == 3) {
+    if (!max($numberOfPosts, $numberOfComments, $numberOfLinks)) {
         echo info($GLOBALS['lang']['note_no_article']);
     }
 }
 
-echo '</div>'."\n";
-echo "\n".'<script src="style/javascript.js"></script>'."\n";
-echo "\n".'<script>'."\n";
-echo '\'use strict\''."\n";
-echo 'var canvas = document.querySelectorAll(".graph-container canvas");'."\n";
-echo 'var containers = document.querySelectorAll(".graph-container");'."\n";
-echo 'var graphiques = document.querySelectorAll(".graph-container .graphique");'."\n";
-echo 'window.addEventListener("resize", respondCanvas );'."\n";
-// echo 'respondCanvas();'."\n";
-echo "\n".'</script>'."\n";
-
-
-?>
+echo '</div>';
+echo <<<EOS
+<script src="style/javascript.js"></script>
 <script>
-    /**
-     * [poc] try to set the width properly
-     *       if it's ok :
-     *          - set the with threw css (BoboTiG: partily done for month numbers)
-     */
-    for (var i = 0, clen = containers.length; i < clen; i++) {
+    window.addEventListener("resize", respondCanvas);
+
+    var containers = document.querySelectorAll(".graph-container");
+    for (var i = 0, clen = containers.length; i < clen; i += 1) {
         var months = containers[i].querySelectorAll('.month');
-        for (var j = 0, t = months.length; j < t; j++) {
-            months[j].style.width = (100 / (t)) + '%';
+        for (var j = 0, t = months.length; j < t; j += 1) {
+            months[j].style.width = (100 / t) + '%';
         }
     }
     respondCanvas();
     // end of [poc]
 </script>
-<?php
+EOS;
 
 echo tpl_get_footer($begin);

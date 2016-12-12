@@ -53,3 +53,6 @@ require_once BT_ROOT.'admin/inc/tpl.php'; // no choice !
 if (!defined('BT_RUN_INSTALL') && !defined('BT_RUN_LOGIN')) {
     auth_ttl();
 }
+
+// Open the database
+$GLOBALS['db_handle'] = open_base();

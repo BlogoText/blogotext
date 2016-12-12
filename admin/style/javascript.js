@@ -157,7 +157,7 @@ function rmFichier(button)
     return false;
 }
 
-/* 
+/*
 function annuler(pagecible)
 {
     window.location = pagecible;
@@ -2097,72 +2097,74 @@ function swipeSlideshow(evt)
 **************************************************************************************************************************************/
 function respondCanvas()
 {
-    for (var i=0, len=containers.length; i<len; i++) {
-        containers[i].querySelector('canvas').width = parseInt(containers[i].querySelector('.graphique').getBoundingClientRect().width);
-        draw(containers[i]);
+    var containers = document.querySelectorAll(".graph-container");
+
+    for (var i = 0, len = containers.length; i < len; i++) {
+        var canvas = containers[i].querySelector("canvas");
+        canvas.width = parseInt(containers[i].querySelector(".graphique").getBoundingClientRect().width);
+        draw(containers[i], canvas);
     }
 }
 
-function draw(container)
+function draw(container, canvas)
 {
-    var c = container.querySelector('canvas');
-    var months = container.querySelectorAll('.graphique .month');
-    var ctx = c.getContext("2d");
+    var months = container.querySelectorAll(".graphique .month");
+    var ctx = canvas.getContext("2d");
     var cont = {
-        x:container.getBoundingClientRect().left,
-        y:container.getBoundingClientRect().top
+        x: container.getBoundingClientRect().left,
+        y: container.getBoundingClientRect().top
     };
 
     // strokes the background lines at 0%, 25%, 50%, 75% and 100%.
     ctx.beginPath();
-    for (var i=months.length-1; i>=0; i--) {
+    for (var i = months.length - 1; i >= 0; i--) {
         if (months[i].getBoundingClientRect().top < months[0].getBoundingClientRect().bottom) {
             var topLeft = months[i].getBoundingClientRect().left -15;
             break;
         }
     }
 
-    var coordScale = { x:topLeft, xx:months[1].getBoundingClientRect().left };
+    var coordScale = { x: topLeft, xx: months[1].getBoundingClientRect().left };
     for (var i = 0; i < 5; i++) {
-        ctx.moveTo(coordScale.x, i*c.height/4 +1);
-        ctx.lineTo(coordScale.xx, i*c.height/4 +1);
+        ctx.moveTo(coordScale.x, i * canvas.height / 4 +1);
+        ctx.lineTo(coordScale.xx, i * canvas.height / 4 +1);
         ctx.strokeStyle = "rgba(0, 0, 0, .05)";
     }
     ctx.stroke();
 
     // strokes the lines of the chart
     ctx.beginPath();
-    for (var i=1, len=months.length; i<len; i++) {
+    for (var i = 1, len = months.length; i < len; i++) {
         var coordsNew = months[i].getBoundingClientRect();
         if (i == 1) {
-            ctx.moveTo(coordsNew.left - cont.x + coordsNew.width/2, coordsNew.top - cont.y);
+            ctx.moveTo(coordsNew.left - cont.x + coordsNew.width / 2, coordsNew.top - cont.y);
         } else {
             if (coordsNew.top - cont.y <= 150) {
-                ctx.lineTo(coordsNew.left - cont.x + coordsNew.width/2, coordsNew.top - cont.y);
+                ctx.lineTo(coordsNew.left - cont.x + coordsNew.width / 2, coordsNew.top - cont.y);
             }
         }
     }
     ctx.lineWidth = 2;
-    ctx.strokeStyle = "rgba(33,150,243,1)";
+    ctx.strokeStyle = "rgb(33, 150, 243)";
     ctx.stroke();
     ctx.closePath();
 
     // fills the chart
     ctx.beginPath();
-    for (var i=1, len=months.length; i<len; i++) {
+    for (var i = 1, len = months.length; i < len; i++) {
         var coordsNew = months[i].getBoundingClientRect();
         if (i == 1) {
-            ctx.moveTo(coordsNew.left - cont.x + coordsNew.width/2, 150);
-            ctx.lineTo(coordsNew.left - cont.x + coordsNew.width/2, coordsNew.top - cont.y);
+            ctx.moveTo(coordsNew.left - cont.x + coordsNew.width / 2, 150);
+            ctx.lineTo(coordsNew.left - cont.x + coordsNew.width / 2, coordsNew.top - cont.y);
         } else {
             if (coordsNew.top - cont.y <= 150) {
-                ctx.lineTo(coordsNew.left - cont.x + coordsNew.width/2, coordsNew.top - cont.y);
+                ctx.lineTo(coordsNew.left - cont.x + coordsNew.width / 2, coordsNew.top - cont.y);
                 var coordsOld = coordsNew;
             }
         }
     }
-    ctx.lineTo(coordsOld.left - cont.x + coordsOld.width/2, 150);
-    ctx.fillStyle = "rgba(33,150,243,.2)";
+    ctx.lineTo(coordsOld.left - cont.x + coordsOld.width / 2, 150);
+    ctx.fillStyle = "rgba(33, 150, 243, .2)";
     ctx.fill();
     ctx.closePath();
 }

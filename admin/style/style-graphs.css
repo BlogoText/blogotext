@@ -100,7 +100,6 @@
     min-height: 1px;
 }
 .graph-container .month:hover .month-bar {
-    /*background: linear-gradient(to left, transparent 13px, rgba(33,150,243,1) 10px, rgba(33,150,243,1) 15px, transparent 15px);*/
     background-image: linear-gradient(to right, rgba(33,150,243,1) 100%, transparent);
     background-size: 2px;
     background-position: 50%;
