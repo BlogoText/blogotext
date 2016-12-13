@@ -24,16 +24,16 @@ $vars = filter_input_array(INPUT_POST, array(
 
     'token' => FILTER_SANITIZE_STRING,
 
-    'annee' => FILTER_VALIDATE_INT,
-    'mois' => FILTER_VALIDATE_INT,
-    'jour' => FILTER_VALIDATE_INT,
-    'heure' => FILTER_VALIDATE_INT,
-    'minutes' => FILTER_VALIDATE_INT,
-    'secondes' => FILTER_VALIDATE_INT,
-    'statut' => FILTER_VALIDATE_INT,
-    'allowcomment' => FILTER_VALIDATE_INT,
-    'ID' => FILTER_VALIDATE_INT,
-    'article_id' => FILTER_VALIDATE_INT,
+    'annee' => FILTER_SANITIZE_NUMBER_INT,
+    'mois' => FILTER_SANITIZE_NUMBER_INT,
+    'jour' => FILTER_SANITIZE_NUMBER_INT,
+    'heure' => FILTER_SANITIZE_NUMBER_INT,
+    'minutes' => FILTER_SANITIZE_NUMBER_INT,
+    'secondes' => FILTER_SANITIZE_NUMBER_INT,
+    'statut' => FILTER_SANITIZE_NUMBER_INT,
+    'allowcomment' => FILTER_SANITIZE_NUMBER_INT,
+    'ID' => FILTER_SANITIZE_NUMBER_INT,
+    'article_id' => FILTER_SANITIZE_NUMBER_INT,
 ));
 $vars['enregistrer'] = (filter_input(INPUT_POST, 'enregistrer') !== null);
 $vars['supprimer'] = (filter_input(INPUT_POST, 'supprimer') !== null);
