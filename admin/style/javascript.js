@@ -878,6 +878,10 @@ function slideshow(action, image)
     var isSlide = false;
 
     var ElemImg = document.getElementById('slider-img');
+    if (!ElemImg) {
+        return;
+    }
+
     var oldCounter = counter;
     switch (action) {
         case 'start':
@@ -956,8 +960,10 @@ function slideshow(action, image)
         });
     } else {
         ElemImg.src = '';
-        newImg.src = curr_img[counter].filename[3];
-        assingButtons(curr_img[counter]);
+        if (curr_img[counter]) {
+            newImg.src = curr_img[counter].filename[3];
+            assingButtons(curr_img[counter]);
+        }
     }
 
 }
@@ -1005,9 +1011,13 @@ function request_delete_form(id)
     if (!window.confirm('Ce fichier sera supprimé définitivement')) {
         return false;
     }
-    // prepare XMLHttpRequest
-    document.getElementById('slider-img').classList.add('loading');
 
+    var slider = document.getElementById('slider-img');
+    if (slider) {
+        slider.classList.add('loading');
+    }
+
+    // prepare XMLHttpRequest
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '_rmfichier.ajax.php');
     xhr.onload = function () {
