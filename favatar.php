@@ -11,20 +11,15 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 # *** LICENSE ***
 
-// Eventually, add a "DDOS" security check here, or if you do not want to
-// see someone else using this service outside your web server.
-// Open to discussion on the GitHub repos.
-
-require_once __dir__.'/inc/boot.php';
-
-
+require_once 'inc/boot.php';
 
 header('Content-Type: image/png');
+
 /**
  * test, if something go wrong, display a 10x10px red png
  */
 DEFINE('WRONG_PNG', 'iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8zsHxn4EIwDiqkL4KAas0FEc2dAhHAAAAAElFTkSuQmCC');
-// cache for 1 year, too much ?
+// cache for 1 year
 DEFINE('EXPIRE_PNG', 60 * 60 * 24 * 365);
 
 
@@ -83,13 +78,9 @@ function download($url, $target, $referer = 'Mozilla/5.0 (X11; Ubuntu; Linux x86
 }
 
 
-
 /**
  * Download an avatar or a favicon.
- *
- * favatar = FAVicon + avATAR
  */
-
 function favatar()
 {
 

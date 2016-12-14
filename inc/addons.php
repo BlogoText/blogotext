@@ -13,25 +13,7 @@
 
 
 /**
- * dev notes (RemRem)
  *
- *   function addon_* -> pour 1 addon
- *   function addons_* -> pour un ensemble de addons
- *   function addon(s)_test_* // must return bool
- *   function addon(s)_get_*
- *   function addon(s)_set_*
- *   function addon(s)_load_* chargement d'addons(s)
- *   function addons_list_* retourne une liste d'addons(s)
- *   ...
- */
-
-
-
-/**
- * some test & clean up to a path
- * DevNote (RemRem) - useless ?
- *                  - safe enought for rmdir_recursive() ?
- *                  - maybe use if with rmdir() ?
  */
 function get_safe_path($path)
 {
@@ -56,8 +38,6 @@ function get_safe_path($path)
 }
 
 /**
- * Note: put here because no one else use it.
- *
  * Like rmdir, but recursive
  *
  * use of get_path(), try to prevent the end of the world...
@@ -100,7 +80,7 @@ function rmdir_recursive($path)
 }
 
 
-// addons -> INIT
+
 
 /**
  * init the addon system for the public side
@@ -114,8 +94,7 @@ function addons_init_public()
     $db = addons_db_get();
     $errors = array();
 
-    // dirty, if no cache
-    // todo : refactor
+    // if no cache
     if ($db === false) {
         // no cache, delete threw ftp ?
         if (!addons_db_refresh()) {
@@ -279,7 +258,6 @@ function addon_test_compliancy($addon_compliancy)
 function addon_test_versions($version_1, $version_2)
 {
     return version_compare($version_1, $version_2, '==');
-    // return ($version_1 != $version_2);
 }
 
 /**
@@ -477,7 +455,6 @@ function addon_get_settings($addon_id, $declaration = null)
     }
 
     // if user have saved settings
-    // todo : replace the old ini files (no data in .ini)
     $user_file_path = addon_get_vhost_path($addon_id, false).'settings.php';
 
     if (is_file($user_file_path)) {
@@ -579,8 +556,6 @@ function addon_get_vhost_cache_path($addon_id, $create = true)
  */
 function addons_db_refresh()
 {
-    // addons_db_del();
-
     // in case of ... dont break the other process after this function
     $used_global = $GLOBALS['addons'];
 
@@ -590,7 +565,7 @@ function addons_db_refresh()
 
     $to_store = $GLOBALS['addons'];
 
-    // remove useless
+    // remove useless datas
     foreach ($to_store as &$addon) {
         // si disabled, tracking of version
         if (!$addon['enabled']) {

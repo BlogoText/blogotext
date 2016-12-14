@@ -12,7 +12,9 @@
 # *** LICENSE ***
 
 
-/* generates the comment form, with params from the admin-side and the visiter-side */
+/**
+ * generates the comment form, with params from the admin-side and the visiter-side
+ */
 function afficher_form_commentaire($article_id, $mode, $erreurs, $edit_comm)
 {
     // TODO : why this still GLOBAL ?
@@ -263,15 +265,10 @@ function lang_load_land($admin)
 }
 
 /**
- * useless ?
+ * decode id
+ *
+ * @return array
  */
-/*
-function get_id($file)
-{
-    return substr($file, 0, 14);
-}
-*/
-
 function decode_id($id)
 {
     $retour = array(
@@ -285,7 +282,9 @@ function decode_id($id)
     return $retour;
 }
 
-// used sometimes, like in the email that is sent.
+/**
+ * used sometimes, like in the email that is sent.
+ */
 function get_blogpath($id, $titre)
 {
     $date = decode_id($id);
@@ -293,11 +292,17 @@ function get_blogpath($id, $titre)
     return $path;
 }
 
+/**
+ *
+ */
 function article_anchor($id)
 {
     return 'id'.substr(md5($id), 0, 6);
 }
 
+/**
+ * todo : move to admin
+ */
 function traiter_tags($tags)
 {
     $tags_array = explode(',', trim($tags, ','));
@@ -306,7 +311,9 @@ function traiter_tags($tags)
     return implode(', ', $tags_array);
 }
 
-// tri un tableau non pas comme "sort()" sur l’ID, mais selon une sous clé d’un tableau.
+/**
+ * tri un tableau non pas comme "sort()" sur l’ID, mais selon une sous clé d’un tableau.
+ */
 function tri_selon_sous_cle($table, $cle)
 {
     foreach ($table as $key => $item) {
@@ -318,7 +325,9 @@ function tri_selon_sous_cle($table, $cle)
     return $table;
 }
 
-// Code from Shaarli. Generate an unique sess_id, usable only once.
+/**
+ * Code from Shaarli. Generate an unique sess_id, usable only once.
+ */
 function new_token()
 {
     $rnd = sha1(uniqid('', true).mt_rand());  // We generate a random string.
@@ -326,8 +335,10 @@ function new_token()
     return $rnd;
 }
 
-// Tells if a token is ok. Using this function will destroy the token.
-// true=token is ok.
+/**
+ * Tells if a token is ok. Using this function will destroy the token.
+ * true=token is ok.
+ */
 function check_token($token)
 {
     if (isset($_SESSION['tokens'][$token])) {
@@ -363,7 +374,9 @@ function remove_url_param($param)
     return '';
 }
 
-// Having a comment ID, sends emails to the other comments that are subscriben to the same article.
+/**
+ * Having a comment ID, sends emails to the other comments that are subscriben to the same article.
+ */
 function send_emails($id_comment)
 {
     // retreive from DB: article_id, article_title, author_name, author_email
@@ -430,7 +443,9 @@ function send_emails($id_comment)
     return true;
 }
 
-// Unsubscribe from comments subscription via email
+/**
+ * Unsubscribe from comments subscription via email
+ */
 function unsubscribe($email_b64, $article_id, $all)
 {
     $email = base64_decode($email_b64);
@@ -460,7 +475,9 @@ function unsubscribe($email_b64, $article_id, $all)
     return false;
 }
 
-/* search query parsing (operators, exact matching, etc) */
+/**
+ * search query parsing (operators, exact matching, etc)
+ */
 function parse_search($q)
 {
     if (preg_match('#^\s?"[^"]*"\s?$#', $q)) { // exact match

@@ -11,11 +11,10 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 # *** LICENSE ***
 
-// TEMPLATE VARS
+
 /*
  * Vars used in them files, aimed to get
  * replaced with some specific data
- *
  */
 $GLOBALS['boucles'] = array(
     'posts' => 'BOUCLE_posts',
@@ -85,6 +84,9 @@ $GLOBALS['balises'] = array(
     'lien_tags' => '{lien_tags}',
 );
 
+/**
+ *
+ */
 function conversions_theme($texte, $solo_art, $cnt_mode)
 {
     $texte = str_replace($GLOBALS['balises']['version'], BLOGOTEXT_VERSION, $texte);
@@ -139,7 +141,9 @@ function conversions_theme($texte, $solo_art, $cnt_mode)
     return $texte;
 }
 
-// Commentaire
+/**
+ * Comments
+ */
 function conversions_theme_commentaire($texte, $commentaire)
 {
     $texte = str_replace($GLOBALS['balises']['commentaire_contenu'], $commentaire['bt_content'], $texte);
@@ -156,7 +160,9 @@ function conversions_theme_commentaire($texte, $commentaire)
     return $texte;
 }
 
-// Article
+/**
+ * Article
+ */
 function conversions_theme_article($texte, $billet)
 {
     $texte = str_replace($GLOBALS['balises']['form_commentaire'], $GLOBALS['form_commentaire'], $texte);
@@ -181,7 +187,9 @@ function conversions_theme_article($texte, $billet)
     return $texte;
 }
 
-// Liens
+/**
+ * Links
+ */
 function conversions_theme_lien($texte, $lien)
 {
     $texte = str_replace($GLOBALS['balises']['article_titre'], $lien['bt_title'], $texte);
@@ -197,16 +205,20 @@ function conversions_theme_lien($texte, $lien)
     return $texte;
 }
 
-// récupère le bout du fichier thème contenant une boucle comme {BOUCLE_commentaires}
-//  soit le morceau de HTML retourné est parsé à son tour pour crée le HTML de chaque commentaire ou chaque article.
-//  soit le morceau de HTML retourné sert à se faire remplacer par l’ensemble des commentaires constitués
+/**
+ * récupère le bout du fichier thème contenant une boucle comme {BOUCLE_commentaires}
+ *   soit le morceau de HTML retourné est parsé à son tour pour crée le HTML de chaque commentaire ou chaque article.
+ *   soit le morceau de HTML retourné sert à se faire remplacer par l’ensemble des commentaires constitués
+ */
 function extract_boucles($texte, $balise, $incl)
 {
     $len_balise_d = 0 ;
     $len_balise_f = 0;
-    if ($incl == 'excl') { // la $balise est exclue : bli{p}blabla{/p}blo => blabla
+    if ($incl == 'excl') {
+        // la $balise est exclue : bli{p}blabla{/p}blo => blabla
         $len_balise_d = strlen('{'.$balise.'}');
-    } else {// la $balise est inclue : bli{p}blabla{/p}blo => {p}blabla{/p}
+    } else {
+        // la $balise est inclue : bli{p}blabla{/p}blo => {p}blabla{/p}
         $len_balise_f = strlen('{/'.$balise.'}');
     }
 
@@ -220,12 +232,15 @@ function extract_boucles($texte, $balise, $incl)
         $length = $fin - $debut;
         $return = substr($texte, $debut, $length);
         return $return;
-    } else { // $balises n’est pas dans le texte : retourne le texte sans changements.
+    } else {
+        // $balises n’est pas dans le texte : retourne le texte sans changements.
         return $texte;
     }
 }
 
-// only used by the main page of the blog (not on admin) : shows main blog page.
+/**
+ * only used by the main page of the blog (not on admin) : shows main blog page.
+ */
 function afficher_index($tableau, $type)
 {
     $HTML = '';
@@ -310,7 +325,9 @@ function afficher_index($tableau, $type)
     echo $HTML;
 }
 
-// Affiche la liste des articles, avec le &liste dans l’url
+/**
+ * Affiche la liste des articles, avec le &liste dans l’url
+ */
 function afficher_liste($tableau)
 {
     $HTML_elmts = '';
@@ -332,7 +349,9 @@ function afficher_liste($tableau)
     echo $HTML;
 }
 
-// Include Addons and converts {tags} to HTML (specified in addons)
+/**
+ * Include Addons and converts {tags} to HTML (specified in addons)
+ */
 function conversion_theme_addons($texte)
 {
 

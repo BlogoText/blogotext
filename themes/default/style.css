@@ -343,6 +343,17 @@ q, blockquote {
     margin-top: -100px;
 }
 
+/* 404 */
+.content-404 #main{
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .25);
+    border-radius: 3px;
+    margin: -100px auto 30px auto;
+    line-height:100px;
+    text-align:center;
+    font-weight:bold;
+}
+
 /* 1 art */
 .article,
 .lien {

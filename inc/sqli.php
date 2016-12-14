@@ -210,7 +210,6 @@ function get_entry($base_handle, $table, $entry, $id, $retour_mode)
         $req = $base_handle->prepare($query);
         $req->execute(array($id));
         $result = $req->fetch();
-        //echo '<pre>';print_r($result);
     } catch (Exception $e) {
         die('Erreur : '.$e->getMessage());
     }

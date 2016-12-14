@@ -164,8 +164,10 @@ $GLOBALS['lang'] = array(
 'addons_settings_confirm_reset' => 'Êtes-vous sûr de vouloir effacer vos paramètres ?',
 'addons_confirm_buttons_action' => 'Certaines actions peuvent prendre du temps à se terminer, veuillez ne pas fermer ou rafraîchir votre fenêtre jusqu\'au rechargement complet de la page.',
 'addons_clean_cache_label' => 'Effacer le cache de ce module ?',
+// feed
+'feed_article_comments_title' => 'Commentaires sur ',
 // Notes
-'note_no_article' => 'Aucun article',
+'note_no_article' => 'Aucun article :/',
 'note_no_module' => 'Aucun module',
 'note_no_commentaire' => 'Aucun commentaire',
 'note_comment_closed' => 'Commentaires fermés',
