@@ -12,17 +12,18 @@
 # *** LICENSE ***
 
 if (!defined('BT_ROOT')) {
-    exit('Requires BT_ROOT.');
+    die('Requires BT_ROOT.');
 }
 
 function auth_kill_session()
 {
     unset($_SESSION['nom_utilisateur'], $_SESSION['user_id'], $_SESSION['tokens']);
     setcookie('BT-admin-stay-logged', null);
-    session_destroy(); // destroy session
+    session_destroy();
+
     // Saving server-side the possible lost data (writing article for example)
     session_start();
-    session_regenerate_id(true); // change l'ID au cas ou
+    session_regenerate_id(true);
     foreach ($_POST as $key => $value) {
         $_SESSION['BT-post-'.$key] = $value;
     }
@@ -35,47 +36,44 @@ function auth_kill_session()
 
 function get_ip()
 {
-    return (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) ? htmlspecialchars($_SERVER['HTTP_X_FORWARDED_FOR']) : htmlspecialchars($_SERVER['REMOTE_ADDR']);
+    $ipAddr = (string)$_SERVER['REMOTE_ADDR'];
+    if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $ipAddr .= '_'.$_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+
+    return htmlspecialchars($ipAddr);
 }
 
 /**
  * check som stuff about the session
- *
  */
 function auth_check_session()
 {
-    if (USE_IP_IN_SESSION == 1) {
-        $ip = get_ip();
-    } else {
-        $ip = date('m');
-    }
     @session_start();
     ini_set('session.cookie_httponly', true);
 
-    // generate hash for cookie
-    $newUID = hash('sha256', USER_PWHASH.USER_LOGIN.md5($_SERVER['HTTP_USER_AGENT'].$ip));
-
-    // check old cookie  with newUID
-    if (isset($_COOKIE['BT-admin-stay-logged']) and $_COOKIE['BT-admin-stay-logged'] == $newUID) {
-        $_SESSION['user_id'] = md5($newUID);
-        session_set_cookie_params(365*24*60*60); // set new expiration time to the browser
-        session_regenerate_id(true);  // Send cookie
-        // Still logged in, return
-        return true;
-    } else {
+    // Check old cookie
+    $newUid = uuid();
+    if (isset($_COOKIE['BT-admin-stay-logged'])) {
+        if ($_COOKIE['BT-admin-stay-logged'] == $newUid) {
+            $_SESSION['user_id'] = $newUid;
+            session_set_cookie_params(365 * 24 * 60 * 60);
+            session_regenerate_id(true);
+            return true;
+        }
         return false;
     }
 
-    // no "stay-logged" cookie : check session.
-    if ((!isset($_SESSION['user_id'])) or ($_SESSION['user_id'] != USER_LOGIN.hash('sha256', USER_PWHASH.$_SERVER['HTTP_USER_AGENT'].$ip))) {
-        return false;
-    } else {
+    // No "stay-logged" cookie: check session
+    if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $newUid) {
         return true;
     }
+
+    return false;
 }
 
 /**
- * This will look if session expired and kill it, otherwise restore it
+ * This will look if session expired and kill it, otherwise restore it.
  */
 function auth_ttl()
 {
@@ -93,60 +91,76 @@ function auth_ttl()
 }
 
 /**
- * format the uncrypted password
- *
- * @param string $pass, the _POSTed unhashed/crypted password
- * @return string, the formated unhashed/crypted password
+ * Sanitinze the login.
  */
-function auth_format_password($pass)
-{
-    return trim($pass);
-}
-
-/**
- * format the login
- *
- * @param string $login, the _POSTed login
- * @return string, the formated login
- */
-function auth_format_login($login)
+function auth_format_login(string $login)
 {
     return addslashes(clean_txt(htmlspecialchars($login)));
 }
 
 /**
- * check if login and password match with the registered
- *
- * @param string $login, the login, without auth_format_password()
- * @param string $pass, the pass, without auth_format_login()
- * @param return true;
+ * Check if login and password match with the registered ones.
  */
-function auth_is_valid($login, $pass)
+function auth_is_valid(string $login, string $pass)
 {
-    return (password_verify(auth_format_password($pass), USER_PWHASH) && auth_format_login($login) == USER_LOGIN);
-}
-
-
-/**
- * write_user_login_file()
- * write /config/user.php which containt the login & password
- */
-function auth_write_user_login_file($login, $pass)
-{
-    $pass = auth_format_password($pass);
-    $login = auth_format_login($login);
-
-    // unchanged password (need to rehash ?)
-    if (empty($pass)) {
-        $pass = USER_PWHASH;
-    } else {
-        $pass = password_hash($pass, PASSWORD_BCRYPT);
+    if (!password_verify(hash_pass($pass, true), USER_PWHASH)) {
+        return false;
+    }
+    if (auth_format_login($login) !== USER_LOGIN) {
+        return false;
     }
 
-    $content  = '; <?php die; ?>'."\n";
+    return true;
+}
+
+/**
+ * Save identification values to write /config/user.php.
+ */
+function auth_write_user_login_file(string $login, string $pass)
+{
+    $login = auth_format_login($login);
+    $pass = (empty($pass)) ? USER_PWHASH : hash_pass($pass);
+
+    $content = '; <?php die; ?>'."\n";
     $content .= '; This file contains user login + password hash.'."\n\n";
-    $content .= 'USER_LOGIN = \''. $login .'\''."\n";
-    $content .= 'USER_PWHASH = \''. $pass .'\''."\n";
+    $content .= 'USER_LOGIN = \''.$login.'\''."\n";
+    $content .= 'USER_PWHASH = \''.$pass.'\''."\n";
 
     return (file_put_contents(FILE_USER, $content, LOCK_EX) !== false);
+}
+
+/**
+ * Password hashing process.
+ * Inspired from https://blogs.dropbox.com/tech/2016/09/how-dropbox-securely-stores-your-passwords/
+*/
+function hash_pass(string $password, bool $checking = false)
+{
+    // Bypass 72 chars limitation instored by bcrypt
+    $hash = hash('sha512', $password);
+
+    if ($checking) {
+        return $hash;
+    }
+
+    return password_hash($hash, PASSWORD_BCRYPT);
+}
+
+/**
+ * Generate a uniq hash for cookie.
+*/
+function uuid()
+{
+    $ipAddr = (USE_IP_IN_SESSION) ? get_ip() : date('m');
+    $hash = USER_LOGIN.hash('sha256', USER_PWHASH.$_SERVER['HTTP_USER_AGENT'].$ipAddr);
+
+    return md5($hash);
+}
+
+/**
+ * Write access log.
+ */
+function auth_write_access(bool $status)
+{
+    $data = '<?php die;  // '.(($status) ? 'SUCCESS ' : 'FAIL    ').date('r').' '.get_ip()." ?>\n";
+    file_put_contents(DIR_CONFIG.'xauthlog.php', $data, FILE_APPEND | LOCK_EX);
 }

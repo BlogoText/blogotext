@@ -49,10 +49,20 @@ require_once BT_ROOT.'admin/inc/form.php';
 require_once BT_ROOT.'admin/inc/sqli.php';
 require_once BT_ROOT.'admin/inc/tpl.php'; // no choice !
 
-// auth everywhere except for install and login page
+// Some actions are not required on install and login pages
 if (!defined('BT_RUN_INSTALL') && !defined('BT_RUN_LOGIN')) {
     auth_ttl();
+
+    // Open the database
+    $GLOBALS['db_handle'] = open_base();
 }
 
-// Open the database
-$GLOBALS['db_handle'] = open_base();
+
+if (DEBUG) {
+    function d($data)
+    {
+        echo '<pre>';
+        var_dump($data);
+        echo '</pre>';
+    }
+}

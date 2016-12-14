@@ -70,48 +70,48 @@ function fichier_adv_conf()
 function install_form_1_echo($erreurs = '')
 {
     echo tpl_get_html_head('Install');
-    echo '<div id="axe">'."\n";
-    echo '<div id="pageauth">'."\n";
-    echo '<h1>'.BLOGOTEXT_NAME.'</h1>'."\n";
-    echo '<h1 id="step">Bienvenue / Welcome</h1>'."\n";
+    echo '<div id="axe">';
+    echo '<div id="pageauth">';
+    echo '<h1>'.BLOGOTEXT_NAME.'</h1>';
+    echo '<h1 id="step">Bienvenue / Welcome</h1>';
     echo erreurs($erreurs);
 
     $conferrors = array();
     // check PHP version
     if (version_compare(PHP_VERSION, MINIMAL_PHP_REQUIRED_VERSION, '<')) {
-        $conferrors[] = "\t".'<li>Your PHP Version is '.PHP_VERSION.'. BlogoText requires '.MINIMAL_PHP_REQUIRED_VERSION.'.</li>'."\n";
+        $conferrors[] = '<li>Your PHP Version is '.PHP_VERSION.'. BlogoText requires '.MINIMAL_PHP_REQUIRED_VERSION.'.</li>';
     }
     // pdo_sqlite and pdo_mysql (minimum one is required)
-    if (!extension_loaded('pdo_sqlite') and !extension_loaded('pdo_mysql')) {
-        $conferrors[] = "\t".'<li>Neither <b>pdo_sqlite</b> or <b>pdo_mysql</b> PHP-modules are loaded. BlogoText needs at least one.</li>'."\n";
+    if (!extension_loaded('pdo_sqlite') && !extension_loaded('pdo_mysql')) {
+        $conferrors[] = '<li>Neither <b>pdo_sqlite</b> or <b>pdo_mysql</b> PHP-modules are loaded. BlogoText needs at least one.</li>';
     }
     // check directory readability
     if (!is_writable('../')) {
-        $conferrors[] = "\t".'<li>BlogoText has no write rights (chmod of home folder must be 644 at least, 777 recommended).</li>'."\n";
+        $conferrors[] = '<li>BlogoText has no write rights (chmod of home folder must be 644 at least, 777 recommended).</li>';
     }
     if (!empty($conferrors)) {
-        echo '<ol class="erreurs">'."\n";
+        echo '<ol class="erreurs">';
         echo implode($conferrors, '');
-        echo '</ol>'."\n";
-        echo '<p classe="erreurs">Installation aborded.</p>'."\n";
-        echo '</div>'."\n".'</div>'."\n".'</html>';
+        echo '</ol>';
+        echo '<p classe="erreurs">Installation aborded.</p>';
+        echo '</div>'.'</div>'.'</html>';
         die;
     }
 
-    echo '<form method="post" action="install.php">'."\n";
-    echo '<div id="install">'."\n";
+    echo '<form method="post" action="install.php">';
+    echo '<div id="install">';
     echo '<p>';
     echo '<label for="langue">Choisissez votre langue / Choose your language: ';
-    echo '<select id="langue" name="langue">'."\n";
+    echo '<select id="langue" name="langue">';
     foreach ($GLOBALS['langs'] as $option => $label) {
-        echo "\t".'<option value="'.htmlentities($option).'">'.$label.'</option>'."\n";
+        echo '<option value="'.htmlentities($option).'">'.$label.'</option>';
     }
-    echo '</select></label>'."\n";
+    echo '</select></label>';
     echo hidden_input('install_form_1_sended', 1);
     echo '</p>';
-    echo '<button class="submit button-submit" type="submit" name="enregistrer">Ok</button>'."\n";
-    echo '<div>'."\n";
-    echo '</form>'."\n";
+    echo '<button class="submit button-submit" type="submit" name="enregistrer">Ok</button>';
+    echo '<div>';
+    echo '</form>';
 }
 
 /**
@@ -121,19 +121,19 @@ function install_form_1_echo($erreurs = '')
 function install_form_2_echo($erreurs = '')
 {
     echo tpl_get_html_head('Install');
-    echo '<div id="axe">'."\n";
-    echo '<div id="pageauth">'."\n";
-    echo '<h1>'.BLOGOTEXT_NAME.'</h1>'."\n";
-    echo '<h1 id="step">'.$GLOBALS['lang']['install'].'</h1>'."\n";
+    echo '<div id="axe">';
+    echo '<div id="pageauth">';
+    echo '<h1>'.BLOGOTEXT_NAME.'</h1>';
+    echo '<h1 id="step">'.$GLOBALS['lang']['install'].'</h1>';
     echo erreurs($erreurs);
-    echo '<form method="post" action="install.php?s='.$GLOBALS['step'].'&amp;l='.$GLOBALS['lang']['id'].'">'."\n".'<div id="erreurs_js" class="erreurs"></div>'."\n";
-    echo '<div id="install">'."\n";
+    echo '<form method="post" action="install.php?s='.$GLOBALS['step'].'&amp;l='.$GLOBALS['lang']['id'].'">'.'<div id="erreurs_js" class="erreurs"></div>';
+    echo '<div id="install">';
     echo '<p>';
-    echo '<label for="identifiant">'.$GLOBALS['lang']['install_id'].' </label><input type="text" name="identifiant" id="identifiant" size="30" value="" class="text" placeholder="John Doe" required />'."\n";
-    echo '</p>'."\n";
+        echo '<label for="identifiant">'.$GLOBALS['lang']['install_id'].' </label><input type="text" name="identifiant" id="identifiant" size="30" value="" class="text" placeholder="John Doe" required />';
+    echo '</p>';
     echo '<p>';
-    echo '<label for="mdp">'.$GLOBALS['lang']['install_mdp'].' </label><input type="password" name="mdp" id="mdp" size="30" value="" class="text" autocomplete="off" placeholder="••••••••••••" required /><button type="button" class="unveilmdp" onclick="return revealpass(\'mdp\');"></button>'."\n";
-    echo '</p>'."\n";
+        echo '<label for="mdp">'.$GLOBALS['lang']['install_mdp'].' </label><input type="password" name="mdp" id="mdp" size="30" value="" class="text" autocomplete="off" placeholder="••••••••••••" required /><button type="button" class="unveilmdp" onclick="return revealpass(\'mdp\');"></button>';
+    echo '</p>';
     // plz, keep commented code, in case of reverse before v3.7
     // $lien = str_replace(DIR_ADMIN.'/install.php', '', 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['SCRIPT_NAME']); // https > http :/
     // $lien = 'http://'.$_SERVER['SERVER_NAME'].dirname(dirname($_SERVER['SCRIPT_NAME'])); // https > http :/
@@ -145,15 +145,14 @@ function install_form_2_echo($erreurs = '')
     $lien = str_replace('\\', '/', $lien);
 
     echo '<p>';
-    // remove placeholder="'.$lien.'", redondant avec value=""
-    echo '<label for="racine">'.$GLOBALS['lang']['pref_racine'].' </label><input type="url" name="racine" id="racine" size="30" value="'.$lien.'" class="text" required />'."\n";
-    echo '</p>'."\n";
+    echo '<label for="racine">'.$GLOBALS['lang']['pref_racine'].' </label><input type="url" name="racine" id="racine" size="30" value="'.$lien.'" class="text" required />';
+    echo '</p>';
     echo hidden_input('comm_defaut_status', 1);
     echo hidden_input('langue', $GLOBALS['lang']['id']);
     echo hidden_input('install_form_2_sended', 1);
-    echo '<button class="submit button-submit" type="submit" name="enregistrer">Ok</button>'."\n";
-    echo '</div>'."\n";
-    echo '</form>'."\n";
+    echo '<button class="submit button-submit" type="submit" name="enregistrer">Ok</button>';
+    echo '</div>';
+    echo '</form>';
 }
 
 /**
@@ -163,42 +162,42 @@ function install_form_2_echo($erreurs = '')
 function install_form_3_echo($erreurs = '')
 {
     echo tpl_get_html_head('Install');
-    echo '<div id="axe">'."\n";
-    echo '<div id="pageauth">'."\n";
-    echo '<h1>'.BLOGOTEXT_NAME.'</h1>'."\n";
-    echo '<h1 id="step">'.$GLOBALS['lang']['install'].'</h1>'."\n";
+    echo '<div id="axe">';
+    echo '<div id="pageauth">';
+    echo '<h1>'.BLOGOTEXT_NAME.'</h1>';
+    echo '<h1 id="step">'.$GLOBALS['lang']['install'].'</h1>';
     echo erreurs($erreurs);
-    echo '<form method="post" action="'.basename($_SERVER['SCRIPT_NAME']).'?'.$_SERVER['QUERY_STRING'].'">'."\n";
-    echo '<div id="install">'."\n";
+    echo '<form method="post" action="'.basename($_SERVER['SCRIPT_NAME']).'?'.$_SERVER['QUERY_STRING'].'">';
+    echo '<div id="install">';
     echo '<p><label>'.$GLOBALS['lang']['install_choose_sgdb'].'</label>';
-    echo '<select id="sgdb" name="sgdb" onchange="show_mysql_form()">'."\n";
+    echo '<select id="sgdb" name="sgdb" onchange="show_mysql_form()">';
     if (extension_loaded('pdo_sqlite')) {
-        echo "\t".'<option value="sqlite">SQLite</option>'."\n";
+        echo "\t".'<option value="sqlite">SQLite</option>';
     }
     if (extension_loaded('pdo_mysql')) {
-        echo "\t".'<option value="mysql">MySQL</option>'."\n";
+        echo "\t".'<option value="mysql">MySQL</option>';
     }
-    echo '</select></p>'."\n";
+    echo '</select></p>';
 
-    echo '<div id="mysql_vars" style="display:none;">'."\n";
+    echo '<div id="mysql_vars" style="display:none;">';
     if (extension_loaded('pdo_mysql')) {
         echo '<p><label for="mysql_user">MySQL User: </label>
-                    <input type="text" id="mysql_user" name="mysql_user" size="30" value="" class="text" placeholder="mysql_user" /></p>'."\n";
+                    <input type="text" id="mysql_user" name="mysql_user" size="30" value="" class="text" placeholder="mysql_user" /></p>';
         echo '<p><label for="mysql_password">MySQL Password: </label>
-                    <input type="password" id="mysql_password" name="mysql_passwd" size="30" value="" class="text" placeholder="••••••••••••" autocomplete="off" /><button type="button" class="unveilmdp" onclick="return revealpass(\'mysql_password\');"></button></p>'."\n";
+                    <input type="password" id="mysql_password" name="mysql_passwd" size="30" value="" class="text" placeholder="••••••••••••" autocomplete="off" /><button type="button" class="unveilmdp" onclick="return revealpass(\'mysql_password\');"></button></p>';
         echo '<p><label for="mysql_db">MySQL Database: </label>
-                    <input type="text" id="mysql_db" name="mysql_db" size="30" value="" class="text" placeholder="db_blogotext" /></p>'."\n";
+                    <input type="text" id="mysql_db" name="mysql_db" size="30" value="" class="text" placeholder="db_blogotext" /></p>';
         echo '<p><label for="mysql_host">MySQL Host: </label>
-                    <input type="text" id="mysql_host" name="mysql_host" size="30" value="" class="text" placeholder="localhost" /></p>'."\n";
+                    <input type="text" id="mysql_host" name="mysql_host" size="30" value="" class="text" placeholder="localhost" /></p>';
     }
-    echo '</div>'."\n";
+    echo '</div>';
 
     echo hidden_input('langue', $GLOBALS['lang']['id']);
     echo hidden_input('install_form_3_sended', 1);
-    echo '<button class="submit button-submit" type="submit" name="enregistrer">Ok</button>'."\n";
+    echo '<button class="submit button-submit" type="submit" name="enregistrer">Ok</button>';
 
-    echo '</div>'."\n";
-    echo '</form>'."\n";
+    echo '</div>';
+    echo '</form>';
 }
 
 function fichier_mysql($sgdb)
@@ -240,11 +239,11 @@ function install_form_2_proceed()
  */
 function install_form_3_proceed()
 {
-    if (isset($_POST['sgdb']) and $_POST['sgdb'] == 'mysql') {
-        fichier_mysql('mysql');
-    } else {
-        fichier_mysql('sqlite');
+    $sgdb = (string)filter_input(INPUT_POST, 'sgdb');
+    if (!in_array($sgdb, array('sqlite', 'mysql'))) {
+        $sgdb = 'sqlite';
     }
+    fichier_mysql($sgdb);
 
     import_ini_file(FILE_MYSQL);
     $GLOBALS['db_handle'] = open_base();
@@ -374,7 +373,7 @@ function install_form_2_valid()
     }
 
     $url = trim($url);
-    if (empty($url) or !preg_match('#^(https?://).*/$#', $url)) {
+    if (empty($url) || !preg_match('#^https?://.+#', $url)) {
         $erreurs[] = $GLOBALS['lang']['err_prefs_racine'];
     } elseif (!preg_match('/^https?:\/\//', $url)) {
         $erreurs[] = $GLOBALS['lang']['err_prefs_racine_http'];
@@ -503,6 +502,5 @@ function revealpass(fieldId) {
     return false;
 }
 
-</script>'."\n";
-
+</script>';
 echo tpl_get_footer();
