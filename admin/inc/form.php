@@ -11,34 +11,35 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 # *** LICENSE ***
 
-
-function valider_form_fichier($fichier)
+function valider_form_fichier($file)
 {
-    $erreurs = array();
-    if (!( isset($_POST['token']) and check_token($_POST['token']))) {
-        $erreurs[] = $GLOBALS['lang']['err_wrong_token'];
-    }
-    if (!isset($_POST['is_it_edit'])) { // si nouveau fichier, test sur fichier entrant
+    $errors = array();
+    $token = (string)filter_input(INPUT_POST, 'token');
+    $isEdition = (filter_input(INPUT_POST, 'is_it_edit') !== null);
+    $url = filter_input(INPUT_POST, 'url');
 
-        if (isset($_FILES['fichier'])) {
-            if (($_FILES['fichier']['error'] == UPLOAD_ERR_INI_SIZE) or ($_FILES['fichier']['error'] == UPLOAD_ERR_FORM_SIZE)) {
-                $erreurs[] = 'Fichier trop gros';
-            } elseif ($_FILES['fichier']['error'] == UPLOAD_ERR_PARTIAL) {
-                $erreurs[] = 'dépot interrompu';
-            } elseif ($_FILES['fichier']['error'] == UPLOAD_ERR_NO_FILE) {
-                $erreurs[] = 'aucun fichier déposé';
-            }
-        } elseif (isset($_POST['url'])) {
-            if (empty($_POST['url'])) {
-                $erreurs[] = $GLOBALS['lang']['err_lien_vide'];
-            }
-        }
-    } else { // on edit
-        if ('' == $fichier['bt_filename']) {
-            $erreurs[] = 'nom de fichier invalide';
-        }
+    if (!check_token($token)) {
+        $errors[] = $GLOBALS['lang']['err_wrong_token'];
     }
-    return $erreurs;
+    if (!$isEdition) {
+        // New file
+        if (isset($_FILES['fichier'])) {
+            if (($_FILES['fichier']['error'] == UPLOAD_ERR_INI_SIZE) || ($_FILES['fichier']['error'] == UPLOAD_ERR_FORM_SIZE)) {
+                $errors[] = 'Fichier trop gros';
+            } elseif ($_FILES['fichier']['error'] == UPLOAD_ERR_PARTIAL) {
+                $errors[] = 'dépot interrompu';
+            } elseif ($_FILES['fichier']['error'] == UPLOAD_ERR_NO_FILE) {
+                $errors[] = 'aucun fichier déposé';
+            }
+        } elseif ($url !== null && empty($url)) {
+            $errors[] = $GLOBALS['lang']['err_lien_vide'];
+        }
+    } elseif (!$file['bt_filename']) {
+        // On edit
+        $errors[] = 'nom de fichier invalide';
+    }
+
+    return $errors;
 }
 
 function valider_form_rss()
@@ -69,212 +70,199 @@ function valider_form_rss()
     return $erreurs;
 }
 
-function form_select($id, $choix, $defaut, $label)
+function form_select($name, $choix, $defaut, $label)
 {
-    $form = '<label for="'.$id.'">'.$label.'</label>'."\n";
-    $form .= "\t".'<select id="'.$id.'" name="'.$id.'">'."\n";
+    $form = '<label for="'.$name.'">'.$label.'</label>';
+    $form .= '<select id="'.$name.'" name="'.$name.'">';
     foreach ($choix as $valeur => $mot) {
-        $form .= "\t\t".'<option value="'.$valeur.'"'.(($defaut == $valeur) ? ' selected="selected" ' : '').'>'.$mot.'</option>'."\n";
+        $form .= '<option value="'.$valeur.'"'.(($defaut == $valeur) ? ' selected="selected" ' : '').'>'.$mot.'</option>';
     }
-    $form .= "\t".'</select>'."\n";
-    $form .= "\n";
+    $form .= '</select>';
     return $form;
 }
 
-function form_select_no_label($id, $choix, $defaut)
+function form_select_no_label($name, $choix, $defaut)
 {
-    $form = '<select id="'.$id.'" name="'.$id.'">'."\n";
+    $form = '<select id="'.$name.'" name="'.$name.'">';
     foreach ($choix as $valeur => $mot) {
-        $form .= "\t".'<option value="'.$valeur.'"'.(($defaut == $valeur) ? ' selected="selected" ' : '').'>'.$mot.'</option>'."\n";
+        $form .= '<option value="'.$valeur.'"'.(($defaut == $valeur) ? ' selected="selected" ' : '').'>'.$mot.'</option>';
     }
-    $form .= '</select>'."\n";
+    $form .= '</select>';
     return $form;
 }
 
-function form_categories_links($where, $tags_post)
+function form_categories_links($where, $postTags)
 {
     $tags = list_all_tags($where, false);
     $html = '';
-    if (!empty($tags)) {
-        $html = '<datalist id="htmlListTags">'."\n";
+    if ($tags) {
+        $html = '<datalist id="htmlListTags">';
         foreach ($tags as $tag => $i) {
-            $html .= "\t".'<option value="'.addslashes($tag).'">'."\n";
+            $html .= '<option value="'.addslashes($tag).'">';
         }
-        $html .= '</datalist>'."\n";
+        $html .= '</datalist>';
     }
-    $html .= '<ul id="selected">'."\n";
-    $list_tags = explode(',', $tags_post);
+    $html .= '<ul id="selected">';
+    $listTags = explode(',', $postTags);
 
     // remove diacritics and reindexes so that "ééé" does not passe after "zzz"
-    foreach ($list_tags as $i => $tag) {
-        $list_tags[$i] = array('t' => trim($tag), 'tt' => diacritique(trim($tag)));
+    foreach ($listTags as $i => $tag) {
+        $listTags[$i] = array('t' => trim($tag), 'tt' => diacritique(trim($tag)));
     }
-    $list_tags = array_reverse(tri_selon_sous_cle($list_tags, 'tt'));
+    $listTags = array_reverse(tri_selon_sous_cle($listTags, 'tt'));
 
-    foreach ($list_tags as $i => $tag) {
-        if (!empty($tag['t'])) {
-            $html .= "\t".'<li><span>'.trim($tag['t']).'</span><a href="javascript:void(0)" onclick="removeTag(this.parentNode)">×</a></li>'."\n";
+    foreach ($listTags as $i => $tag) {
+        if ($tag['t']) {
+            $html .= '<li><span>'.trim($tag['t']).'</span><a href="javascript:void(0)" onclick="removeTag(this.parentNode)">×</a></li>';
         }
     }
-    $html .= '</ul>'."\n";
+    $html .= '</ul>';
     return $html;
 }
 
 // Posts forms
 function afficher_form_filtre($type, $filtre)
 {
-    $ret = '<form method="get" action="'.basename($_SERVER['SCRIPT_NAME']).'" onchange="this.submit();">'."\n";
-    $ret .= '<div id="form-filtre">'."\n";
+    $ret = '<form method="get" action="'.basename($_SERVER['SCRIPT_NAME']).'" onchange="this.submit();">';
+    $ret .= '<div id="form-filtre">';
     $ret .= filtre($type, $filtre);
-    $ret .= '</div>'."\n";
-    $ret .= '</form>'."\n";
+    $ret .= '</div>';
+    $ret .= '</form>';
     echo $ret;
 }
 
 function form_checkbox($name, $checked, $label)
 {
-    $checked = ($checked) ? "checked " : '';
-    $form = '<input type="checkbox" id="'.$name.'" name="'.$name.'" '.$checked.' class="checkbox-toggle" />'."\n" ;
-    $form .= '<label for="'.$name.'" >'.$label.'</label>'."\n";
+    $checked = ($checked) ? 'checked ' : '';
+    $form = '<input type="checkbox" id="'.$name.'" name="'.$name.'" '.$checked.' class="checkbox-toggle" />' ;
+    $form .= '<label for="'.$name.'" >'.$label.'</label>';
     return $form;
 }
-
 
 // FOR COMMENTS : RETUNS nb_com per author
 function nb_entries_as($table, $what)
 {
-    $result = array();
     $query = "
         SELECT count($what) AS nb, $what
           FROM $table
          GROUP BY $what
          ORDER BY nb DESC";
-    try {
-        $result = $GLOBALS['db_handle']->query($query)->fetchAll(PDO::FETCH_ASSOC);
-        return $result;
-    } catch (Exception $e) {
-        die('Erreur 0349 : '.$e->getMessage());
-    }
-}
 
+    return $GLOBALS['db_handle']->query($query)->fetchAll(PDO::FETCH_ASSOC);
+}
 
 function filtre($type, $filtre)
 {
     // WARNING: this is a resources heavy consuming function.
-    $liste_des_types = array();
-    $ret = '';
-    $ret .= "\n".'<select name="filtre">'."\n" ;
+    $listTypes = array();
+    $ret = '<select name="filtre">' ;
     if ($type == 'articles') {
-        $ret .= '<option value="">'.$GLOBALS['lang']['label_article_derniers'].'</option>'."\n";
+        $ret .= '<option value="">'.$GLOBALS['lang']['label_article_derniers'].'</option>';
         $query = '
             SELECT DISTINCT substr(bt_date, 1, 6) AS date
               FROM articles
              ORDER BY date DESC';
-        $tab_tags = list_all_tags('articles', false);
-        $BDD = 'sqlite';
+        $arrTags = list_all_tags('articles', false);
+        $databaseType = 'sqlite';
     } elseif ($type == 'commentaires') {
-        $ret .= '<option value="">'.$GLOBALS['lang']['label_comment_derniers'].'</option>'."\n";
-        $tab_auteur = nb_entries_as('commentaires', 'bt_author');
+        $ret .= '<option value="">'.$GLOBALS['lang']['label_comment_derniers'].'</option>';
+        $arrAuthors = nb_entries_as('commentaires', 'bt_author');
         $query = '
             SELECT DISTINCT substr(bt_id, 1, 6) AS date
               FROM commentaires
              ORDER BY bt_id DESC';
-        $BDD = 'sqlite';
+        $databaseType = 'sqlite';
     } elseif ($type == 'links') {
-        $ret .= '<option value="">'.$GLOBALS['lang']['label_link_derniers'].'</option>'."\n";
-        $tab_tags = list_all_tags('links', false);
+        $ret .= '<option value="">'.$GLOBALS['lang']['label_link_derniers'].'</option>';
+        $arrTags = list_all_tags('links', false);
+
+        // FIX: sometimes this is an empty array. To investigate.
+        $arrTags = array_filter($arrTags, 'strlen', ARRAY_FILTER_USE_KEY);
+
         $query = '
             SELECT DISTINCT substr(bt_id, 1, 6) AS date
               FROM links
              ORDER BY bt_id DESC';
-        $BDD = 'sqlite';
+        $databaseType = 'sqlite';
     } elseif ($type == 'fichiers') {
         // crée un tableau où les clé sont les types de fichiers et les valeurs, le nombre de fichiers de ce type.
         $files = $GLOBALS['liste_fichiers'];
-        $tableau_mois = array();
-        if (!empty($files)) {
-            foreach ($files as $id => $file) {
-                $type = $file['bt_type'];
-                if (!array_key_exists($type, $liste_des_types)) {
-                    $liste_des_types[$type] = 1;
-                } else {
-                    $liste_des_types[$type]++;
-                }
+        $arrMonths = array();
+        foreach ($files as $file) {
+            $type = $file['bt_type'];
+            if (!array_key_exists($type, $listTypes)) {
+                $listTypes[$type] = 0;
             }
+            $listTypes[$type]++;
         }
-        arsort($liste_des_types);
+        arsort($listTypes);
 
-        $ret .= '<option value="">'.$GLOBALS['lang']['label_fichier_derniers'].'</option>'."\n";
-        $filtre_type = '';
-        $BDD = 'fichier_txt_files';
+        $ret .= '<option value="">'.$GLOBALS['lang']['label_fichier_derniers'].'</option>';
+        $databaseType = 'fichier_txt_files';
     }
 
-    if ($BDD == 'sqlite') {
-        try {
-            $req = $GLOBALS['db_handle']->prepare($query);
-            $req->execute(array());
-            while ($row = $req->fetch()) {
-                $tableau_mois[$row['date']] = mois_en_lettres(substr($row['date'], 4, 2)).' '.substr($row['date'], 0, 4);
-            }
-        } catch (Exception $x) {
-            die('Erreur affichage filtre() : '.$x->getMessage());
+    if ($databaseType == 'sqlite') {
+        $req = $GLOBALS['db_handle']->prepare($query);
+        $req->execute();
+        while ($row = $req->fetch()) {
+            $arrMonths[$row['date']] = mois_en_lettres(substr($row['date'], 4, 2)).' '.substr($row['date'], 0, 4);
         }
-    } elseif ($BDD == 'fichier_txt_files') {
+    } elseif ($databaseType == 'fichier_txt_files') {
         foreach ($GLOBALS['liste_fichiers'] as $e) {
             if (!empty($e['bt_id'])) {
                 // mk array[201005] => "May 2010", uzw
-                $tableau_mois[substr($e['bt_id'], 0, 6)] = mois_en_lettres(substr($e['bt_id'], 4, 2)).' '.substr($e['bt_id'], 0, 4);
+                $arrMonths[substr($e['bt_id'], 0, 6)] = mois_en_lettres(substr($e['bt_id'], 4, 2)).' '.substr($e['bt_id'], 0, 4);
             }
         }
-        krsort($tableau_mois);
+        krsort($arrMonths);
     }
 
     // Drafts
-    $ret .= '<option value="draft"'.(($filtre == 'draft') ? ' selected="selected"' : '').'>'.$GLOBALS['lang']['label_invisibles'].'</option>'."\n";
+    $ret .= '<option value="draft"'.(($filtre == 'draft') ? ' selected="selected"' : '').'>'.$GLOBALS['lang']['label_invisibles'].'</option>';
 
     // Public
-    $ret .= '<option value="pub"'.(($filtre == 'pub') ? ' selected="selected"' : '').'>'.$GLOBALS['lang']['label_publies'].'</option>'."\n";
+    $ret .= '<option value="pub"'.(($filtre == 'pub') ? ' selected="selected"' : '').'>'.$GLOBALS['lang']['label_publies'].'</option>';
 
     // By date
-    if (!empty($tableau_mois)) {
-        $ret .= '<optgroup label="'.$GLOBALS['lang']['label_date'].'">'."\n";
-        foreach ($tableau_mois as $mois => $label) {
-            $ret .= "\t".'<option value="' . htmlentities($mois) . '"'.((substr($filtre, 0, 6) == $mois) ? ' selected="selected"' : '').'>'.$label.'</option>'."\n";
+    if (!empty($arrMonths)) {
+        $ret .= '<optgroup label="'.$GLOBALS['lang']['label_date'].'">';
+        foreach ($arrMonths as $mois => $label) {
+            $ret .= '<option value="' . htmlentities($mois) . '"'.((substr($filtre, 0, 6) == $mois) ? ' selected="selected"' : '').'>'.$label.'</option>';
         }
-        $ret .= '</optgroup>'."\n";
+        $ret .= '</optgroup>';
     }
 
     // By author (for comments)
-    if (!empty($tab_auteur)) {
-        $ret .= '<optgroup label="'.$GLOBALS['lang']['pref_auteur'].'">'."\n";
-        foreach ($tab_auteur as $nom) {
+    if (!empty($arrAuthors)) {
+        $ret .= '<optgroup label="'.$GLOBALS['lang']['pref_auteur'].'">';
+        foreach ($arrAuthors as $nom) {
             if (!empty($nom['nb'])) {
-                $ret .= "\t".'<option value="auteur.'.$nom['bt_author'].'"'.(($filtre == 'auteur.'.$nom['bt_author']) ? ' selected="selected"' : '').'>'.$nom['bt_author'].' ('.$nom['nb'].')'.'</option>'."\n";
+                $ret .= '<option value="auteur.'.$nom['bt_author'].'"'.(($filtre == 'auteur.'.$nom['bt_author']) ? ' selected="selected"' : '').'>'.$nom['bt_author'].' ('.$nom['nb'].')'.'</option>';
             }
         }
-        $ret .= '</optgroup>'."\n";
+        $ret .= '</optgroup>';
     }
 
     // By type (for files)
-    if (!empty($liste_des_types)) {
-        $ret .= '<optgroup label="'.'Type'.'">'."\n";
-        foreach ($liste_des_types as $type => $nb) {
-            if (!empty($type)) {
-                $ret .= "\t".'<option value="type.'.$type.'"'.(($filtre == 'type.'.$type) ? ' selected="selected"' : '').'>'.$type.' ('.$nb.')'.'</option>'."\n";
+    if (!empty($listTypes)) {
+        $ret .= '<optgroup label="Type">';
+        foreach ($listTypes as $type => $nb) {
+            if ($type) {
+                $ret .= '<option value="type.'.$type.'"'.(($filtre == 'type.'.$type) ? ' selected="selected"' : '').'>'.$type.' ('.$nb.')'.'</option>';
             }
         }
-        $ret .= '</optgroup>'."\n";
+        $ret .= '</optgroup>';
     }
 
     // By tag (for posts and links)
-    if (!empty($tab_tags)) {
-        $ret .= '<optgroup label="'.'Tags'.'">'."\n";
-        foreach ($tab_tags as $tag => $nb) {
-            $ret .= "\t".'<option value="tag.'.$tag.'"'.(($filtre == 'tag.'.$tag) ? ' selected="selected"' : '').'>'.$tag.' ('.$nb.')</option>'."\n";
+    if (!empty($arrTags)) {
+        $ret .= '<optgroup label="Tags">';
+        foreach ($arrTags as $tag => $nb) {
+            $ret .= '<option value="tag.'.$tag.'"'.(($filtre == 'tag.'.$tag) ? ' selected="selected"' : '').'>'.$tag.' ('.$nb.')</option>';
         }
-        $ret .= '</optgroup>'."\n";
+        $ret .= '</optgroup>';
     }
-    $ret .= '</select> '."\n\n";
+    $ret .= '</select> ';
 
     return $ret;
 }

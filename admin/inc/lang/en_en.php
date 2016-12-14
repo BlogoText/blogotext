@@ -284,6 +284,7 @@ $GLOBALS['lang'] = array(
 'err_comm_article_id' => 'Article ID is wrong',
 'err_lien_vide' => 'URL is empty',
 'err_wrong_token' => 'Security coin is wrong.',
+'err_wrong_id' => 'ID is wrong.',
 'err_feed_exists' => 'Feed alreday exists.',
 'err_feed_wrong_param' => 'Wrong request.',
 'err_addon_name' => 'Invalid addon name.',
@@ -407,7 +408,6 @@ $GLOBALS['lang'] = array(
 'placeholder_motscle' => 'keywords',
 'placeholder_folder' => 'folder',
 'placeholder_tags' => 'tags',
-'placeholder_url' => 'url',
 
 //Formulaire Images
 'label_jusqua' => 'Up to',
