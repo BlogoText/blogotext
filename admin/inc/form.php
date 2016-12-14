@@ -44,30 +44,31 @@ function valider_form_fichier($file)
 
 function valider_form_rss()
 {
-    $erreurs = array();
-    // check unique-token only on critical actions (session ID check is still there)
-    if (isset($_POST['add-feed']) or isset($_POST['delete_old'])) {
-        if (!( isset($_POST['token']) and check_token($_POST['token']))) {
-            $erreurs[] = $GLOBALS['lang']['err_wrong_token'];
-        }
+    $errors = array();
+    $token = (string)filter_input(INPUT_POST, 'token');
+    $markAsRead = filter_input(INPUT_POST, 'mark-as-read');
+    $url = filter_input(INPUT_POST, 'add-feed');
+    $isDeletion = (filter_input(INPUT_POST, 'delete_old') !== null);
+
+    // Check unique-token only on critical actions (session ID check is still there)
+    if (($url !== null || $isDeletion) && !check_token($token)) {
+        $errors[] = $GLOBALS['lang']['err_wrong_token'];
     }
-    // on feed add: URL needs to be valid, not empty, and must not already be in DB
-    if (isset($_POST['add-feed'])) {
-        if (empty($_POST['add-feed'])) {
-            $erreurs[] = $GLOBALS['lang']['err_lien_vide'];
+    // On feed add: URL needs to be valid, not empty, and must not already be in DB
+    if ($url !== null) {
+        if (empty($url)) {
+            $errors[] = $GLOBALS['lang']['err_lien_vide'];
         }
-        if (!preg_match('#^(https?://[\S]+)[a-z]{2,6}[-\#_\w?%*:.;=+\(\)/&~$,]*$#', trim($_POST['add-feed']))) {
-            $erreurs[] = $GLOBALS['lang']['err_comm_webpage'];
+        if (!preg_match('#^(https?://[\S]+)[a-z]{2,6}[-\#_\w?%*:.;=+\(\)/&~$,]*$#', trim($url))) {
+            $errors[] = $GLOBALS['lang']['err_comm_webpage'];
         }
-        if (array_key_exists($_POST['add-feed'], $GLOBALS['liste_flux'])) {
-            $erreurs[] = $GLOBALS['lang']['err_feed_exists'];
+        if (array_key_exists($url, $GLOBALS['liste_flux'])) {
+            $errors[] = $GLOBALS['lang']['err_feed_exists'];
         }
-    } elseif (isset($_POST['mark-as-read'])) {
-        if (!(in_array($_POST['mark-as-read'], array('all', 'site', 'post', 'folder', 'postlist')))) {
-            $erreurs[] = $GLOBALS['lang']['err_feed_wrong_param'];
-        }
+    } elseif ($markAsRead !== null && !in_array($markAsRead, array('all', 'site', 'post', 'folder', 'postlist'))) {
+        $errors[] = $GLOBALS['lang']['err_feed_wrong_param'];
     }
-    return $erreurs;
+    return $errors;
 }
 
 function form_select($name, $choix, $defaut, $label)
