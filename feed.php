@@ -52,6 +52,9 @@ header('Content-Type: application/'. $format .'+xml; charset=UTF-8');
 
 /**
  * second level caching file.
+ *
+ * if file exists and is valid, return the cache and die
+ *  " !file exists, go for the full process
  */
 $flux_cache_lv2_path = DIR_VHOST_CACHE.'cache2_'. $format .'_'.substr(md5((isset($_SERVER['QUERY_STRING'])) ? $_SERVER['QUERY_STRING'] : ''), 0, 8).'.dat';
 
@@ -65,19 +68,15 @@ if (is_file($flux_cache_lv2_path)) {
     unlink($flux_cache_lv2_path);
 }
 
-/**
- * No lvl 2 cache available
- */
-
 
 /**
- * functions
+ * comments for an article (ATOM)
  */
 function flux_comments_for_article_atom($liste)
 {
     $xml = '';
     if (!empty($liste)) {
-        $xml .= '<title>Commentaires sur '.$liste[0]['bt_title'].' - '.$GLOBALS['nom_du_site'].'</title>'."\n";
+        $xml .= '<title>'.$GLOBALS['lang']['feed_article_comments_title'].$liste[0]['bt_title'].' - '.$GLOBALS['nom_du_site'].'</title>'."\n";
         $xml .= '<link href="'.$liste[0]['bt_link'].'" />'."\n";
         $xml .= '<id>'.$liste[0]['bt_link'].'</id>';
 
@@ -104,11 +103,14 @@ function flux_comments_for_article_atom($liste)
     return $xml;
 }
 
+/**
+ * comments for an article (ATOM)
+ */
 function flux_comments_for_article_rss($liste)
 {
     $xml = '';
     if (!empty($liste)) {
-        $xml .= '<title>Commentaires sur '.$liste[0]['bt_title'].' - '.$GLOBALS['nom_du_site'].'</title>'."\n";
+        $xml .= '<title>'.$GLOBALS['lang']['feed_article_comments_title'].$liste[0]['bt_title'].' - '.$GLOBALS['nom_du_site'].'</title>'."\n";
         $xml .= '<link>'.$liste[0]['bt_link'].'</link>'."\n";
         $xml .= '<description><![CDATA['.$GLOBALS['description'].']]></description>'."\n";
         $xml .= '<language>fr</language>'."\n";
@@ -134,6 +136,9 @@ function flux_comments_for_article_rss($liste)
     }
 }
 
+/**
+ *
+ */
 function flux_all_kind_rss($list, $invert)
 {
     $xml = '';
@@ -169,6 +174,9 @@ function flux_all_kind_rss($list, $invert)
     return $xml;
 }
 
+/**
+ *
+ */
 function flux_all_kind_atom($list, $invert)
 {
     $xml_post = '';
@@ -210,20 +218,17 @@ function flux_all_kind_atom($list, $invert)
     return $xml_post;
 }
 
+/**
+ * convert relativ URL to absolute URL
+ */
 function rel2abs($article)
 {
-    // convertit les URL relatives en absolues
-    // $article = str_replace(' src="/', ' src="http://'.$_SERVER['HTTP_HOST'].'/', $article);
     $article = str_replace(' src="/', ' src="http://'.URL_ROOT.'/', $article);
-    // $article = str_replace(' href="/', ' href="http://'.$_SERVER['HTTP_HOST'].'/', $article);
     $article = str_replace(' href="/', ' href="http://'.URL_ROOT.'/', $article);
     $base = URL_ROOT;
     $article = preg_replace('#(src|href)=\"(?!http)#i', '$1="'.$base, $article);
     return $article;
 }
-/* functions : END */
-
-
 
 
 // dependancy
@@ -315,12 +320,12 @@ if (preg_match('#^[0-9]{14}$#', $postId)) {
             $found = 1;
             $modes_url .= 'links-';
         }
-        // si rien : prend blog
+        // default, blog
         if ($found == 0) {
             $liste_rss = $liste['a'];
         }
 
-    // si pas de mode, on prend le blog.
+    // default, blog
     } else {
         $liste_rss = array_merge($liste_rss, $liste['a']);
         // $found = 1;
