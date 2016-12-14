@@ -11,51 +11,35 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 # *** LICENSE ***
 
-// Set language
+// Language
 $lang = (string)filter_input(INPUT_GET, 'l');
-$GLOBALS['lang'] = ($lang != 'en' && $lang != 'fr') ? 'fr' : $lang;
+$GLOBALS['lang'] = (in_array($lang, array('en', 'fr'))) ? $lang : 'fr';
 
 define('BT_RUN_INSTALL', 1);
-
 require_once 'inc/boot.php';
-
-// dependancy
 require_once BT_ROOT.'admin/inc/links.php';
 
-/**
- * DevNote
- * - all the functions in this file are only used in the install process
- *   no need to be in /inc/*
- */
 
+// Install or reinstall with same config ?
+$step3 = (is_file(DIR_CONFIG.'mysql.ini') && file_get_contents(DIR_CONFIG.'mysql.ini') != '');
 
-/**
- * pour l'instant on doit garder cette partie en cas de perte de mot de passe
- */
-
-// install or reinstall with same config ?
-$step3 = (is_file(DIR_CONFIG.'mysql.ini') and file_get_contents(DIR_CONFIG.'mysql.ini') != '');
-
-// install is already done
-if (is_file(DIR_CONFIG.'user.ini') and is_file(DIR_CONFIG.'prefs.php') and !$step3) {
-    redirection('Location: auth.php');
+// Install already done
+if (is_file(DIR_CONFIG.'user.ini') && is_file(DIR_CONFIG.'prefs.php') && !$step3) {
+    redirection('auth.php');
 }
 
-
-// some constants definition
+// Some constants definition
 $GLOBALS['fuseau_horaire'] = 'UTC';
 
-
 /**
- * if file is already set, return true
- * else return fail write success
+ * Create the advanced configuration file.
  */
 function fichier_adv_conf()
 {
     if (is_file(FILE_SETTINGS_ADV)) {
         return true;
     }
-    $conf  = '; <?php die; ?>'."\n";
+    $conf = '; <?php die; ?>'."\n";
     $conf .= '; This file contains some more advanced configuration features.'."\n\n";
     $conf .= 'BLOG_UID = \''.sha1(uniqid(mt_rand(), true)).'\''."\n";
     $conf .= 'USE_IP_IN_SESSION = 1'."\n";
@@ -67,35 +51,30 @@ function fichier_adv_conf()
  * show the form for step 1 (language)
  * ! this function return nothing and use echo
  */
-function install_form_1_echo($erreurs = '')
+function install_form_1_echo($errors = '')
 {
     echo tpl_get_html_head('Install');
     echo '<div id="axe">';
     echo '<div id="pageauth">';
     echo '<h1>'.BLOGOTEXT_NAME.'</h1>';
     echo '<h1 id="step">Bienvenue / Welcome</h1>';
-    echo erreurs($erreurs);
+    echo erreurs($errors);
 
-    $conferrors = array();
-    // check PHP version
+    $confErrors = array();
     if (version_compare(PHP_VERSION, MINIMAL_PHP_REQUIRED_VERSION, '<')) {
-        $conferrors[] = '<li>Your PHP Version is '.PHP_VERSION.'. BlogoText requires '.MINIMAL_PHP_REQUIRED_VERSION.'.</li>';
+        $confErrors[] = '<li>Your PHP Version is '.PHP_VERSION.'. BlogoText requires '.MINIMAL_PHP_REQUIRED_VERSION.'.</li>';
     }
-    // pdo_sqlite and pdo_mysql (minimum one is required)
     if (!extension_loaded('pdo_sqlite') && !extension_loaded('pdo_mysql')) {
-        $conferrors[] = '<li>Neither <b>pdo_sqlite</b> or <b>pdo_mysql</b> PHP-modules are loaded. BlogoText needs at least one.</li>';
+        $confErrors[] = '<li>Neither <b>pdo_sqlite</b> or <b>pdo_mysql</b> PHP-modules are loaded. BlogoText needs at least one.</li>';
     }
-    // check directory readability
     if (!is_writable('../')) {
-        $conferrors[] = '<li>BlogoText has no write rights (chmod of home folder must be 644 at least, 777 recommended).</li>';
+        $confErrors[] = '<li>BlogoText has no write rights (chmod of home folder must be 644 at least, 777 recommended).</li>';
     }
-    if (!empty($conferrors)) {
-        echo '<ol class="erreurs">';
-        echo implode($conferrors, '');
-        echo '</ol>';
+    if ($confErrors) {
+        echo '<ol class="erreurs">'.implode($confErrors, '').'</ol>';
         echo '<p classe="erreurs">Installation aborded.</p>';
-        echo '</div>'.'</div>'.'</html>';
-        die;
+        echo '</div></div></html>';
+        return;
     }
 
     echo '<form method="post" action="install.php">';
@@ -118,14 +97,15 @@ function install_form_1_echo($erreurs = '')
  * show the form for step 2 (login + password + url)
  * ! this function return nothing and use echo
  */
-function install_form_2_echo($erreurs = '')
+function install_form_2_echo($errors = '')
 {
     echo tpl_get_html_head('Install');
     echo '<div id="axe">';
     echo '<div id="pageauth">';
     echo '<h1>'.BLOGOTEXT_NAME.'</h1>';
     echo '<h1 id="step">'.$GLOBALS['lang']['install'].'</h1>';
-    echo erreurs($erreurs);
+    echo erreurs($errors);
+
     echo '<form method="post" action="install.php?s='.$GLOBALS['step'].'&amp;l='.$GLOBALS['lang']['id'].'">'.'<div id="erreurs_js" class="erreurs"></div>';
     echo '<div id="install">';
     echo '<p>';
@@ -134,18 +114,14 @@ function install_form_2_echo($erreurs = '')
     echo '<p>';
         echo '<label for="mdp">'.$GLOBALS['lang']['install_mdp'].' </label><input type="password" name="mdp" id="mdp" size="30" value="" class="text" autocomplete="off" placeholder="••••••••••••" required /><button type="button" class="unveilmdp" onclick="return revealpass(\'mdp\');"></button>';
     echo '</p>';
-    // plz, keep commented code, in case of reverse before v3.7
-    // $lien = str_replace(DIR_ADMIN.'/install.php', '', 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['SCRIPT_NAME']); // https > http :/
-    // $lien = 'http://'.$_SERVER['SERVER_NAME'].dirname(dirname($_SERVER['SCRIPT_NAME'])); // https > http :/
-    $lien = ((isset($_SERVER['HTTPS']) || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)) ? 'https://' : 'http://');
-    $lien .= htmlentities($_SERVER['HTTP_HOST'].dirname(dirname($_SERVER['REQUEST_URI'])));
-    // bug fix for the last /
-    $lien .= ((strrpos($lien, '/', -1) === false) ? '/' : '' );
-    // bug fix for DIRECTORY_SEPARATOR
-    $lien = str_replace('\\', '/', $lien);
+
+    $link = ((isset($_SERVER['HTTPS']) || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)) ? 'https://' : 'http://');
+    $link .= htmlentities($_SERVER['HTTP_HOST'].dirname(dirname($_SERVER['REQUEST_URI'])));
+    $link = str_replace('\\', '/', $link);  // bug fix for DIRECTORY_SEPARATOR
+    $link = rtrim($link, '/').'/';  // ensure it ends with a slash
 
     echo '<p>';
-    echo '<label for="racine">'.$GLOBALS['lang']['pref_racine'].' </label><input type="url" name="racine" id="racine" size="30" value="'.$lien.'" class="text" required />';
+    echo '<label for="racine">'.$GLOBALS['lang']['pref_racine'].' </label><input type="url" name="racine" id="racine" size="30" value="'.$link.'" class="text" required />';
     echo '</p>';
     echo hidden_input('comm_defaut_status', 1);
     echo hidden_input('langue', $GLOBALS['lang']['id']);
@@ -159,23 +135,24 @@ function install_form_2_echo($erreurs = '')
  * show the form for step 3 (database)
  * ! this function return nothing and use echo
  */
-function install_form_3_echo($erreurs = '')
+function install_form_3_echo($errors = '')
 {
     echo tpl_get_html_head('Install');
     echo '<div id="axe">';
     echo '<div id="pageauth">';
     echo '<h1>'.BLOGOTEXT_NAME.'</h1>';
     echo '<h1 id="step">'.$GLOBALS['lang']['install'].'</h1>';
-    echo erreurs($erreurs);
+    echo erreurs($errors);
+
     echo '<form method="post" action="'.basename($_SERVER['SCRIPT_NAME']).'?'.$_SERVER['QUERY_STRING'].'">';
     echo '<div id="install">';
     echo '<p><label>'.$GLOBALS['lang']['install_choose_sgdb'].'</label>';
     echo '<select id="sgdb" name="sgdb" onchange="show_mysql_form()">';
     if (extension_loaded('pdo_sqlite')) {
-        echo "\t".'<option value="sqlite">SQLite</option>';
+        echo '<option value="sqlite">SQLite</option>';
     }
     if (extension_loaded('pdo_mysql')) {
-        echo "\t".'<option value="mysql">MySQL</option>';
+        echo '<option value="mysql">MySQL</option>';
     }
     echo '</select></p>';
 
@@ -195,7 +172,6 @@ function install_form_3_echo($erreurs = '')
     echo hidden_input('langue', $GLOBALS['lang']['id']);
     echo hidden_input('install_form_3_sended', 1);
     echo '<button class="submit button-submit" type="submit" name="enregistrer">Ok</button>';
-
     echo '</div>';
     echo '</form>';
 }
@@ -204,12 +180,17 @@ function fichier_mysql($sgdb)
 {
     $data = '';
     if ($sgdb !== false) {
+        $username = (string)filter_input(INPUT_POST, 'mysql_user', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $password = (string)filter_input(INPUT_POST, 'mysql_passwd', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $database = (string)filter_input(INPUT_POST, 'mysql_db', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $hostname = (string)filter_input(INPUT_POST, 'mysql_host', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
         $data .= '; <?php die; ?>'."\n";
         $data .= '; This file contains MySQL credentials and configuration.'."\n\n";
-        $data .= 'MYSQL_LOGIN = \''.htmlentities($_POST['mysql_user'], ENT_QUOTES).'\''."\n";
-        $data .= 'MYSQL_PASS = \''.htmlentities($_POST['mysql_passwd'], ENT_QUOTES).'\''."\n";
-        $data .= 'MYSQL_DB = \''.htmlentities($_POST['mysql_db'], ENT_QUOTES).'\''."\n";
-        $data .= 'MYSQL_HOST = \''.htmlentities($_POST['mysql_host'], ENT_QUOTES).'\''."\n\n";
+        $data .= 'MYSQL_LOGIN = \''.$username.'\''."\n";
+        $data .= 'MYSQL_PASS = \''.$password.'\''."\n";
+        $data .= 'MYSQL_DB = \''.$database.'\''."\n";
+        $data .= 'MYSQL_HOST = \''.$hostname.'\''."\n\n";
         $data .= 'DBMS = \''.$sgdb.'\''."\n";
     }
 
@@ -221,17 +202,20 @@ function fichier_mysql($sgdb)
  */
 function install_form_2_proceed()
 {
+    $username = (string)filter_input(INPUT_POST, 'identifiant');
+    $password = (string)filter_input(INPUT_POST, 'mdp');
+
     create_folder(DIR_CONFIG, 1); // todo : change for v4
     create_folder(DIR_IMAGES, 0); // todo : change for v4
     create_folder(DIR_DOCUMENTS, 0); // todo : change for v4
     create_folder(DIR_DATABASES, 1); // todo : change for v4
     create_folder(DIR_LOG, 1); // todo : change for v4
-    auth_write_user_login_file($_POST['identifiant'], $_POST['mdp']);
+    auth_write_user_login_file($username, $password);
     import_ini_file(FILE_USER); // todo : change for v4
     if (!is_file(FILE_SETTINGS)) {
         fichier_prefs();
     }
-    fichier_mysql(false); // create an empty file
+    fichier_mysql(false);
 }
 
 /**
@@ -247,14 +231,14 @@ function install_form_3_proceed()
 
     import_ini_file(FILE_MYSQL);
     $GLOBALS['db_handle'] = open_base();
-    $total_articles = liste_elements_count('SELECT count(ID) AS nbr FROM articles', array());
-    if ($total_articles != 0) {
+    $totalPosts = liste_elements_count('SELECT count(ID) AS nbr FROM articles', array());
+    if ($totalPosts != 0) {
         return;
     }
 
     $time = time();
     if ($GLOBALS['db_handle']) {
-        $first_post = array (
+        $post1 = array (
             'bt_id' => date('YmdHis', $time),
             'bt_date' => date('YmdHis', $time),
             'bt_title' => $GLOBALS['lang']['first_titre'],
@@ -268,7 +252,7 @@ function install_form_3_proceed()
             'bt_statut' => 1,
             'bt_allow_comments' => 1
         );
-        $readme_post = array (
+        $post2 = array (
             'bt_notes' => '',
             'bt_link' => '',
             'bt_tags' => '',
@@ -283,12 +267,12 @@ function install_form_3_proceed()
             'bt_statut' => 0,
             'bt_allow_comments' => 0
         );
-        if (true !== bdd_article($first_post, 'enregistrer-nouveau')) {
-            die('ERROR SQL posting first article..'); // billet "Mon premier article"
+        if (!bdd_article($post1, 'enregistrer-nouveau')) {
+            die('ERROR SQL posting first article.');
         }
-        bdd_article($readme_post, 'enregistrer-nouveau'); // billet "read me" avec les instructions // Assuming the 2nd possing will be good if the first was too.
+        bdd_article($post2, 'enregistrer-nouveau');
 
-        $link_ar = array(
+        $link1 = array(
             'bt_type' => 'link',
             'bt_id' => date('YmdHis', $time + 1),
             'bt_content' => 'This domain is established to be used for illustrative examples in documents. You may use this domain in examples without prior coordination or asking for permission.',
@@ -298,7 +282,7 @@ function install_form_3_proceed()
             'bt_tags' => 'blog, example',
             'bt_statut' => 1
         );
-        $link_ar2 = array(
+        $link2 = array(
             'bt_type' => 'note',
             'bt_id' => date('YmdHis', $time + 5),
             'bt_content' => 'Ceci est un lien privé. Vous seul pouvez le voir. / This is a private link. Only you can see it.',
@@ -308,10 +292,10 @@ function install_form_3_proceed()
             'bt_tags' => '',
             'bt_statut' => 0
         );
-        links_db_push($link_ar); // lien
-        links_db_push($link_ar2); // lien
+        links_db_push($link1);
+        links_db_push($link2);
 
-        $comm_ar = array(
+        $comment = array(
             'bt_type' => 'comment',
             'bt_id' => date('YmdHis', $time + 6),
             'bt_article_id' => date('YmdHis', $time),
@@ -325,10 +309,10 @@ function install_form_3_proceed()
             'bt_statut' => 1
         );
 
-        bdd_commentaire($comm_ar, 'enregistrer-nouveau'); // commentaire sur l’article
+        bdd_commentaire($comment, 'enregistrer-nouveau');
     }
 
-    fichier_adv_conf(); // is done right after DB init
+    fichier_adv_conf();
 }
 
 /**
@@ -337,14 +321,14 @@ function install_form_3_proceed()
  */
 function install_form_1_valid()
 {
-    $erreurs = array();
+    $errors = array();
     $lang = (string)filter_input(INPUT_POST, 'langue');
 
     if (!$lang) {
-        $erreurs[] = 'Vous devez choisir une langue / You have to choose a language';
+        $errors[] = 'Vous devez choisir une langue / You have to choose a language';
     }
 
-    return $erreurs;
+    return $errors;
 }
 
 /**
@@ -353,7 +337,7 @@ function install_form_1_valid()
  */
 function install_form_2_valid()
 {
-    $erreurs = array();
+    $errors = array();
     $username = (string)filter_input(INPUT_POST, 'identifiant');
     $password = (string)filter_input(INPUT_POST, 'mdp');
     /**
@@ -363,25 +347,25 @@ function install_form_2_valid()
     $url = (string)filter_input(INPUT_POST, 'racine', FILTER_VALIDATE_URL);
 
     if (!$username) {
-        $erreurs[] = $GLOBALS['lang']['err_prefs_identifiant'];
+        $errors[] = $GLOBALS['lang']['err_prefs_identifiant'];
     } elseif (preg_match('#[=\'"\\\\|]#iu', $username)) {
-        $erreurs[] = $GLOBALS['lang']['err_prefs_id_syntaxe'];
+        $errors[] = $GLOBALS['lang']['err_prefs_id_syntaxe'];
     }
 
     if ((strlen($password) < 6)) {
-        $erreurs[] = $GLOBALS['lang']['err_prefs_mdp'] ;
+        $errors[] = $GLOBALS['lang']['err_prefs_mdp'] ;
     }
 
     $url = trim($url);
     if (empty($url) || !preg_match('#^https?://.+#', $url)) {
-        $erreurs[] = $GLOBALS['lang']['err_prefs_racine'];
+        $errors[] = $GLOBALS['lang']['err_prefs_racine'];
     } elseif (!preg_match('/^https?:\/\//', $url)) {
-        $erreurs[] = $GLOBALS['lang']['err_prefs_racine_http'];
+        $errors[] = $GLOBALS['lang']['err_prefs_racine_http'];
     } elseif (!preg_match('/\/$/', $url)) {
-        $erreurs[] = $GLOBALS['lang']['err_prefs_racine_slash'];
+        $errors[] = $GLOBALS['lang']['err_prefs_racine_slash'];
     }
 
-    return $erreurs;
+    return $errors;
 }
 
 /**
@@ -390,7 +374,7 @@ function install_form_2_valid()
  */
 function install_form_3_valid()
 {
-    $erreurs = array();
+    $errors = array();
     $sgdb = (string)filter_input(INPUT_POST, 'sgdb');
 
     if ($sgdb == 'mysql') {
@@ -400,24 +384,24 @@ function install_form_3_valid()
         $host = (string)filter_input(INPUT_POST, 'mysql_host');
 
         if (!$user) {
-            $erreurs[] = $GLOBALS['lang']['install_err_mysql_usr_empty'];
+            $errors[] = $GLOBALS['lang']['install_err_mysql_usr_empty'];
         }
         if (!$password) {
-            $erreurs[] = $GLOBALS['lang']['install_err_mysql_pss_empty'];
+            $errors[] = $GLOBALS['lang']['install_err_mysql_pss_empty'];
         }
         if (!$database) {
-            $erreurs[] = $GLOBALS['lang']['install_err_mysql_dba_empty'];
+            $errors[] = $GLOBALS['lang']['install_err_mysql_dba_empty'];
         }
         if (!$host) {
-            $erreurs[] = $GLOBALS['lang']['install_err_mysql_hst_empty'];
+            $errors[] = $GLOBALS['lang']['install_err_mysql_hst_empty'];
         }
 
         if (!test_connection_mysql()) {
-            $erreurs[] = $GLOBALS['lang']['install_err_mysql_connect'];
+            $errors[] = $GLOBALS['lang']['install_err_mysql_connect'];
         }
     }
 
-    return $erreurs;
+    return $errors;
 }
 
 /**
@@ -426,44 +410,51 @@ function install_form_3_valid()
  */
 function test_connection_mysql()
 {
+    $username = (string)filter_input(INPUT_POST, 'mysql_user', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $password = (string)filter_input(INPUT_POST, 'mysql_passwd', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $database = (string)filter_input(INPUT_POST, 'mysql_db', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $hostname = (string)filter_input(INPUT_POST, 'mysql_host', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
     try {
-        $options_pdo[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
-        $db_handle = new PDO('mysql:host='.htmlentities($_POST['mysql_host'], ENT_QUOTES).';dbname='.htmlentities($_POST['mysql_db'], ENT_QUOTES), htmlentities($_POST['mysql_user'], ENT_QUOTES), htmlentities($_POST['mysql_passwd'], ENT_QUOTES), $options_pdo);
-        return true;
+        $dtb = new PDO('mysql:host='.$hostname.';dbname='.$database, $username, $password);
+        $dtb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     } catch (Exception $e) {
         return false;
     }
+
+    return true;
 }
 
 
-// get the step of the install
 $GLOBALS['step'] = (int)filter_input(INPUT_GET, 's');
 if ($GLOBALS['step'] == 0) {
-    // set language
-    if (isset($_POST['install_form_1_sended'])) {
+    // Set language
+    if (filter_input(INPUT_POST, 'install_form_1_sended') !== null) {
         if ($err_1 = install_form_1_valid()) {
             install_form_1_echo($err_1);
         } else {
-            redirection('install.php?s=2&l='.$_POST['langue']);
+            $language = (string)filter_input(INPUT_POST, 'langue');
+            redirection('install.php?s=2&l='.$language);
         }
     } else {
         install_form_1_echo();
     }
 } elseif ($GLOBALS['step'] == 2) {
-    // set login + password + url
-    if (isset($_POST['install_form_2_sended'])) {
+    // Set login + password + url
+    if (filter_input(INPUT_POST, 'install_form_2_sended') !== null) {
         if ($err_2 = install_form_2_valid()) {
             install_form_2_echo($err_2);
         } else {
             install_form_2_proceed();
-            redirection('install.php?s=3&l='.$_POST['langue']);
+            $language = (string)filter_input(INPUT_POST, 'langue');
+            redirection('install.php?s=3&l='.$language);
         }
     } else {
         install_form_2_echo();
     }
 } elseif ($GLOBALS['step'] == 3) {
-    // set db choice
-    if (isset($_POST['install_form_3_sended'])) {
+    // Set db choice
+    if (filter_input(INPUT_POST, 'install_form_3_sended') !== null) {
         if ($err_3 = install_form_3_valid()) {
             install_form_3_echo($err_3);
         } else {
@@ -478,7 +469,9 @@ if ($GLOBALS['step'] == 0) {
 echo '<script>
 function getSelectSgdb() {
     var selectElmt = document.getElementById("sgdb");
-    if (!selectElmt) return false;
+    if (!selectElmt) {
+        return false;
+    }
     return selectElmt.options[selectElmt.selectedIndex].value;
 }
 function show_mysql_form() {
@@ -491,12 +484,15 @@ function show_mysql_form() {
         }
     }
 }
-show_mysql_form(); // needed if MySQL is only option.
+show_mysql_form();  // needed if MySQL is only option.
 
 function revealpass(fieldId) {
     var field = document.getElementById(fieldId);
-    if (field.type == "password") { field.type = "text"; }
-    else { field.type = "password"; }
+    if (field.type == "password") {
+        field.type = "text";
+    } else {
+        field.type = "password";
+    }
     field.focus();
     field.setSelectionRange(field.value.length, field.value.length);
     return false;
