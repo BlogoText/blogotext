@@ -197,8 +197,8 @@ function traitment_form_post($post)
 {
     global $vars;
     if ($vars['enregistrer']) {
-        $result = bdd_article($post, ($post['ID']) ? 'modifier-existant' : 'enregistrer-nouveau');
-        $redir = basename($_SERVER['SCRIPT_NAME']).'?post_id='.$post['bt_id'].'&msg='.(($post['ID']) ? 'confirm_article_maj' : 'confirm_article_ajout');
+        $result = bdd_article($post, (!empty($post['ID'])) ? 'modifier-existant' : 'enregistrer-nouveau');
+        $redir = basename($_SERVER['SCRIPT_NAME']).'?post_id='.$post['bt_id'].'&msg='.((!empty($post['ID'])) ? 'confirm_article_maj' : 'confirm_article_ajout');
     } elseif ($vars['supprimer'] && $vars['ID']) {
         $result = bdd_article($post, 'supprimer-existant');
         $redir = 'articles.php?msg=confirm_article_suppr';
