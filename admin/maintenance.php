@@ -132,7 +132,7 @@ function rebuilt_file_db()
             $ext = strtolower(pathinfo($filepath, PATHINFO_EXTENSION));
             $new_file = array(
                 'bt_id' => $id,
-                'bt_type' => detection_type_fichier($ext),
+                'bt_type' => guess_file_type($ext),
                 'bt_fileext' => $ext,
                 'bt_filesize' => filesize($filepath),
                 'bt_filename' => $file,

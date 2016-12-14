@@ -11,14 +11,11 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 # *** LICENSE ***
 
-// disallow temporary auth_ttl()
 define('BT_RUN_LOGIN', 1);
-
 require_once 'inc/boot.php';
 
 
-$sessionOk = auth_check_session();
-if ($sessionOk) {
+if (auth_check_session()) {
     // Return to index if session already opened
     redirection('index.php');
 }

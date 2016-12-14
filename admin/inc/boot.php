@@ -11,32 +11,8 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 # *** LICENSE ***
 
-
-// Constant is admin // dont trust _SERVER, need more security
 define('IS_IN_ADMIN', true);
-
-// use init and security of public side
 require_once '../inc/boot.php';
-
-
-// table of recognized filetypes, for file-upload script.
-$GLOBALS['files_ext'] = array(
-    'archive' => array('zip', '7z', 'rar', 'tar', 'gz', 'bz', 'bz2', 'xz', 'lzma'),
-    'executable' => array('exe', 'e', 'bin', 'run'),
-    'android-apk' => array('apk'),
-    'html-xml' => array('html', 'htm', 'xml', 'mht'),
-    'image' => array('png', 'gif', 'bmp', 'jpg', 'jpeg', 'ico', 'svg', 'tif', 'tiff'),
-    'music' => array('mp3', 'wave', 'wav', 'ogg', 'wma', 'flac', 'aac', 'mid', 'midi', 'm4a'),
-    'presentation' => array('ppt', 'pptx', 'pps', 'ppsx', 'odp'),
-    'pdf' => array('pdf', 'ps', 'psd'),
-    'ebook' => array('epub', 'mobi'),
-    'spreadsheet' => array('xls', 'xlsx', 'xlt', 'xltx', 'ods', 'ots', 'csv'),
-    'text_document'=> array('doc', 'docx', 'rtf', 'odt', 'ott'),
-    'text-code' => array('txt', 'css', 'py', 'c', 'cpp', 'dat', 'ini', 'inf', 'text', 'conf', 'sh'),
-    'video' => array('mkv', 'mp4', 'ogv', 'avi', 'mpeg', 'mpg', 'flv', 'webm', 'mov', 'divx', 'rm', 'rmvb', 'wmv'),
-    'other' => array(''), // par défaut
-);
-
 
 
 /**
@@ -52,7 +28,5 @@ require_once BT_ROOT.'admin/inc/tpl.php'; // no choice !
 // Some actions are not required on install and login pages
 if (!defined('BT_RUN_INSTALL') && !defined('BT_RUN_LOGIN')) {
     auth_ttl();
-
-    // Open the database
     $GLOBALS['db_handle'] = open_base();
 }

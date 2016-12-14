@@ -351,7 +351,7 @@ function init_post_fichier()
         $ext = strtolower(pathinfo(htmlspecialchars($_POST['filename']), PATHINFO_EXTENSION));
         $checksum = htmlspecialchars($_POST['sha1_file']);
         $size = (int) $_POST['filesize'];
-        $type = detection_type_fichier($ext);
+        $type = guess_file_type($ext);
         $dossier = htmlspecialchars($_POST['dossier']);
         $path = htmlspecialchars($_POST['path']);
         // on new post, get info from the file itself
@@ -364,7 +364,7 @@ function init_post_fichier()
             $ext = strtolower(pathinfo($_FILES['fichier']['name'], PATHINFO_EXTENSION));
             $checksum = sha1_file($_FILES['fichier']['tmp_name']);
             $size = (int) $_FILES['fichier']['size'];
-            $type = detection_type_fichier($ext);
+            $type = guess_file_type($ext);
             $path = '';
             // ajout par une URL d’un fichier distant
         } elseif (!empty($_POST['fichier'])) {
@@ -373,7 +373,7 @@ function init_post_fichier()
             $checksum = sha1_file($_POST['fichier']); // works with URL files
             $size = 0;// same (even if we could use "filesize" with the URL, it would over-use data-transfer)
             $path = '';
-            $type = detection_type_fichier($ext);
+            $type = guess_file_type($ext);
         } else {
             // ERROR
             redirection(basename($_SERVER['SCRIPT_NAME']).'?errmsg=error_image_add');
@@ -475,18 +475,37 @@ function create_thumbnail($filepath)
     imagedestroy($thumb);
 }
 
-// à partir de l’extension du fichier, trouve le "type" correspondant.
-// les "type" et le tableau des extensions est le $GLOBALS['files_ext'] dans conf.php
-function detection_type_fichier($extension)
+/**
+ * Guess the filetype from file's externsion.
+ */
+function guess_file_type($extension)
 {
-    $good_type = 'other'; // par défaut
-    foreach ($GLOBALS['files_ext'] as $type => $exts) {
+    // Table of recognized filetypes
+    $extensions = array(
+        'archive' => array('zip', '7z', 'rar', 'tar', 'gz', 'bz', 'bz2', 'xz', 'lzma'),
+        'executable' => array('exe', 'e', 'bin', 'run'),
+        'android-apk' => array('apk'),
+        'html-xml' => array('html', 'htm', 'xml', 'mht'),
+        'image' => array('png', 'gif', 'bmp', 'jpg', 'jpeg', 'ico', 'svg', 'tif', 'tiff'),
+        'music' => array('mp3', 'wave', 'wav', 'ogg', 'wma', 'flac', 'aac', 'mid', 'midi', 'm4a'),
+        'presentation' => array('ppt', 'pptx', 'pps', 'ppsx', 'odp'),
+        'pdf' => array('pdf', 'ps', 'psd'),
+        'ebook' => array('epub', 'mobi'),
+        'spreadsheet' => array('xls', 'xlsx', 'xlt', 'xltx', 'ods', 'ots', 'csv'),
+        'text_document'=> array('doc', 'docx', 'rtf', 'odt', 'ott'),
+        'text-code' => array('txt', 'css', 'py', 'c', 'cpp', 'dat', 'ini', 'inf', 'text', 'conf', 'sh'),
+        'video' => array('mkv', 'mp4', 'ogv', 'avi', 'mpeg', 'mpg', 'flv', 'webm', 'mov', 'divx', 'rm', 'rmvb', 'wmv'),
+        'other' => array(''),  // default
+    );
+
+    $goodType = 'other';
+    foreach ($extensions as $type => $exts) {
         if (in_array($extension, $exts)) {
-            $good_type = $type;
-            break; // sort du foreach au premier 'match'
+            $goodType = $type;
+            break;
         }
     }
-    return $good_type;
+    return $goodType;
 }
 
 
