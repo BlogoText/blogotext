@@ -129,7 +129,7 @@ function install_form_2_echo($erreurs = '')
     echo '<form method="post" action="install.php?s='.$GLOBALS['step'].'&amp;l='.$GLOBALS['lang']['id'].'">'.'<div id="erreurs_js" class="erreurs"></div>';
     echo '<div id="install">';
     echo '<p>';
-        echo '<label for="identifiant">'.$GLOBALS['lang']['install_id'].' </label><input type="text" name="identifiant" id="identifiant" size="30" value="" class="text" placeholder="John Doe" required />';
+        echo '<label for="identifiant">'.$GLOBALS['lang']['install_id'].' </label><input type="text" name="identifiant" id="identifiant" size="30" value="" class="text" placeholder="John Doe" required autofocus  />';
     echo '</p>';
     echo '<p>';
         echo '<label for="mdp">'.$GLOBALS['lang']['install_mdp'].' </label><input type="password" name="mdp" id="mdp" size="30" value="" class="text" autocomplete="off" placeholder="••••••••••••" required /><button type="button" class="unveilmdp" onclick="return revealpass(\'mdp\');"></button>';
@@ -182,7 +182,7 @@ function install_form_3_echo($erreurs = '')
     echo '<div id="mysql_vars" style="display:none;">';
     if (extension_loaded('pdo_mysql')) {
         echo '<p><label for="mysql_user">MySQL User: </label>
-                    <input type="text" id="mysql_user" name="mysql_user" size="30" value="" class="text" placeholder="mysql_user" /></p>';
+                    <input type="text" id="mysql_user" name="mysql_user" size="30" value="" class="text" placeholder="mysql_user" autofocus /></p>';
         echo '<p><label for="mysql_password">MySQL Password: </label>
                     <input type="password" id="mysql_password" name="mysql_passwd" size="30" value="" class="text" placeholder="••••••••••••" autocomplete="off" /><button type="button" class="unveilmdp" onclick="return revealpass(\'mysql_password\');"></button></p>';
         echo '<p><label for="mysql_db">MySQL Database: </label>

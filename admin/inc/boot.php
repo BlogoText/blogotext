@@ -56,13 +56,3 @@ if (!defined('BT_RUN_INSTALL') && !defined('BT_RUN_LOGIN')) {
     // Open the database
     $GLOBALS['db_handle'] = open_base();
 }
-
-
-if (DEBUG) {
-    function d($data)
-    {
-        echo '<pre>';
-        var_dump($data);
-        echo '</pre>';
-    }
-}
