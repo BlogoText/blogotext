@@ -163,7 +163,7 @@ function init_post_post()
     $date = sprintf(
         '%04d%02d%02d%02d%02d%02d',
         $vars['annee'],
-        $vars['mois'],
+        $vars['mois'] + 1,
         $vars['jour'],
         $vars['heure'],
         $vars['minutes'],
