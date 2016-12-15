@@ -261,18 +261,9 @@ if (is_file(FILE_SETTINGS)) {
     // is it a valias ?
     if (is_file(DIR_VAR.$vhost.'/settings/valias.php')) {
         include DIR_VAR.$vhost.'/settings/valias.php';
-        /** todo : push in wiki/doc
-         * for the poc, just put an /var/alias-path/settings/valias.php
-         *  <?php
-         *  $valias = 'http://l-url-de-l-alias/';
-         *  $vhost = 'the-name-of-the-vhost-dir'; // /var/the-name-of-the-vhost-dir/
-         *  ?>
-         */
-
-        // petit test
         if (!isset($vhost) || !isset($valias)) {
-            log_error('Wrong VALIAS config for '. $vhost, true);
-            die('Wrong VALIAS config');
+            log_error('Wrong VALIAS settings for '. $vhost, true);
+            die('Wrong VALIAS settings');
         }
         if (!is_dir(DIR_VAR.'/'.$vhost.'/')) {
             log_error('VHOST handler for '. $vhost .' doesn\'t exists', true);
@@ -291,7 +282,6 @@ if (is_file(FILE_SETTINGS)) {
     define('DIR_VHOST', DIR_VAR.$vhost.'/');
     define('DIR_VHOST_ADDONS', DIR_VHOST.'addons/');
     // check the var/domain.tld/ exits
-    // must create it, ready for v4
     if (!is_dir(DIR_VHOST_ADDONS)) {
         require_once BT_ROOT.'inc/filesystem.php';
         if (!create_folder(DIR_VHOST_ADDONS, true, true)) {
@@ -322,18 +312,17 @@ if (is_file(FILE_SETTINGS)) {
     define('URL_IMAGES', URL_VAR.'img/');
 }
 
-
-// INIT SOME VARS
+// init some vars
 $GLOBALS['addons'] = array();
 $GLOBALS['form_commentaire'] = '';
 
-// ADVANCED CONFIG OPTIONS
+// advanced
 import_ini_file(FILE_SETTINGS_ADV);
 
-// DATABASE OPTIONS + MySQL DB PARAMS
+// db
 import_ini_file(FILE_MYSQL);
 
-// USER LOGIN + PW HASH
+// user
 import_ini_file(FILE_USER);
 
 
