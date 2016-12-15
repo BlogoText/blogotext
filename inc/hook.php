@@ -163,8 +163,7 @@ function hook_trigger_and_check($hook_name)
         return $args;
     }
 
-    // $tmp_hook = hook_trigger($hook_name, $texte);
-    $tmp_hook = call_user_func_array("hook_trigger", $args);
+    $tmp_hook = call_user_func_array('hook_trigger', $args);
     if (hook_check($hook_name, func_num_args(), $tmp_hook)) {
         return $tmp_hook;
     }

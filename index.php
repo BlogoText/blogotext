@@ -42,14 +42,13 @@ $GLOBALS['db_handle'] = open_base();
 $GLOBALS['tpl_class'] = '';
 
 
-// hookTrigger
+// run hook 'system-start'
 hook_trigger('system-start');
 
-/*****************************************************************************
- some misc requests
-******************************************************************************/
 
-// Random article
+/**
+ * get a random article
+ */
 if (isset($_GET['random'])) {
     try {
         // getting nb articles, gen random num, then select one article is much faster than "sql(order by rand limit 1)"
@@ -75,23 +74,24 @@ if (isset($_GET['random'])) {
         die('Erreur rand: '.$e->getMessage());
     }
 
-    exit(header('Location: '.$tableau[0]['bt_link']));
+    redirection($tableau[0]['bt_link']);
 }
 
-// unsubscribe request from comments-newsletter and redirect on main page
+/**
+ * unsubscribe request from comments-newsletter and redirect on main page
+ */
 if (isset($_GET['unsub'], $_GET['mail'], $_GET['article']) and $_GET['unsub'] == 1) {
     $res = unsubscribe(htmlspecialchars($_GET['mail']), htmlspecialchars($_GET['article']), (isset($_GET['all']) ? 1 : 0));
     if ($res == true) {
-        exit(header('Location: '.basename($_SERVER['SCRIPT_NAME']).'?unsubscriben=yes'));
+        redirection(basename($_SERVER['SCRIPT_NAME']).'?unsubscriben=yes');
     }
-    exit(header('Location: '.basename($_SERVER['SCRIPT_NAME']).'?unsubscriben=no'));
+    redirection(basename($_SERVER['SCRIPT_NAME']).'?unsubscriben=no');
 }
 
 
-/*****************************************************************************
- Show one post : 1 blogpost (with comments)
-******************************************************************************/
-// Single Blog Post
+/**
+ * Show one post : 1 article + comments
+ */
 if (isset($_GET['d']) and preg_match('#^\d{4}/\d{2}/\d{2}/\d{2}/\d{2}/\d{2}#', $_GET['d'])) {
     $tab = explode('/', $_GET['d']);
     $id = substr($tab['0'].$tab['1'].$tab['2'].$tab['3'].$tab['4'].$tab['5'], '0', '14');
@@ -145,8 +145,11 @@ if (isset($_GET['d']) and preg_match('#^\d{4}/\d{2}/\d{2}/\d{2}/\d{2}/\d{2}#', $
         http_response_code(404);
         afficher_index(null, 'list');
     }
-} // single link post
-elseif (isset($_GET['id']) and preg_match('#\d{14}#', $_GET['id'])) {
+
+/**
+ * request about 1 link
+ */
+} elseif (isset($_GET['id']) and preg_match('#\d{14}#', $_GET['id'])) {
     $tableau = liste_elements('SELECT * FROM links WHERE bt_id=? AND bt_statut=1', array($_GET['id']), 'links');
     if (!empty($tableau[0])) {
         $GLOBALS['tpl_class'] = 'content-links content-item';
@@ -157,8 +160,11 @@ elseif (isset($_GET['id']) and preg_match('#\d{14}#', $_GET['id'])) {
         http_response_code(404);
         afficher_index($tableau, 'list');
     }
-} // List of all articles
-elseif (isset($_GET['liste'])) {
+
+/**
+ * list all articles
+ */
+} elseif (isset($_GET['liste'])) {
     $query = 'SELECT bt_date,bt_id,bt_title,bt_nb_comments,bt_link FROM articles WHERE bt_date <= '.date('YmdHis').' AND bt_statut=1 ORDER BY bt_date DESC';
     $tableau = liste_elements($query, array(), 'articles');
     if (!empty($tableau[0])) {
@@ -168,10 +174,11 @@ elseif (isset($_GET['liste'])) {
         http_response_code(404);
     }
     afficher_liste($tableau);
-} /*****************************************************************************
- show by lists of more than one post
-******************************************************************************/
-else {
+
+/**
+ * show by lists of more than one post
+ */
+} else {
     $GLOBALS['tpl_class'] = '';
     $annee = date('Y');
     $mois = date('m');
@@ -179,7 +186,7 @@ else {
     $array = array();
     $query = 'SELECT * FROM ';
 
-    // paramètre mode : quelle table "mode" ?
+    // paramètre mode : quelle table "mode" ? (comment/links/article)
     if (isset($_GET['mode'])) {
         switch ($_GET['mode']) {
             case 'comments':

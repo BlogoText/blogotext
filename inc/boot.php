@@ -11,19 +11,8 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 # *** LICENSE ***
 
-// sources :
-// require_once 'inc/defines.php';
-// require_once BT_ROOT.'inc/conf.php';
-// require_once BT_ROOT.'inc/inc.php';
-
 // it's not for 0.00000002 sec ...
 $begin = microtime(true);
-
-/**
- * reorder by needs/priority
- * todo: reorder when 3.7 freeze
- * todo: reorder when 4.0 dev
- */
 
 // Use UTF-8 for all
 mb_internal_encoding('UTF-8');
@@ -43,12 +32,6 @@ define('DEBUG', true);
 define('BT_ROOT', dirname(dirname(__file__)).'/');
 
 
-/**
- * No special need to edit under this line
- * Except if it's a dev core and working in a dev version or ...
- */
-
-
 // if dev mod
 ini_set('display_errors', (int) DEBUG);
 if (DEBUG) {
@@ -57,39 +40,25 @@ if (DEBUG) {
     error_reporting(0);
 }
 
-
-
-/** [POC] log system
- * What about logrotate ?
- *
- * enable log and set custom log path for PHP
- *
- * if you want to push an error message use with addionals informations use log_error('your message')
- *                                          without                       error_log('your message')
- *
- * if you want to remove this POC, make sure to remove all log_error() in BT
+/**
+ * set ignore repeat for same message except if it's come from diffent line/file
  */
-// TODO dev: do we really need these two parameters?
 ini_set('ignore_repeated_errors', 1);
-ini_set('ignore_repeated_source', 1);
+ini_set('ignore_repeated_source', 0);
 
 
-/** [POC]
+/**
  * like error_log($message) but with addionals informations
  * push in $GLOBALS['errors']
  * can be used to only push in $GLOBALS['errors']
- *
- * ! if removed, take care, used in [core/addon] and maybe in other process ...
  *
  * @param string $message
  * @param bool $write, write in log file
  */
 function log_error($message, $write = true)
 {
-    // TODO: remove for the freeze, puts here to avoid to reinstall another time
-    create_folder(DIR_LOG, 1);
-
     if ($write === true && defined('DIR_LOG')) {
+        create_folder(DIR_LOG, true);
         $logFile = DIR_LOG.'errors-'.date('Ymd').'.log';
         $trace = debug_backtrace();
         $trace = (end($trace));
@@ -128,14 +97,6 @@ function log_error($message, $write = true)
         error_log(addslashes($log)."\n", 3, $logFile);
     }
 }
-// END OF [POC] log system
-
-
-
-
-/**
- * function to keep here
- */
 
 /**
  * Import several .ini config files with this function
@@ -157,29 +118,6 @@ function import_ini_file($file_path)
     }
     return false;
 }
-
-
-/**
- * https://example.com to /var/example.com/
- * This part will be modified and used for the v3.7 and v4.0
- * I let the code aerate the time to fully validate the process
- *
- * - some security/test on _SERVER['HTTP_HOST'] which can be hacked client side
- * - vhost name based on $GLOBALS['racine'] for handle
- *    http://example.tld/blog1/
- *    http://example.tld/blog2/
- * - support idn tld (maybe at a test for server side support)
- *
- * pre-v4
- *  - basic check with $GLOBALS['racine'] which can be trusted
- *    (config/prefs.php must be loaded)
- *  - Create folders if they do not exist
- *    (must be not the case with BT v4)
- *
- * post-v4 - need some work
- *  - this code should be run as soon as possible as a security test
- *  - use valided HTTP_HOST to build the DIR_VAR path
- */
 
 /**
  * @param string $http_host, like : example.tld || https://toto.example.tld/blog1/
@@ -205,18 +143,6 @@ function secure_host_to_path($http_host)
     }
 
     $http_host = htmlspecialchars($http_host, ENT_QUOTES);
-
-    /**
-     * for test purporse only !
-     */
-    // $http_host = $GLOBALS['racine'];
-    // $http_host = 'example.com/blog1/';
-    // $http_host = 'example.com/blog1/';
-    // $http_host = 'blog.example.com/blog1/';
-    // $http_host = '例如.中国';
-    // $http_host = '例如.中国/blog/';
-    // $http_host = 'سجل.السعودية/例如/admin';
-    // $http_host = 'سجل.السعودية/admin/';
 
     // add 'http://' for a valid parse_url
     if (strpos($http_host, 'http://') !== 0 && strpos($http_host, 'https://') !== 0) {
@@ -274,9 +200,7 @@ function secure_host_to_path($http_host)
     return $path;
 }
 
-/**
- * todo : preparation v4
- */
+
 // Constants: folders
 define('DIR_ADDONS', BT_ROOT.'addons/');
 define('DIR_ADMIN', BT_ROOT.'admin/');
@@ -306,9 +230,7 @@ define('BLOGOTEXT_VERSION', '3.7.0-dev');
 define('MINIMAL_PHP_REQUIRED_VERSION', '5.5');
 define('BLOGOTEXT_UA', 'Mozilla/5.0 (Windows NT 10; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0');
 
-/**
- * more constants after advanced boot
- */
+// more constants after advanced boot
 
 
 // system is installed
@@ -336,24 +258,12 @@ if (is_file(FILE_SETTINGS)) {
         die($vhost['message']);
     }
 
-    // POC VALIAS
-    // valias
+    // is it a valias ?
     if (is_file(DIR_VAR.$vhost.'/settings/valias.php')) {
         include DIR_VAR.$vhost.'/settings/valias.php';
-        /**
-         * for the poc, just put an
-         *  <?php
-         *  $valias = 'http://l-url-de-l-alias/';
-         *  $vhost = 'the-name-of-the-vhost-dir'; // /var/the-name-of-the-vhost-dir/
-         *  ?>
-         *
-         * alt. on pourrais aussi jouer avec $vhost = 'http://url-du-vost/ et le passer dans secure_host_to_path()
-         */
-
-        // petit test
-        if (!is_isset($vhost) || !is_isset($valias)) {
-            log_error('Wrong VALIAS config for '. $vhost, true);
-            die('Wrong VALIAS config');
+        if (!isset($vhost) || !isset($valias)) {
+            log_error('Wrong VALIAS settings for '. $vhost, true);
+            die('Wrong VALIAS settings');
         }
         if (!is_dir(DIR_VAR.'/'.$vhost.'/')) {
             log_error('VHOST handler for '. $vhost .' doesn\'t exists', true);
@@ -361,105 +271,58 @@ if (is_file(FILE_SETTINGS)) {
         }
     }
 
-    // boot 3.7
-    if (version_compare(BLOGOTEXT_VERSION, '4.0', '<')) {
-        // load prefs.php
-        require_once FILE_SETTINGS;
+    // load prefs.php
+    require_once FILE_SETTINGS;
 
-        // check the http_host with $GLOBALS['racine']
-        if (strpos($GLOBALS['racine'], $_SERVER['HTTP_HOST']) === false) {
-            die('Your HTTP HOST doesn\'t match the config of this BlogoText');
-        }
+    // check the http_host with $GLOBALS['racine']
+    if (strpos($GLOBALS['racine'], $_SERVER['HTTP_HOST']) === false) {
+        die('Your HTTP HOST doesn\'t match the config of this BlogoText');
+    }
 
-        define('DIR_VHOST', DIR_VAR.$vhost.'/');
-        define('DIR_VHOST_ADDONS', DIR_VHOST.'addons/');
-        // check the var/domain.tld/ exits
-        // must create it, ready for v4
-        if (!is_dir(DIR_VHOST_ADDONS)) {
-            require_once BT_ROOT.'inc/filesystem.php';
-            if (!create_folder(DIR_VHOST_ADDONS, true, true)) {
-                die('BlogoText can\'t create '. DIR_VHOST_ADDONS .', please check your file system rights for this folder.');
-            }
+    define('DIR_VHOST', DIR_VAR.$vhost.'/');
+    define('DIR_VHOST_ADDONS', DIR_VHOST.'addons/');
+    // check the var/domain.tld/ exits
+    if (!is_dir(DIR_VHOST_ADDONS)) {
+        require_once BT_ROOT.'inc/filesystem.php';
+        if (!create_folder(DIR_VHOST_ADDONS, true, true)) {
+            die('BlogoText can\'t create '. DIR_VHOST_ADDONS .', please check your file system rights for this folder.');
         }
+    }
 
-        if (isset($valias)) { // [POC] valias
-            define('URL_ROOT', $valias . ((strrpos($valias, '/', -1) === false) ? '/' : '' ));
-        } else {
-            define('URL_ROOT', $GLOBALS['racine'] . ((strrpos($GLOBALS['racine'], '/', -1) === false) ? '/' : '' ));
-        }
-        define('URL_VAR', URL_ROOT); // $GLOBALS['racine'] must end with '/'
-
-    /**
-     * boot 4.X
-     *
-     * this part must be remove during 3.7 freeze
-     * Cette partie ne sert qu'à dessiner les contours du boot de la v4
-     * afin de réfléchir sur le long terme au refactor du boot qui sera nécessaire (sûr a 99%)
-     */
-    } else if (version_compare(BLOGOTEXT_VERSION, '4.0', '>=')) {
-        // check for folder
-        if (!is_dir(DIR_VAR.$vhost.'/')) {
-            die('BlogoText can\'t find the var fold for your HTTP HOST');
-        }
-        // check for prefs.php
-        if (!is_file(DIR_VAR.$vhost.'/settings/prefs.php')) {
-            die('BlogoText can\'t find or read your prefs.ini');
-        }
-        require_once DIR_VAR.$vhost.'/settings/prefs.php';
-
-        if (strpos($GLOBALS['racine'], $_SERVER['HTTP_HOST']) === false) {
-            die('Your HTTP HOST doesn\'t match the config of this BlogoText');
-        }
-        // seem's good ;)
-        if (isset($valias)) { // [POC] valias
-            define('URL_ROOT', $valias . ((strrpos($valias, '/', -1) === false) ? '/' : '' ));
-        } else {
-            define('URL_ROOT', $GLOBALS['racine'] . ((strrpos($GLOBALS['racine'], '/', -1) === false) ? '/' : '' ));
-        }
-        define('URL_VAR', URL_ROOT .'var/'.$vhost.'/'); // URL_ROOT must end with '/'
-
-        define('DIR_VHOST', DIR_VAR.$vhost.'/');
-        define('DIR_VHOST_ADDONS', DIR_VHOST.'addons/');
+    if (isset($valias)) {
+        define('URL_ROOT', $valias . ((strrpos($valias, '/', -1) === false) ? '/' : '' ));
+    } else {
+        define('URL_ROOT', $GLOBALS['racine'] . ((strrpos($GLOBALS['racine'], '/', -1) === false) ? '/' : '' ));
     }
 
     // Timezone
     date_default_timezone_set($GLOBALS['fuseau_horaire']);
 
-    /**
-     * defines [vhost ready]
-     */
-
     // Constants: folders
-    define('DIR_VHOST_CACHE', DIR_VHOST.'cache/');
-    // we can break cache safely for 3.7, it's just cache
     define('DIR_CACHE', DIR_VAR.'cache/');
+    define('DIR_VHOST_CACHE', DIR_VHOST.'cache/');
+    define('DIR_VHOST_DATABASES', DIR_VHOST.'databases/');
 
     // Constants: databases
-    define('DIR_VHOST_DATABASES', DIR_VHOST.'databases/');
-    define('ADDONS_DB', DIR_VHOST_DATABASES.'addons.php'); // added in 3.7, must be [vhost ready]
+    define('ADDONS_DB', DIR_VHOST_DATABASES.'addons.php');
 
     // Constants: HTTP URL
-    // define('URL_DATABASES', URL_VAR.'databases/'); // useless ?
+    define('URL_VAR', URL_ROOT);
     define('URL_DOCUMENTS', URL_VAR.'files/');
     define('URL_IMAGES', URL_VAR.'img/');
-    // define('URL_THEMES', URL_VAR.'themes/');// not already used + see issues #155
 }
-/**
- * END OF /var/ part
- */
 
-
-// INIT SOME VARS
+// init some vars
 $GLOBALS['addons'] = array();
 $GLOBALS['form_commentaire'] = '';
 
-// ADVANCED CONFIG OPTIONS
+// advanced
 import_ini_file(FILE_SETTINGS_ADV);
 
-// DATABASE OPTIONS + MySQL DB PARAMS
+// db
 import_ini_file(FILE_MYSQL);
 
-// USER LOGIN + PW HASH
+// user
 import_ini_file(FILE_USER);
 
 
@@ -483,11 +346,8 @@ if (isset($GLOBALS['theme_choisi'])) {
 }
 
 
-
-
 /**
- * All file in /inc/*.php must be included here (except boot.php).
- * TODO optimise: for the v4.0
+ * main dependancys
  */
 require_once BT_ROOT.'inc/conv.php';
 require_once BT_ROOT.'inc/filesystem.php';

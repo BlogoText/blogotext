@@ -11,11 +11,17 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 # *** LICENSE ***
 
+/**
+ *
+ */
 function titre_url($title)
 {
     return trim(diacritique($title), '-');
 }
 
+/**
+ *
+ */
 function diacritique($texte)
 {
     $texte = strip_tags($texte);
@@ -31,6 +37,9 @@ function diacritique($texte)
     return $texte;
 }
 
+/**
+ *
+ */
 function parse_texte_paragraphs($texte)
 {
     // trims empty lines at begining and end of raw texte
@@ -89,6 +98,9 @@ function parse_texte_paragraphs($texte)
     return $texte_final;
 }
 
+/**
+ *
+ */
 function parse_texte_code($texte, $code_before)
 {
     if ($code_before) {
@@ -103,6 +115,9 @@ function parse_texte_code($texte, $code_before)
     return $texte;
 }
 
+/**
+ *
+ */
 function markup($texte)
 {
     $texte = preg_replace('#\[([^|]+)\|(\s*javascript.*)\]#i', '$1', $texte);
@@ -139,6 +154,9 @@ function markup($texte)
     return $texte_formate;
 }
 
+/**
+ *
+ */
 function date_formate($id, $format_force = '')
 {
     $retour = '';
@@ -165,6 +183,9 @@ function date_formate($id, $format_force = '')
     return ucfirst($retour);
 }
 
+/**
+ *
+ */
 function heure_formate($id)
 {
     $date = decode_id($id);
@@ -178,6 +199,9 @@ function heure_formate($id)
     return date($format[$GLOBALS['format_heure']], $timestamp);
 }
 
+/**
+ *
+ */
 function date_formate_iso($id)
 {
     $date = decode_id($id);
@@ -186,11 +210,17 @@ function date_formate_iso($id)
     return $date_iso;
 }
 
+/**
+ *
+ */
 function en_lettres($captchavalue)
 {
     return $GLOBALS['lang'][strval($captchavalue)];
 }
 
+/**
+ *
+ */
 function jour_en_lettres($jour, $mois, $annee)
 {
     $date = date('w', mktime(0, 0, 0, $mois, $jour, $annee));
@@ -220,6 +250,9 @@ function jour_en_lettres($jour, $mois, $annee)
     return $nom;
 }
 
+/**
+ *
+ */
 function mois_en_lettres($numero, $abbrv = 0)
 {
     if ($abbrv == 1) {
@@ -303,6 +336,9 @@ function mois_en_lettres($numero, $abbrv = 0)
     }
 }
 
+/**
+ *
+ */
 function nombre_objets($nb, $type)
 {
     switch ($nb) {
@@ -315,11 +351,17 @@ function nombre_objets($nb, $type)
     }
 }
 
+/**
+ *
+ */
 function str2($nb)
 {
     return str_pad($nb, 2, '0', STR_PAD_LEFT);
 }
 
+/**
+ *
+ */
 function str4($nb)
 {
     return str_pad($nb, 4, '0', STR_PAD_LEFT);

@@ -164,8 +164,10 @@ $GLOBALS['lang'] = array(
 'addons_settings_confirm_reset' => 'Do you really want to delete your settings ?',
 'addons_confirm_buttons_action' => 'This action can take some time, please, do not refresh or close your window before the end of the reload.',
 'addons_clean_cache_label' => 'Clean the cache for this addon ?',
+// feed
+'feed_article_comments_title' => 'Comments for ',
 // Notes
-'note_no_article' => 'No articles',
+'note_no_article' => 'No articles :/',
 'note_no_module' => 'No modules',
 'note_no_commentaire' => 'No comments',
 'note_comment_closed' => 'Comments are closed',

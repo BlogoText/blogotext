@@ -12,11 +12,17 @@
 # *** LICENSE ***
 
 
+/**
+ *
+ */
 function label($for, $txt)
 {
     return '<label for="'.$for.'">'.$txt.'</label>'."\n";
 }
 
+/**
+ *
+ */
 function erreurs($erreurs)
 {
     $html = '';
@@ -29,11 +35,17 @@ function erreurs($erreurs)
     return $html;
 }
 
+/**
+ *
+ */
 function erreur($message)
 {
       echo '<p class="erreurs">'.$message.'</p>'."\n";
 }
 
+/**
+ *
+ */
 function moteur_recherche()
 {
     $requete='';
@@ -50,6 +62,9 @@ function moteur_recherche()
     return $return;
 }
 
+/**
+ *
+ */
 function encart_commentaires()
 {
     $query = '
@@ -82,6 +97,9 @@ function encart_commentaires()
     }
 }
 
+/**
+ *
+ */
 function encart_categories($mode)
 {
     if ($GLOBALS['activer_categories'] == '1') {
@@ -109,6 +127,9 @@ function encart_categories($mode)
     }
 }
 
+/**
+ *
+ */
 function lien_pagination()
 {
     if (!isset($GLOBALS['param_pagination']) or isset($_GET['d']) or isset($_GET['liste']) or isset($_GET['id'])) {
@@ -158,6 +179,9 @@ function lien_pagination()
     return '<p class="pagination">'.$lien_precede.$lien_suivant.'</p>';
 }
 
+/**
+ *
+ */
 function liste_tags($billet, $html_link)
 {
     $mode = ($billet['bt_type'] == 'article') ? '' : '&amp;mode=links';

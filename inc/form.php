@@ -11,8 +11,10 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 # *** LICENSE ***
 
-# Generic forms
 
+/**
+ *
+ */
 function hidden_input($nom, $valeur, $id = 0)
 {
     $id = ($id === 0) ? '' : ' id="'.$nom.'"';
@@ -21,6 +23,9 @@ function hidden_input($nom, $valeur, $id = 0)
 }
 
 
+/**
+ *
+ */
 function valider_form_commentaire($commentaire, $mode)
 {
     $erreurs = array();
@@ -57,6 +62,9 @@ function valider_form_commentaire($commentaire, $mode)
     return $erreurs;
 }
 
+/**
+ *
+ */
 function valider_form_commentaire_ajax($commentaire)
 {
     $erreurs = array();
@@ -71,24 +79,33 @@ function valider_form_commentaire_ajax($commentaire)
 }
 
 
-# Preferences forms
-
-
+/**
+ *
+ */
 function s_color($color)
 {
     return '<button type="button" onclick="insertTag(this, \'[color='.$color.']\',\'[/color]\');"><span style="background:'.$color.';"></span></button>';
 }
 
+/**
+ *
+ */
 function s_size($size)
 {
     return '<button type="button" onclick="insertTag(this, \'[size='.$size.']\',\'[/size]\');"><span style="font-size:'.$size.'pt;">'.$size.'. Ipsum</span></button>';
 }
 
+/**
+ *
+ */
 function s_u($char)
 {
     return '<button type="button" onclick="insertChar(this, \''.$char.'\');"><span>'.$char.'</span></button>';
 }
 
+/**
+ *
+ */
 function form_formatting_toolbar($extended = false)
 {
     $html = '';
