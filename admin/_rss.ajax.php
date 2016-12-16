@@ -171,138 +171,140 @@ function feed2array($feedContent, $feedlink)
         return false;
     }
 
-    if (@$feedObject = new SimpleXMLElement($feedContent, LIBXML_NOCDATA)) {
-        $flux['infos']['version']=$feedObject->attributes()->version;
-        if (!empty($feedObject->attributes()->version)) {
-            $flux['infos']['version'] = (string)$feedObject->attributes()->version;
-        }
-        if (!empty($feedObject->channel->title)) {
-            $flux['infos']['title'] = (string)$feedObject->channel->title;
-        }
-        if (!empty($feedObject->channel->subtitle)) {
-            $flux['infos']['subtitle'] = (string)$feedObject->channel->subtitle;
-        }
-        if (!empty($feedObject->channel->link)) {
-            $flux['infos']['link'] = (string)$feedObject->channel->link;
-        }
-        if (!empty($feedObject->channel->description)) {
-            $flux['infos']['description'] = (string)$feedObject->channel->description;
-        }
-        if (!empty($feedObject->channel->language)) {
-            $flux['infos']['language'] = (string)$feedObject->channel->language;
-        }
-        if (!empty($feedObject->channel->copyright)) {
-            $flux['infos']['copyright'] = (string)$feedObject->channel->copyright;
-        }
+    try {
+        @$feedObject = new SimpleXMLElement($feedContent, LIBXML_NOCDATA);
+    } catch(Exception $e) {
+        return false;
+    }
 
-        if (!empty($feedObject->title)) {
-            $flux['infos']['title'] = (string)$feedObject->title;
-        }
-        if (!empty($feedObject->subtitle)) {
-            $flux['infos']['subtitle'] = (string)$feedObject->subtitle;
-        }
-        if (!empty($feedObject->link)) {
-            $flux['infos']['link'] = (string)$feedObject->link;
-        }
-        if (!empty($feedObject->description)) {
-            $flux['infos']['description'] = (string)$feedObject->description;
-        }
-        if (!empty($feedObject->language)) {
-            $flux['infos']['language'] = (string)$feedObject->language;
-        }
-        if (!empty($feedObject->copyright)) {
-            $flux['infos']['copyright'] = (string)$feedObject->copyright;
-        }
+    $flux['infos']['version'] = $feedObject->attributes()->version;
+    if (!empty($feedObject->attributes()->version)) {
+        $flux['infos']['version'] = (string)$feedObject->attributes()->version;
+    }
+    if (!empty($feedObject->channel->title)) {
+        $flux['infos']['title'] = (string)$feedObject->channel->title;
+    }
+    if (!empty($feedObject->channel->subtitle)) {
+        $flux['infos']['subtitle'] = (string)$feedObject->channel->subtitle;
+    }
+    if (!empty($feedObject->channel->link)) {
+        $flux['infos']['link'] = (string)$feedObject->channel->link;
+    }
+    if (!empty($feedObject->channel->description)) {
+        $flux['infos']['description'] = (string)$feedObject->channel->description;
+    }
+    if (!empty($feedObject->channel->language)) {
+        $flux['infos']['language'] = (string)$feedObject->channel->language;
+    }
+    if (!empty($feedObject->channel->copyright)) {
+        $flux['infos']['copyright'] = (string)$feedObject->channel->copyright;
+    }
 
-        if (!empty($feedObject->channel->item)) {
-            $items = $feedObject->channel->item;
-        }
-        if (!empty($feedObject->entry)) {
-            $items = $feedObject->entry;
-        }
-        if (empty($items)) {
-            return $flux;
-        }
+    if (!empty($feedObject->title)) {
+        $flux['infos']['title'] = (string)$feedObject->title;
+    }
+    if (!empty($feedObject->subtitle)) {
+        $flux['infos']['subtitle'] = (string)$feedObject->subtitle;
+    }
+    if (!empty($feedObject->link)) {
+        $flux['infos']['link'] = (string)$feedObject->link;
+    }
+    if (!empty($feedObject->description)) {
+        $flux['infos']['description'] = (string)$feedObject->description;
+    }
+    if (!empty($feedObject->language)) {
+        $flux['infos']['language'] = (string)$feedObject->language;
+    }
+    if (!empty($feedObject->copyright)) {
+        $flux['infos']['copyright'] = (string)$feedObject->copyright;
+    }
 
-        foreach ($items as $item) {
-            $c = count($flux['items']);
-            if (!empty($item->title)) {
-                $flux['items'][$c]['bt_title'] = html_entity_decode((string)$item->title, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-            } else {
-                $flux['items'][$c]['bt_title'] = "-";
-            }
-            if (!empty($item->link['href'])) {
-                $flux['items'][$c]['bt_link'] = (string)$item->link['href'];
-            }
-            if (!empty($item->link)) {
-                $flux['items'][$c]['bt_link'] = (string)$item->link;
-            }
-
-            if (!empty($item->guid)) {
-                $flux['items'][$c]['bt_id'] = (string)$item->guid;
-            } elseif (!empty($item->id)) {
-                $flux['items'][$c]['bt_id'] = (string)$item->id;
-            } else {
-                $flux['items'][$c]['bt_id'] = microtime();
-            }
-
-            if (empty($flux['items'][$c]['bt_link'])) {
-                $flux['items'][$c]['bt_link'] = $flux['items'][$c]['bt_id'];
-            }
-
-            if (!empty($item->pubDate)) {
-                $flux['items'][$c]['bt_date'] = (string)$item->pubDate;
-            }
-            if (!empty($item->published)) {
-                $flux['items'][$c]['bt_date'] = (string)$item->published;
-            }
-
-            if (!empty($item->subtitle)) {
-                $flux['items'][$c]['bt_content'] = (string)$item->subtitle;
-            }
-            if (!empty($item->description)) {
-                $flux['items'][$c]['bt_content'] = (string)$item->description;
-            }
-            if (!empty($item->summary)) {
-                $flux['items'][$c]['bt_content'] = (string)$item->summary;
-            }
-            if (!empty($item->content)) {
-                $flux['items'][$c]['bt_content'] = (string)$item->content;
-            }
-
-            if (!empty($item->children('content', true)->encoded)) {
-                $flux['items'][$c]['bt_content'] = (string)$item->children('content', true)->encoded;
-            }
-
-            if (!isset($flux['items'][$c]['bt_content'])) {
-                $flux['items'][$c]['bt_content'] = '';
-            }
-
-            if (!isset($flux['items'][$c]['bt_date'])) {
-                if (!empty($item->updated)) {
-                    $flux['items'][$c]['bt_date'] = (string)$item->updated;
-                }
-            }
-            if (!isset($flux['items'][$c]['bt_date'])) {
-                if (!empty($item->children('dc', true)->date)) {
-                    $flux['items'][$c]['bt_date'] = (string)$item->children('dc', true)->date;
-                }
-            }
-
-            if (!empty($flux['items'][$c]['bt_date'])) {
-                $flux['items'][$c]['bt_date'] = strtotime($flux['items'][$c]['bt_date']);
-            } else {
-                $flux['items'][$c]['bt_date'] = time();
-            }
-
-            $flux['items'][$c]['bt_feed_url'] = $feedlink;
-            $flux['items'][$c]['bt_folder'] = (isset($GLOBALS['liste_flux'][$feedlink]['folder'])) ? $GLOBALS['liste_flux'][$feedlink]['folder'] : '';
-        }
-
+    if (!empty($feedObject->channel->item)) {
+        $items = $feedObject->channel->item;
+    }
+    if (!empty($feedObject->entry)) {
+        $items = $feedObject->entry;
+    }
+    if (empty($items)) {
         return $flux;
     }
 
-    return false;
+    foreach ($items as $item) {
+        $c = count($flux['items']);
+        if (!empty($item->title)) {
+            $flux['items'][$c]['bt_title'] = html_entity_decode((string)$item->title, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        } else {
+            $flux['items'][$c]['bt_title'] = "-";
+        }
+        if (!empty($item->link['href'])) {
+            $flux['items'][$c]['bt_link'] = (string)$item->link['href'];
+        }
+        if (!empty($item->link)) {
+            $flux['items'][$c]['bt_link'] = (string)$item->link;
+        }
+
+        if (!empty($item->guid)) {
+            $flux['items'][$c]['bt_id'] = (string)$item->guid;
+        } elseif (!empty($item->id)) {
+            $flux['items'][$c]['bt_id'] = (string)$item->id;
+        } else {
+            $flux['items'][$c]['bt_id'] = microtime();
+        }
+
+        if (empty($flux['items'][$c]['bt_link'])) {
+            $flux['items'][$c]['bt_link'] = $flux['items'][$c]['bt_id'];
+        }
+
+        if (!empty($item->pubDate)) {
+            $flux['items'][$c]['bt_date'] = (string)$item->pubDate;
+        }
+        if (!empty($item->published)) {
+            $flux['items'][$c]['bt_date'] = (string)$item->published;
+        }
+
+        if (!empty($item->subtitle)) {
+            $flux['items'][$c]['bt_content'] = (string)$item->subtitle;
+        }
+        if (!empty($item->description)) {
+            $flux['items'][$c]['bt_content'] = (string)$item->description;
+        }
+        if (!empty($item->summary)) {
+            $flux['items'][$c]['bt_content'] = (string)$item->summary;
+        }
+        if (!empty($item->content)) {
+            $flux['items'][$c]['bt_content'] = (string)$item->content;
+        }
+
+        if (!empty($item->children('content', true)->encoded)) {
+            $flux['items'][$c]['bt_content'] = (string)$item->children('content', true)->encoded;
+        }
+
+        if (!isset($flux['items'][$c]['bt_content'])) {
+            $flux['items'][$c]['bt_content'] = '';
+        }
+
+        if (!isset($flux['items'][$c]['bt_date'])) {
+            if (!empty($item->updated)) {
+                $flux['items'][$c]['bt_date'] = (string)$item->updated;
+            }
+        }
+        if (!isset($flux['items'][$c]['bt_date'])) {
+            if (!empty($item->children('dc', true)->date)) {
+                $flux['items'][$c]['bt_date'] = (string)$item->children('dc', true)->date;
+            }
+        }
+
+        if (!empty($flux['items'][$c]['bt_date'])) {
+            $flux['items'][$c]['bt_date'] = strtotime($flux['items'][$c]['bt_date']);
+        } else {
+            $flux['items'][$c]['bt_date'] = time();
+        }
+
+        $flux['items'][$c]['bt_feed_url'] = $feedlink;
+        $flux['items'][$c]['bt_folder'] = (isset($GLOBALS['liste_flux'][$feedlink]['folder'])) ? $GLOBALS['liste_flux'][$feedlink]['folder'] : '';
+    }
+
+    return $flux;
 }
 
 
