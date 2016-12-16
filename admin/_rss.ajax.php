@@ -312,7 +312,6 @@ $isRefreshing = (filter_input(INPUT_GET, 'refresh_all') !== null);
 $guid = (string)filter_input(INPUT_GET, 'guid');
 if ($isRefreshing) {
     if ($guid == BLOG_UID) {
-        $GLOBALS['db_handle'] = open_base();
         $GLOBALS['liste_flux'] = open_serialzd_file(FEEDS_DB);
         refresh_rss($GLOBALS['liste_flux']);
         die('Success');
@@ -320,7 +319,6 @@ if ($isRefreshing) {
     die('Error');
 }
 
-$GLOBALS['db_handle'] = open_base();
 $GLOBALS['liste_flux'] = open_serialzd_file(FEEDS_DB);
 
 /*

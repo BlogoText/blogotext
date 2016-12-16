@@ -106,20 +106,25 @@ function humanFileSize(bytes)
 
 function switch_form(activeForm)
 {
-    var form_export = document.getElementById('form_export');
-    var form_import = document.getElementById('form_import');
-    var form_optimi = document.getElementById('form_optimi');
+    var form_export = document.getElementById('form_export'),
+        form_import = document.getElementById('form_import'),
+        form_optimi = document.getElementById('form_optimi');
+
     form_export.style.display = form_import.style.display = form_optimi.style.display = 'none';
     document.getElementById(activeForm).style.display = 'block';
 }
 
 function switch_export_type(activeForm)
 {
-    var e_json = document.getElementById('e_json');
-    var e_html = document.getElementById('e_html');
-    var e_zip = document.getElementById('e_zip');
+    var e_json = document.getElementById('e_json'),
+        e_html = document.getElementById('e_html'),
+        e_zip = document.getElementById('e_zip'),
+        e_active = document.getElementById(activeForm);
+
     e_json.style.display = e_html.style.display = e_zip.style.display = 'none';
-    document.getElementById(activeForm).style.display = 'block';
+    if (e_active) {
+        e_active.style.display = 'block';
+    }
 }
 
 function hide_forms(blocs)
@@ -132,8 +137,11 @@ function hide_forms(blocs)
     for (var i = 0, length = radios.length; i < length; i++) {
         if (!radios[i].checked) {
             var cont = document.getElementById('e_'+radios[i].value);
-            while (cont.firstChild) {
-                cont.removeChild(cont.firstChild);}
+            if (cont) {
+                while (cont.firstChild) {
+                    cont.removeChild(cont.firstChild);
+                }
+            }
         }
     }
 }

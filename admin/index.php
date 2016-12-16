@@ -87,7 +87,7 @@ function display_graph($arr, $title, $cls)
     $txt .= '<canvas height="150" width="400"></canvas>';
     $txt .= '<div class="graphique" id="'.$cls.'">';
     $txt .= '<div class="month"><div class="month-bar"></div></div>';
-    foreach ($arr as $idx => $data) {
+    foreach ($arr as $data) {
         $txt .= '<div class="month"><div class="month-bar" style="height:'.$data['nb_scale'].'px;margin-top:'.max(3 - $data['nb_scale'], 0).'px"></div>';
         $txt .= '<span class="month-nb">'.$data['nb'].'</span><a href="articles.php?filtre='.$data['date'].'"><span class="month-name">'.mb_substr(mois_en_lettres(substr($data['date'], 4, 2)), 0, 3).'<br>'.substr($data['date'], 2, 2).'</span></a></div>';
     }

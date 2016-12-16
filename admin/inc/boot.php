@@ -15,6 +15,10 @@ define('IS_IN_ADMIN', true);
 require_once '../inc/boot.php';
 
 
+// TODO v4: to move elsewhere.
+define('URL_BACKUP', URL_ROOT.'bt_backup/');
+
+
 /**
  * All file in /admin/inc/*.php must be included here (except boot.php).
  * TODO optimise: for the v4.0
