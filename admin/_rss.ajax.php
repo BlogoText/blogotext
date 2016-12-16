@@ -245,7 +245,7 @@ function feed2array($feedContent, $feedlink)
             } else {
                 $flux['items'][$c]['bt_id'] = microtime();
             }
-            // dirty fix
+
             if (empty($flux['items'][$c]['bt_link'])) {
                 $flux['items'][$c]['bt_link'] = $flux['items'][$c]['bt_id'];
             }
@@ -274,12 +274,10 @@ function feed2array($feedContent, $feedlink)
                 $flux['items'][$c]['bt_content'] = (string)$item->children('content', true)->encoded;
             }
 
-            // no content found ?
             if (!isset($flux['items'][$c]['bt_content'])) {
                 $flux['items'][$c]['bt_content'] = '';
             }
 
-            // no date found ?
             if (!isset($flux['items'][$c]['bt_date'])) {
                 if (!empty($item->updated)) {
                     $flux['items'][$c]['bt_date'] = (string)$item->updated;
@@ -289,7 +287,7 @@ function feed2array($feedContent, $feedlink)
                 if (!empty($item->children('dc', true)->date)) {
                     $flux['items'][$c]['bt_date'] = (string)$item->children('dc', true)->date;
                 }
-            } // <dc:date>
+            }
 
             if (!empty($flux['items'][$c]['bt_date'])) {
                 $flux['items'][$c]['bt_date'] = strtotime($flux['items'][$c]['bt_date']);
@@ -297,9 +295,7 @@ function feed2array($feedContent, $feedlink)
                 $flux['items'][$c]['bt_date'] = time();
             }
 
-            // place le lien du flux (on a besoin de ça)
             $flux['items'][$c]['bt_feed_url'] = $feedlink;
-            // place le dossier
             $flux['items'][$c]['bt_folder'] = (isset($GLOBALS['liste_flux'][$feedlink]['folder'])) ? $GLOBALS['liste_flux'][$feedlink]['folder'] : '';
         }
 

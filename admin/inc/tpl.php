@@ -18,33 +18,32 @@ function tpl_show_topnav($titre)
     if (strlen($titre) == 0) {
         $titre = BLOGOTEXT_NAME;
     }
-    $html = '';
-    $html .= '<div id="nav">'."\n";
-    $html .=  "\t".'<ul>'."\n";
-    $html .=  "\t\t".'<li><a href="index.php" id="lien-index"'.(($tab == 'index.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['label_resume'].'</a></li>'."\n";
-    $html .=  "\t\t".'<li><a href="articles.php" id="lien-liste"'.(($tab == 'articles.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['mesarticles'].'</a></li>'."\n";
-    $html .=  "\t\t".'<li><a href="ecrire.php" id="lien-nouveau"'.(($tab == 'ecrire.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['nouveau'].'</a></li>'."\n";
-    $html .=  "\t\t".'<li><a href="commentaires.php" id="lien-lscom"'.(($tab == 'commentaires.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['titre_commentaires'].'</a></li>'."\n";
-    $html .=  "\t\t".'<li><a href="fichiers.php" id="lien-fichiers"'.(($tab == 'fichiers.php') ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_fichiers']).'</a></li>'."\n";
-    if ($GLOBALS['onglet_liens']) {
-        $html .=  "\t\t".'<li><a href="links.php" id="lien-links"'.(($tab == 'links.php') ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_links']).'</a></li>'."\n";
+    $html = '<div id="nav">';
+    $html .=  '<ul>';
+    $html .=  '<li><a href="index.php" id="lien-index"'.(($tab == 'index.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['label_resume'].'</a></li>';
+    $html .=  '<li><a href="articles.php" id="lien-liste"'.(($tab == 'articles.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['mesarticles'].'</a></li>';
+    $html .=  '<li><a href="ecrire.php" id="lien-nouveau"'.(($tab == 'ecrire.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['nouveau'].'</a></li>';
+    $html .=  '<li><a href="commentaires.php" id="lien-lscom"'.(($tab == 'commentaires.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['titre_commentaires'].'</a></li>';
+    $html .=  '<li><a href="fichiers.php" id="lien-fichiers"'.(($tab == 'fichiers.php') ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_fichiers']).'</a></li>';
+    if ($GLOBALS['afficher_liens']) {
+        $html .=  '<li><a href="links.php" id="lien-links"'.(($tab == 'links.php') ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_links']).'</a></li>';
     }
-    if ($GLOBALS['onglet_rss']) {
-        $html .=  "\t\t".'<li><a href="feed.php" id="lien-rss"'.(($tab == 'feed.php') ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_feeds']).'</a></li>'."\n";
+    if ($GLOBALS['afficher_rss']) {
+        $html .=  '<li><a href="feed.php" id="lien-rss"'.(($tab == 'feed.php') ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_feeds']).'</a></li>';
     }
-    $html .=  "\t".'</ul>'."\n";
-    $html .=  '</div>'."\n";
+    $html .=  '</ul>';
+    $html .=  '</div>';
 
-    $html .=  '<h1>'.$titre.'</h1>'."\n";
+    $html .=  '<h1>'.$titre.'</h1>';
 
-    $html .=  '<div id="nav-acc">'."\n";
-    $html .=  "\t".'<ul>'."\n";
-    $html .=  "\t\t".'<li><a href="preferences.php" id="lien-preferences">'.$GLOBALS['lang']['preferences'].'</a></li>'."\n";
-    $html .=  "\t\t".'<li><a href="addons.php" id="lien-modules">'.ucfirst($GLOBALS['lang']['label_modules']).'</a></li>'."\n";
-    $html .=  "\t\t".'<li><a href="'.URL_ROOT.'" id="lien-site">'.$GLOBALS['lang']['blog_link'].'</a></li>'."\n";
-    $html .=  "\t\t".'<li><a href="logout.php" id="lien-deconnexion">'.$GLOBALS['lang']['deconnexion'].'</a></li>'."\n";
-    $html .=  "\t".'</ul>'."\n";
-    $html .=  '</div>'."\n";
+    $html .=  '<div id="nav-acc">';
+    $html .=  '<ul>';
+    $html .=  '<li><a href="preferences.php" id="lien-preferences">'.$GLOBALS['lang']['preferences'].'</a></li>';
+    $html .=  '<li><a href="addons.php" id="lien-modules">'.ucfirst($GLOBALS['lang']['label_modules']).'</a></li>';
+    $html .=  '<li><a href="'.URL_ROOT.'" id="lien-site">'.$GLOBALS['lang']['blog_link'].'</a></li>';
+    $html .=  '<li><a href="logout.php" id="lien-deconnexion">'.$GLOBALS['lang']['deconnexion'].'</a></li>';
+    $html .=  '</ul>';
+    $html .=  '</div>';
     echo $html;
 }
 
@@ -68,28 +67,28 @@ function tpl_show_msg()
 function tpl_show_preview($article)
 {
     if (isset($article)) {
-        $apercu = '<h2>'.$article['bt_title'].'</h2>'."\n";
+        $apercu = '<h2>'.$article['bt_title'].'</h2>';
         if (empty($article['bt_abstract'])) {
             $article['bt_abstract'] = mb_substr(strip_tags($article['bt_content']), 0, 249).'…';
         }
-        $apercu .= '<div><strong>'.$article['bt_abstract'].'</strong></div>'."\n";
-        $apercu .= '<div>'.rel2abs_admin($article['bt_content']).'</div>'."\n";
-        echo '<div id="apercu">'."\n".$apercu.'</div>'."\n\n";
+        $apercu .= '<div><strong>'.$article['bt_abstract'].'</strong></div>';
+        $apercu .= '<div>'.rel2abs_admin($article['bt_content']).'</div>';
+        echo '<div id="apercu">'.$apercu.'</div>';
     }
 }
 
 // function afficher_html_head($titre)
 function tpl_get_html_head($title)
 {
-    $html = '<!DOCTYPE html>'."\n";
-    $html .= '<html>'."\n";
-    $html .= '<head>'."\n";
-    $html .= "\t".'<meta charset="UTF-8" />'."\n";
-    $html .= "\t".'<link type="text/css" rel="stylesheet" href="style/style.css.php?v='.BLOGOTEXT_VERSION.'" />'."\n";
-    $html .= "\t".'<meta name="viewport" content="initial-scale=1.0, user-scalable=yes" />'."\n";
-    $html .= "\t".'<title>'.$title.' | '.BLOGOTEXT_NAME.'</title>'."\n";
-    $html .= '</head>'."\n";
-    $html .= '<body id="body">'."\n\n";
+    $html = '<!DOCTYPE html>';
+    $html .= '<html>';
+    $html .= '<head>';
+    $html .= '<meta charset="UTF-8" />';
+    $html .= '<link type="text/css" rel="stylesheet" href="style/style.css.php?v='.BLOGOTEXT_VERSION.'" />';
+    $html .= '<meta name="viewport" content="initial-scale=1.0, user-scalable=yes" />';
+    $html .= '<title>'.$title.' | '.BLOGOTEXT_NAME.'</title>';
+    $html .= '</head>';
+    $html .= '<body id="body">';
     return $html;
 }
 
@@ -101,27 +100,27 @@ function tpl_get_footer($begin_time = '')
         $msg = ' - '.$GLOBALS['lang']['rendered'].' '.$dt.' s '.$GLOBALS['lang']['using'].' '.DBMS;
     }
 
-    $html = '</div>'."\n";
-    $html .= '</div>'."\n";
-    $html .= '<p id="footer"><a href="'.BLOGOTEXT_SITE.'">'.BLOGOTEXT_NAME.' '.BLOGOTEXT_VERSION.'</a>'.$msg.'</p>'."\n";
-    $html .= '</body>'."\n";
-    $html .= '</html>'."\n";
+    $html = '</div>';
+    $html .= '</div>';
+    $html .= '<p id="footer"><a href="'.BLOGOTEXT_SITE.'">'.BLOGOTEXT_NAME.' '.BLOGOTEXT_VERSION.'</a>'.$msg.'</p>';
+    $html .= '</body>';
+    $html .= '</html>';
     echo $html;
 }
 
 function confirmation($message)
 {
-    echo '<div class="confirmation">'.$message.'</div>'."\n";
+    echo '<div class="confirmation">'.$message.'</div>';
 }
 
 function no_confirmation($message)
 {
-    echo '<div class="no_confirmation">'.$message.'</div>'."\n";
+    echo '<div class="no_confirmation">'.$message.'</div>';
 }
 
 function info($message)
 {
-    return '<p class="info">'.$message.'</p>'."\n";
+    return '<p class="info">'.$message.'</p>';
 }
 
 function question($message)
@@ -148,10 +147,10 @@ function php_lang_to_js($a)
     $frontend_str['questionSupprArticle'] = $GLOBALS['lang']['question_suppr_article'];
     $frontend_str['questionSupprFichier'] = $GLOBALS['lang']['question_suppr_fichier'];
 
-    $sc = 'var BTlang = '.json_encode($frontend_str).';'."\n";
+    $sc = 'var BTlang = '.json_encode($frontend_str).';';
 
     if ($a == 1) {
-        $sc = "\n".'<script>'."\n".$sc."\n".'</script>'."\n";
+        $sc = '<script>'.$sc.'</script>';
     }
     return $sc;
 }

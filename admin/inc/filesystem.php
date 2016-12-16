@@ -109,88 +109,85 @@ function liste_base_files($tri_selon, $motif, $nombre)
 
 function fichier_prefs()
 {
-    if (!empty($_POST['_verif_envoi'])) {
-        $lang = (isset($_POST['langue']) and preg_match('#^[a-z]{2}$#', $_POST['langue'])) ? $_POST['langue'] : 'fr';
-        $auteur = addslashes(clean_txt(htmlspecialchars($_POST['auteur'])));
-        $email = addslashes(clean_txt(htmlspecialchars($_POST['email'])));
-        $nomsite = addslashes(clean_txt(htmlspecialchars($_POST['nomsite'])));
-        $description = addslashes(clean_txt(htmlspecialchars($_POST['description'])));
-        $keywords = addslashes(clean_txt(htmlspecialchars($_POST['keywords'])));
-        $racine = addslashes(trim(htmlspecialchars($_POST['racine'])));
-        $max_bill_acceuil = htmlspecialchars($_POST['nb_maxi']);
-        $max_bill_admin = (int) $_POST['nb_list'];
-        $max_comm_admin = (int) $_POST['nb_list_com'];
-        $max_rss_admin = (int) $_POST['nb_list_rss'];
-        $format_date = (int) $_POST['format_date'];
-        $format_heure = (int) $_POST['format_heure'];
-        $fuseau_horaire = addslashes(clean_txt(htmlspecialchars($_POST['fuseau_horaire'])));
-        $global_com_rule = (int) isset($_POST['global_comments']);
-        $activer_categories = (int) isset($_POST['activer_categories']);
-        $afficher_rss = (int) isset($_POST['aff_onglet_rss']);
-        $afficher_liens = (int) isset($_POST['aff_onglet_liens']);
-        $theme_choisi = addslashes(clean_txt(htmlspecialchars($_POST['theme'])));
-        $comm_defaut_status = (int) $_POST['comm_defaut_status'];
-        $automatic_keywords = (int) isset($_POST['auto_keywords']);
-        $alert_author = (int) isset($_POST['alert_author']);
-        $require_email = (int) isset($_POST['require_email']);
-        $auto_check_updates = (int) isset($_POST['check_update']);
-        $auto_dl_liens_fichiers = (int) $_POST['dl_link_to_files'];
-        $nombre_liens_admin = (int) $_POST['nb_list_linx'];
-    } else {
-        $lang = (isset($_POST['langue']) and preg_match('#^[a-z]{2}$#', $_POST['langue'])) ? $_POST['langue'] : 'fr';
-        $auteur = addslashes(clean_txt(htmlspecialchars(USER_LOGIN)));
-        $email = 'mail@example.com';
-        $nomsite = 'BlogoText';
-        $description = addslashes(clean_txt($GLOBALS['lang']['go_to_pref']));
-        $keywords = 'blog, blogotext';
-        $racine = addslashes(clean_txt(trim(htmlspecialchars($_POST['racine']))));
-        $max_bill_acceuil = 10;
-        $max_bill_admin = 25;
-        $max_comm_admin = 50;
-        $max_rss_admin = 25;
-        $format_date = 0;
-        $format_heure = 0;
-        $fuseau_horaire = 'UTC';
-        $global_com_rule = 0;
-        $activer_categories = 1;
-        $afficher_rss = 1;
-        $afficher_liens = 1;
-        $theme_choisi = 'default';
-        $comm_defaut_status = 1;
-        $automatic_keywords = 1;
-        $alert_author = 0;
-        $require_email = 0;
-        $auto_check_updates = 1;
-        $auto_dl_liens_fichiers = 0;
-        $nombre_liens_admin = 50;
+    $vars = array(
+        'activer_categories' => 1,
+        'afficher_liens' => 1,
+        'afficher_rss' => 1,
+        'alert_author' => 0,
+        'auteur' => addslashes(clean_txt(htmlspecialchars(USER_LOGIN))),
+        'auto_check_updates' => 1,
+        'automatic_keywords' => 1,
+        'comm_defaut_status' => 1,
+        'description' => addslashes(clean_txt($GLOBALS['lang']['go_to_pref'])),
+        'dl_link_to_files' => 0,
+        'email' => 'mail@example.com',
+        'format_date' => 0,
+        'format_heure' => 0,
+        'fuseau_horaire' => 'UTC',
+        'global_com_rule' => 0,
+        'keywords' => 'blog, blogotext',
+        'max_bill_acceuil' => 10,
+        'max_bill_admin' => 25,
+        'max_comm_admin' => 50,
+        'max_rss_admin' => 25,
+        'nb_list_linx' => 50,
+        'nom_du_site' => BLOGOTEXT_NAME,
+        'require_email' => 0,
+        'theme_choisi' => 'default',
+    );
+
+    if (filter_input(INPUT_POST, '_verif_envoi') !== null) {
+        $string = FILTER_SANITIZE_STRING;
+        $int = FILTER_VALIDATE_INT;
+
+        $vars = filter_input_array(INPUT_POST, array(
+            'auteur' => $string,
+            'comm_defaut_status' => $int,
+            'description' => $string,
+            'dl_link_to_files' => $int,
+            'email' => $string | FILTER_VALIDATE_EMAIL,
+            'format_date' => $int,
+            'format_heure' => $int,
+            'fuseau_horaire' => $string,
+            'keywords' => $string,
+            'lang' => $string,
+            'max_bill_acceuil' => $int,
+            'max_bill_admin' => $int,
+            'max_comm_admin' => $int,
+            'max_rss_admin' => $int,
+            'nb_list_linx' => $int,
+            'nom_du_site' => $string,
+            'theme_choisi' => $string,
+        ));
+
+        $vars['activer_categories'] = (filter_input(INPUT_POST, 'activer_categories') !== null);
+        $vars['global_com_rule'] = (filter_input(INPUT_POST, 'global_com_rule') !== null);
+        $vars['afficher_liens'] = (filter_input(INPUT_POST, 'afficher_liens') !== null);
+        $vars['afficher_rss'] = (filter_input(INPUT_POST, 'afficher_rss') !== null);
+        $vars['automatic_keywords'] = (filter_input(INPUT_POST, 'automatic_keywords') !== null);
+        $vars['alert_author'] = (filter_input(INPUT_POST, 'alert_author') !== null);
+        $vars['require_email'] = (filter_input(INPUT_POST, 'require_email') !== null);
+        $vars['auto_check_updates'] = (filter_input(INPUT_POST, 'auto_check_updates') !== null);
     }
+
+    // Always setted scalars
+    $vars['lang'] = (string)filter_input(INPUT_POST, 'langue');
+    $vars['racine'] = (string)filter_input(INPUT_POST, 'racine');
+
+    // Some checks, then sort
+    if (!preg_match('#^[a-z]{2}$#', $vars['lang'])) {
+        $vars['lang'] = 'fr';
+    }
+    ksort($vars);
+
     $prefs = "<?php\n";
-    $prefs .= "\$GLOBALS['lang'] = '".$lang."';\n";
-    $prefs .= "\$GLOBALS['auteur'] = '".$auteur."';\n";
-    $prefs .= "\$GLOBALS['email'] = '".$email."';\n";
-    $prefs .= "\$GLOBALS['nom_du_site'] = '".$nomsite."';\n";
-    $prefs .= "\$GLOBALS['description'] = '".$description."';\n";
-    $prefs .= "\$GLOBALS['keywords'] = '".$keywords."';\n";
-    $prefs .= "\$GLOBALS['racine'] = '".$racine."';\n";
-    $prefs .= "\$GLOBALS['max_bill_acceuil'] = ".$max_bill_acceuil.";\n";
-    $prefs .= "\$GLOBALS['max_bill_admin'] = ".$max_bill_admin.";\n";
-    $prefs .= "\$GLOBALS['max_comm_admin'] = ".$max_comm_admin.";\n";
-    $prefs .= "\$GLOBALS['max_rss_admin'] = ".$max_rss_admin.";\n";
-    $prefs .= "\$GLOBALS['format_date'] = ".$format_date.";\n";
-    $prefs .= "\$GLOBALS['format_heure'] = ".$format_heure.";\n";
-    $prefs .= "\$GLOBALS['fuseau_horaire'] = '".$fuseau_horaire."';\n";
-    $prefs .= "\$GLOBALS['activer_categories'] = ".$activer_categories.";\n";
-    $prefs .= "\$GLOBALS['onglet_rss'] = ".$afficher_rss.";\n";
-    $prefs .= "\$GLOBALS['onglet_liens'] = ".$afficher_liens.";\n";
-    $prefs .= "\$GLOBALS['theme_choisi'] = '".$theme_choisi."';\n";
-    $prefs .= "\$GLOBALS['global_com_rule'] = ".$global_com_rule.";\n";
-    $prefs .= "\$GLOBALS['comm_defaut_status'] = ".$comm_defaut_status.";\n";
-    $prefs .= "\$GLOBALS['automatic_keywords'] = ".$automatic_keywords.";\n";
-    $prefs .= "\$GLOBALS['alert_author'] = ".$alert_author.";\n";
-    $prefs .= "\$GLOBALS['require_email'] = ".$require_email.";\n";
-    $prefs .= "\$GLOBALS['check_update'] = ".$auto_check_updates.";\n";
-    $prefs .= "\$GLOBALS['max_linx_admin'] = ".$nombre_liens_admin.";\n";
-    $prefs .= "\$GLOBALS['dl_link_to_files'] = ".$auto_dl_liens_fichiers.";\n";
+    foreach ($vars as $key => $value) {
+        $prefs .= sprintf(
+            "\$GLOBALS['%s'] = %s;\n",
+            $key,
+            (is_numeric($value) || is_bool($value) || empty($value)) ? (int)$value : '"'.$value.'"'
+        );
+    }
 
     return (file_put_contents(FILE_SETTINGS, $prefs, LOCK_EX) !== false);
 }

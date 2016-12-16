@@ -133,7 +133,7 @@ if (!$vars['url'] && !$vars['ajout']) {
             SELECT *
               FROM links
              ORDER BY bt_id DESC
-             LIMIT '.($GLOBALS['max_linx_admin'] + 0);
+             LIMIT '.($GLOBALS['nb_list_linx'] + 0);
         $arr = liste_elements($sql, array(), 'links');
     }
 }
