@@ -25,26 +25,24 @@ $erreurs = array();
 if (isset($_POST['format']) && $_POST['format'] == 'json') {
     // [POC]
     $erreurs = addon_ajax_check_request(htmlspecialchars($_POST['addon_id']), 'addon_button_action');
-    if (!empty($erreurs)) {
-        echo json_encode(
+    if ($erreur) {
+        die(json_encode(
             array(
                 'success' => false,
                 'message' => $erreurs['0'],
                 'token' => new_token()
             )
-        );
-        die;
-    } else {
-        $process = addon_ajax_button_action_process(htmlspecialchars($_POST['addon_id']), htmlspecialchars($_POST['button_id']));
-        echo json_encode(
-            array(
-                'success' => false,
-                'message' => $erreurs,
-                'token' => new_token()
-            )
-        );
-        die();
+        ));
     }
+
+    $process = addon_ajax_button_action_process(htmlspecialchars($_POST['addon_id']), htmlspecialchars($_POST['button_id']));
+    die(json_encode(
+        array(
+            'success' => false,
+            'message' => $erreurs,
+            'token' => new_token()
+        )
+    ));
 }
 
 // traitement d’une action sur le module
@@ -63,25 +61,25 @@ if (isset($_POST['_verif_envoi']) && isset($_POST['action_type'])) {
 
 echo tpl_get_html_head($GLOBALS['lang']['mesmodules']);
 
-echo '<div id="header">'."\n";
-    echo '<div id="top">'."\n";
+echo '<div id="header">';
+    echo '<div id="top">';
         echo moteur_recherche();
         tpl_show_topnav($GLOBALS['lang']['mesmodules']);
-    echo '</div>'."\n";
-echo '</div>'."\n";
+    echo '</div>';
+echo '</div>';
 
-echo '<div id="axe">'."\n";
-echo '<div id="page">'."\n";
+echo '<div id="axe">';
+echo '<div id="page">';
 
 // echo erreurs($erreurs);
 
 echo addon_form_buttons($_GET['addon']);
 echo addon_form_edit_settings($_GET['addon']);
 
-echo "\n".'<script src="style/javascript.js"></script>'."\n";
+echo '<script src="style/javascript.js"></script>';
 echo '<script>';
 echo php_lang_to_js(0);
-echo 'var csrf_token = \''.new_token().'\'';
+echo 'var csrf_token = "'.new_token().'";';
 echo '</script>';
 ?>
 

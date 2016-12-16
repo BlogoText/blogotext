@@ -12,11 +12,8 @@
 # *** LICENSE ***
 
 require_once 'inc/boot.php';
-
-// dependancy
 require_once BT_ROOT.'inc/addons.php';
 require_once BT_ROOT.'admin/inc/addons.php';
-
 
 
 /**
@@ -40,24 +37,12 @@ if (isset($_POST['_verif_envoi'])) {
         $erreurs[] = $GLOBALS['lang']['err_addon_status'];
     }
     if (isset($_POST['mod_activer'])) {
-        if (!empty($erreurs)) {
-            echo 'Error';
-            echo implode("\n", $erreurs);
-            die;
-        } else {
-            /**
-             * FIXME: this should not return anything. Put a is_readable() in addon_ajax_check_request(),
-             *        or somewhere more appropriate. Or simply die with error, since this is
-             *        critical error that shouldn’t allow BT to run.
-             */
-            /**
-             * From : RemRem
-             * Depuis la maj de core/addon et les modifs que j'ai fait, c'est bon non ?
-             */
-            addon_ajax_switch_enabled_proceed($module);
+        if ($erreurs) {
+            die('Error'.implode("\n", $erreurs));
         }
+        addon_ajax_switch_enabled_proceed($module);
     } else {
-        $erreurs = addon_ajax_switch_enabled_proceed($module); // FIXME: same here.
+        $erreurs = addon_ajax_switch_enabled_proceed($module);
     }
 }
 
@@ -79,32 +64,32 @@ if ($filtre == 'disabled') {
 
 echo tpl_get_html_head($GLOBALS['lang']['mesmodules']);
 
-echo '<div id="header">'."\n";
-    echo '<div id="top">'."\n";
+echo '<div id="header">';
+    echo '<div id="top">';
         echo moteur_recherche();
         tpl_show_topnav($GLOBALS['lang']['mesmodules']);
-    echo '</div>'."\n";
-echo '</div>'."\n";
+    echo '</div>';
+echo '</div>';
 
-echo '<div id="axe">'."\n";
-echo '<div id="page">'."\n";
+echo '<div id="axe">';
+echo '<div id="page">';
 
 echo erreurs($erreurs);
-// SUBNAV
-echo '<div id="subnav">'."\n";
+// Subnav
+echo '<div id="subnav">';
     echo addon_form_list_addons_filter($filtre);
-    echo '<div class="nombre-elem">'."\n";
+    echo '<div class="nombre-elem">';
     echo ucfirst(nombre_objets(count($tableau), 'module')).' '.$GLOBALS['lang']['sur'].' '.count($addons);
-    echo '</div>'."\n";
-echo '</div>'."\n";
+    echo '</div>';
+echo '</div>';
 
 echo addons_html_get_list_addons($tableau, $filtre);
 
-echo "\n".'<script src="style/javascript.js"></script>'."\n";
+echo '<script src="style/javascript.js"></script>';
 echo '<script>';
 echo 'addons_showhide_list();';
 echo php_lang_to_js(0);
-echo 'var csrf_token = \''.new_token().'\'';
+echo 'var csrf_token = "'.new_token().'";';
 echo '</script>';
 
 echo tpl_get_footer($begin);

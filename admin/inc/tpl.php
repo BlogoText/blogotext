@@ -49,17 +49,21 @@ function tpl_show_topnav($titre)
 
 function tpl_show_msg()
 {
-    // message vert
-    if (isset($_GET['msg'])) {
-        if (array_key_exists(htmlspecialchars($_GET['msg']), $GLOBALS['lang'])) {
-            $suffix = (isset($_GET['nbnew'])) ? htmlspecialchars($_GET['nbnew']).' '.$GLOBALS['lang']['rss_nouveau_flux'] : ''; // nb new RSS
-            confirmation($GLOBALS['lang'][$_GET['msg']].$suffix);
+    // Success message
+    $msg = (string)filter_input(INPUT_GET, 'msg');
+    if ($msg) {
+        if (array_key_exists(htmlspecialchars($msg), $GLOBALS['lang'])) {
+            $nbnew = (string)filter_input(INPUT_GET, 'nbnew');
+            $suffix = ($nbnew) ? htmlspecialchars($nbnew).' '.$GLOBALS['lang']['rss_nouveau_flux'] : ''; // nb new RSS
+            confirmation($GLOBALS['lang'][$msg].$suffix);
         }
     }
-    // message rouge
-    if (isset($_GET['errmsg'])) {
-        if (array_key_exists($_GET['errmsg'], $GLOBALS['lang'])) {
-            no_confirmation($GLOBALS['lang'][$_GET['errmsg']]);
+
+    // Error message
+    $errmsg = (string)filter_input(INPUT_GET, 'errmsg');
+    if ($errmsg) {
+        if (array_key_exists($errmsg, $GLOBALS['lang'])) {
+            no_confirmation($GLOBALS['lang'][$errmsg]);
         }
     }
 }

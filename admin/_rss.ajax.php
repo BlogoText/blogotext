@@ -173,7 +173,7 @@ function feed2array($feedContent, $feedlink)
 
     try {
         @$feedObject = new SimpleXMLElement($feedContent, LIBXML_NOCDATA);
-    } catch(Exception $e) {
+    } catch (Exception $e) {
         return false;
     }
 
