@@ -440,7 +440,7 @@ if ($markAsRead !== null) {
 
     $req = $GLOBALS['db_handle']->prepare($sql);
     $db_process = ($req->execute($array));
-    die( $db_process ? 'Success' : 'Fail');
+    die($db_process ? 'Success' : 'Fail');
 }
 
 // Mark some elements as fav
