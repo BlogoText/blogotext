@@ -12,6 +12,8 @@
 # *** LICENSE ***
 
 require_once 'inc/boot.php';
+
+// dependancy
 require_once BT_ROOT.'inc/addons.php';
 require_once BT_ROOT.'admin/inc/addons.php';
 
@@ -22,7 +24,6 @@ require_once BT_ROOT.'admin/inc/addons.php';
 
 // load all addons without cache
 $t = addons_load_all(false);
-
 
 
 // traitement d’une action sur le module

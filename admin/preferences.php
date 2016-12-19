@@ -47,6 +47,9 @@ function is_valid_version($version)
     return preg_match($regex, $version);
 }
 
+/**
+ *
+ */
 function form_format_date($default)
 {
     $day = jour_en_lettres(date('d'), date('m'), date('Y'));
@@ -71,6 +74,9 @@ function form_format_date($default)
     return $form;
 }
 
+/**
+ *
+ */
 function form_timezone($default)
 {
     $timezones = timezone_identifiers_list();
@@ -108,6 +114,9 @@ function form_timezone($default)
     return $form;
 }
 
+/**
+ *
+ */
 function form_format_hour($default)
 {
     $formats = array (
@@ -125,6 +134,9 @@ function form_format_hour($default)
     return $form;
 }
 
+/**
+ *
+ */
 function form_language($default)
 {
     $form = '<label>'.$GLOBALS['lang']['pref_langue'].'</label>';
@@ -136,6 +148,9 @@ function form_language($default)
     return $form;
 }
 
+/**
+ *
+ */
 function list_themes($path)
 {
     if ($handler = opendir($path)) {
@@ -151,6 +166,9 @@ function list_themes($path)
     }
 }
 
+/**
+ *
+ */
 function validate_form_preferences()
 {
     $errors = array();
@@ -197,7 +215,10 @@ function validate_form_preferences()
     return $errors;
 }
 
-// Preferences form
+
+/**
+ * v
+ */
 function display_form_prefs($errors = '')
 {
     $submitBox = '<div class="submit-bttns">';

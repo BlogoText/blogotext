@@ -15,14 +15,6 @@ define('IS_IN_ADMIN', true);
 require_once '../inc/boot.php';
 
 
-// TODO v4: to move elsewhere.
-define('URL_BACKUP', URL_ROOT.'bt_backup/');
-
-
-/**
- * All file in /admin/inc/*.php must be included here (except boot.php).
- * TODO optimise: for the v4.0
- */
 require_once BT_ROOT.'admin/inc/auth.php'; // Security, dont move !
 require_once BT_ROOT.'admin/inc/filesystem.php';
 require_once BT_ROOT.'admin/inc/form.php';
@@ -31,6 +23,7 @@ require_once BT_ROOT.'admin/inc/tpl.php'; // no choice !
 
 // Some actions are not required on install and login pages
 if (!defined('BT_RUN_INSTALL') && !defined('BT_RUN_LOGIN')) {
+    define('URL_BACKUP', URL_ROOT.'bt_backup/');
     auth_ttl();
     $GLOBALS['db_handle'] = open_base();
 }

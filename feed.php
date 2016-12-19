@@ -233,6 +233,7 @@ function rel2abs($article)
 
 // dependancy
 require_once BT_ROOT.'inc/addons.php';
+// launch hook
 hook_trigger('system-start');
 
 

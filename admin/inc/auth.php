@@ -15,6 +15,9 @@ if (!defined('BT_ROOT')) {
     die('Requires BT_ROOT.');
 }
 
+/**
+ *
+ */
 function auth_kill_session()
 {
     unset($_SESSION['nom_utilisateur'], $_SESSION['user_id'], $_SESSION['tokens']);
@@ -34,6 +37,9 @@ function auth_kill_session()
     redirection('auth.php');
 }
 
+/**
+ *
+ */
 function get_ip()
 {
     $ipAddr = (string)$_SERVER['REMOTE_ADDR'];

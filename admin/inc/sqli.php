@@ -11,6 +11,9 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 # *** LICENSE ***
 
+/**
+ *
+ */
 function bdd_article($post, $what)
 {
     if ($what == 'enregistrer-nouveau') {

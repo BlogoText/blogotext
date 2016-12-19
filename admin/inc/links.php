@@ -11,6 +11,9 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 # *** LICENSE ***
 
+/**
+ *
+ */
 function links_db_push($link)
 {
     $req = $GLOBALS['db_handle']->prepare('
@@ -39,6 +42,9 @@ function links_db_push($link)
     ));
 }
 
+/**
+ *
+ */
 function links_db_upd($link)
 {
     $req = $GLOBALS['db_handle']->prepare('
@@ -62,6 +68,9 @@ function links_db_upd($link)
     ));
 }
 
+/**
+ *
+ */
 function links_db_del($link)
 {
     $sql = '
@@ -131,7 +140,9 @@ function init_post_link2()
     return $link;
 }
 
-// Add a link from BO
+/**
+ * Add a link from BO
+ */
 function afficher_form_link($step, $errors, $linkEdited = '')
 {
     if ($errors) {

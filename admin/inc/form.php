@@ -11,6 +11,9 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 # *** LICENSE ***
 
+/**
+ *
+ */
 function valider_form_fichier($file)
 {
     $errors = array();
@@ -42,6 +45,9 @@ function valider_form_fichier($file)
     return $errors;
 }
 
+/**
+ *
+ */
 function valider_form_rss()
 {
     $errors = array();
@@ -71,6 +77,9 @@ function valider_form_rss()
     return $errors;
 }
 
+/**
+ *
+ */
 function form_select($name, $choix, $defaut, $label)
 {
     $form = '<label for="'.$name.'">'.$label.'</label>';
@@ -82,6 +91,9 @@ function form_select($name, $choix, $defaut, $label)
     return $form;
 }
 
+/**
+ *
+ */
 function form_select_no_label($name, $choix, $defaut)
 {
     $form = '<select id="'.$name.'" name="'.$name.'">';
@@ -92,6 +104,9 @@ function form_select_no_label($name, $choix, $defaut)
     return $form;
 }
 
+/**
+ *
+ */
 function form_categories_links($where, $postTags)
 {
     $tags = list_all_tags($where, false);
@@ -121,7 +136,9 @@ function form_categories_links($where, $postTags)
     return $html;
 }
 
-// Posts forms
+/**
+ * Posts forms
+ */
 function afficher_form_filtre($type, $filtre)
 {
     $ret = '<form method="get" action="'.basename($_SERVER['SCRIPT_NAME']).'" onchange="this.submit();">';
@@ -132,6 +149,9 @@ function afficher_form_filtre($type, $filtre)
     echo $ret;
 }
 
+/**
+ *
+ */
 function form_checkbox($name, $checked, $label)
 {
     $checked = ($checked) ? 'checked ' : '';
@@ -140,7 +160,10 @@ function form_checkbox($name, $checked, $label)
     return $form;
 }
 
-// FOR COMMENTS : RETUNS nb_com per author
+
+/**
+ * FOR COMMENTS : RETUNS nb_com per author
+ */
 function nb_entries_as($table, $what)
 {
     $query = "
@@ -152,6 +175,9 @@ function nb_entries_as($table, $what)
     return $GLOBALS['db_handle']->query($query)->fetchAll(PDO::FETCH_ASSOC);
 }
 
+/**
+ *
+ */
 function filtre($type, $filtre)
 {
     // WARNING: this is a resources heavy consuming function.

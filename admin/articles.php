@@ -14,6 +14,36 @@
 require_once 'inc/boot.php';
 
 
+/**
+ *
+ */
+function afficher_liste_articles($arr)
+{
+    if ($arr) {
+        $out = '<ul id="billets">';
+        foreach ($arr as $post) {
+            $out .= '<li'.(($post['bt_date'] > date('YmdHis')) ? ' class="planned"' : '').'>';
+            $title = trim(htmlspecialchars(mb_substr(strip_tags(((empty($post['bt_abstract'])) ? $post['bt_content'] : $post['bt_abstract'])), 0, 249), ENT_QUOTES)).'…';
+            $out .= '<span class="'.(($post['bt_statut']) ? 'on' : 'off').'">'.'<a href="ecrire.php?post_id='.$post['bt_id'].'" title="'.$title.'">'.$post['bt_title'].'</a>'.'</span>';
+            $out .= '<span><a href="'.basename($_SERVER['SCRIPT_NAME']).'?filtre='.substr($post['bt_date'], 0, 8).'">'.date_formate($post['bt_date']).'</a><span>, '.heure_formate($post['bt_date']).'</span></span>';
+            $out .= '<span><a href="commentaires.php?post_id='.$post['bt_id'].'">'.$post['bt_nb_comments'].'</a></span>';
+            $out .= '<span><a href="'.$post['bt_link'].'" title="'.$GLOBALS['lang'][(($post['bt_statut']) ? 'post_link' : 'preview')].'"></a></span>';
+            $out .= '</li>';
+        }
+        $out .= '</ul>'."\n\n";
+    } else {
+        $out = info($GLOBALS['lang']['note_no_article']);
+    }
+    $out .= '<a id="fab" class="add-article" href="ecrire.php" title="'.$GLOBALS['lang']['titre_ecrire'].'">'.$GLOBALS['lang']['titre_ecrire'].'</a>';
+
+    echo $out;
+}
+
+
+/**
+ * process
+ */
+
 $tableau = array();
 $query = (string)filter_input(INPUT_GET, 'q');
 $filter = (string)filter_input(INPUT_GET, 'filtre');
@@ -70,27 +100,10 @@ if ($query) {
     $tableau = liste_elements($query, array(), 'articles');
 }
 
-function afficher_liste_articles($arr)
-{
-    if ($arr) {
-        $out = '<ul id="billets">';
-        foreach ($arr as $post) {
-            $out .= '<li'.(($post['bt_date'] > date('YmdHis')) ? ' class="planned"' : '').'>';
-            $title = trim(htmlspecialchars(mb_substr(strip_tags(((empty($post['bt_abstract'])) ? $post['bt_content'] : $post['bt_abstract'])), 0, 249), ENT_QUOTES)).'…';
-            $out .= '<span class="'.(($post['bt_statut']) ? 'on' : 'off').'">'.'<a href="ecrire.php?post_id='.$post['bt_id'].'" title="'.$title.'">'.$post['bt_title'].'</a>'.'</span>';
-            $out .= '<span><a href="'.basename($_SERVER['SCRIPT_NAME']).'?filtre='.substr($post['bt_date'], 0, 8).'">'.date_formate($post['bt_date']).'</a><span>, '.heure_formate($post['bt_date']).'</span></span>';
-            $out .= '<span><a href="commentaires.php?post_id='.$post['bt_id'].'">'.$post['bt_nb_comments'].'</a></span>';
-            $out .= '<span><a href="'.$post['bt_link'].'" title="'.$GLOBALS['lang'][(($post['bt_statut']) ? 'post_link' : 'preview')].'"></a></span>';
-            $out .= '</li>';
-        }
-        $out .= '</ul>'."\n\n";
-    } else {
-        $out = info($GLOBALS['lang']['note_no_article']);
-    }
-    $out .= '<a id="fab" class="add-article" href="ecrire.php" title="'.$GLOBALS['lang']['titre_ecrire'].'">'.$GLOBALS['lang']['titre_ecrire'].'</a>';
 
-    echo $out;
-}
+/**
+ * echo
+ */
 
 echo tpl_get_html_head($GLOBALS['lang']['mesarticles']);
 

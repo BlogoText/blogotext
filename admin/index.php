@@ -14,7 +14,9 @@
 require_once 'inc/boot.php';
 
 
-// Scale numeric values based on $maximum.
+/**
+ * Scale numeric values based on $maximum.
+ */
 function scaled_size($arr, $maximum)
 {
     $return = array();
@@ -98,7 +100,11 @@ function display_graph($arr, $title, $cls)
     echo $txt;
 }
 
-// process
+
+/**
+ * Process
+ */
+
 $query = (string)filter_input(INPUT_GET, 'q');
 if ($query) {
     $query = htmlspecialchars($query);
@@ -120,6 +126,11 @@ if ($query) {
     $comments = array_reverse($comments);
 }
 
+
+
+/**
+ * echo
+ */
 
 echo tpl_get_html_head($GLOBALS['lang']['label_resume']);
 

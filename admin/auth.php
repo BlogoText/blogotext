@@ -15,6 +15,10 @@ define('BT_RUN_LOGIN', 1);
 require_once 'inc/boot.php';
 
 
+/**
+ * process
+ */
+
 if (auth_check_session()) {
     // Return to index if session already opened
     redirection('index.php');
@@ -58,6 +62,11 @@ if ($check) {
     }
     auth_write_access(false);
 }
+
+
+/**
+ * echo
+ */
 
 echo tpl_get_html_head('Identification');
 echo '<div id="axe">';
