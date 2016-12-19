@@ -128,7 +128,7 @@ function rss_count_feed()
 /**
  *
  */
-function feed_list_html( $selected = '' )
+function feed_list_html($selected = '')
 {
     // Counts unread feeds in DB
     $numberOfFeeds = rss_count_feed();
@@ -162,7 +162,7 @@ function feed_list_html( $selected = '' )
         $liHtml = '';
         $folderCount = 0;
         foreach ($folder as $feed) {
-            if ($feed['link'] == $selected){
+            if ($feed['link'] == $selected) {
                 $liHtml .= '<li class="active-site" data-nbrun="'.$feed['nbrun'].'" data-feedurl="'.$feed['link'].'" title="'.$feed['link'].'">';
             } else {
                 $liHtml .= '<li class="" data-nbrun="'.$feed['nbrun'].'" data-feedurl="'.$feed['link'].'" title="'.$feed['link'].'">';

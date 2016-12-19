@@ -1720,7 +1720,6 @@ function markAsRead(what, url)
                 Rss[i].statut = 0;
             }
         }
-        console.log( Rss );
 
         // remove X feeds in folder-count (if site is in a folder)
         if (activeSite.parentNode.parentNode.dataset.folder) {
