@@ -1827,14 +1827,14 @@ function sendMarkReadRequest(what, url, async)
     xhr.onload = function () {
         var resp = this.responseText;
         if (resp.indexOf("Success") == 0) {
+            // dirty...
+            if (what == 'folder' || what == 'all') {
+                window.location.reload();
+            }
             if (what !== 'postlist') {
                 markAsRead(what, url);
             }
             loading_animation('off');
-            // dirty...
-            if (what == 'folder') {
-                window.location.reload();
-            }
             return true;
         } else {
             loading_animation('off');

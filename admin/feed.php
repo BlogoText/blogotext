@@ -336,7 +336,7 @@ echo '<div id="header">';
     echo '<div id="top">';
         tpl_show_msg();
         echo moteur_recherche();
-        tpl_show_topnav($GLOBALS['lang']['mesabonnements']);
+        echo tpl_show_topnav($GLOBALS['lang']['mesabonnements']);
     echo '</div>';
 
 $config = filter_input(INPUT_GET, 'config');
@@ -399,7 +399,7 @@ if ($config !== null) {
     } elseif ($fold) {
         $out .= "\r".'<li><button type="button" onclick="sendMarkReadRequest(\'folder\', \''.$fold.'\', true);" id="markasread" title="'.$GLOBALS['lang']['rss_label_markasread'].'"></button></li>';
     } else {
-        $out .= "\r".'<li><button type="button" onclick="markAsRead(\'all\', true);" id="markasread" title="'.$GLOBALS['lang']['rss_label_markasread'].'"></button></li>';
+        $out .= "\r".'<li><button type="button" onclick="sendMarkReadRequest(\'all\');" id="markasread" title="'.$GLOBALS['lang']['rss_label_markasread'].'"></button></li>';
     }
     $out .= '<li><button type="button" onclick="openAllItems(this);" id="openallitemsbutton" title="'.$GLOBALS['lang']['rss_label_unfoldall'].'"></button></li>';
     $out .= '</ul>';

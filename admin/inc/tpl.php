@@ -46,7 +46,7 @@ function tpl_show_topnav($titre)
     $html .=  '<li><a href="logout.php" id="lien-deconnexion">'.$GLOBALS['lang']['deconnexion'].'</a></li>';
     $html .=  '</ul>';
     $html .=  '</div>';
-    echo $html;
+    return $html;
 }
 
 /**
@@ -122,7 +122,7 @@ function tpl_get_footer($begin_time = '')
     $html .= '<p id="footer"><a href="'.BLOGOTEXT_SITE.'">'.BLOGOTEXT_NAME.' '.BLOGOTEXT_VERSION.'</a>'.$msg.'</p>';
     $html .= '</body>';
     $html .= '</html>';
-    echo $html;
+    return $html;
 }
 
 /**

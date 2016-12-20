@@ -68,7 +68,7 @@ echo tpl_get_html_head($GLOBALS['lang']['mesmodules']);
 echo '<div id="header">';
     echo '<div id="top">';
         echo moteur_recherche();
-        tpl_show_topnav($GLOBALS['lang']['mesmodules']);
+        echo tpl_show_topnav($GLOBALS['lang']['mesmodules']);
     echo '</div>';
 echo '</div>';
 

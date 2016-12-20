@@ -485,7 +485,7 @@ echo tpl_get_html_head($writeTitle);
 echo '<div id="header">';
     echo '<div id="top">';
         tpl_show_msg();
-        tpl_show_topnav($writeTitleLight);
+        echo tpl_show_topnav($writeTitleLight);
     echo '</div>';
 echo '</div>';
 
