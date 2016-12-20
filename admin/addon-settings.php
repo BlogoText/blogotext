@@ -18,6 +18,9 @@ require_once BT_ROOT.'inc/addons.php';
 require_once BT_ROOT.'admin/inc/addons.php';
 
 
+/**
+ * process
+ */
 
 // traitement d’une action sur le module
 $erreurs = array();

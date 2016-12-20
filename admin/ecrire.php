@@ -40,6 +40,9 @@ $vars['supprimer'] = (filter_input(INPUT_POST, 'supprimer') !== null);
 $vars['_verif_envoi'] = (filter_input(INPUT_POST, '_verif_envoi') !== null);
 
 
+/**
+ *
+ */
 function extact_words($text)
 {
     $text = str_replace(array("\r", "\n", "\t"), array('', ' ', ' '), $text);
@@ -71,6 +74,9 @@ function extact_words($text)
     return implode($keywords, ', ');
 }
 
+/**
+ *
+ */
 function post_markup($text)
 {
     $text = preg_replace("/(\r\n|\r\n\r|\n|\n\r|\r)/", "\r", $text);
@@ -155,6 +161,9 @@ function post_markup($text)
     return $textFormated;
 }
 
+/**
+ *
+ */
 function init_post_post()
 {
     global $vars;
@@ -192,7 +201,9 @@ function init_post_post()
     return $post;
 }
 
-// once form is initiated, and no errors are found, treat it (save it to DB).
+/**
+ * once form is initiated, and no errors are found, treat it (save it to DB).
+ */
 function traitment_form_post($post)
 {
     global $vars;
@@ -214,11 +225,17 @@ function traitment_form_post($post)
     }
 }
 
+/**
+ *
+ */
 function form_years($displayedYear)
 {
     return '<input type="number" name="annee" max="'.(date('Y') + 3).'" value="'.$displayedYear.'">';
 }
 
+/**
+ *
+ */
 function form_months($displayedMonth)
 {
     $months = array(
@@ -244,6 +261,9 @@ function form_months($displayedMonth)
     return $ret;
 }
 
+/**
+ *
+ */
 function form_days($displayedDay)
 {
     $ret = '<select name="jour">';
@@ -259,6 +279,9 @@ function form_days($displayedDay)
     return $ret;
 }
 
+/**
+ *
+ */
 function form_statut($etat)
 {
     $choix = array(
@@ -268,6 +291,9 @@ function form_statut($etat)
     return form_select('statut', $choix, $etat, $GLOBALS['lang']['label_dp_etat']);
 }
 
+/**
+ *
+ */
 function form_allow_comment($state)
 {
     $choice = array(
@@ -277,7 +303,9 @@ function form_allow_comment($state)
     return form_select('allowcomment', $choice, $state, $GLOBALS['lang']['label_dp_commentaires']);
 }
 
-// Post form
+/**
+ * Post form
+ */
 function display_form_post($post, $errors)
 {
     $defaultDay = date('d');
@@ -378,6 +406,9 @@ function display_form_post($post, $errors)
     echo $html;
 }
 
+/**
+ *
+ */
 function validate_form_post($post)
 {
     global $vars;
@@ -414,7 +445,10 @@ function validate_form_post($post)
 }
 
 
-// Traitment
+/**
+ * process
+ */
+
 $errorsForm = array();
 if ($vars['_verif_envoi']) {
     $post = init_post_post();
@@ -439,6 +473,12 @@ if ($postId) {
 // Page's title
 $writeTitleLight = ($post) ? $GLOBALS['lang']['titre_maj'] : $GLOBALS['lang']['titre_ecrire'];
 $writeTitle = ($post) ? $writeTitleLight.' : '.$post['bt_title'] : $writeTitleLight;
+
+
+
+/**
+ * echo
+ */
 
 echo tpl_get_html_head($writeTitle);
 

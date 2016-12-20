@@ -13,7 +13,9 @@
 
 require_once 'inc/boot.php';
 
-
+/**
+ *
+ */
 function validate_form_maintenance()
 {
     $errors = array();
@@ -28,6 +30,9 @@ function validate_form_maintenance()
     return $errors;
 }
 
+/**
+ *
+ */
 function select_yes_no($name, $default, $label)
 {
     $choice = array(
@@ -194,7 +199,9 @@ function diff_trouve_base($table, $arrFind)
     return $arrAbsent;
 }
 
-// Issert big arrays of data in DB.
+/**
+ * Issert big arrays of data in DB.
+ */
 function insert_table_links($tableau)
 {
     $arrDiff = diff_trouve_base('links', $tableau);
@@ -211,6 +218,9 @@ function insert_table_links($tableau)
     return $return;
 }
 
+/**
+ *
+ */
 function insert_table_articles($tableau)
 {
     $arrDiff = diff_trouve_base('articles', $tableau);
@@ -227,6 +237,9 @@ function insert_table_articles($tableau)
     return $return;
 }
 
+/**
+ *
+ */
 function insert_table_commentaires($tableau)
 {
     $arrDiff = diff_trouve_base('commentaires', $tableau);
@@ -243,7 +256,9 @@ function insert_table_commentaires($tableau)
     return $return;
 }
 
-/* RECOMPTE LES COMMENTAIRES AUX ARTICLES */
+/**
+ * recompte les commentaires aux articles
+ */
 function recompte_commentaires()
 {
     if (DBMS == 'sqlite') {
@@ -267,7 +282,9 @@ function recompte_commentaires()
     $req->execute();
 }
 
-/* IMPORTE UN FICHIER json QUI EST AU FORMAT DE BLOGOTEXT */
+/**
+ * importe un fichier json qui est au format de blogotext
+ */
 function importer_json($json)
 {
     $data = json_decode($json, true);
@@ -291,7 +308,9 @@ function importer_json($json)
     return $return;
 }
 
-/* AJOUTE TOUS LES DOSSIERS DU TABLEAU $dossiers DANS UNE ARCHIVE ZIP */
+/**
+ * ajoute tous les dossiers du tableau $dossiers dans une archive zip
+ */
 function addFolder2zip($zip, $folder)
 {
     $ignore = array('.', '..', '.htaccess', 'index.php', '.gitignore');
@@ -313,6 +332,9 @@ function addFolder2zip($zip, $folder)
     }
 }
 
+/**
+ *
+ */
 function creer_fichier_zip($folders)
 {
     $zipfile = 'archive_site-'.date('Ymd').'-'.substr(md5(rand(10, 99)), 3, 5).'.zip';
@@ -329,14 +351,18 @@ function creer_fichier_zip($folders)
     return false;
 }
 
-/* FABRIQUE LE FICHIER JSON (très simple en fait) */
+/**
+ * fabrique le fichier json (très simple en fait)
+ */
 function creer_fichier_json($arrData)
 {
     $path = 'backup-data-'.date('Ymd-His').'.json';
     return (file_put_contents(DIR_BACKUP.$path, json_encode($arrData), LOCK_EX) === false) ? false : URL_BACKUP.$path;
 }
 
-/* Crée la liste des RSS et met tout ça dans un fichier OPML */
+/**
+ * Crée la liste des RSS et met tout ça dans un fichier OPML
+ */
 function creer_fichier_opml()
 {
     $path = 'backup-data-'.date('Ymd-His').'.opml';
@@ -378,7 +404,9 @@ function creer_fichier_opml()
     return (file_put_contents(DIR_BACKUP.$path, $html, LOCK_EX) === false) ? false : URL_BACKUP.$path;
 }
 
-/* CONVERTI UN FICHIER AU FORMAT xml DE WORDPRESS en un tableau (sans enregistrer le fichier BT) */
+/**
+ * converti un fichier au format xml de wordpress en un tableau (sans enregistrer le fichier bt)
+ */
 function importer_wordpress($xml)
 {
     /* transforms some HTML elements to BlogoText's BBCode */
@@ -478,7 +506,9 @@ function importer_wordpress($xml)
     return $return;
 }
 
-// Parse et importe un fichier de liste de flux OPML
+/**
+ * Parse et importe un fichier de liste de flux OPML
+ */
 function importer_opml($opmlContent)
 {
     $GLOBALS['array_new'] = array();
@@ -515,7 +545,9 @@ function importer_opml($opmlContent)
     return (count($GLOBALS['liste_flux']) - $oldLen);
 }
 
-// Parse and import HTML bookmarks (netscape/Firefox bookmarks export)
+/**
+ * Parse and import HTML bookmarks (netscape/Firefox bookmarks export)
+ */
 function parse_html($content)
 {
     $arrOut = array();
@@ -604,7 +636,7 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
     $nbs = array(10 => 10, 20 => 20, 50 => 50, 100 => 100, 200 => 200, 500 => 500, -1 => $GLOBALS['lang']['pref_all']);
 
     echo '<form action="maintenance.php" method="get" class="bordered-formbloc" id="form_todo">';
-    echo '<label for="select_todo">'.$GLOBALS['lang']['maintenance_ask_do_what'].'</label>';
+    echo '<label for="select_todo">'.$GLOBALS['lang']['maintenance_ask_do_what'].' </label>';
     echo '<select id="select_todo" name="select_todo" onchange="switch_form(this.value)">';
     echo '<option selected disabled hidden value=""></option>';
     echo '<option value="form_export">'.$GLOBALS['lang']['maintenance_export'].'</option>';

@@ -1652,8 +1652,13 @@ function refresh_all_feeds(refreshLink)
 }
 
 
-// RSS : mark as read code.
-// "$what" is either "all", "site" for marking one feed as read, "folder", or "post" for marking just one ID as read, "$url" contains id, folder or feed url
+/**
+ * RSS : mark as read code.
+ * "$what" is either "all"
+ *   "site" for marking one feed as read
+ *   "folder", or "post" for marking just one ID as read
+ * "$url" contains id, folder or feed url
+ */
 function markAsRead(what, url)
 {
     var notifDiv = document.createElement('div');
@@ -1695,7 +1700,8 @@ function markAsRead(what, url)
         // mark all html items listed as "read"
         var liList = document.querySelectorAll('#post-list .li-post-bloc');
         for (var i = 0, len = liList.length; i < len; i++) {
-            liList[i].classList.add('read'); }
+            liList[i].classList.add('read');
+        }
         var activeSite = document.querySelector('.active-site');
         // mark feeds in feed-list as containing (0) unread
         var liCount = activeSite.dataset.nbrun;
@@ -1708,12 +1714,12 @@ function markAsRead(what, url)
         count.dataset.nbrun = 0;
         count.firstChild.nodeValue = '0';
 
-
-
         // mark items as read in (var)Rss.list.
         for (var i = 0, len = Rss.length; i < len; i++) {
             if (Rss[i].feed == url) {
-                Rss[i].statut = 0; } }
+                Rss[i].statut = 0;
+            }
+        }
 
         // remove X feeds in folder-count (if site is in a folder)
         if (activeSite.parentNode.parentNode.dataset.folder) {
@@ -1725,6 +1731,7 @@ function markAsRead(what, url)
 
         loading_animation('off');
     } else if (what == 'folder') {
+        /*
         // mark all post from one folder as read
 
         var activeSite = document.querySelector('.active-site');
@@ -1759,6 +1766,7 @@ function markAsRead(what, url)
                 Rss[i].statut = 0; } }
 
         loading_animation('off');
+        */
     } else if (what == 'post') {
         // mark post with specific URL/ID as read
 
@@ -1792,7 +1800,6 @@ function markAsRead(what, url)
         count.dataset.nbrun -= 1;
         count.firstChild.nodeValue = count.dataset.nbrun;
 
-
         // markitems as read in (var)Rss list.
         for (var i = 0, len = Rss.length; i < len; i++) {
             if (Rss[i].id == url) {
@@ -1824,6 +1831,10 @@ function sendMarkReadRequest(what, url, async)
                 markAsRead(what, url);
             }
             loading_animation('off');
+            // dirty...
+            if (what == 'folder') {
+                window.location.reload();
+            }
             return true;
         } else {
             loading_animation('off');
@@ -1848,7 +1859,6 @@ function sendMarkReadRequest(what, url, async)
     formData.append('mark-as-read', what);
     formData.append('url', url);
     xhr.send(formData);
-
 }
 
 /* sends the AJAX "mark as read" request */
@@ -1892,8 +1902,6 @@ function sendMarkFavRequest(url)
     xhr.send(formData);
 
 }
-
-
 
 
 /* in RSS config : mark a feed as "to remove" */

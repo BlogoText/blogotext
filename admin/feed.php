@@ -14,6 +14,9 @@
 require_once 'inc/boot.php';
 
 
+/**
+ *
+ */
 function display_form_feed_conf($errors = '')
 {
     if ($errors) {
@@ -54,6 +57,9 @@ function display_form_feed_conf($errors = '')
     return $out;
 }
 
+/**
+ *
+ */
 function traitment_form_feed_conf()
 {
     $msg = (string)filter_input(INPUT_GET, 'msg');
@@ -107,6 +113,9 @@ function traitment_form_feed_conf()
     redirection($redir);
 }
 
+/**
+ *
+ */
 function rss_count_feed()
 {
     $sql = '
@@ -116,7 +125,10 @@ function rss_count_feed()
     return $GLOBALS['db_handle']->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function feed_list_html()
+/**
+ *
+ */
+function feed_list_html($selected = '')
 {
     // Counts unread feeds in DB
     $numberOfFeeds = rss_count_feed();
@@ -150,17 +162,26 @@ function feed_list_html()
         $liHtml = '';
         $folderCount = 0;
         foreach ($folder as $feed) {
-            $liHtml .= '<li class="" data-nbrun="'.$feed['nbrun'].'" data-feedurl="'.$feed['link'].'" title="'.$feed['link'].'">';
-            $liHtml .= '<a href="?site='.parse_url($feed['link'], PHP_URL_HOST).'" '.(($feed['iserror'] > 2) ? 'class="feed-error" ': ' ' ).' data-feed-domain="'.parse_url($feed['link'], PHP_URL_HOST).'">'.$feed['title'].'</a>';
+            if ($feed['link'] == $selected) {
+                $liHtml .= '<li class="active-site" data-nbrun="'.$feed['nbrun'].'" data-feedurl="'.$feed['link'].'" title="'.$feed['link'].'">';
+            } else {
+                $liHtml .= '<li class="" data-nbrun="'.$feed['nbrun'].'" data-feedurl="'.$feed['link'].'" title="'.$feed['link'].'">';
+            }
+            $liHtml .= '<a href="?site='.urlencode($feed['link']).'" '.(($feed['iserror'] > 2) ? 'class="feed-error" ': ' ' ).' data-feed-domain="'.parse_url($feed['link'], PHP_URL_HOST).'">'.$feed['title'].'</a>';
             $liHtml .= '<span>('.$feed['nbrun'].')</span>';
             $liHtml .= '</li>';
             $folderCount += $feed['nbrun'];
         }
 
         if ($idx != '') {
-            $html .= '<li class="feed-folder" data-nbrun="'.$folderCount.'" data-folder="'.$idx.'">';
+            if ($selected == $idx) {
+                $html .= '<li class="feed-folder open" data-nbrun="'.$folderCount.'" data-folder="'.$idx.'">';
+            } else {
+                $html .= '<li class="feed-folder" data-nbrun="'.$folderCount.'" data-folder="'.$idx.'">';
+            }
             $html .= '<span class="feed-folder-title">';
-            $html .= '<a href="#" onclick="document.getElementById(\'markasread\').onclick=function(){sendMarkReadRequest(\'folder\', \''.$idx.'\', true);}; sortFolder(this);">'.$idx.'<span>('.$folderCount.')</span></a>';
+            // $html .= '<a href="#" onclick="document.getElementById(\'markasread\').onclick=function(){sendMarkReadRequest(\'folder\', \''.$idx.'\', true);}; sortFolder(this);">'.$idx.'<span>('.$folderCount.')</span></a>';
+            $html .= '<a href="?fold='.$idx.'">'.$idx.'<span>('.$folderCount.')</span></a>';
             $html .= '<a href="#" onclick="return hideFolder(this)" class="unfold">unfold</a>';
             $html .= '</span>';
             $html .= '<ul>'."\n\t\t";
@@ -208,6 +229,7 @@ function send_rss_json($feeds)
 /**
  * Process
  */
+
 $GLOBALS['liste_flux'] = open_serialzd_file(FEEDS_DB);
 
 $errors = array();
@@ -231,19 +253,26 @@ $arr = array();
 
 // For a site?
 $site = (string)filter_input(INPUT_GET, 'site');
+$fold = (string)filter_input(INPUT_GET, 'fold');
 $bookmarked = (filter_input(INPUT_GET, 'bookmarked') !== null);
+$query = (string)filter_input(INPUT_GET, 'q');
 $sqlWhere = '';
 $paramUrl = '';
+
+
 if ($site) {
     $sqlWhere = 'bt_feed LIKE ?';
     $arr[] = '%'.$site.'%';
     $paramUrl = 'site='.$site.'&';
+} elseif ($fold) {
+    $sqlWhere = 'bt_folder LIKE ?';
+    $arr[] = '%'.$fold.'%';
+    $paramUrl = 'fold='.$fold.'&';
 } elseif ($bookmarked) {
     $sqlWhere = 'bt_bookmarked = 1';
     $paramUrl = 'bookmarked&';
 }
 
-$query = (string)filter_input(INPUT_GET, 'q');
 if ($query) {
     $sqlWhereStatus = '';
 
@@ -295,6 +324,11 @@ if ($query) {
 
 $tableau = liste_elements($sql, $arr, 'rss');
 
+
+
+/**
+ * echo
+ */
 
 echo tpl_get_html_head($GLOBALS['lang']['mesabonnements']);
 
@@ -349,12 +383,24 @@ if ($config !== null) {
     }
     $out .= '</li>';
 
-    $out .= feed_list_html();
+    if ($site) {
+        $out .= feed_list_html($site);
+    } elseif ($fold) {
+        $out .= feed_list_html($fold);
+    } else {
+        $out .= feed_list_html();
+    }
     $out .= '</ul>';
     $out .= '<div id="post-list-wrapper">';
     $out .= '<div id="post-list-title">';
     $out .= '<ul class="rss-menu-buttons">';
-    $out .= '<li><button type="button" onclick="markAsRead(\'all\', true);" id="markasread" title="'.$GLOBALS['lang']['rss_label_markasread'].'"></button></li>';
+    if ($site) {
+        $out .= "\r".'<li><button type="button" onclick="sendMarkReadRequest(\'site\', \''.$site.'\', false);" id="markasread" title="'.$GLOBALS['lang']['rss_label_markasread'].'"></button></li>';
+    } elseif ($fold) {
+        $out .= "\r".'<li><button type="button" onclick="sendMarkReadRequest(\'folder\', \''.$fold.'\', true);" id="markasread" title="'.$GLOBALS['lang']['rss_label_markasread'].'"></button></li>';
+    } else {
+        $out .= "\r".'<li><button type="button" onclick="markAsRead(\'all\', true);" id="markasread" title="'.$GLOBALS['lang']['rss_label_markasread'].'"></button></li>';
+    }
     $out .= '<li><button type="button" onclick="openAllItems(this);" id="openallitemsbutton" title="'.$GLOBALS['lang']['rss_label_unfoldall'].'"></button></li>';
     $out .= '</ul>';
     $out .= '<p><span id="post-counter"></span> '.$GLOBALS['lang']['label_elements'].'</p>';
@@ -372,37 +418,47 @@ if ($config !== null) {
     echo $out;
 
     echo '<script src="style/javascript.js"></script>';
-    echo '<script>';
-    echo 'var token = "'.new_token().'";';
-    echo 'var openAllSwich = "open";';
-    echo 'var readQueue = { "count": 0, "urlList": [] };';
-    echo 'var Rss = rss_entries.list;';
-    echo 'window.addEventListener("load", function() {
+
+    echo '
+    <script>
+        var active_site = document.querySelectorAll(".active-site");
+        if (active_site.length == 1){
+            var s = active_site[0],
+                p = s.parentNode.parentNode;
+            p.classList.add("open");
+        }
+
+        var token = "'.new_token().'",
+            openAllSwich = "open",
+            readQueue = { "count": 0, "urlList": [] },
+            Rss = rss_entries.list;
+
+        window.addEventListener("load", function() {
                 rss_feedlist(Rss);
                 window.addEventListener("keydown", keyboardNextPrevious);
-            });';
+            });
 
-    echo 'window.addEventListener("beforeunload", function (e) {
+        window.addEventListener("beforeunload", function (e) {
             if (readQueue.count == 0) {
                 return true;
             }
             sendMarkReadRequest("postlist", JSON.stringify(readQueue.urlList), false);
             readQueue.urlList = [];
             readQueue.count = 0;
-        });';
+        });
 
-    echo 'var scrollPos = 0;';
-    echo 'window.addEventListener("scroll", function() { scrollingFabHideShow(); });';
+        var scrollPos = 0;
+        window.addEventListener("scroll", function() { scrollingFabHideShow(); });
 
-    echo 'window.addEventListener("load", function() {';
-    echo 'var list = document.querySelectorAll("a[data-feed-domain]");';
-    echo 'for (var i = 0, len = list.length; i < len; i++) {';
-    echo '  list[i].style.backgroundImage = "url(\'" + "'.URL_ROOT.'favatar.php?w=favicon&q="+ list[i].getAttribute("data-feed-domain") + "\')";';
-    echo '}';
-    echo '});';
+        window.addEventListener("load", function() {
+            var list = document.querySelectorAll("a[data-feed-domain]");
+            for (var i = 0, len = list.length; i < len; i++) {
+                list[i].style.backgroundImage = "url(\'" + "'.URL_ROOT.'favatar.php?w=favicon&q="+ list[i].getAttribute("data-feed-domain") + "\')";
+            }
+        });
 
-    echo php_lang_to_js(0);
-    echo '</script>';
+        '.php_lang_to_js(0).'
+    </script>';
 }
 
 echo tpl_get_footer($begin);

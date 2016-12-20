@@ -11,7 +11,9 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 # *** LICENSE ***
 
-/// menu haut panneau admin /////////
+/**
+ * menu haut panneau admin
+ */
 function tpl_show_topnav($titre)
 {
     $tab = pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME);
@@ -47,6 +49,9 @@ function tpl_show_topnav($titre)
     echo $html;
 }
 
+/**
+ *
+ */
 function tpl_show_msg()
 {
     // Success message
@@ -68,6 +73,9 @@ function tpl_show_msg()
     }
 }
 
+/**
+ *
+ */
 function tpl_show_preview($article)
 {
     if (isset($article)) {
@@ -81,7 +89,9 @@ function tpl_show_preview($article)
     }
 }
 
-// function afficher_html_head($titre)
+/**
+ * function afficher_html_head($titre)
+ */
 function tpl_get_html_head($title)
 {
     $html = '<!DOCTYPE html>';
@@ -96,6 +106,9 @@ function tpl_get_html_head($title)
     return $html;
 }
 
+/**
+ *
+ */
 function tpl_get_footer($begin_time = '')
 {
     $msg = '';
@@ -112,26 +125,41 @@ function tpl_get_footer($begin_time = '')
     echo $html;
 }
 
+/**
+ *
+ */
 function confirmation($message)
 {
     echo '<div class="confirmation">'.$message.'</div>';
 }
 
+/**
+ *
+ */
 function no_confirmation($message)
 {
     echo '<div class="no_confirmation">'.$message.'</div>';
 }
 
+/**
+ *
+ */
 function info($message)
 {
     return '<p class="info">'.$message.'</p>';
 }
 
+/**
+ *
+ */
 function question($message)
 {
       echo '<p id="question">'.$message.'</p>';
 }
 
+/**
+ *
+ */
 function php_lang_to_js($a)
 {
     $frontend_str = array();
@@ -159,6 +187,9 @@ function php_lang_to_js($a)
     return $sc;
 }
 
+/**
+ *
+ */
 function rel2abs_admin($article)
 {
     // if relative URI in path, make absolute paths (since /admin/ panel is 1 lv deeper) for href/src.

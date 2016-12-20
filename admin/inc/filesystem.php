@@ -21,7 +21,9 @@
  *   base64_encode(serialize($tableau)) # pompée sur Shaarli, by Sebsauvage.
  */
 
-// From a filesize (like "20M"), returns a size in bytes.
+/**
+ * From a filesize (like "20M"), returns a size in bytes.
+ */
 function return_bytes($val)
 {
     $val = trim($val);
@@ -40,8 +42,10 @@ function return_bytes($val)
     return $val;
 }
 
-// gère le filtre de recherche sur les images : recherche par chaine (GET[q]), par type, par statut ou par date.
-// pour le moment, il n’est utilisé que du côté Admin (pas de tests sur les statut, date, etc.).
+/**
+ * gère le filtre de recherche sur les images : recherche par chaine (GET[q]), par type, par statut ou par date.
+ * pour le moment, il n’est utilisé que du côté Admin (pas de tests sur les statut, date, etc.).
+ */
 function liste_base_files($tri_selon, $motif, $nombre)
 {
     $tableau_sortie = array();
@@ -107,6 +111,9 @@ function liste_base_files($tri_selon, $motif, $nombre)
     return $tableau_sortie;
 }
 
+/**
+ *
+ */
 function fichier_prefs()
 {
     $vars = array(
@@ -192,8 +199,10 @@ function fichier_prefs()
     return (file_put_contents(FILE_SETTINGS, $prefs, LOCK_EX) !== false);
 }
 
-// TRAITEMENT DU FORMULAIRE DE FICHIER, CÔTÉ BDD
-// Retourne le $fichier de l’entrée (après avoir possiblement changé des trucs, par ex si le fichier existait déjà, l’id retourné change)
+/**
+ * TRAITEMENT DU FORMULAIRE DE FICHIER, CÔTÉ BDD
+ * Retourne le $fichier de l’entrée (après avoir possiblement changé des trucs, par ex si le fichier existait déjà, l’id retourné change)
+ */
 function bdd_fichier($fichier, $quoi, $comment, $sup_var)
 {
     if ($fichier['bt_type'] == 'image') {
@@ -331,12 +340,10 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var)
     }
 }
 
-// POST FILE
 /*
  * On post of a file (always on admin sides)
  * gets posted informations and turn them into
  * an array
- *
  */
 function init_post_fichier()
 {
@@ -408,6 +415,9 @@ function chemin_thb_img($filepath)
     return $miniature;
 }
 
+/**
+ *
+ */
 function chemin_thb_img_test($filepath)
 {
     $thb = chemin_thb_img($filepath);
@@ -417,7 +427,9 @@ function chemin_thb_img_test($filepath)
     return $filepath;
 }
 
-// filepath : image to create a thumbnail from
+/**
+ * filepath : image to create a thumbnail from
+ */
 function create_thumbnail($filepath)
 {
     // if GD library is not loaded by PHP, abord. Thumbnails are not required.
@@ -505,9 +517,10 @@ function guess_file_type($extension)
     return $goodType;
 }
 
-
-// $feeds is an array of URLs: Array( [http://…], [http://…], …)
-// Returns the same array: Array([http://…] [[headers]=> 'string', [body]=> 'string'], …)
+/**
+ * $feeds is an array of URLs: Array( [http://…], [http://…], …)
+ * Returns the same array: Array([http://…] [[headers]=> 'string', [body]=> 'string'], …)
+ */
 function request_external_files($feeds, $timeout, $echo_progress = false)
 {
     // uses chunks of 30 feeds because Curl has problems with too big (~150) "multi" requests.

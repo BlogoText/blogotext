@@ -25,7 +25,10 @@ $vars = array(
 );
 
 
-// Traitment
+/**
+ * process
+ */
+
 $postTitle = '';
 $errorsForm = array();
 if ($vars['_verif_envoi']) {
@@ -179,6 +182,11 @@ function display_comment($comment, $withLink)
     echo '</div>';
     echo '</div>';
 }
+
+
+/**
+ * echo
+ */
 
 echo tpl_get_html_head($GLOBALS['lang']['titre_commentaires']. (($postTitle) ?' | '.$postTitle : ''));
 

@@ -13,7 +13,6 @@
 
 require_once 'inc/boot.php';
 
-
 /**
  * Save one feed into the database.
  */
@@ -116,7 +115,9 @@ function rss_list_guid()
     return $GLOBALS['db_handle']->query('SELECT bt_id FROM rss')->fetchAll(PDO::FETCH_COLUMN, 0);
 }
 
-
+/**
+ *
+ */
 function retrieve_new_feeds($feedLinks, $md5 = '')
 {
     if (!$feeds = request_external_files($feedLinks, 25, true)) {
@@ -152,7 +153,6 @@ function retrieve_new_feeds($feedLinks, $md5 = '')
 
     return false;
 }
-
 
 /**
  * Based upon Feed-2-array, by bronco@warriordudimanche.net
@@ -430,7 +430,7 @@ if ($markAsRead !== null) {
         $array = array($folder);
     } elseif ($what == 'postlist' and !empty($_POST['url'])) {
         $list = json_decode($_POST['url']);
-        $questionmarks = str_repeat("?,", count($list)-1)."?";
+        $questionmarks = str_repeat('?,', count($list)-1).'?';
         $sql = '
             UPDATE rss
                SET bt_statut = 0
@@ -439,7 +439,8 @@ if ($markAsRead !== null) {
     }
 
     $req = $GLOBALS['db_handle']->prepare($sql);
-    die(($req->execute($array)) ? 'Success' : 'Fail');
+    $db_process = ($req->execute($array));
+    die($db_process ? 'Success' : 'Fail');
 }
 
 // Mark some elements as fav

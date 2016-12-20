@@ -398,6 +398,11 @@ function display_pictures_list($images)
 }
 
 
+
+/**
+ * Process
+ */
+
 $file = array();
 $GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);
 
@@ -445,6 +450,12 @@ if (isset($_POST['_verif_envoi'])) {
         traitment_form_file($file);
     }
 }
+
+
+
+/**
+ * echo
+ */
 
 echo tpl_get_html_head($GLOBALS['lang']['titre_fichier']);
 
