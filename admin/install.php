@@ -205,11 +205,11 @@ function install_form_2_proceed()
     $username = (string)filter_input(INPUT_POST, 'identifiant');
     $password = (string)filter_input(INPUT_POST, 'mdp');
 
-    create_folder(DIR_CONFIG, 1); // todo : change for v4
-    create_folder(DIR_IMAGES, 0); // todo : change for v4
-    create_folder(DIR_DOCUMENTS, 0); // todo : change for v4
-    create_folder(DIR_DATABASES, 1); // todo : change for v4
-    create_folder(DIR_LOG, 1); // todo : change for v4
+    create_folder(DIR_CONFIG, true);
+    create_folder(DIR_IMAGES, false);
+    create_folder(DIR_DOCUMENTS, false);
+    create_folder(DIR_DATABASES, true);
+    create_folder(DIR_LOG, true, true);
     auth_write_user_login_file($username, $password);
     import_ini_file(FILE_USER); // todo : change for v4
     if (!is_file(FILE_SETTINGS)) {
