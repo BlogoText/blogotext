@@ -336,6 +336,7 @@ $GLOBALS['lang'] = array(
 'titre_fichier' => 'Fichiers',
 'titre_maintenance' => 'Maintenance',
 // modules / addons
+'addons_buttons_action_legend' => 'Actions du module : ',
 'addons_settings_legend' => 'Préférences du module : ',
 'addons_settings_link_title' => 'Configuration',
 'addons_settings_confirm_reset' => 'Êtes-vous sûr de vouloir effacer vos paramètres ?',

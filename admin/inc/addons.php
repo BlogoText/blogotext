@@ -382,7 +382,7 @@ function addon_form_buttons($addon_id)
     $out = '';
     $out .= '<form id="preferences" method="post" action="?addon='. $addon_id .'" onsubmit="return confirm(\''. addslashes($GLOBALS['lang']['addons_confirm_buttons_action']) .'\');" >';
     $out .= '<div role="group" class="pref">'; /* no fieldset because browset can’t style them correctly */
-    $out .= '<div class="form-legend"><legend class="legend-user">'.$GLOBALS['lang']['addons_settings_legend'].addon_get_translation($GLOBALS['addons'][$addon_id]['name']).'</legend></div>';
+    $out .= '<div class="form-legend"><legend class="legend-user">'.$GLOBALS['lang']['addons_buttons_action_legend'].addon_get_translation($GLOBALS['addons'][$addon_id]['name']).'</legend></div>';
 
     $out .= '<div class="form-lines">';
     if (isset($GLOBALS['addons'][$addon_id]['buttons'])) {

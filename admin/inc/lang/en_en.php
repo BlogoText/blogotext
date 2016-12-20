@@ -335,6 +335,7 @@ $GLOBALS['lang'] = array(
 'titre_fichier' => 'Files',
 'titre_maintenance' => 'Maintenance',
 // module / addons
+'addons_buttons_action_legend' => 'Actions for : ',
 'addons_settings_legend' => 'Addon settings for : ',
 'addons_settings_link_title' => 'Settings',
 'addons_settings_confirm_reset' => 'Do you really want to delete your settings ?',
