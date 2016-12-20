@@ -180,7 +180,6 @@ function feed_list_html($selected = '')
                 $html .= '<li class="feed-folder" data-nbrun="'.$folderCount.'" data-folder="'.$idx.'">';
             }
             $html .= '<span class="feed-folder-title">';
-            // $html .= '<a href="#" onclick="document.getElementById(\'markasread\').onclick=function(){sendMarkReadRequest(\'folder\', \''.$idx.'\', true);}; sortFolder(this);">'.$idx.'<span>('.$folderCount.')</span></a>';
             $html .= '<a href="?fold='.$idx.'">'.$idx.'<span>('.$folderCount.')</span></a>';
             $html .= '<a href="#" onclick="return hideFolder(this)" class="unfold">unfold</a>';
             $html .= '</span>';

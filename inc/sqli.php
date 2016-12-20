@@ -12,9 +12,6 @@
 # *** LICENSE ***
 
 
-// function db_search()
-
-
 /*  Creates a new BlogoText base.
     if file does not exists, it is created, as well as the tables.
     if file does exists, tables are checked and created if not exists

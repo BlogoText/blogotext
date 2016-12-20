@@ -45,16 +45,6 @@ function hook_push($hook_name, $function, $priority = 10)
 }
 
 /**
- * remove all function for a hook
- */
-function hook_clean($hook_name)
-{
-    if (isset($GLOBALS['hooks'][$hook_name])) {
-        unset($GLOBALS['hooks'][$hook_name]);
-    }
-}
-
-/**
  * the hook trigger
  * call the functions who have a call pushed
  *

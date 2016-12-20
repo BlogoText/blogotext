@@ -23,19 +23,6 @@ function annuler(pagecible)
 
 
 /*
-    On login captcha : if the captcha is unreadable, this helps you reload the captcha
-    without reloading the whole page (the other fields might been filed)
-*/
-
-function new_freecap()
-{
-    var thesrc = document.getElementById("freecap").src;
-    thesrc = thesrc.substring(0,thesrc.lastIndexOf(".")+4);
-    document.getElementById("freecap").src = thesrc+"?"+Math.round(Math.random()*100000);
-}
-
-
-/*
     On article or comment writing: insert a BBCode Tag or a Unicode char.
 */
 
@@ -1494,107 +1481,6 @@ function rss_feedlist(RssPosts)
     document.getElementById('post-list-wrapper').appendChild(postlist);
 
     return false;
-}
-
-/* Sort and show all items */
-function sortAll()
-{
-    // unhighlight previously selected site
-    if (document.querySelector('.active-site')) {
-        document.querySelector('.active-site').classList.remove('active-site');
-    }
-
-    rss_feedlist(Rss);
-    openAllSwich = 'open';
-    document.getElementById('openallitemsbutton').classList.remove('unfold');
-    if (Rss.length != 0) {
-        window.location.hash = '';
-    }
-}
-
-/* Sort favorites */
-function sortFavs()
-{
-    // unhighlight previously selected site
-    if (document.querySelector('.active-site')) {
-        document.querySelector('.active-site').classList.remove('active-site');
-    }
-    var listpost = Rss;
-    var newList = new Array();
-
-    // create list of items that are favs
-    for (var i = 0, len = listpost.length; i < len; i++) {
-        var item = listpost[i];
-        if (listpost[i].fav == 1) {
-            newList.push(item);
-        }
-    }
-    rss_feedlist(newList);
-    openAllSwich = 'open';
-    document.getElementById('openallitemsbutton').classList.remove('unfold');
-}
-
-/* Sort rss entries from a site */
-function sortSite(origine)
-{
-    var listpost = Rss;
-    var newList = new Array();
-    var choosensite = origine.parentNode.dataset.feedurl;
-
-    // create list of items matching the selected site
-    for (var i = 0, len = listpost.length; i < len; i++) {
-        var item = listpost[i];
-        if (listpost[i].feed == choosensite) {
-            newList.push(item);
-        }
-    }
-    // unhightlight previous site and highlight new site
-    if (document.querySelector('.active-site')) {
-        document.querySelector('.active-site').classList.remove('active-site');
-    }
-    for (var i = 0, liList = document.querySelectorAll('#feed-list li'), len = liList.length; i < len; i++) {
-        if (liList[i].dataset.feedurl == choosensite) {
-            liList[i].classList.add('active-site');
-            break;
-        }
-    }
-    rss_feedlist(newList);
-    openAllSwich = 'open';
-    document.getElementById('openallitemsbutton').classList.remove('unfold');
-    if (newList.length != 0) {
-        window.location.hash = '';
-    }
-}
-
-/* Sort rss entries from a folder */
-function sortFolder(origine)
-{
-    var listpost = Rss;
-    var newList = new Array();
-    var choosenfolder = origine.parentNode.parentNode.dataset.folder;
-
-    for (var i = 0, len = listpost.length; i < len; i++) {
-        var item = listpost[i];
-        if (listpost[i].folder == choosenfolder) {
-            newList.push(item);
-        }
-    }
-    // highlight selected folder
-    if (document.querySelector('.active-site')) {
-        document.querySelector('.active-site').classList.remove('active-site');
-    }
-    for (var i = 0, liList = document.querySelectorAll('#feed-list li'), len = liList.length; i < len; i++) {
-        if (liList[i].dataset.folder == choosenfolder) {
-            liList[i].classList.add('active-site');
-            break;
-        }
-    }
-
-    rss_feedlist(newList);
-    openAllSwich = 'open';
-    document.getElementById('openallitemsbutton').classList.remove('unfold');
-
-    window.location.hash = '';
 }
 
 /* Starts the refreshing process (AJAX) */

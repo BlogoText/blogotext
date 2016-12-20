@@ -196,18 +196,6 @@ function addons_list_enabled()
     return $addons;
 }
 
-/**
- * return a basic list of addon with the status
- * { 'addon_1' => true , 'addon_2' => false }
- */
-function addons_list_status()
-{
-    $addons = array();
-    foreach (addons_list_all() as $addon) {
-        $addons[$addon] = addon_test_enabled($addon);
-    }
-}
-
 
 // addons -> test
 
@@ -378,26 +366,6 @@ function addon_load($addon_id, $db_declaration = null)
     }
 
     return true;
-}
-
-
-// addons -> load
-
-/**
- * load only enabled addons
- *
- * @return int the counter of loaded addons (for dev purpose)
- */
-function addons_load_enabled()
-{
-    $errors = array();
-
-    foreach (addons_list_enabled() as $addon) {
-        if (($loaded = addon_load($addon)) !== true) {
-            $errors[] = $loaded;
-        }
-    }
-    return (count($errors) === 0) ? true : $errors;
 }
 
 /**

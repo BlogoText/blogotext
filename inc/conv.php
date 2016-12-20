@@ -350,19 +350,3 @@ function nombre_objets($nb, $type)
             return $nb.' '.$GLOBALS['lang']['label_'.$type.'s'];
     }
 }
-
-/**
- *
- */
-function str2($nb)
-{
-    return str_pad($nb, 2, '0', STR_PAD_LEFT);
-}
-
-/**
- *
- */
-function str4($nb)
-{
-    return str_pad($nb, 4, '0', STR_PAD_LEFT);
-}

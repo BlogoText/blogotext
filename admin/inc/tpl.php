@@ -90,7 +90,7 @@ function tpl_show_preview($article)
 }
 
 /**
- * function afficher_html_head($titre)
+ *
  */
 function tpl_get_html_head($title)
 {
