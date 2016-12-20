@@ -194,7 +194,7 @@ echo '<div id="header">';
     echo '<div id="top">';
         tpl_show_msg();
         echo moteur_recherche();
-        tpl_show_topnav($GLOBALS['lang']['titre_commentaires']);
+        echo tpl_show_topnav($GLOBALS['lang']['titre_commentaires']);
     echo '</div>';
 echo '</div>';
 

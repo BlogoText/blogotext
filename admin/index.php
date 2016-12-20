@@ -46,8 +46,8 @@ function get_tableau_date($dataType)
     $tableMonths = array();
 
     // Uniformize date format. YYYYMMDDHHIISS where DDHHMMSS is 00000000 (to match with the ID format which is \d{14})
-    $min = date('Ym', mktime(0, 0, 0, date('m') - $showMax, 1, date('Y'))).'00000000';
-    $max = date('Ym').date('dHis');
+    $min = date('Ym', mktime(0, 0, 0, date('m') - $showMax, 1, date('Y'))).'01000000';
+    $max = date('Ymd').'235959';
 
     $btDate = ($dataType == 'articles') ? 'bt_date' : 'bt_id';
 
@@ -57,9 +57,11 @@ function get_tableau_date($dataType)
          WHERE '.$btDate.' BETWEEN '.$min.' AND '.$max.'
          GROUP BY date
          ORDER BY date';
+
     $req = $GLOBALS['db_handle']->prepare($sql);
     $req->execute();
-    $tab = $req-> fetchAll(PDO::FETCH_ASSOC);
+    $tab = $req->fetchAll(PDO::FETCH_ASSOC);
+
     foreach ($tab as $i => $month) {
         $tableMonths[$month['date']] = $month['idbydate'];
     }
@@ -127,7 +129,6 @@ if ($query) {
 }
 
 
-
 /**
  * echo
  */
@@ -138,7 +139,7 @@ echo '<div id="header">';
     echo '<div id="top">';
         tpl_show_msg();
         echo moteur_recherche();
-        tpl_show_topnav($GLOBALS['lang']['label_resume']);
+        echo tpl_show_topnav($GLOBALS['lang']['label_resume']);
     echo '</div>';
 echo '</div>';
 

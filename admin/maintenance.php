@@ -613,7 +613,7 @@ echo tpl_get_html_head($GLOBALS['lang']['titre_maintenance']);
 echo '<div id="header">';
     echo '<div id="top">';
     tpl_show_msg();
-    tpl_show_topnav('preferences.php', $GLOBALS['lang']['titre_maintenance']);
+    echo tpl_show_topnav('preferences.php', $GLOBALS['lang']['titre_maintenance']);
     echo '</div>';
 echo '</div>';
 

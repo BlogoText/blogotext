@@ -22,13 +22,11 @@ require_once BT_ROOT.'admin/inc/addons.php';
  * process
  */
 
-// traitement d’une action sur le module
 $erreurs = array();
 
 if (isset($_POST['format']) && $_POST['format'] == 'json') {
-    // [POC]
     $erreurs = addon_ajax_check_request(htmlspecialchars($_POST['addon_id']), 'addon_button_action');
-    if ($erreur) {
+    if ($erreurs) {
         die(json_encode(
             array(
                 'success' => false,
@@ -67,14 +65,12 @@ echo tpl_get_html_head($GLOBALS['lang']['mesmodules']);
 echo '<div id="header">';
     echo '<div id="top">';
         echo moteur_recherche();
-        tpl_show_topnav($GLOBALS['lang']['mesmodules']);
+        echo tpl_show_topnav($GLOBALS['lang']['mesmodules']);
     echo '</div>';
 echo '</div>';
 
 echo '<div id="axe">';
 echo '<div id="page">';
-
-// echo erreurs($erreurs);
 
 echo addon_form_buttons($_GET['addon']);
 echo addon_form_edit_settings($_GET['addon']);
@@ -88,7 +84,6 @@ echo '</script>';
 
 <script>
 
-// [POC] trigger an action
 function addon_button_action(button, addon_id, button_id)
 {
     if (!button.checked){return false;}
@@ -118,7 +113,6 @@ function addon_button_action(button, addon_id, button_id)
         } else {
             notif
                 .setHtml(resp.message);
-            // document.getElementById('top').appendChild(notifDiv);
         }
         notif.hideLoadingBar();
         // refresh the token

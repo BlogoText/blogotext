@@ -111,17 +111,18 @@ if (isset($_GET['d']) and preg_match('#^\d{4}/\d{2}/\d{2}/\d{2}/\d{2}/\d{2}#', $
         if (isset($_POST['_verif_envoi'], $_POST['commentaire'], $_POST['captcha'], $_POST['_token'], $_POST['auteur'], $_POST['email'], $_POST['webpage']) and ($billets[0]['bt_allow_comments'] == '1' )) {
             // COOKIES
             if (isset($_POST['allowcuki'])) { // si cookies autorisés, conserve les champs remplis
+                $ttl = time() + 365*24*3600;
                 if (isset($_POST['auteur'])) {
-                    setcookie('auteur_c', $_POST['auteur'], time() + 365*24*3600, null, null, false, true);
+                    setcookie('auteur_c', $_POST['auteur'], $ttl, null, null, false, true);
                 }
                 if (isset($_POST['email'])) {
-                    setcookie('email_c', $_POST['email'], time() + 365*24*3600, null, null, false, true);
+                    setcookie('email_c', $_POST['email'], $ttl, null, null, false, true);
                 }
                 if (isset($_POST['webpage'])) {
-                    setcookie('webpage_c', $_POST['webpage'], time() + 365*24*3600, null, null, false, true);
+                    setcookie('webpage_c', $_POST['webpage'], $ttl, null, null, false, true);
                 }
-                setcookie('subscribe_c', (isset($_POST['subscribe']) and $_POST['subscribe'] == 'on' ) ? 1 : 0, time() + 365*24*3600, null, null, false, true);
-                setcookie('cookie_c', 1, time() + 365*24*3600, null, null, false, true);
+                setcookie('subscribe_c', (isset($_POST['subscribe']) and $_POST['subscribe'] == 'on' ) ? 1 : 0, $ttl, null, null, false, true);
+                setcookie('cookie_c', 1, $ttl, null, null, false, true);
             }
 
             // COMMENT POST INIT

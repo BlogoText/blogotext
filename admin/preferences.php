@@ -543,7 +543,7 @@ echo tpl_get_html_head($GLOBALS['lang']['preferences']);
     echo '<div id="header">';
         echo '<div id="top">';
         tpl_show_msg();
-        tpl_show_topnav($GLOBALS['lang']['preferences']);
+        echo tpl_show_topnav($GLOBALS['lang']['preferences']);
         echo '</div>';
     echo '</div>';
 echo '<div id="axe">';

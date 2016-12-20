@@ -99,7 +99,7 @@ function auth_ttl()
 /**
  * Sanitinze the login.
  */
-function auth_format_login(string $login)
+function auth_format_login($login)
 {
     return addslashes(clean_txt(htmlspecialchars($login)));
 }
@@ -107,7 +107,7 @@ function auth_format_login(string $login)
 /**
  * Check if login and password match with the registered ones.
  */
-function auth_is_valid(string $login, string $pass)
+function auth_is_valid($login, $pass)
 {
     if (!password_verify(hash_pass($pass, true), USER_PWHASH)) {
         return false;
@@ -122,7 +122,7 @@ function auth_is_valid(string $login, string $pass)
 /**
  * Save identification values to write /config/user.php.
  */
-function auth_write_user_login_file(string $login, string $pass)
+function auth_write_user_login_file($login, $pass)
 {
     $login = auth_format_login($login);
     $pass = (empty($pass)) ? USER_PWHASH : hash_pass($pass);
@@ -139,7 +139,7 @@ function auth_write_user_login_file(string $login, string $pass)
  * Password hashing process.
  * Inspired from https://blogs.dropbox.com/tech/2016/09/how-dropbox-securely-stores-your-passwords/
 */
-function hash_pass(string $password, bool $checking = false)
+function hash_pass($password, $checking = false)
 {
     // Bypass 72 chars limitation instored by bcrypt
     $hash = hash('sha512', $password);
@@ -165,7 +165,7 @@ function uuid()
 /**
  * Write access log.
  */
-function auth_write_access(bool $status)
+function auth_write_access($status)
 {
     $data = '<?php die;  // '.(($status) ? 'SUCCESS ' : 'FAIL    ').date('r').' '.get_ip()." ?>\n";
     file_put_contents(DIR_CONFIG.'xauthlog.php', $data, FILE_APPEND | LOCK_EX);
