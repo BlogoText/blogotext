@@ -349,6 +349,10 @@ function display_pictures_list($images)
     $out .=  'var imgs = { list: [';
     // TODO: filename has 3 identical paths?!
     foreach ($images as $idx => $im) {
+        // TODO: bricolage, we need to ensure the DTB consistency elsewhere
+        if (!isset($im['bt_dim_w'])) {
+            list($im['bt_dim_w'], $im['bt_dim_h']) = getimagesize(DIR_IMAGES.$im['bt_filename']);
+        }
         $thumbnail = chemin_thb_img_test(URL_IMAGES.$im['bt_path'].'/'.$im['bt_filename']);
         $out .= '{
             index: '.(int)$idx.',
