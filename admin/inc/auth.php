@@ -167,6 +167,11 @@ function uuid()
  */
 function auth_write_access($status)
 {
-    $data = '<?php die;  // '.(($status) ? 'SUCCESS ' : 'FAIL    ').date('r').' '.get_ip()." ?>\n";
-    file_put_contents(DIR_CONFIG.'xauthlog.php', $data, FILE_APPEND | LOCK_EX);
+    $output = DIR_CONFIG.'xauthlog.php';
+    $content = '';
+    if (!is_file($output)) {
+        $content .= '<?php die;'."\n";
+    }
+    $content .= '// '.(($status) ? 'SUCCESS ' : 'FAIL    ').date('r').' '.get_ip()."\n";
+    file_put_contents($output, $content, FILE_APPEND | LOCK_EX);
 }
