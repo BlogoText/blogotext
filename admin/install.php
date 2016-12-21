@@ -232,6 +232,9 @@ function install_form_3_proceed()
     import_ini_file(FILE_MYSQL);
     $GLOBALS['db_handle'] = open_base();
     $totalPosts = liste_elements_count('SELECT count(ID) AS nbr FROM articles', array());
+
+    fichier_adv_conf();
+
     if ($totalPosts != 0) {
         return;
     }
@@ -311,8 +314,6 @@ function install_form_3_proceed()
 
         bdd_commentaire($comment, 'enregistrer-nouveau');
     }
-
-    fichier_adv_conf();
 }
 
 /**
