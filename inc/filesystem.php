@@ -24,6 +24,7 @@
 function create_folder($path, $make_htaccess = false, $recursive = false)
 {
     if (is_dir($path)) {
+        folder_secure_parents($path, $make_htaccess);
         return true;
     }
     if (mkdir($path, 0755, $recursive)) {

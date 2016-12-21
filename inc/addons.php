@@ -396,9 +396,7 @@ function addons_load_all()
  */
 function addon_get_setting($addon_id, $setting_id)
 {
-    if (!isset($GLOBALS['addons'][$addon_id])
-     || !isset($GLOBALS['addons'][$addon_id]['_loaded'])
-     || !isset($GLOBALS['addons'][$addon_id]['settings'][$setting_id])
+    if (!isset($GLOBALS['addons'][$addon_id]['_loaded'])
      || !isset($GLOBALS['addons'][$addon_id]['settings'][$setting_id]['value'])
     ) {
         return null;
