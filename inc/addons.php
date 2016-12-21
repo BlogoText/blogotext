@@ -559,7 +559,8 @@ function addons_db_refresh()
         }
     }
 
-    $to_file = '<?php return '.var_export($to_store, true).';';
+    $vars = preg_replace('/\s$/m', '', var_export($to_store, true));
+    $to_file = '<?php return '.$vars.';'."\n";
 
     // restore $GLOBALS['addons'] before this the function
     $GLOBALS['addons'] = $used_global;

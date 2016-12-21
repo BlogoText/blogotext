@@ -69,7 +69,8 @@ function addon_set_disabled($addon_id)
 function addon_set_settings($addon_id, $settings)
 {
     $file = addon_get_vhost_path($addon_id, true).'settings.php';
-    $to_file = '<?php return '.var_export($settings, true).';';
+    $vars = preg_replace('/\s$/m', '', var_export($settings, true));
+    $to_file = '<?php return '.$vars.';'."\n";
     $is_writed = file_put_contents($file, $to_file, LOCK_EX);
     return ($is_writed !== false);
 }
