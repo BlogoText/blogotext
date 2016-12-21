@@ -21,10 +21,10 @@ require_once BT_ROOT.'admin/inc/links.php';
 
 
 // Install or reinstall with same config ?
-$step3 = (is_file(DIR_CONFIG.'mysql.ini') && file_get_contents(DIR_CONFIG.'mysql.ini') != '');
+$step3 = (is_file(FILE_MYSQL) && file_get_contents(FILE_MYSQL) != '');
 
 // Install already done
-if (is_file(DIR_CONFIG.'user.ini') && is_file(DIR_CONFIG.'prefs.php') && !$step3) {
+if (is_file(FILE_USER) && is_file(FILE_SETTINGS) && $step3) {
     redirection('auth.php');
 }
 
