@@ -222,7 +222,6 @@ function install_form_2_proceed()
     if (!is_file(FILE_SETTINGS)) {
         fichier_prefs();
     }
-    // fichier_mysql(false);
 }
 
 /**
