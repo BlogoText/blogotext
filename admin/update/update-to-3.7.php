@@ -284,6 +284,11 @@ function upd_convert_config_files()
         }
     }
 
+    // new hash used for password
+    if (count($errors) === 0)) {
+        @unlink(FILE_USER);
+    }
+
     return (count($errors) === 0) ? true : $errors;
 }
 
@@ -335,7 +340,8 @@ function upd_db_update()
         $GLOBALS['db_handle']->exec(
             'INSERT INTO links_backup 
                 SELECT ID,bt_type,bt_id,bt_content,bt_wiki_content,bt_title,bt_tags,bt_link,bt_statut
-                FROM links');
+                FROM links'
+        );
         $GLOBALS['db_handle']->exec('DROP TABLE links');
         $GLOBALS['db_handle']->exec("CREATE TABLE IF NOT EXISTS links
             (
@@ -352,7 +358,8 @@ function upd_db_update()
         $GLOBALS['db_handle']->exec(
             'INSERT INTO links 
                 SELECT ID,bt_type,bt_id,bt_content,bt_wiki_content,bt_title,bt_tags,bt_link,bt_statut
-                FROM links_backup');
+                FROM links_backup'
+        );
         $GLOBALS['db_handle']->exec('DROP TABLE links_backup');
         $GLOBALS['db_handle']->commit();
     } catch (Exception $e) {
@@ -468,10 +475,20 @@ if ($success === true) {
     $message .= '<p>Can\'t work on database until config files are updated.</p>';
 }
 
+if ($success === true) {
+    $message .= '<h3>Just for more step :</h3>';
+    $message .= '
+        <ul>
+            <li>Use <a href="../install.php">the install process for a new password</a></li>
+            <li>Go on public side of your blog to check if everything is fine</li>
+            <li>Go on admin side of your blog to check if everything is fine</li>
+        </ul>';
+    $message .= '<p>In case of errors, please make an issue at <a href="https://github.com/BoboTiG/blogotext/issues">github / blogotext</a></p>';
+}
+
 echo $html_head;
 echo $message;
 echo $html_foot;
 
 
 exit();
-// ALTER TABLE `test` CHANGE `sdfg` `rtyy` INT(11) NOT NULL;
