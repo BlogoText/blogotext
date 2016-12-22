@@ -165,13 +165,18 @@ function uuid()
 /**
  * Write access log.
  */
-function auth_write_access($status)
+function auth_write_access($status, $username = null)
 {
     $output = DIR_CONFIG.'xauthlog.php';
     $content = '';
     if (!is_file($output)) {
         $content .= '<?php die;'."\n";
     }
-    $content .= '// '.(($status) ? 'SUCCESS ' : 'FAIL    ').date('r').' '.get_ip()."\n";
+    $content .= '# '.date('Y-m-d_H:i:s').' - '.get_ip().' - ';
+    if ($status) {
+        $content .= 'Login successful'."\n";
+    } else {
+        $content .= 'Login failed for user '.substr($username, 0, 32)."\n";
+    }
     file_put_contents($output, $content, FILE_APPEND | LOCK_EX);
 }
