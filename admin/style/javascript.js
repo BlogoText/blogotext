@@ -265,7 +265,6 @@ class Notification {
                 self.btnClose.removeEventListener("click");
             }
         }, 1000);
-
         if (typeof self.callbackOnClose === "function") {
             self.callbackOnClose();
         }
