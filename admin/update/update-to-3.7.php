@@ -11,13 +11,6 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 # *** LICENSE ***
 
-define('BT_RUN_INSTALL', 1);
-
-if (!is_file('../../inc/boot.php')) {
-    die('Can\'t find boot :/ Check your Blogotext version please');
-}
-require_once '../../inc/boot.php';
-
 
 /**
  * set vars
@@ -102,6 +95,17 @@ $upd_vars['user']['USER_PWHASH'] = '';
 /**
  * running some test
  */
+
+if (!defined('BT_RUN_INSTALL')) {
+    echo $html_head;
+    echo '
+        <div class="center">
+            <h3>Not allowed !</h3>
+            <p>Please use the install url.</p>
+        </div>';
+    echo $html_foot;
+    exit();
+}
 
 
 // check version
@@ -230,12 +234,6 @@ function upd_convert_config_files()
                     'type' => 'ini',
                     'family' => 'settings-advanced'
                 ),
-            array(
-                    'old' => DIR_CONFIG.'user.ini',
-                    'new' => FILE_USER,
-                    'type' => 'ini',
-                    'family' => 'user'
-                ),
         );
 
     $errors = array();
@@ -285,8 +283,13 @@ function upd_convert_config_files()
     }
 
     // new hash used for password
-    if (count($errors) === 0)) {
-        @unlink(FILE_USER);
+    if (count($errors) === 0) {
+        $user_files = array(DIR_CONFIG.'user.ini', FILE_USER);
+        foreach ($user_files as $file) {
+            if (is_file($file)) {
+                @unlink($file);
+            }
+        }
     }
 
     return (count($errors) === 0) ? true : $errors;
@@ -479,7 +482,7 @@ if ($success === true) {
     $message .= '<h3>Just for more step :</h3>';
     $message .= '
         <ul>
-            <li>Use <a href="../install.php">the install process for a new password</a></li>
+            <li>Use <a href="?">the install process for a new password</a></li>
             <li>Go on public side of your blog to check if everything is fine</li>
             <li>Go on admin side of your blog to check if everything is fine</li>
         </ul>';

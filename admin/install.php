@@ -17,14 +17,21 @@ $GLOBALS['lang'] = (in_array($lang, array('en', 'fr'))) ? $lang : 'fr';
 
 define('BT_RUN_INSTALL', 1);
 require_once 'inc/boot.php';
+
+if (is_file(DIR_CONFIG.'mysql.ini') || is_file(DIR_CONFIG.'prefs.php')) {
+    require 'update/update-to-3.7.php';
+    exit();
+}
+
 require_once BT_ROOT.'admin/inc/links.php';
 
 
 // Install or reinstall with same config ?
-$step3 = (is_file(DIR_CONFIG.'mysql.ini') && file_get_contents(DIR_CONFIG.'mysql.ini') != '');
+$step3 = (is_file(FILE_MYSQL) && !empty(trim(file_get_contents(FILE_MYSQL))));
 
+var_dump($step3);
 // Install already done
-if (is_file(DIR_CONFIG.'user.ini') && is_file(DIR_CONFIG.'prefs.php') && !$step3) {
+if (is_file(FILE_USER) && is_file(FILE_SETTINGS) && $step3) {
     redirection('auth.php');
 }
 
@@ -205,17 +212,17 @@ function install_form_2_proceed()
     $username = (string)filter_input(INPUT_POST, 'identifiant');
     $password = (string)filter_input(INPUT_POST, 'mdp');
 
-    create_folder(DIR_CONFIG, 1); // todo : change for v4
-    create_folder(DIR_IMAGES, 0); // todo : change for v4
-    create_folder(DIR_DOCUMENTS, 0); // todo : change for v4
-    create_folder(DIR_DATABASES, 1); // todo : change for v4
-    create_folder(DIR_LOG, 1); // todo : change for v4
+    create_folder(DIR_CONFIG, true);
+    create_folder(DIR_IMAGES, false);
+    create_folder(DIR_DOCUMENTS, false);
+    create_folder(DIR_DATABASES, true);
+    create_folder(DIR_LOG, true, true);
     auth_write_user_login_file($username, $password);
     import_ini_file(FILE_USER); // todo : change for v4
     if (!is_file(FILE_SETTINGS)) {
         fichier_prefs();
     }
-    fichier_mysql(false);
+    // fichier_mysql(false);
 }
 
 /**
@@ -232,6 +239,9 @@ function install_form_3_proceed()
     import_ini_file(FILE_MYSQL);
     $GLOBALS['db_handle'] = open_base();
     $totalPosts = liste_elements_count('SELECT count(ID) AS nbr FROM articles', array());
+
+    fichier_adv_conf();
+
     if ($totalPosts != 0) {
         return;
     }
@@ -311,8 +321,6 @@ function install_form_3_proceed()
 
         bdd_commentaire($comment, 'enregistrer-nouveau');
     }
-
-    fichier_adv_conf();
 }
 
 /**
