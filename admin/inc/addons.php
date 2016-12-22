@@ -324,10 +324,10 @@ function addon_form_edit_settings_proceed($addon_id)
                 $errors[$key][] = 'No data posted';
             }
         } else if ($param['type'] == 'text') {
-            $datas[$key] = '\''.htmlentities($_POST[$key], ENT_QUOTES).'\'';
+            $datas[$key] = htmlentities($_POST[$key], ENT_QUOTES);
         } else if ($param['type'] == 'select') {
             if (isset($param['options'][$_POST[$key]])) {
-                $datas[$key] = '\''.htmlentities($_POST[$key], ENT_QUOTES).'\'';
+                $datas[$key] = htmlentities($_POST[$key], ENT_QUOTES);
             } else {
                 $errors[$key][] = 'not a valid type';
             }
