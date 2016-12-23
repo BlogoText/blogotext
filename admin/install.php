@@ -17,11 +17,18 @@ $GLOBALS['lang'] = (in_array($lang, array('en', 'fr'))) ? $lang : 'fr';
 
 define('BT_RUN_INSTALL', 1);
 require_once 'inc/boot.php';
+
+// update ?
+if (is_file(DIR_CONFIG.'mysql.ini') || is_file(DIR_CONFIG.'prefs.php')) {
+    require 'update/update-to-3.7.php';
+    exit();
+}
+
 require_once BT_ROOT.'admin/inc/links.php';
 
 
 // Install or reinstall with same config ?
-$step3 = (is_file(FILE_MYSQL) && file_get_contents(FILE_MYSQL) != '');
+$step3 = (is_file(FILE_MYSQL) && !empty(trim(file_get_contents(FILE_MYSQL))));
 
 // Install already done
 if (is_file(FILE_USER) && is_file(FILE_SETTINGS) && $step3) {
@@ -215,7 +222,6 @@ function install_form_2_proceed()
     if (!is_file(FILE_SETTINGS)) {
         fichier_prefs();
     }
-    fichier_mysql(false);
 }
 
 /**
