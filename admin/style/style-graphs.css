@@ -79,6 +79,17 @@
     text-transform: capitalize;
     border: 1px solid transparent;
     border-radius: 2px;
+    visibility:hidden;
+}
+@media (max-width: 480px) {
+    .graph-container .month:nth-child(3n+1) .month-name {
+        visibility: visible;
+    }
+}
+@media (min-width: 480px) {
+    .graph-container .month:nth-child(2n+1) .month-name {
+        visibility: visible;
+    }
 }
 
 .graph-container .month-nb {
