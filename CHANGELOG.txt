@@ -17,10 +17,10 @@
     note : custom templates don't need any update to stay fonctional
     - upd rewrite and reorder a lot of file, function (...) in the core (PSR-2 and "english" compliancy)
     - add addon system
-    - add some fields in database
+    - upd database scheme, add some fields in database
     - add public template tag {tpl_class}
     - upd auth password hash improvement
-    - upd for feeds, rss.php and atom.php merged into feed.php
+    - upd for pubilc feeds, rss.php and atom.php merged into feed.php
     - add some 404 headers, public side
     - upd langs file have been splitted public/admin
     - add first release for a log error system
@@ -29,7 +29,8 @@
     - add vhost partial support
     - upd some security improvement (ini file > php file ...)
     - add updater for an easy transition from 3.4.7 to 3.7
-    - add new notification system, partially implemented
+    - add new notification system, partially implemented (JS)(admin side)
+    - add new loader animation, partially implemented (JS)(admin side)
     - add new boot system
     - add hook system (public side)
     - fix some bugs
@@ -37,3 +38,4 @@
     - upd improve performance and fonctionnality for admin feed reader
     - fix some bugs with ajax tokens
     - add Send mail to author at new comment
+    - upd default template
