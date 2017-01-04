@@ -33,3 +33,7 @@
     - add new boot system
     - add hook system (public side)
     - fix some bugs
+    - upd add custom user agent for BlogoText
+    - upd improve performance and fonctionnality for admin feed reader
+    - fix some bugs with ajax tokens
+    - add Send mail to author at new comment
