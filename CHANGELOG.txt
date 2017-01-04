@@ -1,0 +1,35 @@
+# Changelog for BlogoText
+#
+# note : each changes will be start with status :
+#  - upd, for update or modification
+#  - add, for addition
+#  - del, for deletion
+#  - fix, like an upd but just for fixing an error
+# note : each note will be start with "note :", 1 note by subject
+
+
+[3.7]
+    note : This changelog file will not be complete due to the consequent number of changes and the
+        late implementation of this changelog
+    note : The 3.7 is the first release after the change of maintainer
+    note : GitHub moved to https://github.com/BoboTiG/blogotext/
+    note : you will notice some performance improvement due to the partial rewrite/reorder of the core
+    note : custom templates don't need any update to stay fonctional
+    - upd rewrite and reorder a lot of file, function (...) in the core (PSR-2 and "english" compliancy)
+    - add addon system
+    - add some fields in database
+    - add public template tag {tpl_class}
+    - upd auth password hash improvement
+    - upd for feeds, rss.php and atom.php merged into feed.php
+    - add some 404 headers, public side
+    - upd langs file have been splitted public/admin
+    - add first release for a log error system
+    - add favatar.php, will manage external favicon and gravatar
+    - add valias support
+    - add vhost partial support
+    - upd some security improvement (ini file > php file ...)
+    - add updater for an easy transition from 3.4.7 to 3.7
+    - add new notification system, partially implemented
+    - add new boot system
+    - add hook system (public side)
+    - fix some bugs
