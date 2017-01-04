@@ -353,14 +353,18 @@ function display_pictures_list($images)
         if (!isset($im['bt_dim_w'])) {
             list($im['bt_dim_w'], $im['bt_dim_h']) = getimagesize(DIR_IMAGES.$im['bt_filename']);
         }
-        $thumbnail = chemin_thb_img_test(URL_IMAGES.$im['bt_path'].'/'.$im['bt_filename']);
+
+        $img_path_src = $im['bt_path'].'/'.$im['bt_filename'];
+        $thumb_name = chemin_thb_img($img_path_src);
+        $thumbnail = (is_file(DIR_IMAGES.$thumb_name)) ? $thumb_name : $img_path_src;
+
         $out .= '{
             index: '.(int)$idx.',
             filename: [
-                "'.URL_IMAGES.$im['bt_path'].'/'.$im['bt_filename'].'",
+                "'.URL_IMAGES.$img_path_src.'",
                 "'.$im['bt_filename'].'",
-                "'.$thumbnail.'",
-                "'.URL_IMAGES.$im['bt_path'].'/'.$im['bt_filename'].'"
+                "'.URL_IMAGES.$thumbnail.'",
+                "'.URL_IMAGES.$img_path_src.'"
             ],
             id: '.(int)$im['bt_id'].',
             desc: "'.addslashes(preg_replace('#(\n|\r|\n\r)#', '', nl2br($im['bt_content']))).'",
