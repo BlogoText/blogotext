@@ -115,7 +115,7 @@
         line-height: 3;
         background-color: white;
         width: 250px;
-        height: 100%;
+        min-height: 100%;
         left: 0;
         transform: translate(-260px);
         top: 60px;
