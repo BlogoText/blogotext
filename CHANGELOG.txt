@@ -10,16 +10,16 @@
 
 
 [3.7]
-    note : This changelog file will not be complete due to the consequent number of changes and the late
-           implementation of this changelog.
+    note : This changelog file will not be complete due to the consequent number of changes and the
+           late implementation of this changelog
     note : The 3.7 is the first release after the change of maintainer
     note : GitHub moved to https://github.com/BoboTiG/blogotext/
     note : you will notice some performance improvement due to the partial rewrite/reorder of the core
-    note : custom templates don't need any update to stay fonctional
-    - fix some bugs with ajax tokens
-    - fix some bugs in public and admin side
-    - add public template tag {tpl_class}
+    note : custom templates don't need any update to stay fonctional, but if you want to use addons, you 
+           must add some addons tags
+    - add public template tag {tpl_class} wich return content type and informations
     - add addon system
+    - add public template tag {includes.css} and {includes.js} for addons support
     - add first release for a log error system
     - add favatar.php, will manage external favicon and gravatar
     - add valias support
