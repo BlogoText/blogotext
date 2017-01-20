@@ -21,7 +21,7 @@ $vars = array(
     'fichier' => (string)filter_input(INPUT_POST, 'fichier'),
 
     'url' => (string)filter_input(INPUT_GET, 'url'),
-    'id' => (int)filter_input(INPUT_GET, 'id'),
+    'id' => (string)filter_input(INPUT_GET, 'id'),
     'filtre' => (string)filter_input(INPUT_GET, 'filtre'),
     'q' => (string)filter_input(INPUT_GET, 'q'),
 );
