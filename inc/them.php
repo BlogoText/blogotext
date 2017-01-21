@@ -104,11 +104,11 @@ function conversions_theme($texte, $solo_art, $cnt_mode)
         $texte = str_replace($GLOBALS['balises']['article_titre_echape'], urlencode($solo_art['bt_title']), $texte);
         $texte = str_replace($GLOBALS['balises']['article_lien'], $solo_art['bt_link'], $texte);
         if ($solo_art['bt_type'] == 'article') {
-            $texte = str_replace($GLOBALS['balises']['article_chapo'], str_replace(array("\r", "\n"), ' ', ((empty($solo_art['bt_abstract'])) ? mb_substr(strip_tags($solo_art['bt_content']), 0, 249).'…' : $solo_art['bt_abstract'])), $texte);
+            $texte = str_replace($GLOBALS['balises']['article_chapo'], htmlspecialchars(str_replace(array("\r", "\n"), ' ', ((empty($solo_art['bt_abstract'])) ? mb_substr(strip_tags($solo_art['bt_content']), 0, 249).'…' : $solo_art['bt_abstract'])), ENT_QUOTES), $texte);
             $texte = str_replace($GLOBALS['balises']['blog_motscles'], $solo_art['bt_keywords'], $texte);
         }
         if ($solo_art['bt_type'] == 'link' or $solo_art['bt_type'] == 'note') {
-            $texte = str_replace($GLOBALS['balises']['article_chapo'], trim(str_replace(array("\r", "\n"), ' ', mb_substr(strip_tags($solo_art['bt_content']), 0, 149))).'…', $texte);
+            $texte = str_replace($GLOBALS['balises']['article_chapo'], htmlspecialchars(trim(str_replace(array("\r", "\n"), ' ', mb_substr(strip_tags($solo_art['bt_content']), 0, 149))), ENT_QUOTES).'…', $texte);
             $texte = str_replace($GLOBALS['balises']['article_titre_page'], $solo_art['bt_title'].' - ', $texte);
         }
     }
