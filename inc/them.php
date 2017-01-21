@@ -368,7 +368,7 @@ function conversion_theme_addons($texte)
             foreach ($addon['js'] as $inc_file) {
                 $inc = sprintf('%s/%s/%s', DIR_ADDONS, $addon['tag'], $inc_file);
                 if (is_file($inc)) {
-                    $js .= sprintf("<script src=\"%s\"></script>;\n", $inc);
+                    $js .= sprintf("<script src=\"%s\"></script>\n", $inc);
                 }
             }
         }
