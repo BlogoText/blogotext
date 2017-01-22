@@ -15,7 +15,7 @@ require_once 'inc/boot.php';
 
 // dependancy
 require_once BT_ROOT.'inc/addons.php';
-require_once BT_ROOT.'admin/inc/addons.php';
+require_once BT_ROOT_ADMIN.'inc/addons.php';
 
 
 /**
