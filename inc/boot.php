@@ -203,7 +203,6 @@ function secure_host_to_path($http_host)
 
 // Constants: folders
 define('DIR_ADDONS', BT_ROOT.'addons/');
-define('DIR_ADMIN', BT_ROOT.'admin/');
 define('DIR_BACKUP', BT_ROOT.'bt_backup/');
 define('DIR_CONFIG', BT_ROOT.'config/');
 define('DIR_DATABASES', BT_ROOT.'databases/');
