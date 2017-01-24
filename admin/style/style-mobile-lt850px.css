@@ -115,9 +115,9 @@
         line-height: 3;
         background-color: white;
         width: 250px;
-        height: 100%;
+        min-height: 100%;
         left: 0;
-        transform: translate(-250px);
+        transform: translate(-270px);
         top: 60px;
         box-shadow: 0px 14px 24px rgba(0, 0, 0, 0.6);
         z-index: 20;

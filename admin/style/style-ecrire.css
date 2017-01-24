@@ -63,6 +63,8 @@
 #apercu img {
     padding: 2px;
     border: 1px solid #ddd;
+    max-width: 100%;
+    height: auto;
 }
 
 #form-ecrire {

@@ -34,6 +34,10 @@
     flex: 0 1 45%;
 }
 
+#preferences label small{
+    color:#999;
+}
+
 #preferences .text {
     padding: 5px 5px 5px 1px;
 }

@@ -67,7 +67,7 @@
 .rss-menu-buttons li > button::-moz-focus-inner {
     background-color: rgba(0, 0, 0, .05);
     transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0s;
-   outline: none;
+    outline: none;
     border-color: transparent;
 }
 
@@ -102,6 +102,27 @@
     position: relative;
     border-bottom: 1px solid #eee;
     align-items: center;
+}
+
+#feed-list > li.feed-nav a {
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.8em;
+    padding-left: 20px;
+    transition: .3s;
+}
+
+#feed-list > li.feed-nav a:hover {
+    background: #ddd;
+}
+
+#feed-list > li.feed-nav a:last-of-type {
+    border-left: 1px solid #eee;
+}
+
+#feed-list > li.feed-nav a[disabled] {
+    cursor: not-allowed;
+    opacity: .3;
 }
 
 #feed-list > li.all-feeds a,
@@ -237,7 +258,7 @@
 }
 
 #feed-list li.feed-folder:hover > span,
-#feed-list li:not(.feed-folder):hover,
+#feed-list li:not(.feed-folder):not(.feed-nav):hover,
 #feed-list > li.feed-folder li:hover {
     box-shadow: 3px 0 0 gray inset;
     transition: box-shadow 0.2s ease 0s

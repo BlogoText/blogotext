@@ -23,19 +23,6 @@ function annuler(pagecible)
 
 
 /*
-    On login captcha : if the captcha is unreadable, this helps you reload the captcha
-    without reloading the whole page (the other fields might been filed)
-*/
-
-function new_freecap()
-{
-    var thesrc = document.getElementById("freecap").src;
-    thesrc = thesrc.substring(0,thesrc.lastIndexOf(".")+4);
-    document.getElementById("freecap").src = thesrc+"?"+Math.round(Math.random()*100000);
-}
-
-
-/*
     On article or comment writing: insert a BBCode Tag or a Unicode char.
 */
 
@@ -106,20 +93,25 @@ function humanFileSize(bytes)
 
 function switch_form(activeForm)
 {
-    var form_export = document.getElementById('form_export');
-    var form_import = document.getElementById('form_import');
-    var form_optimi = document.getElementById('form_optimi');
+    var form_export = document.getElementById('form_export'),
+        form_import = document.getElementById('form_import'),
+        form_optimi = document.getElementById('form_optimi');
+
     form_export.style.display = form_import.style.display = form_optimi.style.display = 'none';
     document.getElementById(activeForm).style.display = 'block';
 }
 
 function switch_export_type(activeForm)
 {
-    var e_json = document.getElementById('e_json');
-    var e_html = document.getElementById('e_html');
-    var e_zip = document.getElementById('e_zip');
+    var e_json = document.getElementById('e_json'),
+        e_html = document.getElementById('e_html'),
+        e_zip = document.getElementById('e_zip'),
+        e_active = document.getElementById(activeForm);
+
     e_json.style.display = e_html.style.display = e_zip.style.display = 'none';
-    document.getElementById(activeForm).style.display = 'block';
+    if (e_active) {
+        e_active.style.display = 'block';
+    }
 }
 
 function hide_forms(blocs)
@@ -132,8 +124,11 @@ function hide_forms(blocs)
     for (var i = 0, length = radios.length; i < length; i++) {
         if (!radios[i].checked) {
             var cont = document.getElementById('e_'+radios[i].value);
-            while (cont.firstChild) {
-                cont.removeChild(cont.firstChild);}
+            if (cont) {
+                while (cont.firstChild) {
+                    cont.removeChild(cont.firstChild);
+                }
+            }
         }
     }
 }
@@ -157,9 +152,280 @@ function rmFichier(button)
     return false;
 }
 
+/*
 function annuler(pagecible)
 {
     window.location = pagecible;
+}
+ */
+
+
+// [POC]
+class Notification {
+
+    constructor() {
+        // set box system
+        this.container = document.createElement('div');
+        this.box = document.createElement('div');
+        this.content = document.createElement('div');
+        this.container.classList.add('Notification');
+        this.box.classList.add('Notification-box');
+        this.content.classList.add('Notification-content');
+        // Boxing boxes
+        this.box.appendChild(this.content);
+        this.container.appendChild(this.box);
+
+        // init some vars
+        this.btnCloseBar = null;
+        this.btnClose = null;
+        this.type = null;
+        this.callbackOnClose = null;
+
+        return this;
+    }
+
+    showLoadingBar(el)
+    {
+        if (typeof el == 'undefined') {
+            el = this.box;
+        } else {
+            // dont break the target
+            var bar = document.createElement('div');
+            bar.classList.add('loading_bar_absolute');
+            if (el.style.position == '') {
+                el.style.position = 'relative';
+            }
+            el.appendChild(bar);
+            var el = bar;
+        }
+        el.classList.add('loading_bar');
+        el.classList.add('loadingOn');
+        return this;
+    }
+    hideLoadingBar(el, ttl, callback)
+    {
+        if (typeof el == 'undefined') {
+            el = this.box;
+        } else {
+            var bar = el.getElementsByClassName('loading_bar');
+            if (bar.lenght == 0) {
+                return this;
+            }
+            var el = bar[0];
+        }
+
+        if (typeof ttl == 'undefined') {
+            el.classList.remove('loading_bar');
+            el.classList.remove('loadingOn');
+            if (this.type == 'dialog') {
+                this.dialogSetPosition(self.box);
+            }
+            if (typeof callback === "function") {
+                callback();
+            }
+            return this;
+        }
+        var self = this;
+        setTimeout(function () {
+            el.classList.remove('loading_bar');
+            el.classList.remove('loadingOn');
+            if (self.type == 'dialog') {
+                self.dialogSetPosition(self.box);
+            }
+            if (typeof callback === "function") {
+                callback();
+            }
+        }, ttl);
+        return this;
+    }
+
+    setHtml(html)
+    {
+        this.content.innerHTML = html;
+        return this;
+    }
+    setText(text)
+    {
+        this.content.textContent = text;
+        return this;
+    }
+    /**
+     * destroy
+     */
+    destroy(effect)
+    {
+        this.container.classList.add('Notification-destroy');
+        if (typeof effect == 'undefined') {
+            this.container.classList.add('Notification-destroy-'+effect);
+        }
+        var self = this;
+        setTimeout(function () {
+            self.container.parentNode.removeChild(self.container);
+            if (self.btnClose != null) {
+                self.btnClose.removeEventListener("click");
+            }
+        }, 1000);
+
+        if (typeof self.callbackOnClose === "function") {
+            self.callbackOnClose();
+        }
+    }
+
+    addCloseTimer(ttl, effect, callback)
+    {
+        var self = this;
+        setTimeout(function () {
+            self.destroy(effect);
+            if (typeof callback === "function") {
+                callback();
+            }
+        }, ttl);
+        return this;
+    }
+    addCloseButton(text)
+    {
+        this.btnCloseBar = document.createElement('div');
+        this.btnCloseBtn = document.createElement('button');
+
+        this.btnCloseBtn.innerHTML = text;
+        this.btnCloseBtn.classList.add('submit');
+        this.btnCloseBtn.classList.add('button-submit');
+        this.btnCloseBar.classList.add('submit-bttns');
+        this.btnCloseBar.classList.add('Notification-footer');
+
+        this.btnCloseBar.appendChild(this.btnCloseBtn);
+        this.box.appendChild(this.btnCloseBar);
+
+        var self = this;
+        this.btnCloseBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            self.destroy();
+            return;
+        }, false);
+        return this;
+    }
+
+    merge(obj1, obj2)
+    {
+        var obj3 = {};
+        for (var a in obj1) {
+            obj3[a] = obj1[a];
+        }
+        for (var a in obj2) {
+            obj3[a] = obj2[a];
+        }
+        return obj3;
+    }
+
+    offset(el)
+    {
+        // document.body.style.margin = 0;
+        var rect = el.getBoundingClientRect();
+        return {
+            top: rect.top + (window.pageYOffset || document.documentElement.scrollTop),
+            left: rect.left + (window.pageXOffset || document.documentElement.scrollLeft)
+        }
+    }
+
+    // set the correct position
+    dialogSetPosition(box)
+    {
+        var wW = window.innerWidth;
+        // css style
+        if (wW < 480) {
+            return;
+        }
+
+        box.style.left  = ((wW - box.offsetWidth)/2) +'px';
+        // box.style.right = ((wW - box.offsetWidth)/2) +'px';
+    }
+
+    onClose(callback)
+    {
+        if (typeof callback === "function") {
+            this.callbackOnClose = callback;
+        }
+        return this;
+    }
+
+    // WIP
+    insertAsBigToast()
+    {
+        this.type = 'bigtoast';
+        this.BigToastContainer = document.getElementById('Notification-BigToast');
+        if (this.BigToastContainer == null) {
+            this.BigToastContainer = document.createElement('div');
+            this.BigToastContainer.setAttribute("id", "Notification-BigToast");
+            document.body.appendChild(this.BigToastContainer);
+        }
+        this.BigToastContainer.appendChild(this.container);
+    }
+    // WIP
+    insertAsDialog()
+    {
+        var self = this;
+
+        this.type = 'dialog';
+        this.container.classList.add('Notification-dialog');
+        document.body.appendChild(this.container);
+        this.dialogSetPosition(this.box);
+
+        window.addEventListener("scroll", function () {
+            self.dialogSetPosition(self.box);
+        }, false);
+        window.addEventListener("resize", function () {
+            self.dialogSetPosition(self.box);
+        }, false);
+    }
+    // WIP
+    insertAfter(insertAfter)
+    {
+        this.type = 'after';
+        var parent = insertAfter.parentNode,
+            next = insertAfter.nextSibling;
+        if (next) {
+            parent.insertBefore(this.container, next)
+        } else {
+            parent.appendChild(this.container)
+        }
+        return this;
+    }
+    // WIP
+    insertSticker(stickTo, posCorrection)
+    {
+        this.type = 'sticker';
+        var correction = this.merge({top:0,right:0,left:0,bottom:0,width:200,height:30}, posCorrection),
+            stickToPosition = this.offset(stickTo);
+
+        this.container.style.left = stickToPosition.left + stickTo.offsetWidth + correction.left + 'px';
+        this.container.style.top = stickToPosition.top + correction.top + 'px';
+        this.container.style.width = correction.width;
+        this.container.classList.add('Notification-sticker');
+
+        this.box.style.width = correction.width + 'px';
+        this.content.style.width = correction.width + 'px';
+
+        document.body.appendChild(this.container);
+    }
+}
+
+
+// [POC] setTimeout for css animation
+/**
+ * si pas de 2nd timeout pour remettre la classe la checkbox "scintille" avant de réapparaitre
+ */
+function checkboxToggleReset(chk)
+{
+    setTimeout(function () {
+        chk.classList.remove('checkbox-toggle');
+        chk.removeAttribute('disabled');
+        chk.removeAttribute('active');
+        chk.removeAttribute('checked');
+        chk.checked = false;
+    }, 400);
+    setTimeout(function () {
+        chk.classList.add('checkbox-toggle');
+    }, 400);
 }
 
 
@@ -311,22 +577,56 @@ function activate_comm(button)
     ADD-ONS HANDLING
 **************************************************************************************************************************************/
 
-// hide/unhide a comm
-function activate_mod(button)
+// show/hide for addons list
+function addons_showhide_list()
+{
+    if ("querySelector" in document && "addEventListener" in window) {
+        [].forEach.call(document.querySelectorAll("#modules div"), function (el) {
+            el.style.display = "none";
+        });
+
+        [].forEach.call(document.querySelectorAll("#modules li"), function (el) {
+            el.addEventListener("click",function (e) {
+                // e.preventDefault();
+                this.nextElementSibling.style.display = (this.nextElementSibling.style.display === "none") ? "" : "none";
+                return;
+            }, false);
+        });
+    }
+}
+
+// enabled/disable an addon
+function addon_switch_enabled(button)
 {
     var notifDiv = document.createElement('div');
+    // [POC] Notification close to the checkox
+    var Notif = new Notification();
+    var parent = button.parentNode.parentNode;
+    Notif.showLoadingBar(parent);
 
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', 'modules.php', true);
+    xhr.open('POST', 'addons.php', true);
 
     xhr.onload = function () {
-        var resp = this.responseText;
-        if (resp.indexOf("Success") == 0) {
+        var resp = JSON.parse(this.responseText);
+        if (resp.success == true) {
+            Notif
+                .setText('Done!')
+                .addCloseTimer(1000)
+                .insertSticker(
+                    button.parentNode.getElementsByTagName("label")[0], // stick to, <check box have a dirty css tricks to hide the reel one, so we use the label instead
+                    {left:1,width:42,top:-36} // some correction
+                );
+            Notif.hideLoadingBar(parent, 500);
         } else {
-            notifDiv.textContent = resp.substr(45);
+            Notif.hideLoadingBar(parent, 500);
+            notifDiv.textContent = resp.message;
             notifDiv.classList.add('no_confirmation');
             document.getElementById('top').appendChild(notifDiv);
+            checkboxToggleReset(button);
         }
+        // refresh the token
+        csrf_token = resp.token;
     };
     xhr.onerror = function (e) {
         notifDiv.textContent = e.target.status + ' (#mod-activ-F38)';
@@ -338,14 +638,18 @@ function activate_mod(button)
     var formData = new FormData();
     formData.append('token', csrf_token);
     formData.append('_verif_envoi', 1);
+    formData.append('mod_activer', button.id);
 
     formData.append('addon_id', button.id.substr(7));
     formData.append('statut', ((button.checked) ? 'on' : ''));
-    formData.append('mod_activer', button.id);
+    formData.append('format', 'ajax');
 
     xhr.send(formData);
-
 }
+
+
+
+
 
 /**************************************************************************************************************************************
     LINKS AND ARTICLE FORMS : TAGS HANDLING
@@ -569,6 +873,10 @@ function slideshow(action, image)
     var isSlide = false;
 
     var ElemImg = document.getElementById('slider-img');
+    if (!ElemImg) {
+        return;
+    }
+
     var oldCounter = counter;
     switch (action) {
         case 'start':
@@ -647,8 +955,10 @@ function slideshow(action, image)
         });
     } else {
         ElemImg.src = '';
-        newImg.src = curr_img[counter].filename[3];
-        assingButtons(curr_img[counter]);
+        if (curr_img[counter]) {
+            newImg.src = curr_img[counter].filename[3];
+            assingButtons(curr_img[counter]);
+        }
     }
 
 }
@@ -696,9 +1006,13 @@ function request_delete_form(id)
     if (!window.confirm('Ce fichier sera supprimé définitivement')) {
         return false;
     }
-    // prepare XMLHttpRequest
-    document.getElementById('slider-img').classList.add('loading');
 
+    var slider = document.getElementById('slider-img');
+    if (slider) {
+        slider.classList.add('loading');
+    }
+
+    // prepare XMLHttpRequest
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '_rmfichier.ajax.php');
     xhr.onload = function () {
@@ -1169,107 +1483,6 @@ function rss_feedlist(RssPosts)
     return false;
 }
 
-/* Sort and show all items */
-function sortAll()
-{
-    // unhighlight previously selected site
-    if (document.querySelector('.active-site')) {
-        document.querySelector('.active-site').classList.remove('active-site');
-    }
-
-    rss_feedlist(Rss);
-    openAllSwich = 'open';
-    document.getElementById('openallitemsbutton').classList.remove('unfold');
-    if (Rss.length != 0) {
-        window.location.hash = '';
-    }
-}
-
-/* Sort favorites */
-function sortFavs()
-{
-    // unhighlight previously selected site
-    if (document.querySelector('.active-site')) {
-        document.querySelector('.active-site').classList.remove('active-site');
-    }
-    var listpost = Rss;
-    var newList = new Array();
-
-    // create list of items that are favs
-    for (var i = 0, len = listpost.length; i < len; i++) {
-        var item = listpost[i];
-        if (listpost[i].fav == 1) {
-            newList.push(item);
-        }
-    }
-    rss_feedlist(newList);
-    openAllSwich = 'open';
-    document.getElementById('openallitemsbutton').classList.remove('unfold');
-}
-
-/* Sort rss entries from a site */
-function sortSite(origine)
-{
-    var listpost = Rss;
-    var newList = new Array();
-    var choosensite = origine.parentNode.dataset.feedurl;
-
-    // create list of items matching the selected site
-    for (var i = 0, len = listpost.length; i < len; i++) {
-        var item = listpost[i];
-        if (listpost[i].feed == choosensite) {
-            newList.push(item);
-        }
-    }
-    // unhightlight previous site and highlight new site
-    if (document.querySelector('.active-site')) {
-        document.querySelector('.active-site').classList.remove('active-site');
-    }
-    for (var i = 0, liList = document.querySelectorAll('#feed-list li'), len = liList.length; i < len; i++) {
-        if (liList[i].dataset.feedurl == choosensite) {
-            liList[i].classList.add('active-site');
-            break;
-        }
-    }
-    rss_feedlist(newList);
-    openAllSwich = 'open';
-    document.getElementById('openallitemsbutton').classList.remove('unfold');
-    if (newList.length != 0) {
-        window.location.hash = '';
-    }
-}
-
-/* Sort rss entries from a folder */
-function sortFolder(origine)
-{
-    var listpost = Rss;
-    var newList = new Array();
-    var choosenfolder = origine.parentNode.parentNode.dataset.folder;
-
-    for (var i = 0, len = listpost.length; i < len; i++) {
-        var item = listpost[i];
-        if (listpost[i].folder == choosenfolder) {
-            newList.push(item);
-        }
-    }
-    // highlight selected folder
-    if (document.querySelector('.active-site')) {
-        document.querySelector('.active-site').classList.remove('active-site');
-    }
-    for (var i = 0, liList = document.querySelectorAll('#feed-list li'), len = liList.length; i < len; i++) {
-        if (liList[i].dataset.folder == choosenfolder) {
-            liList[i].classList.add('active-site');
-            break;
-        }
-    }
-
-    rss_feedlist(newList);
-    openAllSwich = 'open';
-    document.getElementById('openallitemsbutton').classList.remove('unfold');
-
-    window.location.hash = '';
-}
-
 /* Starts the refreshing process (AJAX) */
 function refresh_all_feeds(refreshLink)
 {
@@ -1325,8 +1538,13 @@ function refresh_all_feeds(refreshLink)
 }
 
 
-// RSS : mark as read code.
-// "$what" is either "all", "site" for marking one feed as read, "folder", or "post" for marking just one ID as read, "$url" contains id, folder or feed url
+/**
+ * RSS : mark as read code.
+ * "$what" is either "all"
+ *   "site" for marking one feed as read
+ *   "folder", or "post" for marking just one ID as read
+ * "$url" contains id, folder or feed url
+ */
 function markAsRead(what, url)
 {
     var notifDiv = document.createElement('div');
@@ -1368,7 +1586,8 @@ function markAsRead(what, url)
         // mark all html items listed as "read"
         var liList = document.querySelectorAll('#post-list .li-post-bloc');
         for (var i = 0, len = liList.length; i < len; i++) {
-            liList[i].classList.add('read'); }
+            liList[i].classList.add('read');
+        }
         var activeSite = document.querySelector('.active-site');
         // mark feeds in feed-list as containing (0) unread
         var liCount = activeSite.dataset.nbrun;
@@ -1381,12 +1600,12 @@ function markAsRead(what, url)
         count.dataset.nbrun = 0;
         count.firstChild.nodeValue = '0';
 
-
-
         // mark items as read in (var)Rss.list.
         for (var i = 0, len = Rss.length; i < len; i++) {
             if (Rss[i].feed == url) {
-                Rss[i].statut = 0; } }
+                Rss[i].statut = 0;
+            }
+        }
 
         // remove X feeds in folder-count (if site is in a folder)
         if (activeSite.parentNode.parentNode.dataset.folder) {
@@ -1398,6 +1617,7 @@ function markAsRead(what, url)
 
         loading_animation('off');
     } else if (what == 'folder') {
+        /*
         // mark all post from one folder as read
 
         var activeSite = document.querySelector('.active-site');
@@ -1432,6 +1652,7 @@ function markAsRead(what, url)
                 Rss[i].statut = 0; } }
 
         loading_animation('off');
+        */
     } else if (what == 'post') {
         // mark post with specific URL/ID as read
 
@@ -1465,7 +1686,6 @@ function markAsRead(what, url)
         count.dataset.nbrun -= 1;
         count.firstChild.nodeValue = count.dataset.nbrun;
 
-
         // markitems as read in (var)Rss list.
         for (var i = 0, len = Rss.length; i < len; i++) {
             if (Rss[i].id == url) {
@@ -1493,6 +1713,10 @@ function sendMarkReadRequest(what, url, async)
     xhr.onload = function () {
         var resp = this.responseText;
         if (resp.indexOf("Success") == 0) {
+            // dirty...
+            if (what == 'folder' || what == 'all') {
+                window.location.reload();
+            }
             if (what !== 'postlist') {
                 markAsRead(what, url);
             }
@@ -1521,7 +1745,6 @@ function sendMarkReadRequest(what, url, async)
     formData.append('mark-as-read', what);
     formData.append('url', url);
     xhr.send(formData);
-
 }
 
 /* sends the AJAX "mark as read" request */
@@ -1565,8 +1788,6 @@ function sendMarkFavRequest(url)
     xhr.send(formData);
 
 }
-
-
 
 
 /* in RSS config : mark a feed as "to remove" */
@@ -1753,23 +1974,24 @@ function handleTouchStart(evt)
 /* Swipe on slideshow to change images */
 function swipeSlideshow(evt)
 {
-    if ( !xDown || !yDown || doTouchBreak || document.getElementById('slider').style.display != 'block' ) {
-        return; }
-    var xUp = evt.touches[0].clientX;
-    var xDiff = xDown - xUp;
+    if (!xDown || !yDown || doTouchBreak || document.getElementById('slider').style.display != 'block') {
+        return;
+    }
+    var xUp = evt.touches[0].clientX,
+        xDiff = xDown - xUp;
 
     if (Math.abs(xDiff) > minDelta) {
         var newEvent = document.createEvent("MouseEvents");
         newEvent.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 
-        if ( xDiff > minDelta ) {
-            /* left swipe */
+        if (xDiff > minDelta) {
+            // left swipe
             var button = document.getElementById('slider-next');
             evt.preventDefault();
             button.dispatchEvent(newEvent);
             doTouchBreak = true;
-        } else if ( xDiff < -minDelta) {
-            /* right swipe */
+        } else if (xDiff < -minDelta) {
+            // right swipe
             var button = document.getElementById('slider-prev');
             evt.preventDefault();
             button.dispatchEvent(newEvent);
@@ -1783,79 +2005,79 @@ function swipeSlideshow(evt)
 }
 
 
-
-
 /**************************************************************************************************************************************
     CANVAS FOR index.php GRAPHS
 **************************************************************************************************************************************/
 function respondCanvas()
 {
-    for (var i=0, len=containers.length; i<len; i++) {
-        containers[i].querySelector('canvas').width = parseInt(containers[i].querySelector('.graphique').getBoundingClientRect().width);
-        draw(containers[i]);
+    var containers = document.querySelectorAll(".graph-container");
+
+    for (var i = 0, len = containers.length; i < len; i++) {
+        var canvas = containers[i].querySelector("canvas");
+        canvas.width = parseInt(containers[i].querySelector(".graphique").getBoundingClientRect().width);
+        draw(containers[i], canvas);
     }
 }
 
-function draw(container)
+function draw(container, canvas)
 {
-    var c = container.querySelector('canvas');
-    var months = container.querySelectorAll('.graphique .month');
-    var ctx = c.getContext("2d");
+    var months = container.querySelectorAll(".graphique .month");
+    var ctx = canvas.getContext("2d");
     var cont = {
-        x:container.getBoundingClientRect().left,
-        y:container.getBoundingClientRect().top
+        x: container.getBoundingClientRect().left,
+        y: container.getBoundingClientRect().top
     };
 
     // strokes the background lines at 0%, 25%, 50%, 75% and 100%.
     ctx.beginPath();
-    for (var i=months.length-1; i>=0; i--) {
+    for (var i = months.length - 1; i >= 0; i--) {
         if (months[i].getBoundingClientRect().top < months[0].getBoundingClientRect().bottom) {
             var topLeft = months[i].getBoundingClientRect().left -15;
             break;
         }
     }
 
-    var coordScale = { x:topLeft, xx:months[1].getBoundingClientRect().left };
+    var coordScale = { x: topLeft, xx: months[1].getBoundingClientRect().left };
     for (var i = 0; i < 5; i++) {
-        ctx.moveTo(coordScale.x, i*c.height/4 +1);
-        ctx.lineTo(coordScale.xx, i*c.height/4 +1);
+        ctx.moveTo(coordScale.x, i * canvas.height / 4 +1);
+        ctx.lineTo(coordScale.xx, i * canvas.height / 4 +1);
         ctx.strokeStyle = "rgba(0, 0, 0, .05)";
     }
     ctx.stroke();
 
     // strokes the lines of the chart
     ctx.beginPath();
-    for (var i=1, len=months.length; i<len; i++) {
+    for (var i = 1, len = months.length; i < len; i++) {
         var coordsNew = months[i].getBoundingClientRect();
         if (i == 1) {
-            ctx.moveTo(coordsNew.left - cont.x + coordsNew.width/2, coordsNew.top - cont.y);
+            ctx.moveTo(coordsNew.left - cont.x + coordsNew.width / 2, coordsNew.top - cont.y);
         } else {
             if (coordsNew.top - cont.y <= 150) {
-                ctx.lineTo(coordsNew.left - cont.x + coordsNew.width/2, coordsNew.top - cont.y);
+                ctx.lineTo(coordsNew.left - cont.x + coordsNew.width / 2, coordsNew.top - cont.y);
             }
         }
     }
     ctx.lineWidth = 2;
-    ctx.strokeStyle = "rgba(33,150,243,1)";
+    ctx.strokeStyle = "rgb(33, 150, 243)";
     ctx.stroke();
     ctx.closePath();
 
     // fills the chart
     ctx.beginPath();
-    for (var i=1, len=months.length; i<len; i++) {
+    for (var i = 1, len = months.length; i < len; i++) {
         var coordsNew = months[i].getBoundingClientRect();
         if (i == 1) {
-            ctx.moveTo(coordsNew.left - cont.x + coordsNew.width/2, 150);
-            ctx.lineTo(coordsNew.left - cont.x + coordsNew.width/2, coordsNew.top - cont.y);
+            ctx.moveTo(coordsNew.left - cont.x + coordsNew.width / 2, 150);
+            ctx.lineTo(coordsNew.left - cont.x + coordsNew.width / 2, coordsNew.top - cont.y);
         } else {
             if (coordsNew.top - cont.y <= 150) {
-                ctx.lineTo(coordsNew.left - cont.x + coordsNew.width/2, coordsNew.top - cont.y);
+                ctx.lineTo(coordsNew.left - cont.x + coordsNew.width / 2, coordsNew.top - cont.y);
                 var coordsOld = coordsNew;
             }
         }
     }
-    ctx.lineTo(coordsOld.left - cont.x + coordsOld.width/2, 150);
-    ctx.fillStyle = "rgba(33,150,243,.2)";
+    ctx.lineTo(coordsOld.left - cont.x + coordsOld.width / 2, 150);
+    ctx.fillStyle = "rgba(33, 150, 243, .2)";
     ctx.fill();
     ctx.closePath();
 }
