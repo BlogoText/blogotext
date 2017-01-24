@@ -402,7 +402,7 @@ function conversion_theme_addons($texte)
                 $inc = sprintf('%s%s/%s', DIR_ADDONS, $addon['tag'], $inc_file);
                 if (is_file($inc)) {
                     $inc = sprintf('%saddons/%s/%s', URL_ROOT, $addon['tag'], $inc_file);
-                    $js .= sprintf("<script src=\"%s\"></script>;\n", $inc);
+                    $js .= sprintf("<script src=\"%s\"></script>\n", $inc);
                 }
             }
         }
