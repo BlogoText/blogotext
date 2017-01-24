@@ -5,6 +5,7 @@
 |                                                                         |
 | (c) 2006      Frederic Nassar.                                          |
 | (c) 2010-2016 Timo van Neerden, AKA Le Hollandais Volant                |
+| (c) 2016-.... Mickaël 'Tiger-222' Schoentgen and the community          |
 |                                                                         |
 | BlogoText is redistributed under the terms of the X11 / MIT Licence     |
 |                                      http://opensource.org/licenses/MIT |
