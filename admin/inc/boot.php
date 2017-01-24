@@ -11,15 +11,16 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 # *** LICENSE ***
 
+define('BT_ROOT_ADMIN', dirname(dirname(__file__)).'/');
 define('IS_IN_ADMIN', true);
+
 require_once '../inc/boot.php';
 
-
-require_once BT_ROOT.'admin/inc/auth.php'; // Security, dont move !
-require_once BT_ROOT.'admin/inc/filesystem.php';
-require_once BT_ROOT.'admin/inc/form.php';
-require_once BT_ROOT.'admin/inc/sqli.php';
-require_once BT_ROOT.'admin/inc/tpl.php'; // no choice !
+require_once BT_ROOT_ADMIN.'inc/auth.php'; // Security, dont move !
+require_once BT_ROOT_ADMIN.'inc/filesystem.php';
+require_once BT_ROOT_ADMIN.'inc/form.php';
+require_once BT_ROOT_ADMIN.'inc/sqli.php';
+require_once BT_ROOT_ADMIN.'inc/tpl.php'; // no choice !
 
 // Some actions are not required on install and login pages
 if (!defined('BT_RUN_INSTALL') && !defined('BT_RUN_LOGIN')) {
