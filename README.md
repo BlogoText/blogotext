@@ -12,6 +12,7 @@ This is BlogoText, the lightweight SQLite Blog-Engine.
  * RSS Reader
  * Images/Files uploading and sharing
  * JSON/ZIP/HTML import-export; WordPress import
+ * Support [Addons](https://github.com/BoboTiG/blogotext-addons)
 
 ![BlogoText screenshot](https://raw.githubusercontent.com/BoboTiG/blogotext/dev/preview.png)
 
@@ -21,7 +22,7 @@ This is BlogoText, the lightweight SQLite Blog-Engine.
  * PHP >5.5
  * SQLite with PDO support (or MySQL with PDO Support)
  * A CSS3 / HTML5 compatible Browser (Firefox, Chrome…)
- * min 1 Mo disk space (more data = more space needed)
+ * min 2 Mo disk space (more data = more space needed)
 
 ## Recommended PHP libraries
  * GD (for comments icons / favicons);
