@@ -179,17 +179,26 @@ echo '</div>';
 echo <<<EOS
 <script src="style/javascript.js"></script>
 <script>
-    window.addEventListener("resize", respondCanvas);
-
-    var containers = document.querySelectorAll(".graph-container");
-    for (var i = 0, clen = containers.length; i < clen; i += 1) {
-        var months = containers[i].querySelectorAll('.month');
-        for (var j = 0, t = months.length; j < t; j += 1) {
-            months[j].style.width = (100 / t) + '%';
+    var containers = document.querySelectorAll(".graph-container"),
+        month_min_width = 40; // in px
+    function indexGraphStat()
+    {
+        for (var i = 0, clen = containers.length; i < clen; i += 1) {
+            var months = containers[i].querySelectorAll('.month'),
+                months_ct = months.length,
+                month_to_show = containers[i].clientWidth / month_min_width;
+            if (month_to_show > months_ct) {
+                month_to_show = months_ct;
+            }
+            for (var j = 0; j < months_ct; j += 1) {
+                months[j].style.width = (100 / month_to_show) + '%';
+            }
         }
+        respondCanvas();
     }
-    respondCanvas();
-    // end of [poc]
+
+    window.addEventListener("resize", indexGraphStat);
+    indexGraphStat();
 </script>
 EOS;
 
