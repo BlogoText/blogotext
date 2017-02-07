@@ -665,6 +665,7 @@ p.formatbut {
     resize: both;
     width: 100%;
     border: 0;
+    box-sizing: border-box;
 }
 
 /* inputs */
