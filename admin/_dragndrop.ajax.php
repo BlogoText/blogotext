@@ -1,84 +1,54 @@
 <?php
 # *** LICENSE ***
 # This file is part of BlogoText.
-# http://lehollandaisvolant.net/blogotext/
+# https://github.com/BoboTiG/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2013 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden.
+# 2016-.... Mickaël Schoentgen and the community.
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
-#
 # *** LICENSE ***
 
-/*
-	This file is called by the drag'n'drop script. It is an underground working script,
-	It is not intended to be called directly in your browser.
+require_once 'inc/boot.php';
 
+
+/*
+    This file is called by the drag'n'drop script. It is an underground working script,
+    It is not intended to be called directly in your browser.
 */
 
-define('BT_ROOT', '../');
-
-require_once '../inc/inc.php';
-
-operate_session();
-$begin = microtime(TRUE);
-$liste_fileid = array();
+$files = array();
 $GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);
+$token = (string)filter_input(INPUT_POST, 'token');
+$json = '{ "url": "%s", "status": "%s", "token": "%s" }';
 
 foreach ($GLOBALS['liste_fichiers'] as $key => $file) {
-	$liste_fileid[] = $file['bt_id'];
+    $files[] = $file['bt_id'];
 }
-
 
 if (isset($_FILES['fichier'])) {
-	$time = time();
-	$fichier = init_post_fichier();
+    $time = time();
+    $file = init_post_fichier();
 
-	// avoid ID collisions
-	while (in_array($fichier['bt_id'], $liste_fileid)) {
-		$time--;
-		$fichier['bt_id'] = date('YmdHis', $time);
-	}
-	$erreurs = valider_form_fichier($fichier);
+    // avoid ID collisions
+    while (in_array($file['bt_id'], $files)) {
+        $time--;
+        $file['bt_id'] = date('YmdHis', $time);
+    }
+    $errors = valider_form_fichier($file);
 
-	// on success
-	if (empty($erreurs)) {
-		$new_fichier = bdd_fichier($fichier, 'ajout-nouveau', 'upload', $_FILES['fichier']);
-		$fichier = (is_null($new_fichier)) ? $fichier : $new_fichier;
-		echo '{';
-			echo '"url": "fichiers.php?file_id='.$fichier['bt_id'].'&amp;edit",';
-			echo '"status": "success",';
-			echo '"token": "'.new_token().'"';
-		echo '}';
-		exit;
-	}
-	// on error
-	else {
-		echo '{';
-			echo '"url": "0",';
-			echo '"status": "failure",';
-			echo '"token": "0"';
-		echo '}';
-		exit;
-	}
+    if (!$errors) {
+        $newFile = bdd_fichier($file, 'ajout-nouveau', 'upload', $_FILES['fichier']);
+        $file = ($newFile === null) ? $file : $newFile;
+        die(printf($json, 'fichiers.php?file_id='.$file['bt_id'].'&amp;edit', 'success', new_token()));
+    }
+} elseif ($token && check_token($token)) {
+    // If the file is not sent (size limit from the JS side for instance)
+    // but the token is good, we keep going with next files.
+    die(printf($json, 0, 'failure', new_token()));
 }
-// si fichier n’est pas envoyé (limite JS sur la taille, par exemple)
-// mais que le Token est bon, on continue les autres fichiers : ce
-// serait dommage de bloquer tous les fichiers pour un fichier mauvais
-elseif ( isset($_POST['token']) and check_token($_POST['token']) ) {
-	echo '{';
-		echo '"url": "0",';
-		echo '"status": "failure",';
-		echo '"token": "'.new_token().'"';
-	echo '}';
 
-}
-// problem with file AND token : abord, Captain, my Captain! !
-else {
-	echo '{';
-		echo '"url": "0",';
-		echo '"status": "failure",';
-		echo '"token": "0"';
-	echo '}';
-}	
+// Problem with file and token: abort, Captain, my Captain!!
+die(printf($json, 0, 'failure', 0));
