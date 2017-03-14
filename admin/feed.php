@@ -368,20 +368,6 @@ if ($config !== null) {
     $out .= '<div id="posts-wrapper">';
     $out .= '<ul id="feed-list">';
 
-    // Navigation: previous/next pages
-    $out .= '<li class="feed-nav">';
-    if ($page < 1) {
-        $out .= '<a disabled>&lt;</a>';
-    } else {
-        $out .= '<a href="feed.php?'.$paramUrl.'p='.($page - 1).'" title="'.$GLOBALS['lang']['previous_page'].'">&lt;</a>';
-    }
-    if ($page >= 0 && count($tableau) == $GLOBALS['max_rss_admin']) {
-        $out .= '<a href="feed.php?'.$paramUrl.'p='.($page + 1).'" title="'.$GLOBALS['lang']['next_page'].'">&gt;</a>';
-    } else {
-        $out .= '<a disabled>&gt;</a>';
-    }
-    $out .= '</li>';
-
     if ($site) {
         $out .= feed_list_html($site);
     } elseif ($fold) {
@@ -401,6 +387,25 @@ if ($config !== null) {
         $out .= "\r".'<li><button type="button" onclick="sendMarkReadRequest(\'all\');" id="markasread" title="'.$GLOBALS['lang']['rss_label_markasread'].'"></button></li>';
     }
     $out .= '<li><button type="button" onclick="openAllItems(this);" id="openallitemsbutton" title="'.$GLOBALS['lang']['rss_label_unfoldall'].'"></button></li>';
+
+    // Navigation: previous/next pages
+    $out .= '<li class="feed-nav">';
+    $out .= '<button type="button">';
+    if ($page < 1) {
+        $out .= '<a disabled>&lt;</a>';
+    } else {
+        $out .= '<a href="feed.php?'.$paramUrl.'p='.($page - 1).'" title="'.$GLOBALS['lang']['previous_page'].'">&lt;</a>';
+    }
+    $out .= '</button>';
+    $out .= '<button type="button">';
+    if ($page >= 0 && count($tableau) == $GLOBALS['max_rss_admin']) {
+        $out .= '<a href="feed.php?'.$paramUrl.'p='.($page + 1).'" title="'.$GLOBALS['lang']['next_page'].'">&gt;</a>';
+    } else {
+        $out .= '<a disabled>&gt;</a>';
+    }
+    $out .= '</button>';
+    $out .= '</li>';
+
     $out .= '</ul>';
     $out .= '<p><span id="post-counter"></span> '.$GLOBALS['lang']['label_elements'].'</p>';
     $out .= '</div>';
