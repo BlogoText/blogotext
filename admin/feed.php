@@ -390,20 +390,16 @@ if ($config !== null) {
 
     // Navigation: previous/next pages
     $out .= '<li class="feed-nav">';
-    $out .= '<button type="button">';
     if ($page < 1) {
-        $out .= '<a disabled>&lt;</a>';
+        $out .= '<a disabled style="margin:20px;">&lt;</a>';
     } else {
-        $out .= '<a href="feed.php?'.$paramUrl.'p='.($page - 1).'" title="'.$GLOBALS['lang']['previous_page'].'">&lt;</a>';
+        $out .= '<a style="margin:20px;" href="feed.php?'.$paramUrl.'p='.($page - 1).'" title="'.$GLOBALS['lang']['previous_page'].'">&lt;</a>';
     }
-    $out .= '</button>';
-    $out .= '<button type="button">';
     if ($page >= 0 && count($tableau) == $GLOBALS['max_rss_admin']) {
-        $out .= '<a href="feed.php?'.$paramUrl.'p='.($page + 1).'" title="'.$GLOBALS['lang']['next_page'].'">&gt;</a>';
+        $out .= '<a style="margin:20px;" href="feed.php?'.$paramUrl.'p='.($page + 1).'" title="'.$GLOBALS['lang']['next_page'].'">&gt;</a>';
     } else {
-        $out .= '<a disabled>&gt;</a>';
+        $out .= '<a style="margin:20px;" disabled>&gt;</a>';
     }
-    $out .= '</button>';
     $out .= '</li>';
 
     $out .= '</ul>';
