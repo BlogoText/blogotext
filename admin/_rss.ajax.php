@@ -11,7 +11,17 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 # *** LICENSE ***
 
+// get _GET
+$guid = (string)filter_input(INPUT_GET, 'guid');
+$isRefreshing = (filter_input(INPUT_GET, 'refresh_all') !== null);
+
+// if this is a cron
+if ($isRefreshing && $guid !== null) {
+	define('BT_RUN_CRON', true);
+}
+
 require_once 'inc/boot.php';
+
 
 /**
  * Save one feed into the database.
@@ -310,9 +320,7 @@ function feed2array($feedContent, $feedlink)
 
 // Update all RSS feeds using GET (for cron jobs).
 // only test here is on install UID.
-$isRefreshing = (filter_input(INPUT_GET, 'refresh_all') !== null);
-$guid = (string)filter_input(INPUT_GET, 'guid');
-if ($isRefreshing) {
+if ($isRefreshing && $guid !== null) {
     if ($guid == BLOG_UID) {
         $GLOBALS['liste_flux'] = open_serialzd_file(FEEDS_DB);
         refresh_rss($GLOBALS['liste_flux']);
