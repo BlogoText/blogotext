@@ -17,7 +17,7 @@ $isRefreshing = (filter_input(INPUT_GET, 'refresh_all') !== null);
 
 // if this is a cron
 if ($isRefreshing && $guid !== null) {
-	define('BT_RUN_CRON', true);
+    define('BT_RUN_CRON', true);
 }
 
 require_once 'inc/boot.php';
