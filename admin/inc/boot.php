@@ -22,8 +22,10 @@ require_once BT_ROOT.'admin/inc/sqli.php';
 require_once BT_ROOT.'admin/inc/tpl.php'; // no choice !
 
 // Some actions are not required on install and login pages
-if (!defined('BT_RUN_INSTALL') && !defined('BT_RUN_LOGIN')) {
+if (!defined('BT_RUN_INSTALL') && !defined('BT_RUN_LOGIN') && !defined('BT_RUN_CRON')) {
     define('URL_BACKUP', URL_ROOT.'bt_backup/');
     auth_ttl();
+}
+if (!defined('BT_RUN_INSTALL') && !defined('BT_RUN_LOGIN')) {
     $GLOBALS['db_handle'] = open_base();
 }
