@@ -11,6 +11,14 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 # *** LICENSE ***
 
+/**
+ * Complete the process, even if the client stops it
+ * (cron : wget --spider ...)
+ */
+ignore_user_abort(true);
+// set at 30 minutes, but maybe need some adjustments
+set_time_limit(1800);
+
 // get _GET
 $guid = (string)filter_input(INPUT_GET, 'guid');
 $isRefreshing = (filter_input(INPUT_GET, 'refresh_all') !== null);
