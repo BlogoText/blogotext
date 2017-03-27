@@ -115,7 +115,7 @@ function addons_init_public()
     // filter the enabled
     foreach ($db as $addon_id => $addon) {
         // if not enabled or user delete .enabled or the addon threw ftp
-        if (!$addon['enabled'] || !addon_test_enabled($addon_id)) {
+        if (!$addon['enabled'] || !addon_test_enabled($addon_id) || !addon_test_exists($addon_id)) {
             continue;
         }
 
