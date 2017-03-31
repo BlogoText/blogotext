@@ -287,6 +287,8 @@
 #post-list-title ul > li:nth-of-type(1) > button::before        { content: "\e91c"; }
 #post-list-title ul > li:nth-of-type(2) > button::before        { content: "\e90a"; }
 #post-list-title ul > li:nth-of-type(2) > button.unfold::before { content: "\e90b"; }
+#post-list-title ul > li > button#prev_feeds::before        { content: "\2770"; }
+#post-list-title ul > li > button#next_feeds::before        { content: "\2771"; }
 
 
 #post-list {
