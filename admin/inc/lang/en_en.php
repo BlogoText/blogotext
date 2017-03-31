@@ -342,6 +342,7 @@ $GLOBALS['lang'] = array(
 'addons_confirm_buttons_action' => 'This action can take some time, please, do not refresh or close your window before the end of the reload.',
 'addons_clean_cache_label' => 'Clean the cache for this addon ?',
 'addons_click_more' => 'Click for more infos',
+'addons_insert_code' => 'Insert this code in your template : ',
 // Preferences
 'prefs_legend_utilisateur' => 'User',
 'prefs_legend_apparence' => 'Appearance',

@@ -96,7 +96,7 @@ function addons_html_get_list_addons($tableau, $filtre)
             // addon version
             $out .= '<span>'.$addon['version'].'</span>';
             // down arrow
-            $out .= '&nbsp;<span>▼</span>';
+            $out .= '<span class="expandable_arrow">&lsaquo;</span>';
             $out .= '</li>';
 
             // other infos and params
@@ -107,6 +107,7 @@ function addons_html_get_list_addons($tableau, $filtre)
             $out .= '<p><span>';
             // addon tag + desc
             if (function_exists('a_'.$addon['tag'])) {
+                $out .= $GLOBALS['lang']['addons_insert_code'];
                 $out .= '<code title="'.$GLOBALS['lang']['label_code_theme'].'">'.'{addon_'.$addon['tag'].'}'.'</code>';
             } else {
                 $out .= '<small>'.$GLOBALS['lang']['label_no_code_theme'].'</small>';

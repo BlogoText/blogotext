@@ -16,6 +16,10 @@
     border-bottom: 1px solid rgba(0, 0, 0, .1);
 }
 
+#modules > li:hover {
+    background-color: #eee;
+}
+
 #modules > li:hover + div,
 #modules > li + div:hover {
     transition: box-shadow 0.5s ease 0s;
@@ -37,9 +41,6 @@
 
 #modules > li > span:nth-of-type(2) {
     flex: 1 1 auto;
-}
-
-#modules label {
 }
 
 #modules > li + div {
@@ -90,4 +91,16 @@
 
 #modules > li + div:not(last-child) {
     border-bottom: 1px solid rgba(0, 0, 0, .1);
+}
+
+.expandable_arrow{
+    font-weight:bold;
+    font-size:2em;
+    padding:5px 24px 5px 16px;
+    color: #AEAEAE;
+    transform : rotate(-90deg);
+}
+
+#modules > li:hover .expandable-arrow{
+    color: #A4A4A4;
 }
