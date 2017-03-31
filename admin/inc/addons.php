@@ -88,13 +88,15 @@ function addons_html_get_list_addons($tableau, $filtre)
         foreach ($tableau as $i => $addon) {
             $addon = $GLOBALS['addons'][$addon];
             // addon
-            $out .= '<li>';
+            $out .= '<li title="'.$GLOBALS['lang']['addons_click_more'].'">';
             // addon checkbox activation
             $out .= '<span><input type="checkbox" class="checkbox-toggle" name="module_'.$addon['tag'].'" id="module_'.$addon['tag'].'" '.(($addon['enabled']) ? 'checked' : '').' onchange="addon_switch_enabled(this);" /><label for="module_'.$addon['tag'].'"></label></span>';
             // addon name
             $out .= '<span>'.addon_get_translation($addon['name']).'</span>';
             // addon version
             $out .= '<span>'.$addon['version'].'</span>';
+            // down arrow
+            $out .= '<span class="expandable_arrow">&lsaquo;</span>';
             $out .= '</li>';
 
             // other infos and params
@@ -105,6 +107,7 @@ function addons_html_get_list_addons($tableau, $filtre)
             $out .= '<p><span>';
             // addon tag + desc
             if (function_exists('a_'.$addon['tag'])) {
+                $out .= $GLOBALS['lang']['addons_insert_code'];
                 $out .= '<code title="'.$GLOBALS['lang']['label_code_theme'].'">'.'{addon_'.$addon['tag'].'}'.'</code>';
             } else {
                 $out .= '<small>'.$GLOBALS['lang']['label_no_code_theme'].'</small>';
