@@ -342,6 +342,7 @@ $GLOBALS['lang'] = array(
 'addons_settings_confirm_reset' => 'Êtes-vous sûr de vouloir effacer vos paramètres ?',
 'addons_confirm_buttons_action' => 'Certaines actions peuvent prendre du temps à se terminer, veuillez ne pas fermer ou rafraîchir votre fenêtre jusqu\'au rechargement complet de la page.',
 'addons_clean_cache_label' => 'Effacer le cache de ce module ?',
+'addons_click_more' => 'Cliquez pour plus d\'informations sur le module',
 // Preferences
 'prefs_legend_utilisateur' => 'Utilisateur',
 'prefs_legend_apparence' => 'Apparence',

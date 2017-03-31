@@ -341,6 +341,7 @@ $GLOBALS['lang'] = array(
 'addons_settings_confirm_reset' => 'Do you really want to delete your settings ?',
 'addons_confirm_buttons_action' => 'This action can take some time, please, do not refresh or close your window before the end of the reload.',
 'addons_clean_cache_label' => 'Clean the cache for this addon ?',
+'addons_click_more' => 'Click for more infos',
 // Preferences
 'prefs_legend_utilisateur' => 'User',
 'prefs_legend_apparence' => 'Appearance',

@@ -88,13 +88,15 @@ function addons_html_get_list_addons($tableau, $filtre)
         foreach ($tableau as $i => $addon) {
             $addon = $GLOBALS['addons'][$addon];
             // addon
-            $out .= '<li>';
+            $out .= '<li title="'.$GLOBALS['lang']['addons_click_more'].'">';
             // addon checkbox activation
             $out .= '<span><input type="checkbox" class="checkbox-toggle" name="module_'.$addon['tag'].'" id="module_'.$addon['tag'].'" '.(($addon['enabled']) ? 'checked' : '').' onchange="addon_switch_enabled(this);" /><label for="module_'.$addon['tag'].'"></label></span>';
             // addon name
             $out .= '<span>'.addon_get_translation($addon['name']).'</span>';
             // addon version
             $out .= '<span>'.$addon['version'].'</span>';
+            // down arrow
+            $out .= '&nbsp;<span>▼</span>';
             $out .= '</li>';
 
             // other infos and params
