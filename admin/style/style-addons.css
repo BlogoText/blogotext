@@ -96,7 +96,8 @@
 .expandable_arrow{
     font-weight:bold;
     font-size:2em;
-    padding:5px 24px 5px 16px;
+    padding:0 16px;
+    cursor:pointer;
     color: #AEAEAE;
     transform : rotate(-90deg);
 }
