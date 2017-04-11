@@ -1,7 +1,7 @@
 <?php
 # *** LICENSE ***
 # This file is part of BlogoText.
-# https://github.com/BoboTiG/blogotext/
+# https://github.com/BlogoText/blogotext/
 #
 # 2006      Frederic Nassar.
 # 2010-2016 Timo Van Neerden.
@@ -224,7 +224,7 @@ define('FILE_MYSQL', DIR_CONFIG.'mysql.php');
 
 // Constants: general
 define('BLOGOTEXT_NAME', 'BlogoText');
-define('BLOGOTEXT_SITE', 'https://github.com/BoboTiG/blogotext');
+define('BLOGOTEXT_SITE', 'https://github.com/BlogoText/blogotext');
 define('BLOGOTEXT_VERSION', '3.7.0-dev');
 define('MINIMAL_PHP_REQUIRED_VERSION', '5.5');
 define('BLOGOTEXT_UA', 'Mozilla/5.0 (Windows NT 10; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0');

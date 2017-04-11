@@ -1,7 +1,7 @@
 <?php
 # *** LICENSE ***
 # This file is part of BlogoText.
-# https://github.com/BoboTiG/blogotext/
+# https://github.com/BlogoText/blogotext/
 #
 # 2006      Frederic Nassar.
 # 2010-2016 Timo Van Neerden.
@@ -483,7 +483,7 @@ function display_form_prefs($errors = '')
     if ($GLOBALS['auto_check_updates'] == 1) {
         $versionFile = '../VERSION';
         if (!is_file($versionFile) or filemtime($versionFile) < time() - 24 * 60 * 60) {
-            $versionHitUrl = 'https://raw.githubusercontent.com/BoboTiG/blogotext/master/VERSION';
+            $versionHitUrl = 'https://raw.githubusercontent.com/BlogoText/blogotext/master/VERSION';
             $response = request_external_files(array($versionHitUrl), 6);
             $version = trim($response[$versionHitUrl]['body']);
             $lastVersion = (is_valid_version($version)) ? $version : BLOGOTEXT_VERSION;

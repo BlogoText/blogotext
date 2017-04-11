@@ -1,6 +1,6 @@
 # BlogoText
 
-[![Build status](https://travis-ci.org/BoboTiG/blogotext.svg?branch=dev)](https://travis-ci.org/BoboTiG/blogotext)
+[![Build status](https://travis-ci.org/BlogoText/blogotext.svg?branch=dev)](https://travis-ci.org/BlogoText/blogotext)
 
 This is BlogoText, the lightweight SQLite Blog-Engine.
 
@@ -12,9 +12,9 @@ This is BlogoText, the lightweight SQLite Blog-Engine.
  * RSS Reader
  * Images/Files uploading and sharing
  * JSON/ZIP/HTML import-export; WordPress import
- * Support [Addons](https://github.com/BoboTiG/blogotext-addons)
+ * Support [Addons](https://github.com/BlogoText/blogotext-addons)
 
-![BlogoText screenshot](https://raw.githubusercontent.com/BoboTiG/blogotext/dev/preview.png)
+![BlogoText screenshot](https://raw.githubusercontent.com/BlogoText/blogotext/dev/preview.png)
 
 ---
 
