@@ -114,7 +114,7 @@ function init_post_link2()
 {
     // Second init: the whole link data needs to be stored
     $linkIdPost = filter_input(INPUT_POST, 'ID');
-    $linkId = (string)filter_input(INPUT_POST, 'bt_id');
+    $linkId = (int)filter_input(INPUT_POST, 'bt_id');
     $type = (string)filter_input(INPUT_POST, 'type');
     $desc = (string)filter_input(INPUT_POST, 'description');
     $title = (string)filter_input(INPUT_POST, 'title');

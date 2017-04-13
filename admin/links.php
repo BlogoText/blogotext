@@ -17,7 +17,7 @@ require_once BT_ROOT_ADMIN.'inc/links.php';
 
 $vars = array(
     'token' => (string)filter_input(INPUT_POST, 'token'),
-    'bt_id' => (string)filter_input(INPUT_POST, 'bt_id'),
+    'bt_id' => (int)filter_input(INPUT_POST, 'bt_id'),
     'fichier' => (string)filter_input(INPUT_POST, 'fichier'),
 
     'url' => (string)filter_input(INPUT_GET, 'url'),
