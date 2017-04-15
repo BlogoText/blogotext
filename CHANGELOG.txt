@@ -1,0 +1,45 @@
+# Changelog for BlogoText
+#
+# note : each changes will be start with status :
+#  - upd, for update or modification
+#  - add, for addition
+#  - del, for deletion
+#  - fix, like an upd but just for fixing an error
+# note : each note will be start with "note :"
+# note : 1 note by subject
+
+
+[3.7]
+    note : This changelog file will not be complete due to the consequent number of changes and the
+           late implementation of this changelog
+    note : The 3.7 is the first release after the change of maintainer
+    note : GitHub moved to https://github.com/BoboTiG/blogotext/
+    note : GitHub moved to https://github.com/BlogoText/blogotext/
+    note : you will notice some performance improvement due to the partial rewrite/reorder of the core
+    note : custom templates don't need any update to stay fonctional, but if you want to use addons, you 
+           must add some addons tags
+    - add public template tag {tpl_class} wich return content type and informations
+    - add addon system
+    - add public template tag {includes.css} and {includes.js} for addons support
+    - add first release for a log error system
+    - add favatar.php, will manage external favicon and gravatar
+    - add valias support
+    - add vhost partial support
+    - add some 404 headers, public side
+    - add updater for an easy transition from 3.4.7 to 3.7
+    - add new notification system, partially implemented (JS)(admin side)
+    - add new loader animation, partially implemented (JS)(admin side)
+    - add new boot system
+    - add hook system (public side)
+    - add Send mail to author at new comment
+    - upd cache folder moved to var/{domain.tld}/cache
+    - upd cache folder for favicon and gravatar moved to var/cache
+    - upd rewrite and reorder a lot of file, function (...) in the core (PSR-2 and "english" compliancy)
+    - upd database scheme, add some fields in database
+    - upd some security improvement (ini file > php file ...)
+    - upd auth password hash improvement
+    - upd for pubilc feeds, rss.php and atom.php merged into feed.php
+    - upd langs file have been splitted public/admin
+    - upd add custom user agent for BlogoText
+    - upd improve performance and fonctionnality for admin feed reader
+    - upd default template

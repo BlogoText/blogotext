@@ -1,112 +1,151 @@
-/* ECRIRE 
+/* ECRIRE
 ---------------------------------------------------------------------------------- */
 
 /* apercu */
 #apercu,
 #form-ecrire {
-	padding: 0 0 1px;
-	clear: both;
+    padding: 0 0 1px;
+    clear: both;
 }
 
 #apercu {
-	margin-bottom: 15px;
+    margin-bottom: 15px;
 }
 
 #apercu > h2 {
-	background: #f0f0f0;
-	border-radius: 3px 3px 0 0;
-	padding: 10px 20px;
-	border-bottom: 1px solid #ddd
+    background: #f0f0f0;
+    border-radius: 3px 3px 0 0;
+    padding: 10px 20px;
+    border-bottom: 1px solid #ddd
 }
 
 #apercu > div {
-	margin: 20px;
+    margin: 20px;
+}
+
+#apercu blockquote,
+.link-content blockquote,
+.commentbloc .comm-content blockquote {
+    padding: 10px 10px 10px 15px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+#apercu pre,
+.link-content pre,
+.commentbloc .comm-content pre {
+    padding: 0;
+    white-space: pre-wrap;
+    font-size: .8em;
+    position: relative;
+    display: flex;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+#apercu pre[data-language]::before,
+.link-content pre[data-language]::before,
+.commentbloc .comm-content pre[data-language]::before {
+    content: attr(data-language);
+    display: block;
+    padding: 15px 2px;
+    background: rgba(0, 0, 0, .1);
+    flex: 0 0 45px;
+    text-align: center;
+}
+
+#apercu pre > code,
+.link-content pre > code,
+.commentbloc .comm-content pre > code {
+    flex: 1 1 auto;
+    display: block;
+    padding: 15px;
 }
 
 #apercu img {
-	padding: 2px;
-	border: 1px solid #ddd;
+    padding: 2px;
+    border: 1px solid #ddd;
+    max-width: 100%;
+    height: auto;
 }
 
 #form-ecrire {
-	padding: 5px 5px 15px;
+    padding: 5px 5px 15px;
 }
 
 #form-ecrire textarea {
-	resize: vertical;
+    resize: vertical;
 }
 
 #form-ecrire .main-form .text {
-	width: 100%;
+    width: 100%;
 }
 
 #titre {
-	font-weight: bold;
-	font-size: 1.15em;
+    font-weight: bold;
+    font-size: 1.15em;
 }
 
 #chapo_note {
-	display: flex;
+    display: flex;
 }
 
 #chapo_note > textarea {
-	width: auto;
-	min-width: 0;
+    width: auto;
+    min-width: 0;
 }
 
 #form-ecrire #chapo {
-	flex: 2 2 auto;
-	border-right: 1px solid silver;
+    flex: 2 2 auto;
+    border-right: 1px solid silver;
 }
 #form-ecrire #notes {
-	flex: 1 2 auto;
+    flex: 1 2 auto;
 }
 
 #type_tags,
 #mots_cles {
-	padding: 0 10px;
+    padding: 0 10px;
 }
 
 /* Boutons de formatage  */
 p.formatbut {
-	line-height: 28px;
-	margin: 0; padding: 0px 5px 2px;
-	background: #f5f5f5;
+    line-height: 28px;
+    margin: 0; padding: 0px 5px 2px;
+    background: #f5f5f5;
 }
 
 .formatbut .but {
-	padding: 0;
-	display: inline-block;
-	text-align: center;
-	vertical-align: middle;
-	background: rgba(0, 0, 0, 0);
-	height: 24px; width: 24px;
-	border: 1px solid transparent;
-	border-radius: 4px;
+    padding: 0;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    background: rgba(0, 0, 0, 0);
+    height: 24px; width: 24px;
+    border: 1px solid transparent;
+    border-radius: 4px;
 }
 
 .formatbut .but:hover {
-	transition: border-color .3s;
-	border-color: silver;
+    transition: border-color .3s;
+    border-color: silver;
 }
 
 .formatbut .but:active {
-	border-color: gray;
-	background: #cde6ff;
-	background: linear-gradient(to top, white, #d6d6d6);
+    border-color: gray;
+    background: #cde6ff;
+    background: linear-gradient(to top, white, #d6d6d6);
 }
 
 .formatbut .but > span:nth-of-type(1) {
-	display: inline-block;
-	width: 24px;
-	height: 24px;
-	background: no-repeat transparent url(formatx2.png) 0 0 / 24px 492px;
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background: no-repeat transparent url(formatx2.png) 0 0 / 24px 492px;
 }
 
 .formatbut span.spacer {
-	margin: 0 4px;
-	border-left: 1px solid #e5e5e5;
-	border-right: 1px solid #fafafa
+    margin: 0 4px;
+    border-left: 1px solid #e5e5e5;
+    border-right: 1px solid #fafafa
 }
 
 /* buttons : works in comment form and in article form */
@@ -129,200 +168,205 @@ p.formatbut {
 #button17 > span:nth-of-type(1) { background-position: 0px -312px; } /* ol list */
 
 .but-dropdown {
-	position: relative;
+    position: relative;
 }
 
 .but-dropdown .list {
-	display:none;
-	padding: 3px;
-	background-color: white;
-	width: 140px;
-	position: absolute;
-	top: 24px;
-	left: -1px;
-	line-height: 20px;
-	box-shadow: 0px 4px 8px rgba(0, 0, 0, .3);
+    display:none;
+    padding: 3px;
+    background-color: white;
+    width: 140px;
+    position: absolute;
+    top: 24px;
+    left: -1px;
+    line-height: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, .3);
 }
 
 .but-dropdown:hover .list {
-	display: block;
+    display: block;
 }
 
 /* list colors */
 .but-dropdown .list-color button {
-	display: inline-block;
-	background: white;
-	margin: 0 2px;
-	width: 22px;
-	height: 22px;
-	padding: 3px;
-	border: 1px solid transparent;
+    display: inline-block;
+    background: white;
+    margin: 0 2px;
+    width: 22px;
+    height: 22px;
+    padding: 3px;
+    border: 1px solid transparent;
 }
 
 .but-dropdown .list-color button span {
-	vertical-align: middle;
-	border: 1px solid #ccc;
-	margin: 0 auto;
-	display: block;
-	width: 12px;
-	height: 12px;
+    vertical-align: middle;
+    border: 1px solid #ccc;
+    margin: 0 auto;
+    display: block;
+    width: 12px;
+    height: 12px;
 }
 
 .but-dropdown .list-color button:hover {
-	background-color: #ddd;
+    background-color: #ddd;
 }
 .but-dropdown .list-color button:hover span {
-	border-color: #888;
+    border-color: #888;
 }
 
 /* list sizes */
 .but-dropdown .list-size {
-	text-align: left;
-	width: 160px;
-	padding: 3px 0;
+    text-align: left;
+    width: 160px;
+    padding: 3px 0;
 }
 
 .but-dropdown .list-size button {
-	color: black;
-	padding: 2px;
-	text-align: left;
-	display: inline-block;
-	background: white;
-	margin: 0;
-	width: 160px;
-	height: 28px;
-	margin-top: 3px;
-	border: 1px solid transparent;
+    color: black;
+    padding: 2px;
+    text-align: left;
+    display: inline-block;
+    background: white;
+    margin: 0;
+    width: 160px;
+    height: 28px;
+    margin-top: 3px;
+    border: 1px solid transparent;
 }
 
 .but-dropdown .list-size button:first-of-type {
-	height: 23px;
+    height: 23px;
 }
 
 .but-dropdown .list-size button:last-of-type {
-	height: 33px;
+    height: 33px;
 }
 
 .but-dropdown .list-size button span {
-	vertical-align: middle;
-	margin: 0 auto;
+    vertical-align: middle;
+    margin: 0 auto;
 }
 
 .but-dropdown .list-size button:hover {
-	background-color: #ddd;
+    background-color: #ddd;
 }
 
 /* list caractères unicodes */
 
 .but-dropdown .list-spechr {
-	text-align: left;
-	width: 384px;
-	height: 94px;
-	padding: 3px;
+    text-align: left;
+    width: 384px;
+    height: 94px;
+    padding: 3px;
 }
 
 .but-dropdown .list-spechr button {
-	background: white;
-	margin: 0 2px 2px 0;
-	width: 22px;
-	padding: 0;
-	height: 22px;
-	border: 1px solid #ddd;
-	border-radius: 2px;
-	text-align: center;
+    background: white;
+    margin: 0 2px 2px 0;
+    width: 22px;
+    padding: 0;
+    height: 22px;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    text-align: center;
 }
 
 .but-dropdown .list-spechr button:hover {
-	background-color: #ddd;
+    background-color: #ddd;
 }
 
-/* tags 
+/* tags
 -------------------------------------------- */
 #form-ecrire #wrap {
-	padding: 0;
-	margin: 0;
+    padding: 0;
+    margin: 0;
 }
 
 #tag_bloc {
-	flex: 0;
-	margin: 0;
-	display: flex;
+    flex: 0;
+    margin: 0;
+    display: flex;
 }
 
 #selected { /* <ul> */
-	margin: 0;
-	padding: 0;
-	list-style-type: none;
-	box-shadow: 0 -1px 0 #dadada inset, 1px 0 0 #dadada;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    box-shadow: 0 -1px 0 #dadada inset, 1px 0 0 #dadada;
 }
 
 
 #selected > li {
-	display:inline-block;
-	padding: 0 10px 0 7px;
-	color: #333;
-	background: #eee;
-	border: 0;
-	margin: 0 -3px 0 0;
-	box-shadow: 1px 0px 0 #dadada inset, 0px -1px 0px #dadada inset;
-	height: 36px;
-	line-height: 36px;
-	box-sizing: border-box;
-	
+    display:inline-block;
+    padding: 0 10px 0 7px;
+    color: #333;
+    background: #eee;
+    border: 0;
+    margin: 0 -3px 0 0;
+    box-shadow: 1px 0px 0 #dadada inset, 0px -1px 0px #dadada inset;
+    height: 36px;
+    line-height: 36px;
+    box-sizing: border-box;
+
 }
 
 #selected > li > a {
-	display: inline-block;
-	color: inherit;
-	margin: 0px 5px 0px 8px;
-	text-decoration: none;
-	font-weight: bold;
+    display: inline-block;
+    color: inherit;
+    margin: 0px 5px 0px 8px;
+    text-decoration: none;
+    font-weight: bold;
 }
 
 #type_tags {
-	flex: 1 1 100px;
-	justify-content: flex-start;
-	height: 36px;
+    flex: 1 1 100px;
+    justify-content: flex-start;
+    height: 36px;
 }
 
 
 /* boutons d’options et date */
 #date-and-opts {
-	margin-top: 30px;
-	margin-bottom: 40px;
-	display: flex;
+    margin-top: 30px;
+    margin-bottom: 40px;
+    display: flex;
 }
 
 #date-and-opts > div {
-	flex: 1 1 auto;
+    flex: 1 1 auto;
 }
 
+#formdate input,
 #formheure input {
-	background: #FAFAFA;
-	padding: 11px 5px;
-	box-shadow: 0 0 2px rgba(0, 0, 0, .2);
-	border: 0;
-	text-align: center;
-	margin-left: 3px;
+    background: #FAFAFA;
+    padding: 11px 5px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, .2);
+    border: 0;
+    text-align: center;
+    margin-left: 3px;
+}
+
+#formdate input {
+    width: 8ch;
 }
 
 #opts {
-	text-align: right;
+    text-align: right;
 }
 
 #formdate,
 #formheure,
 #formstatut,
 #formallowcomment {
-	display: inline-block;
+    display: inline-block;
 /*	vertical-align: middle;*/
-	margin: 2px 25px;
-	min-height: 40px;
+    margin: 2px 25px;
+    min-height: 40px;
 }
 
 #formstatut label,
 #formallowcomment label {
-	display: inline;
+    display: inline;
 }
 
 
@@ -330,30 +374,28 @@ p.formatbut {
 #formheure::before,
 #formstatut::before,
 #formallowcomment::before {
-	vertical-align: middle;
-	font-family: "icon"!important;
-	font-size: 1.4em;
-	line-height: 1;
+    vertical-align: middle;
+    font-family: "icon"!important;
+    font-size: 1.4em;
+    line-height: 1;
 }
 
 #formdate::before {
-	content: "\e918";
-	color: rgba(252, 101, 101, 1);
+    content: "\e918";
+    color: rgba(252, 101, 101, 1);
 }
 
 #formheure::before {
-	content: "\e908";
-	color: rgba(50, 50, 50, 1);
+    content: "\e908";
+    color: rgba(50, 50, 50, 1);
 }
 
 #formstatut::before {
-	content: "\e904";
-	color: rgba(55, 110, 250, 1);
+    content: "\e904";
+    color: rgba(55, 110, 250, 1);
 }
 
 #formallowcomment::before {
-	content: "\e91b";
-	color: rgba(101, 234, 143, 1);
+    content: "\e91b";
+    color: rgba(101, 234, 143, 1);
 }
-
-
