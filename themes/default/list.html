@@ -12,10 +12,8 @@
 	<link rel="alternate" type="application/rss+xml" title="RSS - Articles" href="rss.php" />
 	<link rel="alternate" type="application/atom+xml" title="ATOM - Articles" href="atom.php" />
 	<link rel="canonical" href="{article_lien}" />
-	{includes.css}
 </head>
-
-<body class="{tpl_class}">
+<body>
 
 <div id="top-bar">
 	<button onclick="displayMenu(event);">Menu</button>
@@ -31,11 +29,12 @@
 				<li><a href="?liste">Tous les articles</a></li>
 				<li><a href="?random">Article au hasard</a></li>
 				<li><a href="?mode=links">Liens partagés</a></li>
+				<li><a href="#">À propos</a></li>
 			</ul>
 		</nav>
 		<nav id="calendar">
 			<p class="nav-title">Trouver un article</p>
-			{addon_calendar}
+			{calendrier}
 		</nav>
 		<nav id="lastcom">
 			<p class="nav-title">Derniers commentaires</p>
@@ -65,8 +64,6 @@
 <footer>
 	<div><a href="/">{blog_auteur}</a> - <span lang="en">Theme by <a href="http://lehollandaisvolant.net/">Timo van Neerden</a></span></div>
 </footer>
-
-{includes.js}
 <script>
 function insertTag(e, startTag, endTag) {
 	var seekField = e;
@@ -105,12 +102,6 @@ function displayMenu(e) {
 	button.classList.toggle('active');
 	menu.classList.toggle('shown');
 }
-
-if (document.getElementById('erreurs')) {
-	window.location.hash = 'erreurs';
-	window.scrollBy(0, -100);
-}
-
 </script>
 </body>
 </html>
