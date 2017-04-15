@@ -1,159 +1,458 @@
 <?php
 # *** LICENSE ***
 # This file is part of BlogoText.
-# http://lehollandaisvolant.net/blogotext/
+# https://github.com/BlogoText/blogotext/
 #
 # 2006      Frederic Nassar.
-# 2010-2016 Timo Van Neerden <timo@neerden.eu>
+# 2010-2016 Timo Van Neerden.
+# 2016-.... Mickaël Schoentgen and the community.
 #
 # BlogoText is free software.
 # You can redistribute it under the terms of the MIT / X11 Licence.
-#
 # *** LICENSE ***
 
-define('BT_ROOT', '../');
+require_once 'inc/boot.php';
 
-require_once '../inc/inc.php';
 
-operate_session();
-$begin = microtime(TRUE);
+/**
+ *
+ */
+function display_form_feed_conf($errors = '')
+{
+    if ($errors) {
+        echo erreurs($errors);
+    }
 
-$GLOBALS['db_handle'] = open_base();
+    $out = '<form id="form-rss-config" method="post" action="feed.php?config">';
+    $out .= '<ul>';
+    foreach ($GLOBALS['liste_flux'] as $flux) {
+        $out .= '<li>';
+        $out .= '<span'.( ($flux['iserror'] > 2) ? ' class="feed-error" title="('.$flux['iserror'].' last requests were errors.)" ' : ''  ).'>';
+        $out .= '<label for="i_'.$flux['checksum'].'">'.$GLOBALS['lang']['rss_label_titre_flux'].'</label>';
+        $out .= '<input id="i_'.$flux['checksum'].'" name="i_'.$flux['checksum'].'" type="text" class="text" value="'.htmlspecialchars($flux['title']).'">';
+        $out .= '</span>';
+        $out .= '<span>';
+        $out .= '<label for="j_'.$flux['checksum'].'">'.$GLOBALS['lang']['rss_label_url_flux'].'</label>';
+        $out .= '<input id="j_'.$flux['checksum'].'" name="j_'.$flux['checksum'].'" type="text" class="text" value="'.htmlspecialchars($flux['link']).'">';
+        $out .= '</span>';
+        $out .= '<span>';
+        $out .= '<label for="l_'.$flux['checksum'].'">'.$GLOBALS['lang']['rss_label_dossier'].'</label>';
+        $out .= '<input id="l_'.$flux['checksum'].'" name="l_'.$flux['checksum'].'" type="text" class="text" value="'.htmlspecialchars($flux['folder']).'">';
+        $out .= '<input class="remove-feed" name="k_'.$flux['checksum'].'" type="hidden" value="1">';
+        $out .= '</span>';
+        $out .= '<span>';
+        $out .= '<button type="button" class="submit button-cancel" onclick="unMarkAsRemove(this)">'.$GLOBALS['lang']['annuler'].'</button>';
+        $out .= '<button type="button" class="submit button-delete" onclick="markAsRemove(this)">'.$GLOBALS['lang']['supprimer'].'</button>';
+        $out .= '</span>';
+        $out .= '</li>';
+    }
+    $out .= '</ul>';
+    $out .= '<p class="submit-bttns">';
+    $out .= '<button class="submit button-submit" type="submit" name="send">'.$GLOBALS['lang']['envoyer'].'</button>';
+    $out .= '</p>';
+    $out .= hidden_input('token', new_token());
+    $out .= hidden_input('verif_envoi', 1);
+    $out .= '</form>';
+
+    return $out;
+}
+
+/**
+ *
+ */
+function traitment_form_feed_conf()
+{
+    $msg = (string)filter_input(INPUT_GET, 'msg');
+    $queryString = str_replace(($msg) ? '&msg='.$msg : '', '', $_SERVER['QUERY_STRING']);
+
+    $GLOBALS['db_handle']->beginTransaction();
+    foreach ($GLOBALS['liste_flux'] as $idx => $feed) {
+        $title = (string)filter_input(INPUT_POST, 'i_'.$feed['checksum']);
+        if ($title) {
+            $link = (string)filter_input(INPUT_POST, 'j_'.$feed['checksum']);
+            $folder = (string)filter_input(INPUT_POST, 'l_'.$feed['checksum']);
+            $status = (int)filter_input(INPUT_POST, 'k_'.$feed['checksum']);
+
+            if ($status == 0) {
+                // Feed marked to be removed
+                unset($GLOBALS['liste_flux'][$idx]);
+                $req = $GLOBALS['db_handle']->prepare('DELETE FROM rss WHERE bt_feed = ?');
+                $req->execute(array($feed['link']));
+                continue;
+            }
+
+            // Title has change
+            $GLOBALS['liste_flux'][$idx]['title'] = $title;
+
+            // Folder has changed: update & change folder where it must be changed
+            if ($folder != $GLOBALS['liste_flux'][$idx]['folder']) {
+                $GLOBALS['liste_flux'][$idx]['folder'] = $folder;
+                $req = $GLOBALS['db_handle']->prepare('UPDATE rss SET bt_folder = ? WHERE bt_feed = ?');
+                $req->execute(array($folder, $feed['link']));
+            }
+
+            // URL has change
+            if ($link != $GLOBALS['liste_flux'][$idx]['link']) {
+                $newUrl = $GLOBALS['liste_flux'][$idx];
+                $newUrl['link'] = $link;
+                unset($GLOBALS['liste_flux'][$idx]);
+                $GLOBALS['liste_flux'][$newUrl['link']] = $newUrl;
+
+                $req = $GLOBALS['db_handle']->prepare('UPDATE rss SET bt_feed = ? WHERE bt_feed = ?');
+                $req->execute(array($link, $feed['link']));
+            }
+        }
+    }
+    $GLOBALS['db_handle']->commit();
+
+    // Sort list with title
+    $GLOBALS['liste_flux'] = array_reverse(tri_selon_sous_cle($GLOBALS['liste_flux'], 'title'));
+    create_file_dtb(FEEDS_DB, $GLOBALS['liste_flux']);
+
+    $redir = basename($_SERVER['SCRIPT_NAME']).'?'.$queryString.'&msg=confirm_feeds_edit';
+    redirection($redir);
+}
+
+/**
+ *
+ */
+function rss_count_feed()
+{
+    $sql = '
+        SELECT bt_feed, SUM(bt_statut) AS nbrun, SUM(bt_bookmarked) AS nbfav
+          FROM rss
+         GROUP BY bt_feed';
+    return $GLOBALS['db_handle']->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+}
+
+/**
+ *
+ */
+function feed_list_html($selected = '')
+{
+    // Counts unread feeds in DB
+    $numberOfFeeds = rss_count_feed();
+    $totalUnread = $totalFav = 0;
+    foreach ($numberOfFeeds as $feed) {
+        $totalUnread += $feed['nbrun'];
+        $totalFav += $feed['nbfav'];
+    }
+
+    // First item: link all feeds
+    $html = '<li class="all-feeds"><a href="feed.php">'.$GLOBALS['lang']['rss_label_all_feeds'].' <span id="global-post-counter" data-nbrun="'.$totalUnread.'">('.$totalUnread.')</span></a></li>';
+
+    // Next item: favorites items
+    $html .= '<li class="fav-feeds"><a href="feed.php?bookmarked">'.$GLOBALS['lang']['rss_label_favs_feeds'].' <span id="favs-post-counter" data-nbrun="'.$totalFav.'">('.$totalFav.')</span></a></li>';
+
+    $feedUrls = array();
+    foreach ($numberOfFeeds as $feed) {
+        $feedUrls[$feed['bt_feed']] = $feed;
+    }
+
+    // Sort feeds by folder
+    $folders = array();
+    foreach ($GLOBALS['liste_flux'] as $feed) {
+        $feed['nbrun'] = ((isset($feedUrls[$feed['link']]['nbrun'])) ? $feedUrls[$feed['link']]['nbrun'] : 0);
+        $folders[$feed['folder']][] = $feed;
+    }
+    krsort($folders);
+
+    // Creates HTML: lists RSS feeds without folder separately from feeds with a folder
+    foreach ($folders as $idx => $folder) {
+        $liHtml = '';
+        $folderCount = 0;
+        foreach ($folder as $feed) {
+            if ($feed['link'] == $selected) {
+                $liHtml .= '<li class="active-site" data-nbrun="'.$feed['nbrun'].'" data-feedurl="'.$feed['link'].'" title="'.$feed['link'].'">';
+            } else {
+                $liHtml .= '<li class="" data-nbrun="'.$feed['nbrun'].'" data-feedurl="'.$feed['link'].'" title="'.$feed['link'].'">';
+            }
+            $liHtml .= '<a href="?site='.urlencode($feed['link']).'" '.(($feed['iserror'] > 2) ? 'class="feed-error" ': ' ' ).' data-feed-domain="'.parse_url($feed['link'], PHP_URL_HOST).'">'.$feed['title'].'</a>';
+            $liHtml .= '<span>('.$feed['nbrun'].')</span>';
+            $liHtml .= '</li>';
+            $folderCount += $feed['nbrun'];
+        }
+
+        if ($idx != '') {
+            if ($selected == $idx) {
+                $html .= '<li class="feed-folder open" data-nbrun="'.$folderCount.'" data-folder="'.$idx.'">';
+            } else {
+                $html .= '<li class="feed-folder" data-nbrun="'.$folderCount.'" data-folder="'.$idx.'">';
+            }
+            $html .= '<span class="feed-folder-title">';
+            $html .= '<a href="?fold='.$idx.'">'.$idx.'<span>('.$folderCount.')</span></a>';
+            $html .= '<a href="#" onclick="return hideFolder(this)" class="unfold">unfold</a>';
+            $html .= '</span>';
+            $html .= '<ul>'."\n\t\t";
+        }
+        $html .= $liHtml;
+        if ($idx != '') {
+            $html .= '</ul>';
+            $html .= '</li>';
+        }
+    }
+    return $html;
+}
+
+/**
+ * Send all RSS entries data in a JSON format.
+ */
+function send_rss_json($feeds)
+{
+    $out = '<script>';
+    $out .= 'var rss_entries = { "list": [';
+    $count = count($feeds) - 1;
+    foreach ($feeds as $idx => $feed) {
+        // Note: json_encode adds « " » on the data, so we use encode() and not '"'.encode().'"'
+        $out .= '{'.
+            '"id": '.json_encode($feed['bt_id']).','.
+            '"date": '.json_encode(date_formate(date('YmdHis', $feed['bt_date']))).','.
+            '"time": '.json_encode(heure_formate(date('YmdHis', $feed['bt_date']))).','.
+            '"title": '.json_encode($feed['bt_title']).','.
+            '"link": '.json_encode($feed['bt_link']).','.
+            '"feed": '.json_encode($feed['bt_feed']).','.
+            '"sitename": '.json_encode($GLOBALS['liste_flux'][$feed['bt_feed']]['title']).','.
+            '"folder": '.json_encode($GLOBALS['liste_flux'][$feed['bt_feed']]['folder']).','.
+            '"content": '.json_encode($feed['bt_content']).','.
+            '"statut": '.$feed['bt_statut'].','.
+            '"fav": '.$feed['bt_bookmarked'].
+        '}'.(($count == $idx) ? '' : ',');
+    }
+    $out .= ']}';
+    $out .= '</script>';
+
+    return $out;
+}
+
+
+/**
+ * Process
+ */
+
 $GLOBALS['liste_flux'] = open_serialzd_file(FEEDS_DB);
 
-$erreurs = array();
-if (isset($_POST['verif_envoi'])) {
-	$erreurs = valider_form_rss();
-	if (empty($erreurs)) {
-		traiter_form_rssconf();
-	}
+$errors = array();
+if (filter_input(INPUT_POST, 'verif_envoi') !== null) {
+    $errors = valider_form_rss();
+    if (!$errors) {
+        traitment_form_feed_conf();
+    }
 }
 
 $tableau = array();
-if (!empty($_GET['q'])) {
-	$sql_where_status = '';
-	$q_query = $_GET['q'];
-	// search "in:read"
-	if (substr($_GET['q'], -8) === ' in:read') {
-		$sql_where_status = 'AND bt_statut=0 ';
-		$q_query = substr($_GET['q'], 0, strlen($_GET['q'])-8);
-	}
-	// search "in:unread"
-	if (substr($_GET['q'], -10) === ' in:unread') {
-		$sql_where_status = 'AND bt_statut=1 ';
-		$q_query = substr($_GET['q'], 0, strlen($_GET['q'])-10);
-	}
-	$arr = parse_search($q_query);
+
+// Show N items per page
+$page = (int)filter_input(INPUT_GET, 'p');
+if ($page < 0) {
+    $page = 0;
+}
+$sqlLimit = $GLOBALS['max_rss_admin'].' OFFSET '.($page * $GLOBALS['max_rss_admin']);
+
+$arr = array();
+
+// For a site?
+$site = (string)filter_input(INPUT_GET, 'site');
+$fold = (string)filter_input(INPUT_GET, 'fold');
+$bookmarked = (filter_input(INPUT_GET, 'bookmarked') !== null);
+$query = (string)filter_input(INPUT_GET, 'q');
+$sqlWhere = '';
+$paramUrl = '';
 
 
-	$sql_where = implode(array_fill(0, count($arr), '( bt_content || bt_title ) LIKE ? '), 'AND '); // AND operator between words
-	$query = "SELECT * FROM rss WHERE ".$sql_where.$sql_where_status."ORDER BY bt_date DESC";
-	//debug($query);
-	$tableau = liste_elements($query, $arr, 'rss');
+if ($site) {
+    $sqlWhere = 'bt_feed LIKE ?';
+    $arr[] = '%'.$site.'%';
+    $paramUrl = 'site='.$site.'&';
+} elseif ($fold) {
+    $sqlWhere = 'bt_folder LIKE ?';
+    $arr[] = '%'.$fold.'%';
+    $paramUrl = 'fold='.$fold.'&';
+} elseif ($bookmarked) {
+    $sqlWhere = 'bt_bookmarked = 1';
+    $paramUrl = 'bookmarked&';
+}
+
+if ($query) {
+    $sqlWhereStatus = '';
+
+    // Search "in:read"
+    if (substr($query, -8) == ' in:read') {
+        if ($sqlWhere) {
+            $sqlWhere .= ' AND ';
+        }
+        $sqlWhereStatus = 'bt_statut = 0';
+        $query = substr($query, 0, strlen($query) - 8);
+    }
+    // Search "in:unread"
+    if (substr($query, -10) == ' in:unread') {
+        if ($sqlWhere) {
+            $sqlWhere .= ' AND ';
+        }
+        $sqlWhereStatus = 'bt_statut = 1';
+        $query = substr($query, 0, strlen($query) - 10);
+    }
+    $criterias = parse_search($query);
+    if ($sqlWhere && $criterias) {
+        $sqlWhere .= ' AND ';
+    }
+    // AND operator between words
+    foreach ($criterias as $where) {
+        $arr[] = $where;
+        $sqlWhere .= '(bt_content || bt_title) LIKE ? AND ';
+    }
+    $sqlWhere = trim($sqlWhere, ' AND ');
+
+    $sql = '
+        SELECT * FROM rss
+         WHERE '.trim(trim($sqlWhere.$sqlWhereStatus, ' '), 'AND').'
+         ORDER BY bt_date DESC
+         LIMIT '.$sqlLimit;
 } else {
-	$tableau = liste_elements('SELECT * FROM rss WHERE bt_statut=1 ORDER BY bt_date DESC', array(), 'rss');
+    if ($sqlWhere) {
+        $sqlWhere .= ' AND ';
+    }
+    $sql = '
+        SELECT * FROM rss
+         WHERE '.$sqlWhere.'
+             ( bt_statut = 1
+               OR bt_bookmarked = 1
+             )
+         ORDER BY bt_date DESC
+         LIMIT '.$sqlLimit;
 }
 
+$tableau = liste_elements($sql, $arr, 'rss');
 
-afficher_html_head($GLOBALS['lang']['mesabonnements']);
 
-echo '<div id="header">'."\n";
-	echo '<div id="top">'."\n";
-	afficher_msg();
-	echo moteur_recherche();
-	afficher_topnav($GLOBALS['lang']['mesabonnements']);
-	echo '</div>'."\n";
 
-	if (!isset($_GET['config'])) {
-		echo "\t".'<div id="rss-menu">'."\n";
-		echo "\t\t".'<span id="count-posts"><span id="counter"></span></span>'."\n";
-		echo "\t\t".'<span id="message-return"></span>'."\n";
-		echo "\t\t".'<ul class="rss-menu-buttons">'."\n";
-		echo "\t\t\t".'<li><button type="button" onclick="refresh_all_feeds(this);" title="'.$GLOBALS['lang']['rss_label_refresh'].'"></button></li>'."\n";
-//		echo "\t\t\t".'<li><button type="button" onclick="sendMarkReadRequest(\'all\', \'\', true);" title="'.$GLOBALS['lang']['rss_label_markasread'].'"></button></li>'."\n";
-//		echo "\t\t\t".'<li><button type="button" onclick="openAllItems(this);" title="'.$GLOBALS['lang']['rss_label_unfoldall'].'"></button></li>'."\n";
-//		echo "\t\t\t".'<li><button type="button" onclick="addNewFeed();" title="'.$GLOBALS['lang']['rss_label_addfeed'].'"></button></li>'."\n";
-		echo "\t\t\t".'<li><button type="button" onclick="window.location= \'?config\';" title="'.$GLOBALS['lang']['rss_label_config'].'"></button></li>'."\n";
-		echo "\t\t\t".'<li><button type="button" onclick="window.location.href=\'maintenance.php#form_import\'" title="Import/export"></button></li>'."\n";
-		echo "\t\t\t".'<li><button type="button" onclick="return cleanList();" title="'.$GLOBALS['lang']['rss_label_clean'].'"></button></li>'."\n";
-		echo "\t\t".'</ul>'."\n";
-		echo "\t".'</div>'."\n";
-		echo '<button type="button" id="fab" class="add-feed" onclick="addNewFeed();" title="'.$GLOBALS['lang']['rss_label_config'].'">'.$GLOBALS['lang']['label_lien_ajout'].'</button>'."\n";
-	}
+/**
+ * echo
+ */
 
-echo '</div>'."\n";
+echo tpl_get_html_head($GLOBALS['lang']['mesabonnements']);
 
-echo '<div id="axe">'."\n";
-echo '<div id="page">'."\n";
+echo '<div id="header">';
+    echo '<div id="top">';
+        tpl_show_msg();
+        echo moteur_recherche();
+        echo tpl_show_topnav($GLOBALS['lang']['mesabonnements']);
+    echo '</div>';
 
-if (isset($_GET['config'])) {
-	echo afficher_form_rssconf($erreurs);
-	echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
+$config = filter_input(INPUT_GET, 'config');
+if ($config === null) {
+    echo '<div id="rss-menu">';
+    echo '<span id="count-posts"><span id="counter"></span></span>';
+    echo '<span id="message-return"></span>';
+    echo '<ul class="rss-menu-buttons">';
+    echo '<li><button type="button" onclick="refresh_all_feeds(this);" title="'.$GLOBALS['lang']['rss_label_refresh'].'"></button></li>';
+    echo '<li><button type="button" onclick="window.location= \'?config\';" title="'.$GLOBALS['lang']['rss_label_config'].'"></button></li>';
+    echo '<li><button type="button" onclick="window.location.href=\'maintenance.php#form_import\'" title="Import/export"></button></li>';
+    echo '<li><button type="button" onclick="return cleanList();" title="'.$GLOBALS['lang']['rss_label_clean'].'"></button></li>';
+    echo '</ul>';
+    echo '</div>';
+    echo '<button type="button" id="fab" class="add-feed" onclick="addNewFeed();" title="'.$GLOBALS['lang']['rss_label_config'].'">'.$GLOBALS['lang']['label_lien_ajout'].'</button>';
 }
 
-else {
-	// get list of posts from DB
-	// send to browser
-	$out_html = send_rss_json($tableau);
-	$out_html .= '<div id="rss-list">'."\n";
-	$out_html .= "\t".'<div id="posts-wrapper">'."\n";
-	$out_html .= "\t\t".'<ul id="feed-list">'."\n";
-	$out_html .= feed_list_html();
-	$out_html .= "\t\t".'</ul>'."\n";
-	$out_html .= "\t\t".'<div id="post-list-wrapper">'."\n";
-	$out_html .= "\t\t\t".'<div id="post-list-title">'."\n";
-	$out_html .= "\t\t\t".'<ul class="rss-menu-buttons">'."\n";
-	$out_html .= "\t\t\t\t".'<li><button type="button" onclick="sendMarkReadRequest(\'all\', \'\', true);" id="markasread" title="'.$GLOBALS['lang']['rss_label_markasread'].'"></button></li>'."\n";
-	$out_html .= "\t\t\t\t".'<li><button type="button" onclick="openAllItems(this);" id="openallitemsbutton" title="'.$GLOBALS['lang']['rss_label_unfoldall'].'"></button></li>'."\n";
-	$out_html .= "\t\t\t".'</ul>'."\n";
-	$out_html .= "\t\t\t".'<p><span id="post-counter"></span> '.$GLOBALS['lang']['label_elements'].'</p>'."\n";
+echo '</div>';
 
-	$out_html .= "\t\t\t".'</div>'."\n";
-	
-	
-	/* here comes (in JS) the <ul id="post-list"></ul> */
+echo '<div id="axe">';
+echo '<div id="page">';
 
-	if (empty($GLOBALS['liste_flux'])) {
-		$out_html .= $GLOBALS['lang']['rss_nothing_here_note'].'<a href="maintenance.php#form_import">import OPML</a>.';
-	}
-	$out_html .= "\t\t".'</div>'."\n";
-	$out_html .= "\t".'</div>'."\n";
-	$out_html .= "\t".'<div class="keyshortcut">'.$GLOBALS['lang']['rss_raccourcis_clavier'].'</div>'."\n";
-	$out_html .= '</div>'."\n";
+if ($config !== null) {
+    echo display_form_feed_conf($errors);
+    echo '<script src="style/javascript.js"></script>';
+} else {
+    // Get list of posts from DB
+    $out = send_rss_json($tableau);
+    $out .= '<div id="rss-list">';
+    $out .= '<div id="posts-wrapper">';
+    $out .= '<ul id="feed-list">';
 
-	echo $out_html;
+    if ($site) {
+        $out .= feed_list_html($site);
+    } elseif ($fold) {
+        $out .= feed_list_html($fold);
+    } else {
+        $out .= feed_list_html();
+    }
+    $out .= '</ul>';
+    $out .= '<div id="post-list-wrapper">';
+    $out .= '<div id="post-list-title">';
+    $out .= '<ul class="rss-menu-buttons">';
+    if ($site) {
+        $out .= "\r".'<li><button type="button" onclick="sendMarkReadRequest(\'site\', \''.$site.'\', false);" id="markasread" title="'.$GLOBALS['lang']['rss_label_markasread'].'"></button></li>';
+    } elseif ($fold) {
+        $out .= "\r".'<li><button type="button" onclick="sendMarkReadRequest(\'folder\', \''.$fold.'\', true);" id="markasread" title="'.$GLOBALS['lang']['rss_label_markasread'].'"></button></li>';
+    } else {
+        $out .= "\r".'<li><button type="button" onclick="sendMarkReadRequest(\'all\');" id="markasread" title="'.$GLOBALS['lang']['rss_label_markasread'].'"></button></li>';
+    }
+    $out .= '<li><button type="button" onclick="openAllItems(this);" id="openallitemsbutton" title="'.$GLOBALS['lang']['rss_label_unfoldall'].'"></button></li>';
 
-	echo "\n".'<script src="style/javascript.js" type="text/javascript"></script>'."\n";
-	echo "\n".'<script type="text/javascript">'."\n";
-	echo 'var token = \''.new_token().'\';'."\n";
-	echo 'var openAllSwich = \'open\';'."\n";
-	echo 'var readQueue = {"count": "0", "urlList": []};'."\n";
-	echo 'var Rss = rss_entries.list;'."\n";
-	echo 'window.addEventListener(\'load\', function(){
-				rss_feedlist(Rss);
-				window.addEventListener(\'keydown\', keyboardNextPrevious);
-			});'."\n";
+    // Navigation: previous/next pages
+    if ($page >= 1) {
+        $out .= '<li><button type="button" id="prev_feeds" onclick="location.href=\'feed.php?'.$paramUrl.'p='.($page - 1).'\'"></button></li>';
+    }
+    if ($page >= 0 && count($tableau) == $GLOBALS['max_rss_admin']) {
+        $out .= '<li><button type="button" id="next_feeds" onclick="location.href=\'feed.php?'.$paramUrl.'p='.($page + 1).'\'"></button></li>';
+    }
 
-	echo 'window.addEventListener("beforeunload", function (e) {
-			if (readQueue.count != 0) {
-				sendMarkReadRequest(\'postlist\', JSON.stringify(readQueue.urlList), false);
-				readQueue.urlList = [];
-				readQueue.count = 0;
-			}
-			else { return true; }
-		});'."\n";
+    $out .= '</ul>';
+    $out .= '<p><span id="post-counter"></span> '.$GLOBALS['lang']['label_elements'].'</p>';
+    $out .= '</div>';
 
-	echo 'var scrollPos = 0;'."\n";
-	echo 'window.addEventListener(\'scroll\', function(){ scrollingFabHideShow() });'."\n";
+    // Here comes (in JS) the <ul id="post-list"></ul>
+    if (empty($GLOBALS['liste_flux'])) {
+        $out .= $GLOBALS['lang']['rss_nothing_here_note'].'<a href="maintenance.php#form_import">import OPML</a>.';
+    }
+    $out .= '</div>';
+    $out .= '</div>';
+    $out .= '<div class="keyshortcut">'.$GLOBALS['lang']['rss_raccourcis_clavier'].'</div>';
+    $out .= '</div>';
 
-	echo 'var list = document.querySelectorAll("a[data-feed-domain]");'."\n";
-	echo 'for (var i = 0, len=list.length; i < len; i++) {'."\n";
-	echo '	list[i].style.backgroundImage="url(\'" + "cache/get.php?w=favicon&q="+ list[i].getAttribute(\'data-feed-domain\') + "\')";'."\n";
-	echo '}'."\n\n";
+    echo $out;
 
+    echo '<script src="style/javascript.js"></script>';
 
-	echo php_lang_to_js(0);
-	echo "\n".'</script>'."\n";
+    echo '
+    <script>
+        var active_site = document.querySelectorAll(".active-site");
+        if (active_site.length == 1){
+            var s = active_site[0],
+                p = s.parentNode.parentNode;
+            p.classList.add("open");
+        }
+
+        var token = "'.new_token().'",
+            openAllSwich = "open",
+            readQueue = { "count": 0, "urlList": [] },
+            Rss = rss_entries.list;
+
+        window.addEventListener("load", function() {
+                rss_feedlist(Rss);
+                window.addEventListener("keydown", keyboardNextPrevious);
+            });
+
+        window.addEventListener("beforeunload", function (e) {
+            if (readQueue.count == 0) {
+                return true;
+            }
+            sendMarkReadRequest("postlist", JSON.stringify(readQueue.urlList), false);
+            readQueue.urlList = [];
+            readQueue.count = 0;
+        });
+
+        var scrollPos = 0;
+        window.addEventListener("scroll", function() { scrollingFabHideShow(); });
+
+        window.addEventListener("load", function() {
+            var list = document.querySelectorAll("a[data-feed-domain]");
+            for (var i = 0, len = list.length; i < len; i++) {
+                list[i].style.backgroundImage = "url(\'" + "'.URL_ROOT.'favatar.php?w=favicon&q="+ list[i].getAttribute("data-feed-domain") + "\')";
+            }
+        });
+
+        '.php_lang_to_js(0).'
+    </script>';
 }
 
-footer($begin);
+echo tpl_get_footer($begin);
