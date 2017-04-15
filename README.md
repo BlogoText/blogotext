@@ -32,7 +32,7 @@ This is BlogoText, the lightweight SQLite Blog-Engine.
  * Intl
 
 ## Installation
- * [the lastest release](https://github.com/BlogoText/blogotext/releases)
+ * Download [the lastest release](https://github.com/BlogoText/blogotext/releases)
  * Upload folder to your site (eg: to `https://example.com/blog`)
  * Use your browser to go to your site
  * Follow the few steps
