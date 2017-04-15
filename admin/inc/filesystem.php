@@ -28,7 +28,6 @@ function return_bytes($val)
 {
     $val = trim($val);
     $prefix = strtolower($val[strlen($val)-1]);
-    $val = substr($val, 0, -1);
     switch ($prefix) {
         case 'g':
             $val *= 1024*1024*1024;
