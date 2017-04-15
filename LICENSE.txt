@@ -1,16 +1,15 @@
 +-=======================================================================-+
 |                        B L O G O T E X T                                |
 +-=======================================================================-+
-| BlogoText is a lightweight PHP-only Blog engine.                        |
+| Blogotext is a lightweight PHP-only Blog engine.                        |
 |                                                                         |
 | (c) 2006      Frederic Nassar.                                          |
-| (c) 2010-2016 Timo van Neerden, AKA Le Hollandais Volant                |
-| (c) 2016-.... Mickaël 'Tiger-222' Schoentgen and the community          |
+| (c) 2010-* Timo van Neerden, AKA Le Hollandais Volant                   |
 |                                                                         |
-| BlogoText is redistributed under the terms of the X11 / MIT Licence     |
+| Blogotext is redistributed under the terms of the X11 / MIT Licence     |
 |                                      http://opensource.org/licenses/MIT |
 |                                                                         |
-| BlogoText is based upon others ressources, that are listed below.       |
+| Blogotext is based upon others ressources, that are listed below.       |
 |                                                                         |
 +-------------------------------------------------------------------------+
 |                                                                    LINX |
@@ -44,7 +43,7 @@
 | (c) 2014 Google Inc                                                     |
 |                                                                         |
 | These fonts are licensed under a Apache License and included in         |
-| BlogoText accordingly.                                                  |
+| Blogotext accordingly.                                                  |
 |                                                                         |
 +-------------------------------------------------------------------------+
 |                                                            FAENZA ICONS |
@@ -57,7 +56,7 @@
 |                                                                         |
 | These icons are licensed under a Creative Commons                       |
 | Attribution 3.0 License.                                                |
-| http://creativecommons.org/licenses/by/3.0/                             |
+| http://creativecommons.org/licenses/by/3.0/                             | 
 |                                                                         |
 +-------------------------------------------------------------------------+
 |                                                                       ~ |

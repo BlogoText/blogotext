@@ -1,153 +1,141 @@
 /* GRAPHS */
 
 #graphs .graph {
-    padding-bottom: 20px;
-    margin-bottom: 60px;
-    margin-top: 40px;
+	padding-bottom: 20px;
+	margin-bottom: 40px;
 }
 
-#graphs .graph .form-legend {
-    padding: 0;
-    font-weight: 500;
-    box-sizing: border-box;
-    transform: translate(-15px, -50px);
-    color: rgba(0, 0, 0, .5);
+#graphs .graph > .legend {
+	font-weight: 500;
+	font-size: 1.1em;
+	font-variant: small-caps;
+	padding: 15px 10px 30px;
+	font-weight: 500;
+	box-sizing: border-box;
+	color: #1e88e5;
+
 }
 
 .graph-container {
-    position: relative;
-    height: 180px;
-    margin: 30px 0 40px;
+	position: relative;
+	height: 180px;
+	margin: 30px 0 40px;
 }
 
 .graph-container > canvas {
-    height: 150px;
+	height: 150px;
 }
 
 .graph-container .graphique {
-    position: relative;
-    top: -180px;
-    height: 180px;
-    padding: 30px 0 0;
-    text-align: center;
-    line-height: 20px;
-    direction: rtl;
-    overflow: hidden;
+	position: relative;
+	top: -181px;
+	height: 180px;
+	padding: 30px 0 0;
+	text-align: center;
+	line-height: 20px;
+	direction: rtl;
+	overflow: hidden;
 }
 
 .graph-container .graphique a {
-    color: black;
-    text-decoration: none;
+	color: black;
+	text-decoration: none;
 }
 
 .graph-container .month {
-    vertical-align: bottom;
-    display: inline-block;
-    text-align: center;
-    padding-bottom: 50px;
-    width: 30px;
-    position: relative;
+	vertical-align: bottom;
+	display: inline-block;
+	text-align: center;
+	padding-bottom: 50px;
+	width: 30px;
+	position: relative;
 }
 
 .graph-container .month:first-of-type {
-    background: red;
-    width: 0px !important;
+	background: red;
+	width: 0px;
 }
 
 .graph-container .month::before {
-    content: '';
-    border: 2px solid white;
-    height: 5px;
-    width: 5px;
-    transform: translateX(5px) translateY(-5px);
-    display: inline-block;
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(33,150,243,1);
+	content: '';
+	border: 2px solid white;
+	height: 5px;
+	width: 5px;
+	transform: translateX(5px) translateY(-5px);
+	display: inline-block;
+	position: absolute;
+	border-radius: 50%;
+	background: rgba(33,150,243,1);
 }
 
 .graph-container .month:first-of-type::before {
-    content: none;
+	content: none;
+}
+
+.graph-container .month-bar {
+	min-height: 1px;
 }
 
 .graph-container .month-name {
-    bottom: 0;
-    display: block;
-    white-space: pre;
-    font-size: 80%;
-    line-height: 100%;
-    text-transform: capitalize;
-    border: 1px solid transparent;
-    border-radius: 2px;
-    visibility:hidden;
-}
-@media (max-width: 480px) {
-    .graph-container .month:nth-child(3n+1) .month-name {
-        visibility: visible;
-    }
-}
-@media (min-width: 480px) {
-    .graph-container .month:nth-child(2n+1) .month-name {
-        visibility: visible;
-    }
+	bottom: 0;
+	display: block;
+	white-space: pre;
+	font-size: 80%;
+	line-height: 100%;
+	text-transform: capitalize;
+	border: 1px solid transparent;
+	border-radius: 2px;
 }
 
 .graph-container .month-nb {
-    top: -25px;
-    left: 0px;
-    position: absolute;
-    width: 100%;
-    color: #777;
-    font-weight: bold;
+	top: -25px;
+	left: 0px;
+	position: absolute;
+	width: 30px;
+	color: #777;
+	font-weight: bold;
 }
 
 .graph-container .month:hover::before {
-    border: 2px solid rgba(33,150,243,1);
-    background: white;
+	border: 2px solid rgba(33,150,243,1);
+	background: white;
 }
 
-/* Hover line */
-.graph-container .month-bar {
-    min-height: 1px;
-}
 .graph-container .month:hover .month-bar {
-    background-image: linear-gradient(to right, rgba(33,150,243,1) 100%, transparent);
-    background-size: 2px;
-    background-position: 50%;
-    background-repeat: no-repeat;
+	background: linear-gradient(to left, transparent 13px, rgba(33,150,243,1) 10px, rgba(33,150,243,1) 15px, transparent 15px);
 }
 
 .graph-container .month:hover .month-name {
-    font-weight: bold;
-    border-color: currentColor;
+	font-weight: bold;
+	border-color: currentColor;
 }
 
 /* global search results */
 #graphs .legend > span {
-    font-variant: none;
-    text-decoration: underline
+	font-variant: none;
+	text-decoration: underline
 }
 
 #resultat-recherche {
-    list-style-type: none;
-    padding-left: 10px;
+	list-style-type: none;
+	padding-left: 10px;
 }
 
 #resultat-recherche li {
-    display: inline-block;
+	display: inline-block;
 }
 #resultat-recherche a {
-    text-decoration: none;
-    color: inherit;
-    display: inline-block;
-    margin-right: 5px;
-    vertical-align: middle;
-    padding: 6px 12px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-    border-radius: 2px;
-    border: 0px solid transparent;
+	text-decoration: none;
+	color: inherit;
+	display: inline-block;
+	margin-right: 5px;
+	vertical-align: middle;
+	padding: 6px 12px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+	border-radius: 2px;
+	border: 0px solid transparent;
 }
 
 #resultat-recherche a:hover {
-    background-color: rgba(0, 0, 0, .05);
+	background-color: rgba(0, 0, 0, .05);
 }

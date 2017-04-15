@@ -1,23 +1,26 @@
+
 @media (max-width: 1100px) {
-    /* top nav */
-    #top > #nav a {
-        font-size: .85em;
-        padding: 0 5px;
-    }
-    /* liste billets */
-    #billets { width: 100%; }
-    /* slider images */
-    #slider-main-content.infos-on + #slider-infos {
-        width: 330px;
-    }
-    #slider-main-content.infos-on #slider-nav-bar {
-    right: 330px;
-    }
-    #slider-main-content.infos-on {
-        margin-right: 330px;
-    }
-    /* préférences */
-    #preferences p {
-        max-width: 100%;
-    }
+	/* top nav */
+	#top > #nav a {
+		font-size: .85em;
+		padding: 0 5px;
+	}
+	/* liste billets */
+	#billets { width: 100%; }
+	/* slider images */
+	#slider-main-content.infos-on + #slider-infos {
+		width: 330px;
+	}
+	#slider-main-content.infos-on #slider-nav-bar {
+   	right: 330px;
+	}
+	#slider-main-content.infos-on {
+		margin-right: 330px;
+	}
+	/* préférences */
+	#preferences p {
+		max-width: 100%;
+	}
 }
+
+
