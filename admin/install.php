@@ -176,6 +176,8 @@ function install_form_3_echo($errors = '')
     }
     echo '</div>';
 
+    echo '<p><input type="checkbox" id="install_datas" name="install_datas" value="1" checked class="checkbox" /><label for="install_datas" style="line-height: 1;">'.$GLOBALS['lang']['install_datas'].'</label></p>';
+
     echo hidden_input('langue', $GLOBALS['lang']['id']);
     echo hidden_input('install_form_3_sended', 1);
     echo '<button class="submit button-submit" type="submit" name="enregistrer">Ok</button>';
@@ -241,7 +243,7 @@ function install_form_3_proceed()
 
     fichier_adv_conf();
 
-    if ($totalPosts != 0) {
+    if ($totalPosts != 0 || !isset($_POST['install_datas'])) {
         return;
     }
 
