@@ -32,7 +32,7 @@ $vars = array(
     'fichier' => (string)filter_input(INPUT_POST, 'fichier'),
     'filename' => (string)filter_input(INPUT_POST, 'filename'),
 
-    'file_id' => (int)filter_input(INPUT_GET, 'file_id'),
+    'file_id' => (string)filter_input(INPUT_GET, 'file_id'),
     'filtre' => (string)filter_input(INPUT_GET, 'filtre'),
     'q' => (string)filter_input(INPUT_GET, 'q'),
     'extension' => (string)filter_input(INPUT_GET, 'extension'),
@@ -359,19 +359,19 @@ function display_pictures_list($images)
         $thumbnail = (is_file(DIR_IMAGES.$thumb_name)) ? $thumb_name : $img_path_src;
 
         $out .= '{
-            index: '.(int)$idx.',
+            index: '.(string)$idx.',
             filename: [
                 "'.URL_IMAGES.$img_path_src.'",
                 "'.$im['bt_filename'].'",
                 "'.URL_IMAGES.$thumbnail.'",
                 "'.URL_IMAGES.$img_path_src.'"
             ],
-            id: '.(int)$im['bt_id'].',
+            id: '.(string)$im['bt_id'].',
             desc: "'.addslashes(preg_replace('#(\n|\r|\n\r)#', '', nl2br($im['bt_content']))).'",
             dossier: "'.(isset($im['bt_dossier']) ? $im['bt_dossier'] : '').'",
-            width: '.(int)$im['bt_dim_w'].',
-            height: '.(int)$im['bt_dim_h'].',
-            weight: '.(int)$im['bt_filesize'].',
+            width: '.(string)$im['bt_dim_w'].',
+            height: '.(string)$im['bt_dim_h'].',
+            weight: '.(string)$im['bt_filesize'].',
             date: [
                 "'.date_formate($im['bt_id']).'",
                 "'.heure_formate($im['bt_id']).'"
