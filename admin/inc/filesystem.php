@@ -1,7 +1,7 @@
 <?php
 # *** LICENSE ***
 # This file is part of BlogoText.
-# https://github.com/BoboTiG/blogotext/
+# https://github.com/BlogoText/blogotext/
 #
 # 2006      Frederic Nassar.
 # 2010-2016 Timo Van Neerden.
@@ -28,6 +28,7 @@ function return_bytes($val)
 {
     $val = trim($val);
     $prefix = strtolower($val[strlen($val)-1]);
+    $val = substr($val, 0, -1);
     switch ($prefix) {
         case 'g':
             $val *= 1024*1024*1024;

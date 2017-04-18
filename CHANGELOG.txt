@@ -8,12 +8,17 @@
 # note : each note will be start with "note :"
 # note : 1 note by subject
 
+[3.7.1]
+    note : This update is about bug fix
+    - fix function return_byte(), format the value before math
+    - fix errors with images ID, in some system (int) change the ID
 
 [3.7]
     note : This changelog file will not be complete due to the consequent number of changes and the
            late implementation of this changelog
     note : The 3.7 is the first release after the change of maintainer
     note : GitHub moved to https://github.com/BoboTiG/blogotext/
+    note : GitHub moved to https://github.com/BlogoText/blogotext/
     note : you will notice some performance improvement due to the partial rewrite/reorder of the core
     note : custom templates don't need any update to stay fonctional, but if you want to use addons, you 
            must add some addons tags

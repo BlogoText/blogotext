@@ -1,7 +1,7 @@
 <?php
 # *** LICENSE ***
 # This file is part of BlogoText.
-# https://github.com/BoboTiG/blogotext/
+# https://github.com/BlogoText/blogotext/
 #
 # 2006      Frederic Nassar.
 # 2010-2016 Timo Van Neerden.
@@ -114,7 +114,7 @@ function init_post_link2()
 {
     // Second init: the whole link data needs to be stored
     $linkIdPost = filter_input(INPUT_POST, 'ID');
-    $linkId = (int)filter_input(INPUT_POST, 'bt_id');
+    $linkId = (string)filter_input(INPUT_POST, 'bt_id');
     $type = (string)filter_input(INPUT_POST, 'type');
     $desc = (string)filter_input(INPUT_POST, 'description');
     $title = (string)filter_input(INPUT_POST, 'title');

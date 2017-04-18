@@ -1,7 +1,7 @@
 <?php
 # *** LICENSE ***
 # This file is part of BlogoText.
-# https://github.com/BoboTiG/blogotext/
+# https://github.com/BlogoText/blogotext/
 #
 # 2006      Frederic Nassar.
 # 2010-2016 Timo Van Neerden.
@@ -115,9 +115,9 @@ if (BLOGOTEXT_VERSION != '3.7.0' && BLOGOTEXT_VERSION != '3.7.0-dev') {
         <div class="center">
             <h3>Please update file</h3>
             <p>Please overwrite your current BlogoText system, you can go to 
-                <a href="https://github.com/BoboTiG/blogotext/tree/master">github.com/BoboTiG/blogotext/master</a> to get the current stable version 
+                <a href="https://github.com/BlogoText/blogotext/tree/master">github.com/BlogoText/blogotext/master</a> to get the current stable version 
                 or go to 
-                <a href="https://github.com/BoboTiG/blogotext/releases">github.com/BoboTiG/blogotext/releases</a> to get another version.
+                <a href="https://github.com/BlogoText/blogotext/releases">github.com/BlogoText/blogotext/releases</a> to get another version.
             </p>
         </div>';
     echo $html_foot;
@@ -486,7 +486,7 @@ if ($success === true) {
             <li>Go on public side of your blog to check if everything is fine</li>
             <li>Go on admin side of your blog to check if everything is fine</li>
         </ul>';
-    $message .= '<p>In case of errors, please make an issue at <a href="https://github.com/BoboTiG/blogotext/issues">github / blogotext</a></p>';
+    $message .= '<p>In case of errors, please make an issue at <a href="https://github.com/BlogoText/blogotext/issues">github / blogotext</a></p>';
 }
 
 echo $html_head;
