@@ -8,6 +8,10 @@
 # note : each note will be start with "note :"
 # note : 1 note by subject
 
+[3.7.1]
+    note : This update is about bug fix
+    - fix function return_byte(), format the value before math
+    - fix errors with images ID, in some system (int) change the ID
 
 [3.7]
     note : This changelog file will not be complete due to the consequent number of changes and the
