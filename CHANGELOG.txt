@@ -11,7 +11,7 @@
 [3.7.1]
     note : This update is about bug fix
     - fix function return_byte(), format the value before math
-    - fix errors with images ID, in some system (int) change the ID
+    - fix errors with (int) when PHP_INT_MAX is too low
 
 [3.7]
     note : This changelog file will not be complete due to the consequent number of changes and the
