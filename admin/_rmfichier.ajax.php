@@ -20,7 +20,7 @@ require_once 'inc/boot.php';
 */
 
 $GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);
-$fileId = (int)filter_input(INPUT_POST, 'file_id');
+$fileId = filter_input(INPUT_POST, 'file_id');
 $deletion = (filter_input(INPUT_POST, 'supprimer') !== null);
 
 if ($fileId && preg_match('#^\d{14}$#', $fileId) && $deletion) {

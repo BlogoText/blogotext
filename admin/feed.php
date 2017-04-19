@@ -71,7 +71,7 @@ function traitment_form_feed_conf()
         if ($title) {
             $link = (string)filter_input(INPUT_POST, 'j_'.$feed['checksum']);
             $folder = (string)filter_input(INPUT_POST, 'l_'.$feed['checksum']);
-            $status = (int)filter_input(INPUT_POST, 'k_'.$feed['checksum']);
+            $status = (string)filter_input(INPUT_POST, 'k_'.$feed['checksum']);
 
             if ($status == 0) {
                 // Feed marked to be removed
