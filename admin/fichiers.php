@@ -27,7 +27,7 @@ $vars = array(
     'filename' => (string)filter_input(INPUT_POST, 'filename'),
     'sha1_file' => (string)filter_input(INPUT_POST, 'sha1_file'),
     'path' => (string)filter_input(INPUT_POST, 'path'),
-    'filesize' => (int)filter_input(INPUT_POST, 'filesize'),
+    'filesize' => (string)filter_input(INPUT_POST, 'filesize'),
     'token' => (string)filter_input(INPUT_POST, 'token'),
     'fichier' => (string)filter_input(INPUT_POST, 'fichier'),
     'filename' => (string)filter_input(INPUT_POST, 'filename'),
@@ -255,7 +255,7 @@ function display_files_list($arr)
 function traitment_form_file($file)
 {
     global $vars;
-    $fileId = (int)filter_input(INPUT_POST, 'file_id');
+    $fileId = (string)filter_input(INPUT_POST, 'file_id');
     if ($vars['upload']) {
         // Addition
         // via $_FILES
