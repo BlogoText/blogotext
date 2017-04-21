@@ -77,7 +77,7 @@ function install_form_1_echo($errors = '')
     if (!is_writable('../')) {
         $confErrors[] = '<li>BlogoText has no write rights (chmod of home folder must be 644 at least, 777 recommended).</li>';
     }
-    if (!function_exists('idn_to_ascii')) {
+    if (!function_exists('idn_to_ascii') || defined('INTL_FAIL')) {
         $confErrors[] = '<li>BlogoText requires that the PHP intl extension be installed and activated.</li>';
     }
     if ($confErrors) {

@@ -154,7 +154,7 @@ if (!is_file(DIR_CONFIG.'mysql.ini') && !is_file(DIR_CONFIG.'prefs.php')) {
 // ask for proceed
 if (!isset($_GET['proceed'])) {
     echo $html_head;
-    if (!function_exists('idn_to_ascii')) {
+    if (!function_exists('idn_to_ascii') || defined('INTL_FAIL')) {
         echo '
             <div class="center">
                 <h3>:(</h3>
