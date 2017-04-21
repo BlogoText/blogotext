@@ -123,6 +123,7 @@ function import_ini_file($file_path)
  * dirty fix/message for install BT >= 3.7 && < 3.7.2
  */
 if (!function_exists('idn_to_ascii')) {
+    define('INTL_FAIL', true);
     function idn_to_ascii()
     {
         die('Please install and enable the php intl extension.');
