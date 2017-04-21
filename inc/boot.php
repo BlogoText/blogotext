@@ -120,6 +120,17 @@ function import_ini_file($file_path)
 }
 
 /**
+ * dirty fix/message for install BT >= 3.7 && < 3.7.2
+ */
+if (!function_exists('idn_to_ascii')) {
+    define('INTL_FAIL', true);
+    function idn_to_ascii()
+    {
+        die('Please install and enable the php intl extension.');
+    }
+}
+
+/**
  * @param string $http_host, like : example.tld || https://toto.example.tld/blog1/
  * @return string||array, if array, see array['message'] for more information
  *                        if string, safe potential file or folder name like :
@@ -225,7 +236,7 @@ define('FILE_MYSQL', DIR_CONFIG.'mysql.php');
 // Constants: general
 define('BLOGOTEXT_NAME', 'BlogoText');
 define('BLOGOTEXT_SITE', 'https://github.com/BlogoText/blogotext');
-define('BLOGOTEXT_VERSION', '3.7.1');
+define('BLOGOTEXT_VERSION', '3.7.2');
 define('MINIMAL_PHP_REQUIRED_VERSION', '5.5');
 define('BLOGOTEXT_UA', 'Mozilla/5.0 (Windows NT 10; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0');
 

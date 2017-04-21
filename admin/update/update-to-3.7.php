@@ -109,7 +109,7 @@ if (!defined('BT_RUN_INSTALL')) {
 
 
 // check version
-if (BLOGOTEXT_VERSION != '3.7.0' && BLOGOTEXT_VERSION != '3.7.0-dev') {
+if (BLOGOTEXT_VERSION != '3.7.0' && BLOGOTEXT_VERSION != '3.7.0-dev' && BLOGOTEXT_VERSION != '3.7.1' && BLOGOTEXT_VERSION != '3.7.2') {
     echo $html_head;
     echo '
         <div class="center">
@@ -154,20 +154,28 @@ if (!is_file(DIR_CONFIG.'mysql.ini') && !is_file(DIR_CONFIG.'prefs.php')) {
 // ask for proceed
 if (!isset($_GET['proceed'])) {
     echo $html_head;
-    echo '
-        <div class="center">
-            <h3>Update BlogoText to 3.7 ?</h3>
-            <p>We recommand to make a backup of your file and database before 
-                proceeding the update.</p>
-            <p style="margin-bottom:0.5em">This update will check and update 
-                if necessary : </p>
-            <ul>
-                <li>Create the new config\'s files based on the old one</li>
-                <li>Delete the old config\'s files</li>
-                <li>Update the database scheme</li>
-            </ul>
-            <p><a class="btn" href="?proceed">Ok !</a></p>
-        </div>';
+    if (!function_exists('idn_to_ascii') || defined('INTL_FAIL')) {
+        echo '
+            <div class="center">
+                <h3>:(</h3>
+                <p class="erreurs" style="color: #D40000;">BlogoText requires the PHP intl extension (installed and activated).</p>
+            </div>';
+    } else {
+        echo '
+            <div class="center">
+                <h3>Update BlogoText to 3.7 ?</h3>
+                <p>We recommand to make a backup of your file and database before 
+                    proceeding the update.</p>
+                <p style="margin-bottom:0.5em">This update will check and update 
+                    if necessary : </p>
+                <ul>
+                    <li>Create the new config\'s files based on the old one</li>
+                    <li>Delete the old config\'s files</li>
+                    <li>Update the database scheme</li>
+                </ul>
+                <p><a class="btn" href="?proceed">Ok !</a></p>
+            </div>';
+    }
     echo $html_foot;
     exit();
 }

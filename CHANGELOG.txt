@@ -8,6 +8,12 @@
 # note : each note will be start with "note :"
 # note : 1 note by subject
 
+[3.7.2]
+    note : This update is about bug fix, no need to update if 3.7.1 already installed and ok
+    note : A bug with the feed aggregator is known, we are working on it, new update will go live soon!
+    - upd install and update to add intl test and message
+    - upd boot to add intl test and message
+
 [3.7.1]
     note : This update is about bug fix
     - fix function return_byte(), format the value before math

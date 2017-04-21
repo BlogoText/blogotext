@@ -77,10 +77,14 @@ function install_form_1_echo($errors = '')
     if (!is_writable('../')) {
         $confErrors[] = '<li>BlogoText has no write rights (chmod of home folder must be 644 at least, 777 recommended).</li>';
     }
+    if (!function_exists('idn_to_ascii') || defined('INTL_FAIL')) {
+        $confErrors[] = '<li>BlogoText requires that the PHP intl extension be installed and activated.</li>';
+    }
     if ($confErrors) {
-        echo '<ol class="erreurs">'.implode($confErrors, '').'</ol>';
+        echo '<div id="install"><h3>:(</h3>';
+        echo '<ul class="erreurs">'.implode($confErrors, '').'</ul>';
         echo '<p classe="erreurs">Installation aborded.</p>';
-        echo '</div></div></html>';
+        echo '</div></div></div></html>';
         return;
     }
 
