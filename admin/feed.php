@@ -199,29 +199,29 @@ function feed_list_html($selected = '')
  */
 function send_rss_json($feeds)
 {
-    $out = '<script>';
-    $out .= 'var rss_entries = { "list": [';
-    $count = count($feeds) - 1;
-    foreach ($feeds as $idx => $feed) {
-        // Note: json_encode adds « " » on the data, so we use encode() and not '"'.encode().'"'
-        $out .= '{'.
-            '"id": '.json_encode($feed['bt_id']).','.
-            '"date": '.json_encode(date_formate(date('YmdHis', $feed['bt_date']))).','.
-            '"time": '.json_encode(heure_formate(date('YmdHis', $feed['bt_date']))).','.
-            '"title": '.json_encode($feed['bt_title']).','.
-            '"link": '.json_encode($feed['bt_link']).','.
-            '"feed": '.json_encode($feed['bt_feed']).','.
-            '"sitename": '.json_encode($GLOBALS['liste_flux'][$feed['bt_feed']]['title']).','.
-            '"folder": '.json_encode($GLOBALS['liste_flux'][$feed['bt_feed']]['folder']).','.
-            '"content": '.json_encode($feed['bt_content']).','.
-            '"statut": '.$feed['bt_statut'].','.
-            '"fav": '.$feed['bt_bookmarked'].
-        '}'.(($count == $idx) ? '' : ',');
-    }
-    $out .= ']}';
-    $out .= '</script>';
+    $to_json = array(
+        'list' => array(),
+        'count' => (count($feeds) - 1)
+    );
 
-    return $out;
+    $clean = array();
+    foreach ($feeds as $feed) {
+        $to_json['list'][] = array(
+            'id' => $feed['bt_id'],
+            'date' => date_formate(date('YmdHis', $feed['bt_date'])),
+            'time' => heure_formate(date('YmdHis', $feed['bt_date'])),
+            'title' => $feed['bt_title'],
+            'link' => $feed['bt_feed'],
+            'feed' => $feed['bt_feed'],
+            'sitename' => $GLOBALS['liste_flux'][$feed['bt_feed']]['title'],
+            'folder' => $GLOBALS['liste_flux'][$feed['bt_feed']]['folder'],
+            'content' => $feed['bt_content'],
+            'statut' => $feed['bt_statut'],
+            'fav' => $feed['bt_bookmarked']
+        );
+    }
+
+    return '<script>var rss_entries = '. json_encode($to_json) .';</script>';
 }
 
 
