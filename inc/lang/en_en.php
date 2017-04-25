@@ -198,4 +198,13 @@ $GLOBALS['lang'] = array(
 '9' => 'nine',
 'derniere_connexion_le' => 'Last connection from',
 'cet_ordi' => 'this computer',
+// Formulaire mail
+'mail_subject' => 'New comment on "',
+'mail_message1' => 'A new comment by ',
+'mail_message2' => ' has been posted on ',
+'mail_message3' => ' from ',
+'mail_link' => 'You can see it by following this link: ',
+'mail_unsub' => 'To unsubscribe from the comments on that post, you can follow this link: ',
+'mail_unsuball' => 'To unsubscribe from the comments on all the posts, follow this link: ',
+'mail_end' => 'Also, do not reply to this email, since it is an automatic generated email.\nRegards',
 );
