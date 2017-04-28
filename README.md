@@ -19,9 +19,9 @@ This is BlogoText, the lightweight SQLite Blog-Engine.
 ---
 
 ## Requirements
- * PHP > 5.5
- * SQLite or MySQL with PDO support
- * A CSS3 / HTML5 / ES6 compatible Browser, for the admin panel (Firefox, Chrome…)
+ * PHP >5.5
+ * SQLite with PDO support (or MySQL with PDO Support)
+ * A CSS3 / HTML5 compatible Browser (Firefox, Chrome…)
  * min 2 Mo disk space (more data = more space needed)
 
 ## Recommended PHP libraries
@@ -29,7 +29,7 @@ This is BlogoText, the lightweight SQLite Blog-Engine.
  * cURL (for RSS reader, links sharing, comments icons)
  * LibXML (for RSS reader)
  * GZip (for zip exporting function)
- * [Intl](http://php.net/manual/en/book.intl.php)
+ * Intl
 
 ## Installation
  * Download [the lastest release](https://github.com/BlogoText/blogotext/releases)
