@@ -25,7 +25,6 @@ $GLOBALS['lang'] = array(
 'install_err_mysql_hst_empty' => 'MySQL Hostname is empty.',
 'install_err_mysql_dba_empty' => 'MySQL DB-name is empty',
 'install_err_mysql_connect' => 'BlogoText is unable to connect to MySQL with these informations.',
-'install_datas' => 'Add default data (article, links, comment ...)',
 'first_titre' => 'My first Blogpost',
 'first_edit' => 'Edit me',
 // Navigation

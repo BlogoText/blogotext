@@ -178,6 +178,7 @@ if (!isset($_GET['proceed'])) {
             </ul>
             <p><a class="btn" href="?proceed">Ok !</a></p>
         </div>';
+
     echo $html_foot;
     exit();
 }
