@@ -90,6 +90,9 @@ function install_form_1_echo($errors = '')
 
     echo '<form method="post" action="install.php">';
     echo '<div id="install">';
+    if (PHP_INTL === false) {
+        echo '<p class="erreurs" style="color: #FFA726;">We recommend to use the INTL extension for PHP before installing BlogoText.</p>';
+    }
     echo '<p>';
     echo '<label for="langue">Choisissez votre langue / Choose your language: ';
     echo '<select id="langue" name="langue">';
