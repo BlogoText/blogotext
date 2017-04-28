@@ -141,7 +141,6 @@ if (!PHP_INTL) {
     }
 }
 
-
 /**
  * @param string $http_host, like : example.tld || https://toto.example.tld/blog1/
  * @return string||array, if array, see array['message'] for more information
