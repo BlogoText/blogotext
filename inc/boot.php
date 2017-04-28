@@ -122,22 +122,11 @@ function import_ini_file($file_path)
 /**
  * dirty fix/message for install BT >= 3.7 && < 3.7.2
  */
-define('PHP_INTL', function_exists('idn_to_ascii'));
-if (!PHP_INTL) {
-    function idn_to_ascii($string)
+if (!function_exists('idn_to_ascii')) {
+    define('INTL_FAIL', true);
+    function idn_to_ascii()
     {
-        // œ => oe ; æ => ae
-        $sanitized = html_entity_decode($string, ENT_QUOTES, 'UTF-8');
-        $sanitized = htmlentities($sanitized, ENT_QUOTES, 'UTF-8'); // é => &eacute;
-        $sanitized = preg_replace('#&(.)(acute|grave|circ|uml|cedil|tilde|ring|slash|caron);#', '$1', $sanitized); // &eacute => e
-        $sanitized = preg_replace('#&([a-z]{2})lig;#i', '$1', $sanitized);
-        $sanitized = preg_replace("/[^a-z0-9-_\.\~]/", '', $sanitized);
-        if (empty(preg_replace("/[^a-z0-9]/", '', $sanitized))) {
-            $sanitized = substr(md5($string), 0, 12);
-        } else if ($string != $sanitized) {
-            $sanitized .= '-'.substr(md5($string), 0, 6);
-        }
-        return $sanitized;
+        die('Please install and enable the php intl extension.');
     }
 }
 
@@ -222,6 +211,7 @@ function secure_host_to_path($http_host)
     return $path;
 }
 
+
 // Constants: folders
 define('DIR_ADDONS', BT_ROOT.'addons/');
 define('DIR_BACKUP', BT_ROOT.'bt_backup/');
@@ -246,7 +236,7 @@ define('FILE_MYSQL', DIR_CONFIG.'mysql.php');
 // Constants: general
 define('BLOGOTEXT_NAME', 'BlogoText');
 define('BLOGOTEXT_SITE', 'https://github.com/BlogoText/blogotext');
-define('BLOGOTEXT_VERSION', '3.7.3');
+define('BLOGOTEXT_VERSION', '3.7.2');
 define('MINIMAL_PHP_REQUIRED_VERSION', '5.5');
 define('BLOGOTEXT_UA', 'Mozilla/5.0 (Windows NT 10; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0');
 
