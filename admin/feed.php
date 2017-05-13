@@ -211,7 +211,7 @@ function send_rss_json($feeds)
             'date' => date_formate(date('YmdHis', $feed['bt_date'])),
             'time' => heure_formate(date('YmdHis', $feed['bt_date'])),
             'title' => $feed['bt_title'],
-            'link' => $feed['bt_feed'],
+            'link' => $feed['bt_link'],
             'feed' => $feed['bt_feed'],
             'sitename' => $GLOBALS['liste_flux'][$feed['bt_feed']]['title'],
             'folder' => $GLOBALS['liste_flux'][$feed['bt_feed']]['folder'],
