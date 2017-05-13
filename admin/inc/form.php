@@ -204,7 +204,10 @@ function filtre($type, $filtre)
         $arrTags = list_all_tags('links', false);
 
         // FIX: sometimes this is an empty array. To investigate.
-        $arrTags = array_filter($arrTags, 'strlen', ARRAY_FILTER_USE_KEY);
+        // ARRAY_FILTER_USE_KEY introduced in php 5.6
+        // $arrTags = array_filter($arrTags, 'strlen', ARRAY_FILTER_USE_KEY);
+        // quick fix, sort by tag name
+        ksort($arrTags);
 
         $query = '
             SELECT DISTINCT substr(bt_id, 1, 6) AS date
