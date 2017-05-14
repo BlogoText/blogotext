@@ -9,7 +9,6 @@
 # note : 1 note by subject
 
 [3.7.4]
-    note :
     - fix wrong behavior on link (title) from feed aggregator
     - fix for PHP 5.5 compat
 
