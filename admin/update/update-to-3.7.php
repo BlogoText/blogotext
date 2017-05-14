@@ -109,7 +109,7 @@ if (!defined('BT_RUN_INSTALL')) {
 
 
 // check version
-if (BLOGOTEXT_VERSION != '3.7.0' && BLOGOTEXT_VERSION != '3.7.0-dev' && BLOGOTEXT_VERSION != '3.7.1' && BLOGOTEXT_VERSION != '3.7.2' && BLOGOTEXT_VERSION != '3.7.3') {
+if (BLOGOTEXT_VERSION != '3.7.4') {
     echo $html_head;
     echo '
         <div class="center">
