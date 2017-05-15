@@ -77,9 +77,6 @@ function install_form_1_echo($errors = '')
     if (!is_writable('../')) {
         $confErrors[] = '<li>BlogoText has no write rights (chmod of home folder must be 644 at least, 777 recommended).</li>';
     }
-    if (!function_exists('idn_to_ascii') || defined('INTL_FAIL')) {
-        $confErrors[] = '<li>BlogoText requires that the PHP intl extension be installed and activated.</li>';
-    }
     if ($confErrors) {
         echo '<div id="install"><h3>:(</h3>';
         echo '<ul class="erreurs">'.implode($confErrors, '').'</ul>';
@@ -90,6 +87,9 @@ function install_form_1_echo($errors = '')
 
     echo '<form method="post" action="install.php">';
     echo '<div id="install">';
+    if (PHP_INTL === false) {
+        echo '<p class="erreurs" style="color: #FFA726;">We recommend to use the INTL extension for PHP before installing BlogoText.</p>';
+    }
     echo '<p>';
     echo '<label for="langue">Choisissez votre langue / Choose your language: ';
     echo '<select id="langue" name="langue">';
@@ -180,8 +180,6 @@ function install_form_3_echo($errors = '')
     }
     echo '</div>';
 
-    echo '<p><input type="checkbox" id="install_datas" name="install_datas" value="1" checked class="checkbox" /><label for="install_datas" style="line-height: 1;">'.$GLOBALS['lang']['install_datas'].'</label></p>';
-
     echo hidden_input('langue', $GLOBALS['lang']['id']);
     echo hidden_input('install_form_3_sended', 1);
     echo '<button class="submit button-submit" type="submit" name="enregistrer">Ok</button>';
@@ -247,7 +245,7 @@ function install_form_3_proceed()
 
     fichier_adv_conf();
 
-    if ($totalPosts != 0 || !isset($_POST['install_datas'])) {
+    if ($totalPosts != 0) {
         return;
     }
 

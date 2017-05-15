@@ -8,6 +8,15 @@
 # note : each note will be start with "note :"
 # note : 1 note by subject
 
+[3.7.4]
+    - fix wrong behavior on link (title) from feed aggregator
+    - fix for PHP 5.5 compat
+
+[3.7.3]
+    note : This update is about bug fix, no need to update if 3.7.1 already installed and ok
+    - add support for php without the PHP intl extension
+    - fix feed aggregator
+
 [3.7.2]
     note : This update is about bug fix, no need to update if 3.7.1 already installed and ok
     note : A bug with the feed aggregator is known, we are working on it, new update will go live soon!
