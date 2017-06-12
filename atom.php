@@ -11,5 +11,5 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 # *** LICENSE ***
 
-$_GET['format'] = 'atom';
+$format = 'atom';
 require 'feed.php';

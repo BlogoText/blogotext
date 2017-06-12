@@ -7,7 +7,7 @@ This is BlogoText, the lightweight SQLite Blog-Engine.
 ---
 
 ## Features
- * Blog with comments and RSS feeds
+ * Blog with comments and feeds (Atom, RSS, JSON)
  * Links sharing
  * RSS Reader
  * Images/Files uploading and sharing

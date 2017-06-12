@@ -11,5 +11,5 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 # *** LICENSE ***
 
-$_GET['format'] = 'rss';
+$format = 'rss';
 require 'feed.php';
