@@ -203,8 +203,10 @@ $GLOBALS['lang'] = array(
 'mail_message1' => 'A new comment by ',
 'mail_message2' => ' has been posted on ',
 'mail_message3' => ' from ',
-'mail_link' => 'You can see it by following this link: ',
+'mail_see' => 'You can see it by following ',
+'mail_link' => 'this link',
 'mail_unsub' => 'To unsubscribe from the comments on that post, you can follow this link: ',
 'mail_unsuball' => 'To unsubscribe from the comments on all the posts, follow this link: ',
-'mail_end' => 'Also, do not reply to this email, since it is an automatic generated email.\nRegards',
+'mail_end' => 'Also, do not reply to this email, since it is an automatic generated email.',
+'mail_regards' => 'Regards',
 );

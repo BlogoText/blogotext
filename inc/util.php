@@ -424,22 +424,54 @@ function send_emails($id_comment)
         return true;
     }
 
+    // multipart mail
+    // stolen from https://kevinjmcmahon.net/articles/22/html-and-plain-text-multipart-email-/
+
+    //create a boundary for the email.
+    $boundary = uniqid('blogotext');
     $subject = $GLOBALS['lang']['mail_subject'].$article_title.'" - '.$GLOBALS['nom_du_site'];
-    $headers  = 'MIME-Version: 1.0'."\r\n".'Content-type: text/html; charset="UTF-8"'."\r\n";
-    $headers .= 'From: no.reply_'.$GLOBALS['email']."\r\n".'X-Mailer: BlogoText - PHP/'.phpversion();
 
     // send emails
     foreach ($to_send_mail as $mail) {
+        $headers = "MIME-Version: 1.0\r\n";
+        $headers .= 'From: no.reply_'.$GLOBALS['email']."\r\n".'X-Mailer: BlogoText - PHP/'.phpversion();
+        $headers .= "To: ".$mail."\r\n";
+        $headers .= "Content-Type: multipart/alternative;boundary=" . $boundary . "\r\n";
+
         $unsublink = get_blogpath($article_id, '').'&amp;unsub=1&amp;mail='.base64_encode($mail).'&amp;article='.$article_id;
-        $message = $subject."\r\n";
+
+        $message = "This is a MIME encoded message.";
+        $message .= "\r\n\r\n--" . $boundary . "\r\n";
+        $message .= "Content-type: text/plain;charset=utf-8\r\n\r\n";
+
+        // Plain text message
+        $message .= $subject."\r\n";
         $message .= str_repeat('=', strlen($subject)) ."\r\n\n";
         $message .= $GLOBALS['lang']['mail_message1'].$comm_author.$GLOBALS['lang']['mail_message2'].$article_title.$GLOBALS['lang']['mail_message3'].$GLOBALS['nom_du_site']."\r\n";
-        $message .= $GLOBALS['lang']['mail_link'].get_blogpath($article_id, '').'#'.article_anchor($id_comment)."\r\n\n";
+        $message .= $GLOBALS['lang']['mail_see'].$GLOBALS['lang']['mail_link'].': '.get_blogpath($article_id, '').'#'.article_anchor($id_comment)."\r\n\n";
         $message .= "---\r\n\n";
         $message .= $GLOBALS['lang']['mail_unsub']."\r\n".$unsublink.'">'.$unsublink."\r\n\n";
         $message .= $GLOBALS['lang']['mail_unsuball']."\r\n".$unsublink.'&amp;all=1">'.$unsublink.'&amp;all=1'."\r\n";
         $message .= "\r\n";
         $message .= $GLOBALS['lang']['mail_end'];
+        $message .= "\r\n";
+        $message .= $GLOBALS['lang']['mail_regards'];
+
+        $message .= "\r\n\r\n--" . $boundary . "\r\n";
+        $message .= "Content-type: text/html;charset=utf-8\r\n\r\n";
+
+        // Html message
+        $message .= '<html>';
+        $message .= '<head><title>'.$subject.'</title></head>';
+        $message .= '<body><p>'.$GLOBALS['lang']['mail_message1'].'<b>'.$comm_author.'</b>'.$GLOBALS['lang']['mail_message2'].'<b>'.$article_title.'</b>'.$GLOBALS['lang']['mail_message3'].$GLOBALS['nom_du_site'].'.<br/>';
+        $message .= $GLOBALS['lang']['mail_see'].'<a href="'.get_blogpath($article_id, '').'#'.article_anchor($id_comment).'">'.$GLOBALS['lang']['mail_link'].'</a>.</p>';
+        $message .= '<p>'.$GLOBALS['lang']['mail_unsub'].'<br/><a href="'.$unsublink.'">'.$unsublink.'</a>.</p>';
+        $message .= '<p>'.$GLOBALS['lang']['mail_unsuball'].'<br/> <a href="'.$unsublink.'&amp;all=1">'.$unsublink.'&amp;all=1</a>.</p>';
+        $message .= '<p>'.$GLOBALS['lang']['mail_link'].'</p><p>'.$GLOBALS['lang']['mail_regards'].'</p></body>';
+        $message .= '</html>';
+
+        $message .= "\r\n\r\n--" . $boundary . "--";
+
         mail($mail, $subject, $message, $headers);
     }
     return true;
