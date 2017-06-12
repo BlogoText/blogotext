@@ -13,8 +13,6 @@
 
 require_once 'inc/boot.php';
 
-//echo '<link rel="stylesheet" type="text/css" href="style/mystyle.css">'
-
 /**
  * Scale numeric values based on $maximum.
  */
@@ -201,6 +199,7 @@ if ($query) {
 echo '</div>';
 echo <<<EOS
 <script src="style/javascript.js"></script>
+<script src="style/grab.js"></script>
 <script>
 	var containers = document.querySelectorAll(".graph-container"),
 	month_min_width = 40; // in px
