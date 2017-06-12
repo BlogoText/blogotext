@@ -200,11 +200,14 @@ $GLOBALS['lang'] = array(
 'cet_ordi' => 'cet ordinateur',
 'mail_subject' => 'Nouveau commentaire sur "',
 'mail_message1' => 'Un nouveau commentaire par ',
-'mail_message2' => ' a été posté sur le sujet ',
+'mail_message2' => ' a été posté sur le génialissime article ',
 'mail_message3' => ' depuis ',
-'mail_link' => 'Vous pouvez le consulter via ce lien: ',
+'mail_see' => 'Vous pouvez le consulter via ',
+'mail_link' => 'ce lien',
 'mail_unsub' => 'Pour vous désinscrire des commentaires de ce billet, suivez ce lien: ',
 'mail_unsuball' => 'Pour vous désinscrire des commentaires de tous les billets, suivez ce lien: ',
 'mail_end' => 'Merci de ne pas répondre à ce message automatique.',
+'mail_regards' => 'Cordialement.',
+
 
 );
