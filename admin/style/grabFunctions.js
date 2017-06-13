@@ -87,7 +87,7 @@ function changeOrder()
 }
 
 /*
-** Print or hind the grab / swipe buttons
+** Print or hind the grab / swipe buttons at the bottom of the page
 */
 
 function displayOrderChanger() {
