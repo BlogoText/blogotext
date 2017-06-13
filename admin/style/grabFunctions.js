@@ -16,7 +16,8 @@ function handleDragStart(e)
       this.classList.add('dragElem');
 }
 
-function handleDragOver(e) {
+function handleDragOver(e)
+{
     if (e.preventDefault) {
         e.preventDefault(); // Necessary. Allows us to drop.
     }
@@ -69,7 +70,7 @@ function addDnDHandlers(elem)
     elem.addEventListener('dragend', handleDragEnd, false);
 }
 
-document.addEventListener("DOMContentLoaded", function(event) {
+document.addEventListener("DOMContentLoaded", function (event) {
     var cols = document.querySelectorAll('#order li');
     [].forEach.call(cols, addDnDHandlers);
 });
@@ -83,8 +84,7 @@ function changeOrder()
     var cols = document.querySelectorAll('#order li');
     var i = 1;
     [].forEach.call(
-        cols,
-        function(col)
+        cols, function (col)
         {
             var c = document.getElementById(col.dataset.id);
             c.style.order = i*4;
