@@ -106,3 +106,11 @@ function changeOrder()
 		}
 		);
 }
+
+//Print or hind the grab / swipe buttons
+function displayOrderChanger() {
+	if (document.getElementById("order").style.display == "none")
+		document.getElementById("order").style.display = "block";
+	else
+		document.getElementById("order").style.display = "none";
+}

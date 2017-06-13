@@ -30,19 +30,17 @@
 }
 
 #order li.over {
-	//border: 2px dashed #000;
-	border-top: 2px solid blue;
+	border-top: 2px solid blue !important;
 }
 
 #grid {
 	width: 100%;
 	max-width: 1600px;
 	margin: 0 auto;
-	border: 1px solid black;
 	padding: 1em;
 	box-sizing: border-box;
 	display: grid;
-	grid-auto-columns: repeat(4, 1fr);
+	grid-template-columns: repeat(4, 1fr);
 	grid-column-gap: 20px;
 	grid-row-gap: 20px;
 }
@@ -86,9 +84,4 @@
 #grid > div:nth-child(2) {order: 8;}
 #grid > div:nth-child(3) {order: 16;}
 #grid > div:nth-child(4) {order: 12;}
-
-/** color **/
-#grid > div:nth-child(1) {background-color: red;color: white;}
-#grid > div:nth-child(2) {background-color: yellow;}
-#grid > div:nth-child(3) {background-color: pink;}
-#grid > div:nth-child(4) {background-color: blue;color: white;}
+#order li:last-child{border: 1px solid transparent;}

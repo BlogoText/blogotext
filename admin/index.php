@@ -110,10 +110,10 @@ function display_test_buttons()
 {
 	$txt = '<div id="order">';
 	$txt .= '<ul>';
-	$txt .= '<li data-id="item1" draggable="true">Toto</li>';
-	$txt .= '<li data-id="whatever" draggable="true">tata</li>';
-	$txt .= '<li data-id="brraaaaa" draggable="true">titi toto tata</li>';
-	$txt .= '<li data-id="fooooo" draggable="true">example</li>';
+	$txt .= '	<li data-id="post" draggable="true">Articles</li>';
+	$txt .= '	<li data-id="comment" draggable="true">Commentaires</li>';
+	$txt .= '	<li data-id="links" draggable="true">Liens</li>';
+	$txt .= '	<li></li>';
 	$txt .= '</ul>';
 	$txt .= '<p>';
 	$txt .= '<button id="setOrder" onClick="changeOrder()">Apply</button></p>';
@@ -182,18 +182,26 @@ if ($query) {
 } else {
 	// Main Dashboard
 	display_test_buttons();
+	echo '<div id="grid">';
 	if ($numberOfPosts) {
+		echo '<div id="post" class="item item-size2">';
 		display_graph($posts, $GLOBALS['lang']['label_articles'], 'posts');
+		echo '</div>';
 	}
 	if ($numberOfComments) {
+		echo '<div id="comment" class="item item-size4">';
 		display_graph($comments, $GLOBALS['lang']['label_commentaires'], 'comments');
+		echo '</div>';
 	}
 	if ($numberOfLinks) {
+		echo '<div id="links" class="item item-size4">';
 		display_graph($links, $GLOBALS['lang']['label_links'], 'links');
+		echo '</div>';
 	}
 	if (!max($numberOfPosts, $numberOfComments, $numberOfLinks)) {
 		echo info($GLOBALS['lang']['note_no_article']);
 	}
+	echo '</div>';
 }
 
 echo '</div>';
