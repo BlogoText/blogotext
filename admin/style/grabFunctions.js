@@ -83,13 +83,12 @@ function changeOrder()
 {
     var cols = document.querySelectorAll('#order li');
     var i = 1;
-    [].forEach.call(cols, function (col)
-    {
+    [].forEach.call(cols, function (col) {
         var c = document.getElementById(col.dataset.id);
         c.style.order = i*4;
         ++i;
     }
-    ); 
+    );
 }
 
 /*
