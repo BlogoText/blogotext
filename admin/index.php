@@ -115,10 +115,11 @@ function display_test_buttons()
 	$txt .= '	<li data-id="links" draggable="true">Liens</li>';
 	$txt .= '	<li></li>';
 	$txt .= '</ul>';
-	$txt .= '<p>';
-	$txt .= '<button id="setOrder" onClick="changeOrder()">Apply</button></p>';
-	$txt .= '</p>';
+	$txt .= '<p><button id="setOrder" onClick="changeOrder()">Apply</button></p>';
 	$txt .= '</div>';
+	$txt .= '<p>';
+	$txt .= '<button id="displayOrderChanger" onClick="displayOrderChanger()">Changer ordre</button>';
+	$txt .= '</p>';
 
 	echo $txt;
 }
@@ -180,21 +181,21 @@ if ($query) {
 	echo '</ul>';
 	echo '</div>';
 } else {
+
 	// Main Dashboard
-	display_test_buttons();
 	echo '<div id="grid">';
 	if ($numberOfPosts) {
-		echo '<div id="post" class="item item-size2">';
+		echo '<div id="post" class="grid-item grid-item-size-2">';
 		display_graph($posts, $GLOBALS['lang']['label_articles'], 'posts');
 		echo '</div>';
 	}
 	if ($numberOfComments) {
-		echo '<div id="comment" class="item item-size4">';
+		echo '<div id="comment" class="grid-item grid-item-size-4">';
 		display_graph($comments, $GLOBALS['lang']['label_commentaires'], 'comments');
 		echo '</div>';
 	}
 	if ($numberOfLinks) {
-		echo '<div id="links" class="item item-size4">';
+		echo '<div id="links" class="grid-item grid-item-size-4">';
 		display_graph($links, $GLOBALS['lang']['label_links'], 'links');
 		echo '</div>';
 	}
@@ -202,12 +203,13 @@ if ($query) {
 		echo info($GLOBALS['lang']['note_no_article']);
 	}
 	echo '</div>';
+	display_test_buttons();
 }
 
 echo '</div>';
 echo <<<EOS
 <script src="style/javascript.js"></script>
-<script src="style/grab.js"></script>
+<script src="style/grabFunctions.js"></script>
 <script>
 	var containers = document.querySelectorAll(".graph-container"),
 	month_min_width = 40; // in px

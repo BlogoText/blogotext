@@ -8,6 +8,9 @@
 	-webkit-user-drag: element;
 }
 
+#order {
+	display: none;
+}
 
 #order ul {
 	list-style-type: none;
@@ -59,29 +62,24 @@
 	}
 }
 
-.item-size1
+.grid-item-size-1
 {
 	grid-column: span 1;
 }
 
-.item-size2
+.grid-item-size-2
 {
 	grid-column: span 2;
 }
 
-.item-size3
+.grid-item-size-3
 {
 	grid-column: span 3;
 }
 
-.item-size4
+.grid-item-size-4
 {
 	grid-column: span 4;
 }
 
-/** order **/
-#grid > div:nth-child(1) {order: 4;}
-#grid > div:nth-child(2) {order: 8;}
-#grid > div:nth-child(3) {order: 16;}
-#grid > div:nth-child(4) {order: 12;}
 #order li:last-child{border: 1px solid transparent;}
