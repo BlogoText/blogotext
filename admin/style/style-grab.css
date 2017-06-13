@@ -1,0 +1,85 @@
+[draggable] {
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    /* Required to make elements draggable in old WebKit */
+    -khtml-user-drag: element;
+    -webkit-user-drag: element;
+}
+
+#order {
+    display: none;
+}
+
+#order ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#order li {
+    max-width: 180px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    text-align: center;
+    cursor: move;
+    border: 1px solid silver;
+    border-radius: 2px;
+    margin:0 0 5px 0;
+}
+
+#order li.dragElem {
+    opacity: 0.4;
+}
+
+#order li.over {
+    border-top: 2px solid blue !important;
+}
+
+#grid {
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 1em;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-column-gap: 20px;
+    grid-row-gap: 20px;
+}
+
+@media (max-width: 720px) {
+    #grid
+    {
+        grid-auto-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    #grid
+    {
+        grid-auto-columns: repeat(1, 1fr);
+    }
+}
+
+.grid-item-size-1
+{
+    grid-column: span 1;
+}
+
+.grid-item-size-2
+{
+    grid-column: span 2;
+}
+
+.grid-item-size-3
+{
+    grid-column: span 3;
+}
+
+.grid-item-size-4
+{
+    grid-column: span 4;
+}
+
+#order li:last-child{border: 1px solid transparent;}
