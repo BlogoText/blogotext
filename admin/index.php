@@ -13,10 +13,10 @@
 
 require_once 'inc/boot.php';
 
+/*
+** Scale numeric values based on $maximum.
+*/
 
-/**
- * Scale numeric values based on $maximum.
- */
 function scaled_size($arr, $maximum)
 {
     $return = array();
@@ -35,10 +35,11 @@ function scaled_size($arr, $maximum)
     return $return;
 }
 
-/**
- * Count the number of items into the DTB for the Nth last months.
- * Return an associated array: YYYYMM => number
- */
+/*
+** Count the number of items into the DTB for the Nth last months.
+** Return an associated array: YYYYMM => number
+*/
+
 function get_tableau_date($dataType)
 {
     $showMin = 12;  // (int) minimal number of months to show
@@ -52,11 +53,11 @@ function get_tableau_date($dataType)
     $btDate = ($dataType == 'articles') ? 'bt_date' : 'bt_id';
 
     $sql = '
-        SELECT substr('.$btDate.', 1, 6) AS date, count(*) AS idbydate
-          FROM '.$dataType.'
-         WHERE '.$btDate.' BETWEEN '.$min.' AND '.$max.'
-         GROUP BY date
-         ORDER BY date';
+    SELECT substr('.$btDate.', 1, 6) AS date, count(*) AS idbydate
+    FROM '.$dataType.'
+    WHERE '.$btDate.' BETWEEN '.$min.' AND '.$max.'
+    GROUP BY date
+    ORDER BY date';
 
     $req = $GLOBALS['db_handle']->prepare($sql);
     $req->execute();
@@ -80,9 +81,10 @@ function get_tableau_date($dataType)
     return $tableMonths;
 }
 
-/**
- * Display one graphic.
- */
+/*
+** Display one graphic.
+*/
+
 function display_graph($arr, $title, $cls)
 {
     $txt = '<div class="graph">';
@@ -102,10 +104,31 @@ function display_graph($arr, $title, $cls)
     echo $txt;
 }
 
+/*
+** Display test buttons
+*/
 
-/**
- * Process
- */
+function display_test_buttons()
+{
+    $txt = '<div id="order">';
+    $txt .= '<ul>';
+    $txt .= '   <li data-id="post" draggable="true">Articles</li>';
+    $txt .= '   <li data-id="comment" draggable="true">Commentaires</li>';
+    $txt .= '   <li data-id="links" draggable="true">Liens</li>';
+    $txt .= '   <li></li>';
+    $txt .= '</ul>';
+    $txt .= '<p><button id="setOrder" onClick="changeOrder()">Apply</button></p>';
+    $txt .= '</div>';
+    $txt .= '<p>';
+    $txt .= '<button id="displayOrderChanger" onClick="displayOrderChanger()">Changer ordre</button>';
+    $txt .= '</p>';
+
+    echo $txt;
+}
+
+/*
+** Process
+*/
 
 $query = (string)filter_input(INPUT_GET, 'q');
 if ($query) {
@@ -128,19 +151,18 @@ if ($query) {
     $comments = array_reverse($comments);
 }
 
-
-/**
- * echo
- */
+/*
+** echo
+*/
 
 echo tpl_get_html_head($GLOBALS['lang']['label_resume']);
 
 echo '<div id="header">';
-    echo '<div id="top">';
-        tpl_show_msg();
-        echo moteur_recherche();
-        echo tpl_show_topnav($GLOBALS['lang']['label_resume']);
-    echo '</div>';
+echo '<div id="top">';
+tpl_show_msg();
+echo moteur_recherche();
+echo tpl_show_topnav($GLOBALS['lang']['label_resume']);
+echo '</div>';
 echo '</div>';
 
 echo '<div id="axe">';
@@ -152,41 +174,51 @@ if ($query) {
     echo '<div class="graph">';
     echo '<div class="form-legend">'.$GLOBALS['lang']['recherche'].'  <span style="font-style: italic">'.$query.'</span></div>';
     echo '<ul id="resultat-recherche">';
-        echo '<li><a href="articles.php?q='.$query.'">'.nombre_objets($numberOfPosts, 'article').'</a></li>';
-        echo '<li><a href="links.php?q='.$query.'">'.nombre_objets($numberOfLinks, 'link').'</a></li>';
-        echo '<li><a href="commentaires.php?q='.$query.'">'.nombre_objets($numberOfComments, 'commentaire').'</a></li>';
-        echo '<li><a href="fichiers.php?q='.$query.'">'.nombre_objets($numberOfFiles, 'fichier').'</a></li>';
-        echo '<li><a href="feed.php?q='.$query.'">'.nombre_objets($numberOfFeeds, 'feed_entry').'</a></li>';
+    echo '<li><a href="articles.php?q='.$query.'">'.nombre_objets($numberOfPosts, 'article').'</a></li>';
+    echo '<li><a href="links.php?q='.$query.'">'.nombre_objets($numberOfLinks, 'link').'</a></li>';
+    echo '<li><a href="commentaires.php?q='.$query.'">'.nombre_objets($numberOfComments, 'commentaire').'</a></li>';
+    echo '<li><a href="fichiers.php?q='.$query.'">'.nombre_objets($numberOfFiles, 'fichier').'</a></li>';
+    echo '<li><a href="feed.php?q='.$query.'">'.nombre_objets($numberOfFeeds, 'feed_entry').'</a></li>';
     echo '</ul>';
     echo '</div>';
 } else {
     // Main Dashboard
+    echo '<div id="grid">';
     if ($numberOfPosts) {
+        echo '<div id="post" class="grid-item grid-item-size-2">';
         display_graph($posts, $GLOBALS['lang']['label_articles'], 'posts');
+        echo '</div>';
     }
     if ($numberOfComments) {
+        echo '<div id="comment" class="grid-item grid-item-size-4">';
         display_graph($comments, $GLOBALS['lang']['label_commentaires'], 'comments');
+        echo '</div>';
     }
     if ($numberOfLinks) {
+        echo '<div id="links" class="grid-item grid-item-size-4">';
         display_graph($links, $GLOBALS['lang']['label_links'], 'links');
+        echo '</div>';
     }
     if (!max($numberOfPosts, $numberOfComments, $numberOfLinks)) {
         echo info($GLOBALS['lang']['note_no_article']);
     }
+    echo '</div>';
+    display_test_buttons();
 }
 
 echo '</div>';
 echo <<<EOS
 <script src="style/javascript.js"></script>
+<script src="style/grabFunctions.js"></script>
 <script>
     var containers = document.querySelectorAll(".graph-container"),
-        month_min_width = 40; // in px
+    month_min_width = 40; // in px
     function indexGraphStat()
     {
         for (var i = 0, clen = containers.length; i < clen; i += 1) {
             var months = containers[i].querySelectorAll('.month'),
-                months_ct = months.length,
-                month_to_show = containers[i].clientWidth / month_min_width;
+            months_ct = months.length,
+            month_to_show = containers[i].clientWidth / month_min_width;
             if (month_to_show > months_ct) {
                 month_to_show = months_ct;
             }
