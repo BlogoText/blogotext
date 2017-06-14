@@ -75,10 +75,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
     [].forEach.call(cols, addDnDHandlers);
 });
 
-/*
-** Set graphs order
-*/
-
+/**
+ * Set graphs order
+ */
 function changeOrder()
 {
     var cols = document.querySelectorAll('#order li');
@@ -87,14 +86,12 @@ function changeOrder()
         var c = document.getElementById(col.dataset.id);
         c.style.order = i*4;
         ++i;
-    }
-    );
+    });
 }
 
-/*
-** Print or hind the grab / swipe buttons at the bottom of the page
-*/
-
+/**
+ * Print or hind the grab / swipe buttons at the bottom of the page
+ */
 function displayOrderChanger()
 {
     var div = document.getElementById("order");
