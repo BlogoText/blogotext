@@ -224,4 +224,51 @@ echo <<<EOS
 </script>
 EOS;
 
+
+/**
+ * exemple de boutons, supprime cette partie dès que tu as le truc en main
+ * ce n'est pas la derniére mouture, j'ai une version plus avancée, mais elle est pas opé et non debug
+ * mais tu as l'idée générale
+ * essaye de ne pas modifier/créer les css des bouttons, histoire que ça reste uniforme
+ * Enjoy !
+ */
+?>
+<p class="btn-container">
+    <button class="btn btn-dense">Example dense default</button>
+</p>
+<p>
+    <button class="btn btn-dense">Example default</button>
+    <button class="btn btn-blue">Example default</button>
+    <button class="btn btn-green">Example default</button>
+    <button class="btn btn-orange">Example default</button>
+    <button class="btn btn-red">Example default</button>
+</p>
+
+<p>
+    <button class="btn">Example default</button>
+    <button class="btn btn-blue">Example default</button>
+    <button class="btn btn-green">Example default</button>
+    <button class="btn btn-orange">Example default</button>
+    <button class="btn btn-red">Example default</button>
+</p>
+
+
+<p>
+    <button class="btn btn-dense">Example default</button>
+    <button class="btn btn-dense btn-blue">Example default</button>
+    <button class="btn btn-dense btn-green">Example default</button>
+    <button class="btn btn-dense btn-orange">Example default</button>
+    <button class="btn btn-dense btn-red">Example default</button>
+</p>
+
+<p>
+    <button class="btn btn-large">Example default</button>
+    <button class="btn btn-large btn-blue">Example default</button>
+    <button class="btn btn-large btn-green">Example default</button>
+    <button class="btn btn-large btn-orange">Example default</button>
+    <button class="btn btn-large btn-red">Example default</button>
+</p>
+
+<?php
+//fin de l'exemple
 echo tpl_get_footer($begin);
