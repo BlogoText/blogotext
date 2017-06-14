@@ -13,10 +13,9 @@
 
 require_once 'inc/boot.php';
 
-/*
-** Scale numeric values based on $maximum.
-*/
-
+/**
+ * Scale numeric values based on $maximum.
+ */
 function scaled_size($arr, $maximum)
 {
     $return = array();
@@ -35,11 +34,10 @@ function scaled_size($arr, $maximum)
     return $return;
 }
 
-/*
-** Count the number of items into the DTB for the Nth last months.
-** Return an associated array: YYYYMM => number
-*/
-
+/**
+ * Count the number of items into the DTB for the Nth last months.
+ * Return an associated array: YYYYMM => number
+ */
 function get_tableau_date($dataType)
 {
     $showMin = 12;  // (int) minimal number of months to show
@@ -53,11 +51,11 @@ function get_tableau_date($dataType)
     $btDate = ($dataType == 'articles') ? 'bt_date' : 'bt_id';
 
     $sql = '
-    SELECT substr('.$btDate.', 1, 6) AS date, count(*) AS idbydate
-    FROM '.$dataType.'
-    WHERE '.$btDate.' BETWEEN '.$min.' AND '.$max.'
-    GROUP BY date
-    ORDER BY date';
+        SELECT substr('.$btDate.', 1, 6) AS date, count(*) AS idbydate
+         FROM '.$dataType.'
+        WHERE '.$btDate.' BETWEEN '.$min.' AND '.$max.'
+        GROUP BY date
+        ORDER BY date';
 
     $req = $GLOBALS['db_handle']->prepare($sql);
     $req->execute();
@@ -81,10 +79,9 @@ function get_tableau_date($dataType)
     return $tableMonths;
 }
 
-/*
-** Display one graphic.
-*/
-
+/**
+ * Display one graphic.
+ */
 function display_graph($arr, $title, $cls)
 {
     $txt = '<div class="graph">';
@@ -101,35 +98,12 @@ function display_graph($arr, $title, $cls)
     $txt .= '</div>';
     $txt .= '</div>';
 
-    echo $txt;
+    return $txt;
 }
 
-/*
-** Display test buttons
-*/
-
-function display_test_buttons()
-{
-    $txt = '<div id="order">';
-    $txt .= '<ul>';
-    $txt .= '   <li data-id="post" draggable="true">Articles</li>';
-    $txt .= '   <li data-id="comment" draggable="true">Commentaires</li>';
-    $txt .= '   <li data-id="links" draggable="true">Liens</li>';
-    $txt .= '   <li></li>';
-    $txt .= '</ul>';
-    $txt .= '<p><button id="setOrder" onClick="changeOrder()">Apply</button></p>';
-    $txt .= '</div>';
-    $txt .= '<p>';
-    $txt .= '<button id="displayOrderChanger" onClick="displayOrderChanger()">Changer ordre</button>';
-    $txt .= '</p>';
-
-    echo $txt;
-}
-
-/*
-** Process
-*/
-
+/**
+ * Process
+ */
 $query = (string)filter_input(INPUT_GET, 'q');
 if ($query) {
     $query = htmlspecialchars($query);
@@ -151,9 +125,9 @@ if ($query) {
     $comments = array_reverse($comments);
 }
 
-/*
-** echo
-*/
+/**
+ * echo
+ */
 
 echo tpl_get_html_head($GLOBALS['lang']['label_resume']);
 
@@ -183,27 +157,43 @@ if ($query) {
     echo '</div>';
 } else {
     // Main Dashboard
+    $order_list = '';
     echo '<div id="grid">';
     if ($numberOfPosts) {
+        $order_list .= '<li data-id="post" draggable="true">'. $GLOBALS['lang']['label_articles'] .'</li>';
         echo '<div id="post" class="grid-item grid-item-size-2">';
-        display_graph($posts, $GLOBALS['lang']['label_articles'], 'posts');
+        echo display_graph($posts, $GLOBALS['lang']['label_articles'], 'posts');
         echo '</div>';
     }
     if ($numberOfComments) {
+        $order_list .= '<li data-id="comment" draggable="true">'. $GLOBALS['lang']['label_commentaires'] .'</li>';
         echo '<div id="comment" class="grid-item grid-item-size-4">';
-        display_graph($comments, $GLOBALS['lang']['label_commentaires'], 'comments');
+        echo display_graph($comments, $GLOBALS['lang']['label_commentaires'], 'comments');
         echo '</div>';
     }
     if ($numberOfLinks) {
+        $order_list .= '<li data-id="links" draggable="true">'. $GLOBALS['lang']['label_links'] .'</li>';
         echo '<div id="links" class="grid-item grid-item-size-4">';
-        display_graph($links, $GLOBALS['lang']['label_links'], 'links');
+        echo display_graph($links, $GLOBALS['lang']['label_links'], 'links');
         echo '</div>';
     }
     if (!max($numberOfPosts, $numberOfComments, $numberOfLinks)) {
         echo info($GLOBALS['lang']['note_no_article']);
     }
     echo '</div>';
-    display_test_buttons();
+
+    // show grid order list
+    if (!empty($order_list)) {
+        echo '<div id="order">';
+        echo '<ul>';
+        echo $order_list;
+        echo '</ul>';
+        echo '<p><button id="setOrder" onClick="changeOrder()">Apply</button></p>';
+        echo '</div>';
+        echo '<p>';
+        echo '<button id="displayOrderChanger" onClick="displayOrderChanger()">Changer ordre</button>';
+        echo '</p>';
+    }
 }
 
 echo '</div>';
