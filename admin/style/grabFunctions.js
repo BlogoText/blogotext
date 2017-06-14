@@ -98,5 +98,13 @@ function changeOrder()
 function displayOrderChanger()
 {
     var div = document.getElementById("order");
+    var el = document.getElementById("displayOrderChanger");
+
     div.style.display = (div.style.display == "block") ? 'none' : 'block';
+    if (div.style.display == block)
+    {
+        el.innerHTML = "Fermer le menu";
+    }
+    else
+        el.innerHTML = "Ouvrir le menu";
 }
