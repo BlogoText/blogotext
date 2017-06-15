@@ -83,10 +83,14 @@ function changeOrder()
     var cols = document.querySelectorAll('#order li');
     var i = 1;
     [].forEach.call(cols, function (col) {
+        if (col.dataset.id == undefined) {
+            return;
+        }
         var c = document.getElementById(col.dataset.id);
         c.style.order = i*4;
         ++i;
     });
+
 }
 
 /**
@@ -97,10 +101,11 @@ function displayOrderChanger(open, close)
     var div = document.getElementById("order");
     var el = document.getElementById("displayOrderChanger");
 
-    div.style.display = (div.style.display == "block") ? 'none' : 'block';
     if (div.style.display == 'block') {
         el.innerHTML = open;
+        div.style.display = 'none';
     } else {
         el.innerHTML = close;
+        div.style.display = 'block';
     }
 }
