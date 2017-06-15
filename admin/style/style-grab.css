@@ -47,7 +47,7 @@
 
 #grabOrder li:last-child{border: 1px solid transparent;}
 
-#grid {
+#grabGrid {
     width: 100%;
     max-width: 1600px;
     margin: 0 auto;
@@ -60,35 +60,35 @@
 }
 
 @media (max-width: 720px) {
-    #grid
+    #grabGrid
     {
         grid-auto-columns: repeat(2, 1fr);
     }
 }
 
 @media (max-width: 640px) {
-    #grid
+    #grabGrid
     {
         grid-auto-columns: repeat(1, 1fr);
     }
 }
 
-.grid-item-size-1
+.grabGrid-item-size-1
 {
     grid-column: span 1;
 }
 
-.grid-item-size-2
+.grabGrid-item-size-2
 {
     grid-column: span 2;
 }
 
-.grid-item-size-3
+.grabGrid-item-size-3
 {
     grid-column: span 3;
 }
 
-.grid-item-size-4
+.grabGrid-item-size-4
 {
     grid-column: span 4;
 }

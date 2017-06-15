@@ -52,7 +52,7 @@ function get_tableau_date($dataType)
 
     $sql = '
         SELECT substr('.$btDate.', 1, 6) AS date, count(*) AS idbydate
-         FROM '.$dataType.'
+        FROM '.$dataType.'
         WHERE '.$btDate.' BETWEEN '.$min.' AND '.$max.'
         GROUP BY date
         ORDER BY date';
@@ -158,22 +158,22 @@ if ($query) {
 } else {
     // Main Dashboard
     $order_list = '';
-    echo '<div id="grid">';
+    echo '<div id="grabGrid">';
     if ($numberOfPosts) {
         $order_list .= '<li data-id="post" draggable="true">'. ucfirst($GLOBALS['lang']['label_articles']) .'</li>';
-        echo '<div id="post" class="grid-item grid-item-size-2">';
+        echo '<div id="post" class="grabGrid-item grabGrid-item-size-2">';
         echo display_graph($posts, $GLOBALS['lang']['label_articles'], 'posts');
         echo '</div>';
     }
     if ($numberOfComments) {
         $order_list .= '<li data-id="comment" draggable="true">'. ucfirst($GLOBALS['lang']['label_commentaires']) .'</li>';
-        echo '<div id="comment" class="grid-item grid-item-size-4">';
+        echo '<div id="comment" class="grabGrid-item grabGrid-item-size-4">';
         echo display_graph($comments, $GLOBALS['lang']['label_commentaires'], 'comments');
         echo '</div>';
     }
     if ($numberOfLinks) {
         $order_list .= '<li data-id="links" draggable="true">'. ucfirst($GLOBALS['lang']['label_links']) .'</li>';
-        echo '<div id="links" class="grid-item grid-item-size-4">';
+        echo '<div id="links" class="grabGrid-item grabGrid-item-size-4">';
         echo display_graph($links, $GLOBALS['lang']['label_links'], 'links');
         echo '</div>';
     }
