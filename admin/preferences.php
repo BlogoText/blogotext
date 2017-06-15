@@ -155,9 +155,8 @@ function list_themes($path)
 {
     if ($handler = opendir($path)) {
         while ($folders = readdir($handler)) {
-            if (is_file($path.'/'.$folders.'/list.html')) {
+            if (is_dir($path.'/'.$folders) && is_file($path.'/'.$folders.'/list.html'))
                 $themes[$folders] = $folders;
-            }
         }
         closedir($handler);
     }
