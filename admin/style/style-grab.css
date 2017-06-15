@@ -28,7 +28,7 @@
     cursor: move;
     border: 1px solid silver;
     border-radius: 2px;
-    margin:0 0 5px 0;
+    margin:1px 0 6px 0;
     background-color:#FFFFFF;
     color:#595859;
 }
@@ -41,8 +41,13 @@
     opacity: 0.4;
 }
 
+#grabOrder li.previous {
+    border-bottom: 2px solid blue !important;
+    margin:0px 0 5px 0;
+}
 #grabOrder li.over {
     border-top: 2px solid blue !important;
+    margin:0px 0 5px 0;
 }
 
 #grabOrder li:last-child{border: 1px solid transparent;}
