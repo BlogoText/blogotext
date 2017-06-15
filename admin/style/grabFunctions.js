@@ -92,15 +92,15 @@ function changeOrder()
 /**
  * Print or hind the grab / swipe buttons at the bottom of the page
  */
-function displayOrderChanger()
+function displayOrderChanger(open, close)
 {
     var div = document.getElementById("order");
     var el = document.getElementById("displayOrderChanger");
 
     div.style.display = (div.style.display == "block") ? 'none' : 'block';
-    if (div.style.display == block) {
-        el.innerHTML = "Fermer le menu";
+    if (div.style.display == 'block') {
+        el.innerHTML = open;
     } else {
-        el.innerHTML = "Ouvrir le menu";
+        el.innerHTML = close;
     }
 }

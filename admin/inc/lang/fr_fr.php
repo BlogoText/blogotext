@@ -498,4 +498,9 @@ $GLOBALS['lang'] = array(
 
 'derniere_connexion_le' => 'Dernière connexion depuis',
 'cet_ordi' => 'cet ordinateur',
+
+// Grab menu
+'grab_menu_open' => 'Ouvrir le menu',
+'grab_menu_close' => 'Fermer le menu',
+'apply' => 'Appliquer',
 );

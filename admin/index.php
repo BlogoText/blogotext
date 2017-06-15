@@ -190,11 +190,11 @@ if ($query) {
         echo $order_list;
         echo '</ul>';
         // bon ... théoriquement, le rouge, c'est pour la suppression, le danger ... genre les feux rouge, les sens interdits ...
-        echo '<p><button id="setOrder" class="btn btn-dense btn-red" onClick="changeOrder()">Apply</button></p>';
+        echo '<p><button id="setOrder" class="btn btn-dense btn-red" onClick="changeOrder()">'. $GLOBALS['lang']['apply'] .'</button></p>';
         echo '</div>';
         echo '<p>';
         // bon ... théoriquement, le rouge, c'est pour la suppression, le danger ... genre les feux rouge, les sens interdits ...
-        echo '<button id="displayOrderChanger" class="btn btn-red" onClick="displayOrderChanger()">Changer ordre</button>';
+        echo '<button id="displayOrderChanger" class="btn btn-red" onClick="displayOrderChanger(\''. $GLOBALS['lang']['grab_menu_close'] .'\',\''. $GLOBALS['lang']['grab_menu_open'] .'\')">'. $GLOBALS['lang']['grab_menu_open'] .'</button>';
         echo '</p>';
     }
 }
@@ -202,7 +202,8 @@ if ($query) {
 echo '</div>';
 echo <<<EOS
 <script src="style/javascript.js"></script>
-<script src="style/grabFunctions.js"></script>
+<!--
+<script src="style/grabFunctions.js"></script> -->
 <script>
     var containers = document.querySelectorAll(".graph-container"),
     month_min_width = 40; // in px
@@ -226,6 +227,7 @@ echo <<<EOS
     indexGraphStat();
 </script>
 EOS;
+echo '<script src="style/grabFunctions.js?'.rand().'"></script>';
 
 
 /**
