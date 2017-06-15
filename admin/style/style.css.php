@@ -57,8 +57,8 @@ readfile('style-mobile-lt850px.css');
 echo '/* Media-queries < 700px */'."\n";
 readfile('style-mobile-lt700px.css');
 
--echo '/* Grab related */'."\n";
--readfile('style-grab.css');
+echo '/* Grab related */'."\n";
+readfile('style-grab.css');
 
 if (is_file('../../config/custom-styles.css')) {
     echo '/* User-Custom CSS */'."\n";
