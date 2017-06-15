@@ -242,11 +242,8 @@ if (filter_input(INPUT_POST, 'verif_envoi') !== null) {
 $tableau = array();
 
 // Show N items per page
-$page = (int)filter_input(INPUT_GET, 'p');
-if ($page < 0) {
-    $page = 0;
-}
-$sqlLimit = $GLOBALS['max_rss_admin'].' OFFSET '.($page * $GLOBALS['max_rss_admin']);
+$page = filter_input(INPUT_GET, 'p');
+$sqlLimit = $GLOBALS['max_rss_admin'];
 
 $arr = array();
 
@@ -255,20 +252,32 @@ $site = (string)filter_input(INPUT_GET, 'site');
 $fold = (string)filter_input(INPUT_GET, 'fold');
 $bookmarked = (filter_input(INPUT_GET, 'bookmarked') !== null);
 $query = (string)filter_input(INPUT_GET, 'q');
+$item = filter_input(INPUT_GET, 'item');
 $sqlWhere = '';
 $paramUrl = '';
 
 
+if (is_numeric($page)) {
+    if ($page < 0) {
+        $page = 0;
+    }
+    $sqlLimit .= ' OFFSET '.($page * $GLOBALS['max_rss_admin']);
+} else if ($page == 'previous') {
+    $sqlWhere .= 'ID < '.$item;
+} else if ($page == 'next') {
+    $sqlWhere .= 'ID > '.$item;
+} 
+
 if ($site) {
-    $sqlWhere = 'bt_feed LIKE ?';
+    $sqlWhere .= 'bt_feed LIKE ?';
     $arr[] = '%'.$site.'%';
     $paramUrl = 'site='.$site.'&';
 } elseif ($fold) {
-    $sqlWhere = 'bt_folder LIKE ?';
+    $sqlWhere .= 'bt_folder LIKE ?';
     $arr[] = '%'.$fold.'%';
     $paramUrl = 'fold='.$fold.'&';
 } elseif ($bookmarked) {
-    $sqlWhere = 'bt_bookmarked = 1';
+    $sqlWhere .= 'bt_bookmarked = 1';
     $paramUrl = 'bookmarked&';
 }
 
@@ -324,7 +333,6 @@ if ($query) {
 $tableau = liste_elements($sql, $arr, 'rss');
 
 
-
 /**
  * echo
  */
@@ -334,6 +342,7 @@ echo tpl_get_html_head($GLOBALS['lang']['mesabonnements']);
 echo '<div id="header">';
     echo '<div id="top">';
         tpl_show_msg();
+
         echo moteur_recherche();
         echo tpl_show_topnav($GLOBALS['lang']['mesabonnements']);
     echo '</div>';
@@ -364,6 +373,9 @@ if ($config !== null) {
 } else {
     // Get list of posts from DB
     $out = send_rss_json($tableau);
+    $first_item = isset($tableau['0']) ? $tableau['0']['ID'] : '';
+    $last_item = end($tableau);
+
     $out .= '<div id="rss-list">';
     $out .= '<div id="posts-wrapper">';
     $out .= '<ul id="feed-list">';
@@ -389,11 +401,14 @@ if ($config !== null) {
     $out .= '<li><button type="button" onclick="openAllItems(this);" id="openallitemsbutton" title="'.$GLOBALS['lang']['rss_label_unfoldall'].'"></button></li>';
 
     // Navigation: previous/next pages
-    if ($page >= 1) {
-        $out .= '<li><button type="button" id="prev_feeds" onclick="location.href=\'feed.php?'.$paramUrl.'p='.($page - 1).'\'"></button></li>';
+
+    if (isset($_GET['p'])) {
+        $out .= '<li><button type="button" id="prev_feeds" onclick="location.href=\'feed.php?'.$paramUrl.'p=previous&amp;item='.$first_item.'\'"></button></li>';
+
     }
-    if ($page >= 0 && count($tableau) == $GLOBALS['max_rss_admin']) {
-        $out .= '<li><button type="button" id="next_feeds" onclick="location.href=\'feed.php?'.$paramUrl.'p='.($page + 1).'\'"></button></li>';
+    if (count($tableau) == $GLOBALS['max_rss_admin']) {
+        $out .= '<li><button type="button" id="next_feeds" onclick="location.href=\'feed.php?'.$paramUrl.'p=next&amp;item='.$last_item['ID'].'\'"></button></li>';
+
     }
 
     $out .= '</ul>';
