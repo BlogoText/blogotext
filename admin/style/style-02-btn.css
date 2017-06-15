@@ -9,9 +9,7 @@ button {
     border-radius: 0;
 }
 
-/**
- * input buttons
- */
+/* input buttons */
 .btn-container{
     text-align: right;
     margin: 20px auto 5px;
@@ -40,118 +38,83 @@ button {
     display:inline-block;
     margin:2px 4px;
 }
-
 .btn-dense{
     font-size:0.9rem;
     padding:4px 8px;
 }
-
 .btn-dense.btn-icon{
     width:30px;
     height:30px;
 }
-
 .btn-dense.btn-icon::before{
     width:30px;
     /* dirty fix ...*/
     margin-left: -8px;
     margin-top: -4px;
 }
-
 .btn-large{
     font-size:1.1rem;
     padding:0 22px;
 }
-
 .btn-float{
     border-radius:50%;
     height:60px;
     width:60px;
     line-height:60px;
 }
-
 .btn-float.btn-dense{
     height:50px;
     width:50px;
     line-height:50px;
 }
-
 .btn-float.btn-large{
     height:70px;
     width:70px;
     line-height:70px;
 }
-
 .btn-cancel,.btn-flat{
     color:rgba(0, 0, 0, 0.5);
 }
-
 .btn:hover,.btn:focus{
     background-color:#616161;
     color:#616161;
 }
-
 .btn-submit, .btn-blue{
     background-color:#2196F3;
     color:#2196F3;
 }
-
-/**
- * for information and form submit
- */
+/* for information and form submit */
 .btn-submit:hover,.btn-submit:focus,
 .btn-blue:hover,.btn-blue:focus{
     background-color:#1976D2;
     color:#1976D2;
 }
-
-/**
- * validate a "positive action"
- */
+/* validate a "positive action" */
 .btn-green{
     background-color:#4CAF50;
     color:#4CAF50;
 }
-
 .btn-green:hover,.btn-green:focus{
     background-color:#388E3C;
     color:#388E3C;
 }
-
-/**
- * warning
- */
+/* warning */
 .btn-orange{
     background-color:#FF9800;
     color:#FF9800;
 }
-
 .btn-orange:hover,.btn-orange:focus{
     background-color:#F57C00;
     color:#F57C00;
 }
-
-/**
- * error, delete
- */
+/* error, delete */
 .btn-red{
     background-color:#F44336;
     color:#F44336;
 }
-
 .btn-red:hover,.btn-red:focus{
     background-color:#D32F2F;
     color:#D32F2F;
-}
-
-.btn-white{
-    background-color:#FFFFFF;
-    color:#000000;
-}
-
-.btn-white:hover,.btn-white:focus{
-    background-color:#E8E8E8;
-    color:#000000;
 }
 
 .btn:not(.btn-flat):after {
@@ -167,16 +130,11 @@ button {
     transform: scale(1, 1) translate(-50%);
 }
 
-/**
- * for mouse focus
- */
+/* for mouse focus */
 .btn:focus:hover::after {
     animation: md-ripple 1s ease-out;
 }
-
-/**
- * for keyboard focus
- */
+/* for keyboard focus */
 .btn:focus:not(:hover)::after {
     background: rgba(255, 255, 255, .3);
     transform: scale(1, 1);
@@ -184,31 +142,25 @@ button {
     opacity: 1;
 }
 
-/**
- * btn links
- */
+/* btn links */
 .btn:not(.btn-flat):not(.btn-cancel){
     color:white;
 }
-
 .btn-cancel,.btn-cancel:hover,.btn-cancel:focus,
 .btn-flat,.btn-flat:hover,.btn-flat:focus{
     box-shadow:none;
     background-color:transparent;
 }
-
 .btn-cancel:hover,.btn-cancel:focus,
 .btn-flat:hover,.btn-flat:focus{
     background: rgba(0, 0, 0, .3);
     color:white;
 }
-
 .btn-cancel:active,.btn-cancel.active,
 .btn-flat:active,.btn-flat.active{
     background: rgba(0, 0, 0, .6);
     color:white;
 }
-
 .btn .txt-caption{
     color:rgba(255, 255, 255, 0.8);
 }

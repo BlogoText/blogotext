@@ -83,3 +83,13 @@
 }
 
 #order li:last-child{border: 1px solid transparent;}
+
+.item-order-white{
+    background-color:#FFFFFF;
+    color:#595859;
+}
+
+.item-order-white:hover,.item-order-white:focus{
+    background-color:#E8E8E8;
+    color:#595859;
+}

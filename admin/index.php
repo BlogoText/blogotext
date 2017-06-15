@@ -160,19 +160,19 @@ if ($query) {
     $order_list = '';
     echo '<div id="grid">';
     if ($numberOfPosts) {
-        $order_list .= '<li data-id="post" class="btn-white" draggable="true">'. ucfirst($GLOBALS['lang']['label_articles']) .'</li>';
+        $order_list .= '<li data-id="post" class="item-order-white" draggable="true">'. ucfirst($GLOBALS['lang']['label_articles']) .'</li>';
         echo '<div id="post" class="grid-item grid-item-size-2">';
         echo display_graph($posts, $GLOBALS['lang']['label_articles'], 'posts');
         echo '</div>';
     }
     if ($numberOfComments) {
-        $order_list .= '<li data-id="comment" class="btn-white" draggable="true">'. ucfirst($GLOBALS['lang']['label_commentaires']) .'</li>';
+        $order_list .= '<li data-id="comment" class="item-order-white" draggable="true">'. ucfirst($GLOBALS['lang']['label_commentaires']) .'</li>';
         echo '<div id="comment" class="grid-item grid-item-size-4">';
         echo display_graph($comments, $GLOBALS['lang']['label_commentaires'], 'comments');
         echo '</div>';
     }
     if ($numberOfLinks) {
-        $order_list .= '<li data-id="links" class="btn-white" draggable="true">'. ucfirst($GLOBALS['lang']['label_links']) .'</li>';
+        $order_list .= '<li data-id="links" class="item-order-white" draggable="true">'. ucfirst($GLOBALS['lang']['label_links']) .'</li>';
         echo '<div id="links" class="grid-item grid-item-size-4">';
         echo display_graph($links, $GLOBALS['lang']['label_links'], 'links');
         echo '</div>';
