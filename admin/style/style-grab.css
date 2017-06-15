@@ -17,6 +17,9 @@
     padding: 0;
 }
 
+.item-order-white{
+}
+
 #order li {
     max-width: 180px;
     padding-bottom: 5px;
@@ -26,6 +29,12 @@
     border: 1px solid silver;
     border-radius: 2px;
     margin:0 0 5px 0;
+    background-color:#FFFFFF;
+    color:#595859;
+}
+#order li:hover, #order li:focus{
+    background-color:#E8E8E8;
+    color:#595859;
 }
 
 #order li.dragElem {
@@ -35,6 +44,8 @@
 #order li.over {
     border-top: 2px solid blue !important;
 }
+
+#order li:last-child{border: 1px solid transparent;}
 
 #grid {
     width: 100%;
@@ -80,16 +91,4 @@
 .grid-item-size-4
 {
     grid-column: span 4;
-}
-
-#order li:last-child{border: 1px solid transparent;}
-
-.item-order-white{
-    background-color:#FFFFFF;
-    color:#595859;
-}
-
-.item-order-white:hover,.item-order-white:focus{
-    background-color:#E8E8E8;
-    color:#595859;
 }
