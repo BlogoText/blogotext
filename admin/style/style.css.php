@@ -15,6 +15,9 @@ header('Content-type: text/css; charset: UTF-8');
 echo '/* General styles (layout, forms, multi-pages elements…) */'."\n";
 readfile('style-style.css');
 
+echo '/* New btn > 3.8 */'."\n";
+readfile('style-02-btn.css');
+
 echo '/* Auth page */'."\n";
 readfile('style-auth.css');
 
@@ -54,8 +57,8 @@ readfile('style-mobile-lt850px.css');
 echo '/* Media-queries < 700px */'."\n";
 readfile('style-mobile-lt700px.css');
 
-echo '/* */'."\n";
-readfile('style-grab.css');
+-echo '/* Grab related */'."\n";
+-readfile('style-grab.css');
 
 if (is_file('../../config/custom-styles.css')) {
     echo '/* User-Custom CSS */'."\n";
