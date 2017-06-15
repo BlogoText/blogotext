@@ -21,6 +21,7 @@ function handleDragOver(e)
         e.preventDefault();
     }
     this.classList.add('over');
+    this.previousSibling.classList.add('previous');
     e.dataTransfer.dropEffect = 'move';
 
     return false;
@@ -37,6 +38,7 @@ function handleDragEnter(e)
 function handleDragLeave(e)
 {
     this.classList.remove('over')
+    this.previousSibling.classList.remove('previous');
 }
 
 function handleDrop(e)
@@ -52,12 +54,14 @@ function handleDrop(e)
         addDnDHandlers(dropElem);
     }
     this.classList.remove('over');
+    this.previousSibling.classList.remove('previous');
     return false;
 }
 
 function handleDragEnd(e)
 {
     this.classList.remove('over')
+    this.previousSibling.classList.remove('previous');
     this.classList.remove('dragElem');
 }
 
