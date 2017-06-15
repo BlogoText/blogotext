@@ -160,19 +160,19 @@ if ($query) {
     $order_list = '';
     echo '<div id="grid">';
     if ($numberOfPosts) {
-        $order_list .= '<li data-id="post" class="item-order-white" draggable="true">'. ucfirst($GLOBALS['lang']['label_articles']) .'</li>';
+        $order_list .= '<li data-id="post" draggable="true">'. ucfirst($GLOBALS['lang']['label_articles']) .'</li>';
         echo '<div id="post" class="grid-item grid-item-size-2">';
         echo display_graph($posts, $GLOBALS['lang']['label_articles'], 'posts');
         echo '</div>';
     }
     if ($numberOfComments) {
-        $order_list .= '<li data-id="comment" class="item-order-white" draggable="true">'. ucfirst($GLOBALS['lang']['label_commentaires']) .'</li>';
+        $order_list .= '<li data-id="comment" draggable="true">'. ucfirst($GLOBALS['lang']['label_commentaires']) .'</li>';
         echo '<div id="comment" class="grid-item grid-item-size-4">';
         echo display_graph($comments, $GLOBALS['lang']['label_commentaires'], 'comments');
         echo '</div>';
     }
     if ($numberOfLinks) {
-        $order_list .= '<li data-id="links" class="item-order-white" draggable="true">'. ucfirst($GLOBALS['lang']['label_links']) .'</li>';
+        $order_list .= '<li data-id="links" draggable="true">'. ucfirst($GLOBALS['lang']['label_links']) .'</li>';
         echo '<div id="links" class="grid-item grid-item-size-4">';
         echo display_graph($links, $GLOBALS['lang']['label_links'], 'links');
         echo '</div>';
@@ -189,9 +189,11 @@ if ($query) {
         echo '<ul>';
         echo $order_list;
         echo '</ul>';
+        // bon ... théoriquement, le rouge, c'est pour la suppression, le danger ... genre les feux rouge, les sens interdits ...
         echo '<p><button id="setOrder" class="btn btn-dense btn-red" onClick="changeOrder()">Apply</button></p>';
         echo '</div>';
         echo '<p>';
+        // bon ... théoriquement, le rouge, c'est pour la suppression, le danger ... genre les feux rouge, les sens interdits ...
         echo '<button id="displayOrderChanger" class="btn btn-red" onClick="displayOrderChanger()">Changer ordre</button>';
         echo '</p>';
     }
