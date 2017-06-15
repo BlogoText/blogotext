@@ -266,7 +266,7 @@ if (is_numeric($page)) {
     $sqlWhere .= 'ID < '.$item;
 } else if ($page == 'next') {
     $sqlWhere .= 'ID > '.$item;
-} 
+}
 
 if ($site) {
     $sqlWhere .= 'bt_feed LIKE ?';
@@ -404,11 +404,9 @@ if ($config !== null) {
 
     if (isset($_GET['p'])) {
         $out .= '<li><button type="button" id="prev_feeds" onclick="location.href=\'feed.php?'.$paramUrl.'p=previous&amp;item='.$first_item.'\'"></button></li>';
-
     }
     if (count($tableau) == $GLOBALS['max_rss_admin']) {
         $out .= '<li><button type="button" id="next_feeds" onclick="location.href=\'feed.php?'.$paramUrl.'p=next&amp;item='.$last_item['ID'].'\'"></button></li>';
-
     }
 
     $out .= '</ul>';
