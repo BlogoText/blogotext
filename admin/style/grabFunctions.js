@@ -8,34 +8,35 @@ var dragSrcEl = null;
 
 function handleDragStart(e)
 {
-      // Target (this) element is the source node.
-      dragSrcEl = this;
+    dragSrcEl = this;
 
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/html', this.outerHTML);
-      this.classList.add('dragElem');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', this.outerHTML);
+    this.classList.add('dragElem');
 }
 
 function handleDragOver(e)
 {
     if (e.preventDefault) {
-        e.preventDefault(); // Necessary. Allows us to drop.
+        e.preventDefault();
     }
     this.classList.add('over');
-      e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
+    e.dataTransfer.dropEffect = 'move';
 
-      return false;
+    return false;
 }
 
 function handleDragEnter(e)
 {
-    // this / e.target is the current hover target.
+    /**
+     * this / e.target is the current hover target.
+     */
 }
 
 
 function handleDragLeave(e)
 {
-    this.classList.remove('over');  // this / e.target is previous target element.
+    this.classList.remove('over')
 }
 
 function handleDrop(e)
@@ -71,16 +72,16 @@ function addDnDHandlers(elem)
 }
 
 document.addEventListener("DOMContentLoaded", function (event) {
-    var cols = document.querySelectorAll('#order li');
+    var cols = document.querySelectorAll('#grabOrder li');
     [].forEach.call(cols, addDnDHandlers);
 });
 
 /**
  * Set graphs order
  */
-function changeOrder()
+function dragChangeOrder()
 {
-    var cols = document.querySelectorAll('#order li');
+    var cols = document.querySelectorAll('#grabOrder li');
     var i = 1;
     [].forEach.call(cols, function (col) {
         if (col.dataset.id == undefined) {
@@ -96,10 +97,10 @@ function changeOrder()
 /**
  * Print or hind the grab / swipe buttons at the bottom of the page
  */
-function displayOrderChanger(open, close)
+function dragDisplayOrderChanger(open, close)
 {
-    var div = document.getElementById("order");
-    var el = document.getElementById("displayOrderChanger");
+    var div = document.getElementById("grabOrder");
+    var el = document.getElementById("grabDisplayOrderChanger");
 
     if (div.style.display == 'block') {
         el.innerHTML = open;

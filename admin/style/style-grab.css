@@ -8,11 +8,11 @@
     -webkit-user-drag: element;
 }
 
-#order {
+#grabOrder {
     display: none;
 }
 
-#order ul {
+#grabOrder ul {
     list-style-type: none;
     padding: 0;
 }
@@ -20,7 +20,7 @@
 .item-order-white{
 }
 
-#order li {
+#grabOrder li {
     max-width: 180px;
     padding-bottom: 5px;
     padding-top: 5px;
@@ -32,20 +32,20 @@
     background-color:#FFFFFF;
     color:#595859;
 }
-#order li:hover, #order li:focus{
+#grabOrder li:hover, #grabOrder li:focus{
     background-color:#E8E8E8;
     color:#595859;
 }
 
-#order li.dragElem {
+#grabOrder li.dragElem {
     opacity: 0.4;
 }
 
-#order li.over {
+#grabOrder li.over {
     border-top: 2px solid blue !important;
 }
 
-#order li:last-child{border: 1px solid transparent;}
+#grabOrder li:last-child{border: 1px solid transparent;}
 
 #grid {
     width: 100%;

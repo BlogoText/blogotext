@@ -185,16 +185,16 @@ if ($query) {
 
     // show grid order list
     if (!empty($order_list)) {
-        echo '<div id="order">';
+        echo '<div id="grabOrder">';
         echo '<ul>';
         echo $order_list;
         echo '</ul>';
         // bon ... théoriquement, le rouge, c'est pour la suppression, le danger ... genre les feux rouge, les sens interdits ...
-        echo '<p><button id="setOrder" class="btn btn-dense btn-red" onClick="changeOrder()">'. $GLOBALS['lang']['apply'] .'</button></p>';
+        echo '<p><button id="grabSetOrder" class="btn btn-dense btn-red" onClick="dragChangeOrder()">'. $GLOBALS['lang']['apply'] .'</button></p>';
         echo '</div>';
         echo '<p>';
         // bon ... théoriquement, le rouge, c'est pour la suppression, le danger ... genre les feux rouge, les sens interdits ...
-        echo '<button id="displayOrderChanger" class="btn btn-red" onClick="displayOrderChanger(\''. $GLOBALS['lang']['grab_menu_close'] .'\',\''. $GLOBALS['lang']['grab_menu_open'] .'\')">'. $GLOBALS['lang']['grab_menu_open'] .'</button>';
+        echo '<button id="grabDisplayOrderChanger" class="btn btn-red" onClick="dragDisplayOrderChanger(\''. $GLOBALS['lang']['grab_menu_open'] .'\',\''. $GLOBALS['lang']['grab_menu_close'] .'\')">'. $GLOBALS['lang']['grab_menu_open'] .'</button>';
         echo '</p>';
     }
 }
@@ -202,8 +202,6 @@ if ($query) {
 echo '</div>';
 echo <<<EOS
 <script src="style/javascript.js"></script>
-<!--
-<script src="style/grabFunctions.js"></script> -->
 <script>
     var containers = document.querySelectorAll(".graph-container"),
     month_min_width = 40; // in px
@@ -228,53 +226,4 @@ echo <<<EOS
 </script>
 EOS;
 echo '<script src="style/grabFunctions.js?'.rand().'"></script>';
-
-
-/**
- * exemple de boutons, supprime cette partie dès que tu as le truc en main
- * ce n'est pas la derniére mouture, j'ai une version plus avancée, mais elle est pas opé et non debug
- * mais tu as l'idée générale
- * essaye de ne pas modifier/créer les css des bouttons, histoire que ça reste uniforme
- * Enjoy !
- */
-?>
-
-<p class="btn-container">
-    <button class="btn btn-dense">Example dense default</button>
-</p>
-<p>
-    <button class="btn btn-dense">Example default</button>
-    <button class="btn btn-blue">Example default</button>
-    <button class="btn btn-green">Example default</button>
-    <button class="btn btn-orange">Example default</button>
-    <button class="btn btn-red">Example default</button>
-</p>
-
-<p>
-    <button class="btn">Example default</button>
-    <button class="btn btn-blue">Example default</button>
-    <button class="btn btn-green">Example default</button>
-    <button class="btn btn-orange">Example default</button>
-    <button class="btn btn-red">Example default</button>
-</p>
-
-
-<p>
-    <button class="btn btn-dense">Example default</button>
-    <button class="btn btn-dense btn-blue">Example default</button>
-    <button class="btn btn-dense btn-green">Example default</button>
-    <button class="btn btn-dense btn-orange">Example default</button>
-    <button class="btn btn-dense btn-red">Example default</button>
-</p>
-
-<p>
-    <button class="btn btn-large">Example default</button>
-    <button class="btn btn-large btn-blue">Example default</button>
-    <button class="btn btn-large btn-green">Example default</button>
-    <button class="btn btn-large btn-orange">Example default</button>
-    <button class="btn btn-large btn-red">Example default</button>
-</p>
-
-<?php
-//fin de l'exemple
 echo tpl_get_footer($begin);
