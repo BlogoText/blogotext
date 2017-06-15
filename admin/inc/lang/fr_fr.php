@@ -25,6 +25,7 @@ $GLOBALS['lang'] = array(
 'install_err_mysql_hst_empty' => 'Le « hostname » MySQL n’a pas été indiqué.',
 'install_err_mysql_dba_empty' => 'Le nom de la base de donnée MySQL n’a pas été indiqué.',
 'install_err_mysql_connect' => 'Échec lors de la connexion à MySQL avec ces informations.',
+'install_datas' => 'Ajouter les données par défaut (article, liens, commentaire...)',
 'first_titre' => 'Mon premier article',
 'first_edit' => 'Éditez-moi',
 // Navigation
