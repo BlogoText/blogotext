@@ -191,7 +191,7 @@ if ($query) {
             echo $order_list;
             echo '</ul>';
             // bon ... théoriquement, le rouge, c'est pour la suppression, le danger ... genre les feux rouge, les sens interdits ...
-            echo '<p><button id="grabSetOrder" class="btn btn-dense btn-green" onClick="dragChangeOrder()">'. $GLOBALS['lang']['apply'] .'</button></p>';
+            echo '<p><button id="grabSetOrder" class="btn btn-dense btn-green" onClick="grabChangeOrder()">'. $GLOBALS['lang']['apply'] .'</button></p>';
             echo '</div>';
         // bon ... théoriquement, le rouge, c'est pour la suppression, le danger ... genre les feux rouge, les sens interdits ...
         echo '<button id="grabDisplayOrderChanger" class="btn btn-blue" onClick="grabDisplayOrderChanger(this, \''. $GLOBALS['lang']['grab_menu_open'] .'\',\''. $GLOBALS['lang']['grab_menu_close'] .'\')">'. $GLOBALS['lang']['grab_menu_open'] .'</button>';
