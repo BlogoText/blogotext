@@ -2022,14 +2022,14 @@ function respondCanvas()
 function draw(container, canvas)
 {
     var months = container.querySelectorAll(".graphique .month"),
-        ctx = canvas.getContext("2d"),
-        month_left = [],
-        minLeft = 9999,
-        minRight = 0,
-        cont = {
-            x: container.getBoundingClientRect().left,
-            y: container.getBoundingClientRect().top
-        };
+    ctx = canvas.getContext("2d"),
+    month_left = [],
+    minLeft = 9999,
+    minRight = 0,
+    cont = {
+        x: container.getBoundingClientRect().left,
+        y: container.getBoundingClientRect().top
+    };
 
 
     // get month's left position
