@@ -2025,6 +2025,7 @@ function draw(container, canvas)
         ctx = canvas.getContext("2d"),
         month_left = [],
         minLeft = 9999,
+        minRight = 0,
         cont = {
             x: container.getBoundingClientRect().left,
             y: container.getBoundingClientRect().top
@@ -2040,6 +2041,9 @@ function draw(container, canvas)
         if (minLeft > l) {
             minLeft = l;
         }
+        if (minRight < l) {
+            minRight = l;
+        }
     }
 
     // strokes the background lines at 0%, 25%, 50%, 75% and 100%.
@@ -2047,7 +2051,7 @@ function draw(container, canvas)
     var tHeight = canvas.height / 4 +1;
     for (var i = 0; i < 5; i++) {
         ctx.moveTo(minLeft - 15, i * tHeight);
-        ctx.lineTo(months[1].getBoundingClientRect().left, i * tHeight);
+        ctx.lineTo(minRight + 15, i * tHeight);
         ctx.strokeStyle = "rgba(0, 0, 0, .05)";
     }
     ctx.stroke();
