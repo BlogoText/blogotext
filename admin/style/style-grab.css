@@ -10,6 +10,19 @@
 
 #grabOrder {
     display: none;
+    position: absolute;
+    bottom: 50px;
+    max-width: 240px;
+    width: 100%;
+    right: 0;
+    background-color: white;
+    padding: 20px;
+    border: 2px solid #efefef;
+    border-radius: 2px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, .2);
+}
+#grabOrder p {
+    margin-bottom: 0;
 }
 
 #grabOrder ul {
@@ -17,20 +30,18 @@
     padding: 0;
 }
 
-.item-order-white{
-}
-
 #grabOrder li {
-    max-width: 180px;
+    width:100%;
     padding-bottom: 5px;
     padding-top: 5px;
     text-align: center;
     cursor: move;
     border: 1px solid silver;
     border-radius: 2px;
-    margin:1px 0 6px 0;
+    margin:0 0 6px 0;
     background-color:#FFFFFF;
     color:#595859;
+    position:relative;
 }
 #grabOrder li:hover, #grabOrder li:focus{
     background-color:#E8E8E8;
@@ -38,19 +49,25 @@
 }
 
 #grabOrder li.dragElem {
-    opacity: 0.4;
+    opacity: 0.6;
 }
 
-#grabOrder li.previous {
-    border-bottom: 2px solid blue !important;
-    margin:0px 0 5px 0;
-}
-#grabOrder li.over {
-    border-top: 2px solid blue !important;
-    margin:0px 0 5px 0;
+#grabOrder li.over:before {
+    position: absolute;
+    content: " ";
+    padding: 0;
+    width: 100%;
+    top: -7px;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background-color: #64B5F6;
 }
 
-#grabOrder li:last-child{border: 1px solid transparent;}
+#grabOrder li:last-child{
+    border: none;
+    background: transparent;
+}
 
 #grabGrid {
     width: 100%;
