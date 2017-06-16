@@ -161,13 +161,13 @@ if ($query) {
     echo '<div id="grabGrid">';
     if ($numberOfPosts) {
         $order_list .= '<li data-id="post" draggable="true">'. ucfirst($GLOBALS['lang']['label_articles']) .'</li>';
-        echo '<div id="post" class="grabGrid-item grabGrid-item-size-2">';
+        echo '<div id="post" class="grabGrid-item grabGrid-item-size-1">';
         echo display_graph($posts, $GLOBALS['lang']['label_articles'], 'posts');
         echo '</div>';
     }
     if ($numberOfComments) {
         $order_list .= '<li data-id="comment" draggable="true">'. ucfirst($GLOBALS['lang']['label_commentaires']) .'</li>';
-        echo '<div id="comment" class="grabGrid-item grabGrid-item-size-4">';
+        echo '<div id="comment" class="grabGrid-item grabGrid-item-size-3">';
         echo display_graph($comments, $GLOBALS['lang']['label_commentaires'], 'comments');
         echo '</div>';
     }
@@ -185,17 +185,17 @@ if ($query) {
 
     // show grid order list
     if (!empty($order_list)) {
-        echo '<div id="grabOrder">';
-        echo '<ul>';
-        echo $order_list;
-        echo '</ul>';
+        echo '<div class="btn-container" style="position: relative;">';
+            echo '<div id="grabOrder">';
+            echo '<ul>';
+            echo $order_list;
+            echo '</ul>';
+            // bon ... théoriquement, le rouge, c'est pour la suppression, le danger ... genre les feux rouge, les sens interdits ...
+            echo '<p><button id="grabSetOrder" class="btn btn-dense btn-green" onClick="dragChangeOrder()">'. $GLOBALS['lang']['apply'] .'</button></p>';
+            echo '</div>';
         // bon ... théoriquement, le rouge, c'est pour la suppression, le danger ... genre les feux rouge, les sens interdits ...
-        echo '<p><button id="grabSetOrder" class="btn btn-dense btn-red" onClick="dragChangeOrder()">'. $GLOBALS['lang']['apply'] .'</button></p>';
+        echo '<button id="grabDisplayOrderChanger" class="btn btn-blue" onClick="grabDisplayOrderChanger(this, \''. $GLOBALS['lang']['grab_menu_open'] .'\',\''. $GLOBALS['lang']['grab_menu_close'] .'\')">'. $GLOBALS['lang']['grab_menu_open'] .'</button>';
         echo '</div>';
-        echo '<p>';
-        // bon ... théoriquement, le rouge, c'est pour la suppression, le danger ... genre les feux rouge, les sens interdits ...
-        echo '<button id="grabDisplayOrderChanger" class="btn btn-red" onClick="dragDisplayOrderChanger(\''. $GLOBALS['lang']['grab_menu_open'] .'\',\''. $GLOBALS['lang']['grab_menu_close'] .'\')">'. $GLOBALS['lang']['grab_menu_open'] .'</button>';
-        echo '</p>';
     }
 }
 
