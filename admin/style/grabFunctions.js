@@ -1,12 +1,12 @@
-
 /**
-** Scripts dedicated to grabbing in admin/index.php
-*/
+ * Scripts dedicated to grabbing in admin/index.php
+ */
 
 "use strict";
+
 var dragSrcEl = null;
 
-function handleDragStart(e)
+function grabDragStart(e)
 {
     dragSrcEl = this;
 
@@ -15,19 +15,22 @@ function handleDragStart(e)
     this.classList.add('dragElem');
 }
 
-function handleDragOver(e)
+function grabDragOver(e)
 {
     if (e.preventDefault) {
         e.preventDefault();
     }
+    if (this.classList.contains('over')) {
+        return;
+    }
     this.classList.add('over');
-    this.previousSibling.classList.add('previous');
+ 
     e.dataTransfer.dropEffect = 'move';
 
     return false;
 }
 
-function handleDragEnter(e)
+function grabDragEnter(e)
 {
     /**
      * this / e.target is the current hover target.
@@ -35,13 +38,12 @@ function handleDragEnter(e)
 }
 
 
-function handleDragLeave(e)
+function grabDragLeave(e)
 {
-    this.classList.remove('over')
-    this.previousSibling.classList.remove('previous');
+    this.classList.remove('over');
 }
 
-function handleDrop(e)
+function grabDrop(e)
 {
     if (e.stopPropagation) {
         e.stopPropagation();
@@ -51,39 +53,37 @@ function handleDrop(e)
         var dropHTML = e.dataTransfer.getData('text/html');
         this.insertAdjacentHTML('beforebegin',dropHTML);
         var dropElem = this.previousSibling;
-        addDnDHandlers(dropElem);
+        grabHandlers(dropElem);
     }
     this.classList.remove('over');
-    this.previousSibling.classList.remove('previous');
     return false;
 }
 
-function handleDragEnd(e)
+function grabDragEnd(e)
 {
     this.classList.remove('over')
-    this.previousSibling.classList.remove('previous');
     this.classList.remove('dragElem');
 }
 
-function addDnDHandlers(elem)
+function grabHandlers(elem)
 {
-    elem.addEventListener('dragstart', handleDragStart, false);
-    //elem.addEventListener('dragenter', handleDragEnter, false)
-    elem.addEventListener('dragover', handleDragOver, false);
-    elem.addEventListener('dragleave', handleDragLeave, false);
-    elem.addEventListener('drop', handleDrop, false);
-    elem.addEventListener('dragend', handleDragEnd, false);
+    elem.addEventListener('dragstart', grabDragStart, false);
+    //elem.addEventListener('dragenter', grabDragEnter, false)
+    elem.addEventListener('dragover', grabDragOver, false);
+    elem.addEventListener('dragleave', grabDragLeave, false);
+    elem.addEventListener('drop', grabDrop, false);
+    elem.addEventListener('dragend', grabDragEnd, false);
 }
 
 document.addEventListener("DOMContentLoaded", function (event) {
     var cols = document.querySelectorAll('#grabOrder li');
-    [].forEach.call(cols, addDnDHandlers);
+    [].forEach.call(cols, grabHandlers);
 });
 
 /**
  * Set graphs order
  */
-function dragChangeOrder()
+function grabChangeOrder()
 {
     var cols = document.querySelectorAll('#grabOrder li');
     var i = 1;
@@ -101,16 +101,15 @@ function dragChangeOrder()
 /**
  * Print or hind the grab / swipe buttons at the bottom of the page
  */
-function dragDisplayOrderChanger(open, close)
+function grabDisplayOrderChanger(btn, open, close)
 {
     var div = document.getElementById("grabOrder");
-    var el = document.getElementById("grabDisplayOrderChanger");
 
     if (div.style.display == 'block') {
-        el.innerHTML = open;
+        btn.innerHTML = open;
         div.style.display = 'none';
     } else {
-        el.innerHTML = close;
+        btn.innerHTML = close;
         div.style.display = 'block';
     }
 }
