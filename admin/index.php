@@ -181,6 +181,10 @@ if ($query) {
         echo info(ucfirst($GLOBALS['lang']['note_no_article']));
     }
     $order_list .= '<li></li>';
+    echo '<div class="grabGrid-item grabGrid-item-size-1">&nbsp;</div>';
+    echo '<div class="grabGrid-item grabGrid-item-size-2">&nbsp;</div>';
+    echo '<div class="grabGrid-item grabGrid-item-size-3">&nbsp;</div>';
+    echo '<div class="grabGrid-item grabGrid-item-size-4">&nbsp;</div>';
     echo '</div>';
 
     // show grid order list
