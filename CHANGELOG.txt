@@ -10,6 +10,7 @@
 
 [3.8.0]
     - upd email notification system for comments, now use multipart HTML/TXT
+    - upd template of admin/index
 
 [3.7.4]
     - fix wrong behavior on link (title) from feed aggregator
