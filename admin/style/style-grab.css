@@ -105,6 +105,11 @@
     }
 }
 
+.grabGrid-item
+{
+    padding: 10px 20px;
+}
+
 .grabGrid-item-size-1
 {
     grid-column: span 1;
