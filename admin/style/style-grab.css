@@ -1,0 +1,131 @@
+*,*:before,*:after
+{
+    box-sizing: border-box;
+}
+
+[draggable] {
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    /* Required to make elements draggable in old WebKit */
+    -khtml-user-drag: element;
+    -webkit-user-drag: element;
+}
+
+#grabOrder {
+    display: none;
+    position: absolute;
+    bottom: 50px;
+    max-width: 240px;
+    width: 100%;
+    right: 0;
+    background-color: white;
+    padding: 20px;
+    border: 2px solid #efefef;
+    border-radius: 2px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, .2);
+}
+#grabOrder p {
+    margin-bottom: 0;
+}
+
+#grabOrder ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#grabOrder li {
+    width:100%;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    text-align: center;
+    cursor: move;
+    border: 1px solid silver;
+    border-radius: 2px;
+    margin:0 0 6px 0;
+    background-color:#FFFFFF;
+    color:#595859;
+    position:relative;
+}
+#grabOrder li:hover, #grabOrder li:focus{
+    background-color:#E8E8E8;
+    color:#595859;
+}
+
+#grabOrder li.dragElem {
+    opacity: 0.6;
+}
+
+#grabOrder li.over:before {
+    position: absolute;
+    content: " ";
+    padding: 0;
+    width: 100%;
+    top: -7px;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background-color: #64B5F6;
+}
+
+#grabOrder li:last-child{
+    border: none;
+    background: transparent;
+}
+
+#grabGrid {
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 1em;
+    box-sizing: border-box;
+    display: grid;
+    /*
+    grid-template-columns: repeat(4, 1fr);
+    grid-column-gap: 20px;
+    grid-row-gap: 20px;
+    */
+    grid-template-columns: repeat(4, 25%);
+    grid-column-gap: 0;
+    grid-row-gap: 0;
+}
+
+@media (max-width: 720px) {
+    #grabGrid
+    {
+        grid-auto-columns: repeat(2, 50%);
+    }
+}
+
+@media (max-width: 640px) {
+    #grabGrid
+    {
+        grid-auto-columns: repeat(1, 100%);
+    }
+}
+
+.grabGrid-item
+{
+    padding: 10px 20px;
+}
+
+.grabGrid-item-size-1
+{
+    grid-column: span 1;
+}
+
+.grabGrid-item-size-2
+{
+    grid-column: span 2;
+}
+
+.grabGrid-item-size-3
+{
+    grid-column: span 3;
+}
+
+.grabGrid-item-size-4
+{
+    grid-column: span 4;
+}

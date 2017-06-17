@@ -13,7 +13,6 @@
 
 require_once 'inc/boot.php';
 
-
 /**
  * Scale numeric values based on $maximum.
  */
@@ -53,10 +52,10 @@ function get_tableau_date($dataType)
 
     $sql = '
         SELECT substr('.$btDate.', 1, 6) AS date, count(*) AS idbydate
-          FROM '.$dataType.'
-         WHERE '.$btDate.' BETWEEN '.$min.' AND '.$max.'
-         GROUP BY date
-         ORDER BY date';
+        FROM '.$dataType.'
+        WHERE '.$btDate.' BETWEEN '.$min.' AND '.$max.'
+        GROUP BY date
+        ORDER BY date';
 
     $req = $GLOBALS['db_handle']->prepare($sql);
     $req->execute();
@@ -99,14 +98,12 @@ function display_graph($arr, $title, $cls)
     $txt .= '</div>';
     $txt .= '</div>';
 
-    echo $txt;
+    return $txt;
 }
-
 
 /**
  * Process
  */
-
 $query = (string)filter_input(INPUT_GET, 'q');
 if ($query) {
     $query = htmlspecialchars($query);
@@ -128,7 +125,6 @@ if ($query) {
     $comments = array_reverse($comments);
 }
 
-
 /**
  * echo
  */
@@ -136,11 +132,11 @@ if ($query) {
 echo tpl_get_html_head($GLOBALS['lang']['label_resume']);
 
 echo '<div id="header">';
-    echo '<div id="top">';
-        tpl_show_msg();
-        echo moteur_recherche();
-        echo tpl_show_topnav($GLOBALS['lang']['label_resume']);
-    echo '</div>';
+echo '<div id="top">';
+tpl_show_msg();
+echo moteur_recherche();
+echo tpl_show_topnav($GLOBALS['lang']['label_resume']);
+echo '</div>';
 echo '</div>';
 
 echo '<div id="axe">';
@@ -152,26 +148,54 @@ if ($query) {
     echo '<div class="graph">';
     echo '<div class="form-legend">'.$GLOBALS['lang']['recherche'].'  <span style="font-style: italic">'.$query.'</span></div>';
     echo '<ul id="resultat-recherche">';
-        echo '<li><a href="articles.php?q='.$query.'">'.nombre_objets($numberOfPosts, 'article').'</a></li>';
-        echo '<li><a href="links.php?q='.$query.'">'.nombre_objets($numberOfLinks, 'link').'</a></li>';
-        echo '<li><a href="commentaires.php?q='.$query.'">'.nombre_objets($numberOfComments, 'commentaire').'</a></li>';
-        echo '<li><a href="fichiers.php?q='.$query.'">'.nombre_objets($numberOfFiles, 'fichier').'</a></li>';
-        echo '<li><a href="feed.php?q='.$query.'">'.nombre_objets($numberOfFeeds, 'feed_entry').'</a></li>';
+    echo '<li><a href="articles.php?q='.$query.'">'.nombre_objets($numberOfPosts, 'article').'</a></li>';
+    echo '<li><a href="links.php?q='.$query.'">'.nombre_objets($numberOfLinks, 'link').'</a></li>';
+    echo '<li><a href="commentaires.php?q='.$query.'">'.nombre_objets($numberOfComments, 'commentaire').'</a></li>';
+    echo '<li><a href="fichiers.php?q='.$query.'">'.nombre_objets($numberOfFiles, 'fichier').'</a></li>';
+    echo '<li><a href="feed.php?q='.$query.'">'.nombre_objets($numberOfFeeds, 'feed_entry').'</a></li>';
     echo '</ul>';
     echo '</div>';
 } else {
     // Main Dashboard
+    $order_list = '';
+    echo '<div id="grabGrid">';
     if ($numberOfPosts) {
-        display_graph($posts, $GLOBALS['lang']['label_articles'], 'posts');
+        $order_list .= '<li data-id="post" draggable="true">'. ucfirst($GLOBALS['lang']['label_articles']) .'</li>';
+        echo '<div id="post" class="grabGrid-item grabGrid-item-size-1">';
+        echo display_graph($posts, $GLOBALS['lang']['label_articles'], 'posts');
+        echo '</div>';
     }
     if ($numberOfComments) {
-        display_graph($comments, $GLOBALS['lang']['label_commentaires'], 'comments');
+        $order_list .= '<li data-id="comment" draggable="true">'. ucfirst($GLOBALS['lang']['label_commentaires']) .'</li>';
+        echo '<div id="comment" class="grabGrid-item grabGrid-item-size-3">';
+        echo display_graph($comments, $GLOBALS['lang']['label_commentaires'], 'comments');
+        echo '</div>';
     }
     if ($numberOfLinks) {
-        display_graph($links, $GLOBALS['lang']['label_links'], 'links');
+        $order_list .= '<li data-id="links" draggable="true">'. ucfirst($GLOBALS['lang']['label_links']) .'</li>';
+        echo '<div id="links" class="grabGrid-item grabGrid-item-size-4">';
+        echo display_graph($links, $GLOBALS['lang']['label_links'], 'links');
+        echo '</div>';
     }
     if (!max($numberOfPosts, $numberOfComments, $numberOfLinks)) {
-        echo info($GLOBALS['lang']['note_no_article']);
+        echo info(ucfirst($GLOBALS['lang']['note_no_article']));
+    }
+    $order_list .= '<li></li>';
+    echo '</div>';
+
+    // show grid order list
+    if (!empty($order_list)) {
+        echo '<div class="btn-container" style="position: relative;">';
+            echo '<div id="grabOrder">';
+            echo '<ul>';
+            echo $order_list;
+            echo '</ul>';
+            // bon ... théoriquement, le rouge, c'est pour la suppression, le danger ... genre les feux rouge, les sens interdits ...
+            echo '<p><button id="grabSetOrder" class="btn btn-dense btn-green" onClick="grabChangeOrder()">'. $GLOBALS['lang']['apply'] .'</button></p>';
+            echo '</div>';
+        // bon ... théoriquement, le rouge, c'est pour la suppression, le danger ... genre les feux rouge, les sens interdits ...
+        echo '<button id="grabDisplayOrderChanger" class="btn btn-blue" onClick="grabDisplayOrderChanger(this, \''. $GLOBALS['lang']['grab_menu_open'] .'\',\''. $GLOBALS['lang']['grab_menu_close'] .'\')">'. $GLOBALS['lang']['grab_menu_open'] .'</button>';
+        echo '</div>';
     }
 }
 
@@ -180,13 +204,13 @@ echo <<<EOS
 <script src="style/javascript.js"></script>
 <script>
     var containers = document.querySelectorAll(".graph-container"),
-        month_min_width = 40; // in px
+    month_min_width = 40; // in px
     function indexGraphStat()
     {
         for (var i = 0, clen = containers.length; i < clen; i += 1) {
             var months = containers[i].querySelectorAll('.month'),
-                months_ct = months.length,
-                month_to_show = containers[i].clientWidth / month_min_width;
+            months_ct = months.length,
+            month_to_show = containers[i].clientWidth / month_min_width;
             if (month_to_show > months_ct) {
                 month_to_show = months_ct;
             }
@@ -201,5 +225,5 @@ echo <<<EOS
     indexGraphStat();
 </script>
 EOS;
-
+echo '<script src="style/grabFunctions.js?'.rand().'"></script>';
 echo tpl_get_footer($begin);

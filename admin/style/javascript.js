@@ -2021,26 +2021,37 @@ function respondCanvas()
 
 function draw(container, canvas)
 {
-    var months = container.querySelectorAll(".graphique .month");
-    var ctx = canvas.getContext("2d");
-    var cont = {
+    var months = container.querySelectorAll(".graphique .month"),
+    ctx = canvas.getContext("2d"),
+    month_left = [],
+    minLeft = 9999,
+    minRight = 0,
+    cont = {
         x: container.getBoundingClientRect().left,
         y: container.getBoundingClientRect().top
     };
 
-    // strokes the background lines at 0%, 25%, 50%, 75% and 100%.
-    ctx.beginPath();
-    for (var i = months.length - 1; i >= 0; i--) {
-        if (months[i].getBoundingClientRect().top < months[0].getBoundingClientRect().bottom) {
-            var topLeft = months[i].getBoundingClientRect().left -15;
-            break;
+
+    // get month's left position
+    for (var i = 1, len = months.length; i < len; i++) {
+        var coordsNew = months[i].getBoundingClientRect(),
+            l = coordsNew.left - cont.x + coordsNew.width / 2;
+        month_left[i] = l;
+        /* first left pos */
+        if (minLeft > l) {
+            minLeft = l;
+        }
+        if (minRight < l) {
+            minRight = l;
         }
     }
 
-    var coordScale = { x: topLeft, xx: months[1].getBoundingClientRect().left };
+    // strokes the background lines at 0%, 25%, 50%, 75% and 100%.
+    ctx.beginPath();
+    var tHeight = canvas.height / 4 +1;
     for (var i = 0; i < 5; i++) {
-        ctx.moveTo(coordScale.x, i * canvas.height / 4 +1);
-        ctx.lineTo(coordScale.xx, i * canvas.height / 4 +1);
+        ctx.moveTo(minLeft - 15, i * tHeight);
+        ctx.lineTo(minRight + 15, i * tHeight);
         ctx.strokeStyle = "rgba(0, 0, 0, .05)";
     }
     ctx.stroke();
@@ -2050,10 +2061,10 @@ function draw(container, canvas)
     for (var i = 1, len = months.length; i < len; i++) {
         var coordsNew = months[i].getBoundingClientRect();
         if (i == 1) {
-            ctx.moveTo(coordsNew.left - cont.x + coordsNew.width / 2, coordsNew.top - cont.y);
+            ctx.moveTo(month_left[i], coordsNew.top - cont.y);
         } else {
             if (coordsNew.top - cont.y <= 150) {
-                ctx.lineTo(coordsNew.left - cont.x + coordsNew.width / 2, coordsNew.top - cont.y);
+                ctx.lineTo(month_left[i], coordsNew.top - cont.y);
             }
         }
     }
@@ -2067,11 +2078,11 @@ function draw(container, canvas)
     for (var i = 1, len = months.length; i < len; i++) {
         var coordsNew = months[i].getBoundingClientRect();
         if (i == 1) {
-            ctx.moveTo(coordsNew.left - cont.x + coordsNew.width / 2, 150);
-            ctx.lineTo(coordsNew.left - cont.x + coordsNew.width / 2, coordsNew.top - cont.y);
+            ctx.moveTo(month_left[i], 150);
+            ctx.lineTo(month_left[i], coordsNew.top - cont.y);
         } else {
             if (coordsNew.top - cont.y <= 150) {
-                ctx.lineTo(coordsNew.left - cont.x + coordsNew.width / 2, coordsNew.top - cont.y);
+                ctx.lineTo(month_left[i], coordsNew.top - cont.y);
                 var coordsOld = coordsNew;
             }
         }
