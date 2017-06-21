@@ -25,6 +25,7 @@ $GLOBALS['lang'] = array(
 'install_err_mysql_hst_empty' => 'The MySQL Hostname is empty.',
 'install_err_mysql_dba_empty' => 'The MySQL DB-name is empty',
 'install_err_mysql_connect' => 'BlogoText is unable to connect to MySQL with those informations.',
+'install_datas' => 'Add default data (article, links, comment ...)',
 'first_titre' => 'My first Blogpost',
 'first_edit' => 'Edit me',
 // Navigation
@@ -163,7 +164,7 @@ $GLOBALS['lang'] = array(
 'label_all_comm_by_author' => 'All comments by this author',
 'label_owner_url' => 'Author’s website',
 'label_code_theme' => 'Themes integration code',
-'label_no_code_theme' => 'This addon does’t use any integration code',
+'label_no_code_theme' => 'This addon doesn’t use any integration code',
 // Label avec ": "
 'label_dp_lien' => 'Link: ',
 'label_dp_fichier' => 'File: ',
@@ -497,4 +498,9 @@ $GLOBALS['lang'] = array(
 
 'derniere_connexion_le' => 'Last connection from',
 'cet_ordi' => 'this computer',
+
+// Grab menu
+'grab_menu_open' => 'Open the menu',
+'grab_menu_close' => 'Close the menu',
+'apply' => 'Apply',
 );
