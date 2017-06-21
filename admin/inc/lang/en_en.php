@@ -317,7 +317,7 @@ $GLOBALS['lang'] = array(
 'confirm_feed_update' => 'The feeds have been updated',
 'confirm_feeds_edit' => 'The feeds have been edited.',
 'confirm_feed_ajout' => 'The feed has been added.',
-'confirm_feed_clean' => 'All the old feeds have removed.',
+'confirm_feed_clean' => 'All the old feeds have been removed.',
 // No-confirmation
 'error_image_add' => 'The file couldn’t be added',
 'error_phpajax' => 'Some PHP/Ajax Error happened:',
