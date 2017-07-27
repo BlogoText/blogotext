@@ -308,7 +308,6 @@ if ($query) {
         $sqlWhere .= '(bt_content || bt_title) LIKE ? AND ';
     }
     $sqlWhere = trim($sqlWhere, ' AND ');
-
 } else {
     $sqlWhereStatus = ' AND (bt_statut = 1 OR bt_bookmarked = 1)';
 }
