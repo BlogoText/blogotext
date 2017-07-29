@@ -298,7 +298,7 @@ if ($query) {
         $sqlWhereStatus = 'bt_statut = 1';
         $query = substr($query, 0, strlen($query) - 10);
     }
-    $criterias = search_engine_parse_query($query);
+    $criterias = parse_search($query);
     if ($sqlWhere && $criterias) {
         $sqlWhere .= ' AND ';
     }
