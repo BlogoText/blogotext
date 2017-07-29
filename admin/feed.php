@@ -338,7 +338,7 @@ if (!empty($first_item)) {
                 AND bt_date > '.$first_item.' 
          ORDER BY bt_date DESC, bt_id DESC
          LIMIT 1';
-    $t_sql = db_items_list($sql, $arr, 'rss');
+    $t_sql = liste_elements($sql, $arr, 'rss');
     $btn_next_page = (isset($t_sql['0'])) ? '<li><button type="button" id="next_feeds" onclick="location.href=\'feed.php?'.$paramUrl.'p=next&amp;date='.$first_item.'\'"></button></li>' : '';
 }
 if (!empty($last_item)) {
@@ -348,7 +348,7 @@ if (!empty($last_item)) {
                 AND bt_date < '.$last_item.' 
          ORDER BY bt_date DESC, bt_id DESC
          LIMIT 1';
-    $t_sql = db_items_list($sql, $arr, 'rss');
+    $t_sql = liste_elements($sql, $arr, 'rss');
     $btn_previous_page = (isset($t_sql['0'])) ? '<li><button type="button" id="prev_feeds" onclick="location.href=\'feed.php?'.$paramUrl.'p=previous&amp;date='.$last_item.'\'"></button></li>' : '';
 }
 
