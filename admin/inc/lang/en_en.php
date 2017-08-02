@@ -506,7 +506,7 @@ $GLOBALS['lang'] = array(
 
 // Mail Notification 
 'mail_subject' => 'New comment on "',
-'mail_message1' => 'The author',
+'mail_message1' => 'The amazing author ',
 'mail_message2' => ' replied to a comment on ',
 'mail_message3' => ' from ',
 'mail_see' => 'You can see it by following ',
