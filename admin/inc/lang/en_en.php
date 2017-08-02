@@ -503,4 +503,16 @@ $GLOBALS['lang'] = array(
 'grab_menu_open' => 'Open the menu',
 'grab_menu_close' => 'Close the menu',
 'apply' => 'Apply',
+
+// Mail Notification 
+'mail_subject' => 'New comment on "',
+'mail_message1' => 'The amazing author ',
+'mail_message2' => ' replied to a comment on ',
+'mail_message3' => ' from ',
+'mail_see' => 'You can see it by following ',
+'mail_link' => 'this link',
+'mail_unsub' => 'To unsubscribe from the comments on that post, you can follow this link: ',
+'mail_unsuball' => 'To unsubscribe from the comments on all the posts, follow this link: ',
+'mail_end' => 'Also, do not reply to this email, since it is an automatic generated email.',
+'mail_regards' => 'Regards',
 );

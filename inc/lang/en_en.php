@@ -198,7 +198,7 @@ $GLOBALS['lang'] = array(
 '9' => 'nine',
 'derniere_connexion_le' => 'Last connection from',
 'cet_ordi' => 'this computer',
-// Formulaire mail
+// Mail Notification
 'mail_subject' => 'New comment on "',
 'mail_message1' => 'A new comment by ',
 'mail_message2' => ' has been posted on ',
