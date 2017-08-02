@@ -504,4 +504,16 @@ $GLOBALS['lang'] = array(
 'grab_menu_open' => 'Ouvrir le menu',
 'grab_menu_close' => 'Fermer le menu',
 'apply' => 'Appliquer',
+
+// Mail Notification 
+'mail_subject' => 'Nouveau commentaire sur "',
+'mail_message1' => 'Le brillant auteur',
+'mail_message2' => ' a commenté son article ',
+'mail_message3' => ' depuis ',
+'mail_see' => 'Vous pouvez le consulter via ',
+'mail_link' => 'ce lien',
+'mail_unsub' => 'Pour vous désinscrire des commentaires de ce billet, suivez ce lien: ',
+'mail_unsuball' => 'Pour vous désinscrire des commentaires de tous les billets, suivez ce lien: ',
+'mail_end' => 'Merci de ne pas répondre à ce message automatique.',
+'mail_regards' => 'Cordialement.',
 );

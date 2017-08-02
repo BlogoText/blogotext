@@ -198,6 +198,7 @@ $GLOBALS['lang'] = array(
 '9' => 'neuf',
 'derniere_connexion_le' => 'Dernière connexion depuis',
 'cet_ordi' => 'cet ordinateur',
+// Mail Notification 
 'mail_subject' => 'Nouveau commentaire sur "',
 'mail_message1' => 'Un nouveau commentaire par ',
 'mail_message2' => ' a été posté sur le génialissime article ',
@@ -208,6 +209,4 @@ $GLOBALS['lang'] = array(
 'mail_unsuball' => 'Pour vous désinscrire des commentaires de tous les billets, suivez ce lien: ',
 'mail_end' => 'Merci de ne pas répondre à ce message automatique.',
 'mail_regards' => 'Cordialement.',
-
-
 );
