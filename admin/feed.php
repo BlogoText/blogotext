@@ -204,7 +204,6 @@ function send_rss_json($feeds)
         'count' => (count($feeds) - 1)
     );
 
-    $clean = array();
     foreach ($feeds as $feed) {
         $to_json['list'][] = array(
             'id' => $feed['bt_id'],
@@ -243,7 +242,6 @@ $tableau = array();
 
 // Show N items per page
 $page = filter_input(INPUT_GET, 'p');
-$sqlLimit = $GLOBALS['max_rss_admin'];
 
 $arr = array();
 
@@ -253,19 +251,26 @@ $fold = (string)filter_input(INPUT_GET, 'fold');
 $bookmarked = (filter_input(INPUT_GET, 'bookmarked') !== null);
 $query = (string)filter_input(INPUT_GET, 'q');
 $page_date = filter_input(INPUT_GET, 'date');
+$item_id = filter_input(INPUT_GET, 'id');
 $sqlWhere = '';
 $sqlWhereDate = '';
 $sqlWhereStatus = '';
 $sqlOrder = 'DESC';
 $paramUrl = '';
-
+$btn_previous_page = '';
+$btn_next_page = '';
 
 if (!empty($page_date)) {
     if ($page == 'previous') {
-        $sqlWhereDate = ' AND bt_date < '.$page_date;
+        $search_sign = '< ';
     } else if ($page == 'next') {
-        $sqlWhereDate = ' AND bt_date > '.$page_date;
+        $search_sign = '> ';
         $sqlOrder = 'ASC';
+    }
+    if (!empty($item_id)) {
+        $sqlWhereDate = ' AND ((bt_date = '.$page_date.' AND ID '.$search_sign.$item_id.') OR bt_date '.$search_sign.$page_date.')';
+    } else {
+        $sqlWhereDate = ' AND bt_date '.$search_sign.$page_date;
     }
 }
 
@@ -312,13 +317,24 @@ if ($query) {
     $sqlWhereStatus = ' AND (bt_statut = 1 OR bt_bookmarked = 1)';
 }
 
+// add 1 more than max_rss_admin, for detecting if there is a previous or next page
 $sql = '
     SELECT * FROM rss
      WHERE '. trim(trim($sqlWhere.$sqlWhereStatus.$sqlWhereDate, ' '), 'AND') .'
-     ORDER BY bt_date '.$sqlOrder.', bt_id '.$sqlOrder.'
-     LIMIT '.$sqlLimit;
+     ORDER BY bt_date '.$sqlOrder.', ID '.$sqlOrder.'
+     LIMIT '.($GLOBALS['max_rss_admin'] + 1);
 
 $tableau = liste_elements($sql, $arr, 'rss');
+
+// using main SQL request, try to find previous/next page
+$have_more = (count($tableau) === ($GLOBALS['max_rss_admin']+1));
+if (isset($have_more)) {
+    if ($sqlOrder == 'ASC') {
+        unset($tableau['0']);
+    } else {
+        unset($tableau[$GLOBALS['max_rss_admin']]);
+    }
+}
 
 // reverse order to respect time
 if ($sqlOrder == 'ASC') {
@@ -331,25 +347,47 @@ $last_item = end($tableau)['bt_date'];
 $btn_previous_page = '';
 $btn_next_page = '';
 
-if (!empty($first_item)) {
-    $sql = '
-        SELECT * FROM rss
-         WHERE '. trim(trim($sqlWhere.$sqlWhereStatus, ' '), 'AND') .'
-                AND bt_date > '.$first_item.' 
-         ORDER BY bt_date DESC, bt_id DESC
-         LIMIT 1';
-    $t_sql = liste_elements($sql, $arr, 'rss');
-    $btn_next_page = (isset($t_sql['0'])) ? '<li><button type="button" id="next_feeds" onclick="location.href=\'feed.php?'.$paramUrl.'p=next&amp;date='.$first_item.'\'"></button></li>' : '';
-}
-if (!empty($last_item)) {
-    $sql = '
-        SELECT * FROM rss
-         WHERE '. trim(trim($sqlWhere.$sqlWhereStatus, ' '), 'AND') .'
-                AND bt_date < '.$last_item.' 
-         ORDER BY bt_date DESC, bt_id DESC
-         LIMIT 1';
-    $t_sql = liste_elements($sql, $arr, 'rss');
-    $btn_previous_page = (isset($t_sql['0'])) ? '<li><button type="button" id="prev_feeds" onclick="location.href=\'feed.php?'.$paramUrl.'p=previous&amp;date='.$last_item.'\'"></button></li>' : '';
+if (is_array($tableau) && isset($tableau['0'])) {
+    // get pagination
+    $first_item = array_values($tableau)[0];
+    $last_item = end($tableau);
+
+    // detect previous / next page
+    if ($sqlOrder == 'ASC') {
+        if ($have_more) {
+            $btn_next_page = 
+                '<li><button type="button" id="next_feeds" '
+                .'onclick="location.href=\'feed.php?'.$paramUrl.'p=next&amp;date='.$first_item['bt_date'].'&amp;id='.$first_item['ID'].'\'"></button></li>';
+        }
+        $sql = '
+            SELECT * FROM rss
+             WHERE '. trim(trim($sqlWhere.$sqlWhereStatus, ' '), 'AND') .'
+                    AND ((bt_date = '.$last_item['bt_date'].' AND ID < '.$last_item['ID'].') OR bt_date > '.$last_item['bt_date'].')
+             ORDER BY bt_date DESC, ID DESC
+             LIMIT 1';
+        $t_sql = liste_elements($sql, $arr, 'rss');
+        if (isset($t_sql['0'])) {
+            $btn_previous_page = '<li><button type="button" id="prev_feeds" onclick="location.href=\'feed.php?'.$paramUrl.'p=previous&amp;date='.$last_item['bt_date'].'&amp;id='.$last_item['ID'].'\'"></button></li>';
+        }
+    } else {
+        if ($have_more) {
+            $btn_previous_page = 
+                '<li><button type="button" id="prev_feeds" '
+                .'onclick="location.href=\'feed.php?'.$paramUrl.'p=previous&amp;date='.$last_item['bt_date'].'&amp;id='.$last_item['ID'].'\'"></button></li>';
+        }
+        $sql = '
+            SELECT * FROM rss
+             WHERE '. trim(trim($sqlWhere.$sqlWhereStatus, ' '), 'AND') .'
+                    AND ((bt_date = '.$first_item['bt_date'].' AND ID > '.$first_item['ID'].') OR bt_date > '.$first_item['bt_date'].')
+             ORDER BY bt_date DESC, ID DESC
+             LIMIT 1';
+        $t_sql = liste_elements($sql, $arr, 'rss');
+        if (isset($t_sql['0'])) {
+            $btn_next_page = '<li><button type="button" id="next_feeds" onclick="location.href=\'feed.php?'.$paramUrl.'p=next&amp;date='.$first_item['bt_date'].'&amp;id='.$first_item['ID'].'\'"></button></li>';
+        }
+    }
+} else {
+    // no datas ...
 }
 
 /**
@@ -361,7 +399,6 @@ echo tpl_get_html_head($GLOBALS['lang']['mesabonnements']);
 echo '<div id="header">';
     echo '<div id="top">';
         tpl_show_msg();
-
         echo moteur_recherche();
         echo tpl_show_topnav($GLOBALS['lang']['mesabonnements']);
     echo '</div>';
@@ -392,8 +429,6 @@ if ($config !== null) {
 } else {
     // Get list of posts from DB
     $out = send_rss_json($tableau);
-    $first_item = isset($tableau['0']) ? $tableau['0']['ID'] : '';
-    $last_item = end($tableau);
 
     $out .= '<div id="rss-list">';
     $out .= '<div id="posts-wrapper">';
