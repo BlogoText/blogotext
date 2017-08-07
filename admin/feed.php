@@ -262,15 +262,15 @@ $btn_next_page = '';
 
 if (!empty($page_date)) {
     if ($page == 'previous') {
-        $search_sign = '< ';
+        $search_sign = '<';
     } else if ($page == 'next') {
-        $search_sign = '> ';
+        $search_sign = '>=';
         $sqlOrder = 'ASC';
     }
     if (!empty($item_id)) {
-        $sqlWhereDate = ' AND ((bt_date = '.$page_date.' AND ID '.$search_sign.$item_id.') OR bt_date '.$search_sign.$page_date.')';
+        $sqlWhereDate = ' AND ((bt_date = '.$page_date.' AND ID '.$search_sign.' '.$item_id.') OR bt_date '.$search_sign.' '.$page_date.')';
     } else {
-        $sqlWhereDate = ' AND bt_date '.$search_sign.$page_date;
+        $sqlWhereDate = ' AND bt_date '.$search_sign.' '.$page_date;
     }
 }
 
@@ -342,8 +342,6 @@ if ($sqlOrder == 'ASC') {
 }
 
 // get pagination
-$first_item = isset($tableau['0']) ? $tableau['0']['bt_date'] : '';
-$last_item = end($tableau)['bt_date'];
 $btn_previous_page = '';
 $btn_next_page = '';
 
