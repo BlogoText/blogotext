@@ -119,7 +119,7 @@ echo '<div id="axe">';
     echo '<div id="subnav">';
     afficher_form_filtre('articles', htmlspecialchars($filter));
     echo '<div class="nombre-elem">';
-        echo ucfirst(nombre_objets(count($tableau), 'article')).' '.$GLOBALS['lang']['sur'].' '.liste_elements_count('SELECT count(*) AS nbr FROM articles', array());
+        echo ucfirst(nombre_objets(count($tableau), 'article')).' '.$GLOBALS['lang']['on'].' '.liste_elements_count('SELECT count(*) AS nbr FROM articles', array());
     echo '</div>';
 echo '</div>';
 

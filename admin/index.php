@@ -146,7 +146,7 @@ echo '<div id="graphs">';
 if ($query) {
     // Show search results
     echo '<div class="graph">';
-    echo '<div class="form-legend">'.$GLOBALS['lang']['recherche'].'  <span style="font-style: italic">'.$query.'</span></div>';
+    echo '<div class="form-legend">'.$GLOBALS['lang']['research'].'  <span style="font-style: italic">'.$query.'</span></div>';
     echo '<ul id="resultat-recherche">';
     echo '<li><a href="articles.php?q='.$query.'">'.nombre_objets($numberOfPosts, 'article').'</a></li>';
     echo '<li><a href="links.php?q='.$query.'">'.nombre_objets($numberOfLinks, 'link').'</a></li>';
@@ -166,9 +166,9 @@ if ($query) {
         echo '</div>';
     }
     if ($numberOfComments) {
-        $order_list .= '<li data-id="comment" draggable="true">'. ucfirst($GLOBALS['lang']['label_commentaires']) .'</li>';
+        $order_list .= '<li data-id="comment" draggable="true">'. ucfirst($GLOBALS['lang']['label_comments']) .'</li>';
         echo '<div id="comment" class="grabGrid-item grabGrid-item-size-3">';
-        echo display_graph($comments, $GLOBALS['lang']['label_commentaires'], 'comments');
+        echo display_graph($comments, $GLOBALS['lang']['label_comments'], 'comments');
         echo '</div>';
     }
     if ($numberOfLinks) {

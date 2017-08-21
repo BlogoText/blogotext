@@ -162,11 +162,11 @@ function display_comment($comment, $withLink)
     echo '<span class="author"><a href="?filtre=auteur.'.$comment['bt_author'].'" title="'.$GLOBALS['lang']['label_all_comm_by_author'].'">'.$comment['bt_author'].'</a> :</span>';
     echo '</div>';
 
-    echo ($withLink == 1 && !empty($comment['bt_title'])) ? '<span class="link-article"> '.$GLOBALS['lang']['sur'].' <a href="'.basename($_SERVER['SCRIPT_NAME']).'?post_id='.$comment['bt_article_id'].'">'.$comment['bt_title'].'</a></span>' : '';
+    echo ($withLink == 1 && !empty($comment['bt_title'])) ? '<span class="link-article"> '.$GLOBALS['lang']['on'].' <a href="'.basename($_SERVER['SCRIPT_NAME']).'?post_id='.$comment['bt_article_id'].'">'.$comment['bt_title'].'</a></span>' : '';
 
     echo '<div class="comm-options">';
     echo '<ul>';
-    echo '<li class="cl-edit" onclick="unfold(this);">'.$GLOBALS['lang']['editer'].'</li>';
+    echo '<li class="cl-edit" onclick="unfold(this);">'.$GLOBALS['lang']['edit'].'</li>';
     echo '<li class="cl-activ" onclick="activate_comm(this);" data-comm-id="'.$comment['ID'].'" data-comm-btid="'.$comment['bt_id'].'" data-comm-art-id="'.$comment['bt_article_id'].'">'.$GLOBALS['lang'][((!$comment['bt_statut']) ? '' : 'des').'activer'].'</li>';
     echo '<li class="cl-suppr" onclick="suppr_comm(this);" data-comm-id="'.$comment['ID'].'" data-comm-art-id="'.$comment['bt_article_id'].'">'.$GLOBALS['lang']['supprimer'].'</li>';
     echo '</ul>';
@@ -213,7 +213,7 @@ if ($paramMakeup['menu_theme'] == 'for_article') {
     echo '</ul>';
     echo '– &nbsp; '.ucfirst(nombre_objets(count($comments), 'commentaire'));
 } elseif ($paramMakeup['menu_theme'] == 'for_comms') {
-    echo ucfirst(nombre_objets(count($comments), 'commentaire')).' '.$GLOBALS['lang']['sur'].' '.$numberOfComments;
+    echo ucfirst(nombre_objets(count($comments), 'commentaire')).' '.$GLOBALS['lang']['on'].' '.$numberOfComments;
 }
 echo '</div>';
 echo '</div>';

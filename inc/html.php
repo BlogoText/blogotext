@@ -27,7 +27,7 @@ function erreurs($erreurs)
 {
     $html = '';
     if ($erreurs) {
-        $html .= '<div id="erreurs">'.'<strong>'.$GLOBALS['lang']['erreurs'].'</strong> :' ;
+        $html .= '<div id="erreurs">'.'<strong>'.$GLOBALS['lang']['errors'].'</strong> :' ;
         $html .= '<ul><li>';
         $html .= implode('</li><li>', $erreurs);
         $html .= '</li></ul></div>'."\n";
@@ -54,7 +54,7 @@ function moteur_recherche()
     }
     $return = '<form action="?" method="get" id="search">'."\n";
     $return .= '<input id="q" name="q" type="search" size="20" value="'.$requete.'" placeholder="'.$GLOBALS['lang']['placeholder_search'].'" accesskey="f" />'."\n";
-    $return .= '<button id="input-rechercher" type="submit">'.$GLOBALS['lang']['rechercher'].'</button>'."\n";
+    $return .= '<button id="input-rechercher" type="submit">'.$GLOBALS['lang']['search'].'</button>'."\n";
     if (isset($_GET['mode'])) {
         $return .= '<input id="mode" name="mode" type="hidden" value="'.htmlspecialchars(stripslashes($_GET['mode'])).'"/>'."\n";
     }
@@ -164,16 +164,16 @@ function lien_pagination()
 
     // page sup ?
     if ($page_courante < 0) {
-        $lien_suivant = '<a href="?'.$qstring.'p=0" rel="next">'.$GLOBALS['lang']['label_suivant'].'</a>';
+        $lien_suivant = '<a href="?'.$qstring.'p=0" rel="next">'.$GLOBALS['lang']['label_next'].'</a>';
     } else if ($page_courante < $total_page) {
-        $lien_suivant = '<a href="?'.$qstring.'p='.($page_courante+1).'" rel="next">'.$GLOBALS['lang']['label_suivant'].'</a>';
+        $lien_suivant = '<a href="?'.$qstring.'p='.($page_courante+1).'" rel="next">'.$GLOBALS['lang']['label_next'].'</a>';
     }
 
     // page inf ?
     if ($page_courante > $total_page) {
-        $lien_precede = '<a href="?'.$qstring.'p='.$total_page.'" rel="prev">'.$GLOBALS['lang']['label_precedent'].'</a>';
+        $lien_precede = '<a href="?'.$qstring.'p='.$total_page.'" rel="prev">'.$GLOBALS['lang']['label_previous'].'</a>';
     } else if ($page_courante <= $total_page && $page_courante > 0) {
-        $lien_precede = '<a href="?'.$qstring.'p='.($page_courante-1).'" rel="prev">'.$GLOBALS['lang']['label_precedent'].'</a>';
+        $lien_precede = '<a href="?'.$qstring.'p='.($page_courante-1).'" rel="prev">'.$GLOBALS['lang']['label_previous'].'</a>';
     }
 
     return '<p class="pagination">'.$lien_precede.$lien_suivant.'</p>';

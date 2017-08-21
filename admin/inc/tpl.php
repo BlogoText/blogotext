@@ -26,7 +26,7 @@ function tpl_show_topnav($titre)
     $html .=  '<li><a href="articles.php" id="lien-liste"'.(($tab == 'articles.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['mesarticles'].'</a></li>';
     $html .=  '<li><a href="ecrire.php" id="lien-nouveau"'.(($tab == 'ecrire.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['nouveau'].'</a></li>';
     $html .=  '<li><a href="commentaires.php" id="lien-lscom"'.(($tab == 'commentaires.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['titre_commentaires'].'</a></li>';
-    $html .=  '<li><a href="fichiers.php" id="lien-fichiers"'.(($tab == 'fichiers.php') ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_fichiers']).'</a></li>';
+    $html .=  '<li><a href="fichiers.php" id="lien-fichiers"'.(($tab == 'fichiers.php') ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_files']).'</a></li>';
     if ($GLOBALS['afficher_liens']) {
         $html .=  '<li><a href="links.php" id="lien-links"'.(($tab == 'links.php') ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_links']).'</a></li>';
     }
@@ -168,8 +168,8 @@ function php_lang_to_js($a)
     $frontend_str['rssJsAlertNewLinkFolder'] = $GLOBALS['lang']['rss_jsalert_new_link_folder'];
     $frontend_str['confirmFeedClean'] = $GLOBALS['lang']['confirm_feed_clean'];
     $frontend_str['confirmCommentSuppr'] = $GLOBALS['lang']['confirm_comment_suppr'];
-    $frontend_str['activer'] = $GLOBALS['lang']['activer'];
-    $frontend_str['desactiver'] = $GLOBALS['lang']['desactiver'];
+    $frontend_str['activer'] = $GLOBALS['lang']['activate'];
+    $frontend_str['desactiver'] = $GLOBALS['lang']['desactivate'];
     $frontend_str['errorPhpAjax'] = $GLOBALS['lang']['error_phpajax'];
     $frontend_str['errorCommentSuppr'] = $GLOBALS['lang']['error_comment_suppr'];
     $frontend_str['errorCommentValid'] = $GLOBALS['lang']['error_comment_valid'];

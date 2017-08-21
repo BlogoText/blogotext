@@ -226,25 +226,25 @@ function jour_en_lettres($jour, $mois, $annee)
     $date = date('w', mktime(0, 0, 0, $mois, $jour, $annee));
     switch ($date) {
         case 0:
-            return $GLOBALS['lang']['dimanche'];
+            return $GLOBALS['lang']['sunday'];
         break;
         case 1:
-            return $GLOBALS['lang']['lundi'];
+            return $GLOBALS['lang']['monday'];
         break;
         case 2:
-            return $GLOBALS['lang']['mardi'];
+            return $GLOBALS['lang']['tuesday'];
         break;
         case 3:
-            return $GLOBALS['lang']['mercredi'];
+            return $GLOBALS['lang']['wednesday'];
         break;
         case 4:
-            return $GLOBALS['lang']['jeudi'];
+            return $GLOBALS['lang']['thursday'];
         break;
         case 5:
-            return $GLOBALS['lang']['vendredi'];
+            return $GLOBALS['lang']['friday'];
         break;
         case 6:
-            return $GLOBALS['lang']['samedi'];
+            return $GLOBALS['lang']['saturday'];
         break;
     }
     return $nom;
@@ -258,28 +258,28 @@ function mois_en_lettres($numero, $abbrv = 0)
     if ($abbrv == 1) {
         switch ($numero) {
             case '01':
-                return $GLOBALS['lang']['janv.'];
+                return $GLOBALS['lang']['jan.'];
             break;
             case '02':
-                return $GLOBALS['lang']['fev.'];
+                return $GLOBALS['lang']['feb.'];
             break;
             case '03':
-                return $GLOBALS['lang']['mars.'];
+                return $GLOBALS['lang']['mar.'];
             break;
             case '04':
-                return $GLOBALS['lang']['avr.'];
+                return $GLOBALS['lang']['apr.'];
             break;
             case '05':
-                return $GLOBALS['lang']['mai.'];
+                return $GLOBALS['lang']['may.'];
             break;
             case '06':
-                return $GLOBALS['lang']['juin.'];
+                return $GLOBALS['lang']['jun.'];
             break;
             case '07':
-                return $GLOBALS['lang']['juil.'];
+                return $GLOBALS['lang']['jul.'];
             break;
             case '08':
-                return $GLOBALS['lang']['aout.'];
+                return $GLOBALS['lang']['aug.'];
             break;
             case '09':
                 return $GLOBALS['lang']['sept.'];
@@ -297,40 +297,40 @@ function mois_en_lettres($numero, $abbrv = 0)
     } else {
         switch ($numero) {
             case '01':
-                return $GLOBALS['lang']['janvier'];
+                return $GLOBALS['lang']['january'];
             break;
             case '02':
-                return $GLOBALS['lang']['fevrier'];
+                return $GLOBALS['lang']['february'];
             break;
             case '03':
-                return $GLOBALS['lang']['mars'];
+                return $GLOBALS['lang']['march'];
             break;
             case '04':
-                return $GLOBALS['lang']['avril'];
+                return $GLOBALS['lang']['april'];
             break;
             case '05':
-                return $GLOBALS['lang']['mai'];
+                return $GLOBALS['lang']['may'];
             break;
             case '06':
-                return $GLOBALS['lang']['juin'];
+                return $GLOBALS['lang']['june'];
             break;
             case '07':
-                return $GLOBALS['lang']['juillet'];
+                return $GLOBALS['lang']['july'];
             break;
             case '08':
-                return $GLOBALS['lang']['aout'];
+                return $GLOBALS['lang']['august'];
             break;
             case '09':
-                return $GLOBALS['lang']['septembre'];
+                return $GLOBALS['lang']['september'];
             break;
             case '10':
-                return $GLOBALS['lang']['octobre'];
+                return $GLOBALS['lang']['october'];
             break;
             case '11':
-                return $GLOBALS['lang']['novembre'];
+                return $GLOBALS['lang']['november'];
             break;
             case '12':
-                return $GLOBALS['lang']['decembre'];
+                return $GLOBALS['lang']['december'];
             break;
         }
     }

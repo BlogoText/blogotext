@@ -11,6 +11,8 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 # *** LICENSE ***
 
+require_once(__DIR__.'/../../../inc/lang/fr_fr.php');
+
 $GLOBALS['lang'] = array(
 'id' => 'fr',
 // Install
@@ -29,8 +31,6 @@ $GLOBALS['lang'] = array(
 'first_titre' => 'Mon premier article',
 'first_edit' => 'Éditez-moi',
 // Navigation
-'le' => 'le',
-'remarque' => 'Remarque',
 'preferences' => 'Préférences',
 'connexion' => 'Connexion',
 'enregistrer' => 'Enregistrer',

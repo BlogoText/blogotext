@@ -245,10 +245,10 @@ function afficher_index($tableau, $type)
 {
     $HTML = '';
     if (!($theme_page = file_get_contents($GLOBALS['theme_liste']))) {
-        die($GLOBALS['lang']['err_theme_introuvable']);
+        die($GLOBALS['lang']['err_theme_notfound']);
     }
     if (!($theme_post = file_get_contents($GLOBALS['theme_post_post']))) {
-        die($GLOBALS['lang']['err_theme_introuvable']);
+        die($GLOBALS['lang']['err_theme_notfound']);
     }
 
     if ($type == 'list') {
@@ -263,19 +263,19 @@ function afficher_index($tableau, $type)
             }
             if ($tableau[0]['bt_type'] == 'article') {
                 if (!($theme_article = file_get_contents($GLOBALS['theme_post_artc']))) {
-                    die($GLOBALS['lang']['err_theme_introuvable']);
+                    die($GLOBALS['lang']['err_theme_notfound']);
                 }
                 $conversion_theme_fonction = 'conversions_theme_article';
             }
             if ($tableau[0]['bt_type'] == 'comment') {
                 if (!($theme_article = file_get_contents($GLOBALS['theme_post_comm']))) {
-                    die($GLOBALS['lang']['err_theme_introuvable']);
+                    die($GLOBALS['lang']['err_theme_notfound']);
                 }
                 $conversion_theme_fonction = 'conversions_theme_commentaire';
             }
             if ($tableau[0]['bt_type'] == 'link' or $tableau[0]['bt_type'] == 'note') {
                 if (!($theme_article = file_get_contents($GLOBALS['theme_post_link']))) {
-                    die($GLOBALS['lang']['err_theme_introuvable']);
+                    die($GLOBALS['lang']['err_theme_notfound']);
                 }
                 $conversion_theme_fonction = 'conversions_theme_lien';
             }
@@ -332,7 +332,7 @@ function afficher_liste($tableau)
 {
     $HTML_elmts = '';
     if (!($theme_page = file_get_contents($GLOBALS['theme_liste']))) {
-        die($GLOBALS['lang']['err_theme_introuvable']);
+        die($GLOBALS['lang']['err_theme_notfound']);
     }
     $HTML_article = conversions_theme($theme_page, array(), 'list');
     if ($tableau) {

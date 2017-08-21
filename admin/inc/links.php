@@ -157,7 +157,7 @@ function afficher_form_link($step, $errors, $linkEdited = '')
         $form .= '<label for="url">'.$GLOBALS['lang']['label_nouv_lien'].'</label>';
         $form .= '<input type="text" name="url" id="url" value="" size="70" placeholder="http://www.example.com/" class="text" autocomplete="off" />';
         $form .= '</div>';
-        $form .= '<p class="submit-bttns"><button type="submit" class="submit button-submit">'.$GLOBALS['lang']['envoyer'].'</button></p>';
+        $form .= '<p class="submit-bttns"><button type="submit" class="submit button-submit">'.$GLOBALS['lang']['send'].'</button></p>';
         $form .= '</fieldset>';
         $form .= '</form>';
     } elseif ($step == 2) {
@@ -238,8 +238,8 @@ function afficher_form_link($step, $errors, $linkEdited = '')
             $form .= ($GLOBALS['dl_link_to_files'] == 1) ? hidden_input('add_to_files', 'on') : '';
         }
         $form .= '<p class="submit-bttns">';
-        $form .= '<button class="submit button-cancel" type="button" onclick="annuler(\'links.php\');">'.$GLOBALS['lang']['annuler'].'</button>';
-        $form .= '<button class="submit button-submit" type="submit" name="enregistrer" id="valid-link">'.$GLOBALS['lang']['envoyer'].'</button>';
+        $form .= '<button class="submit button-cancel" type="button" onclick="annuler(\'links.php\');">'.$GLOBALS['lang']['cancel'].'</button>';
+        $form .= '<button class="submit button-submit" type="submit" name="enregistrer" id="valid-link">'.$GLOBALS['lang']['send'].'</button>';
         $form .= '</p>';
         $form .= hidden_input('_verif_envoi', 1);
         $form .= hidden_input('bt_id', $newId);
@@ -262,8 +262,8 @@ function afficher_form_link($step, $errors, $linkEdited = '')
 
         $form .= '<p class="submit-bttns">';
         $form .= '<button class="submit button-delete" type="button" name="supprimer" onclick="rmArticle(this)">'.$GLOBALS['lang']['supprimer'].'</button>';
-        $form .= '<button class="submit button-cancel" type="button" onclick="annuler(\'links.php\');">'.$GLOBALS['lang']['annuler'].'</button>';
-        $form .= '<button class="submit button-submit" type="submit" name="editer">'.$GLOBALS['lang']['envoyer'].'</button>';
+        $form .= '<button class="submit button-cancel" type="button" onclick="annuler(\'links.php\');">'.$GLOBALS['lang']['cancel'].'</button>';
+        $form .= '<button class="submit button-submit" type="submit" name="editer">'.$GLOBALS['lang']['send'].'</button>';
         $form .= '</p>';
         $form .= hidden_input('ID', $linkEdited['ID']);
         $form .= hidden_input('bt_id', $linkEdited['bt_id']);
@@ -288,7 +288,7 @@ function afficher_lien($link)
     $list .= '<span class="date">'.date_formate($link['bt_id']).', '.heure_formate($link['bt_id']).'</span>';
     $list .= '<div class="link-options">';
     $list .= '<ul>';
-    $list .= '<li class="ll-edit"><a href="'.basename($_SERVER['SCRIPT_NAME']).'?id='.$link['bt_id'].'">'.$GLOBALS['lang']['editer'].'</a></li>';
+    $list .= '<li class="ll-edit"><a href="'.basename($_SERVER['SCRIPT_NAME']).'?id='.$link['bt_id'].'">'.$GLOBALS['lang']['edit'].'</a></li>';
     $list .= ($link['bt_statut'] == 1) ? '<li class="ll-seepost"><a href="'.URL_ROOT.'?mode=links&amp;id='.$link['bt_id'].'">'.$GLOBALS['lang']['voir_sur_le_blog'].'</a></li>' : '';
     $list .= '</ul>';
     $list .= '</div>';

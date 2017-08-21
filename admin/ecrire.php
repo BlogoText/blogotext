@@ -239,18 +239,18 @@ function form_years($displayedYear)
 function form_months($displayedMonth)
 {
     $months = array(
-        $GLOBALS['lang']['janvier'],
-        $GLOBALS['lang']['fevrier'],
-        $GLOBALS['lang']['mars'],
-        $GLOBALS['lang']['avril'],
-        $GLOBALS['lang']['mai'],
-        $GLOBALS['lang']['juin'],
-        $GLOBALS['lang']['juillet'],
-        $GLOBALS['lang']['aout'],
-        $GLOBALS['lang']['septembre'],
-        $GLOBALS['lang']['octobre'],
-        $GLOBALS['lang']['novembre'],
-        $GLOBALS['lang']['decembre']
+        $GLOBALS['lang']['january'],
+        $GLOBALS['lang']['february'],
+        $GLOBALS['lang']['march'],
+        $GLOBALS['lang']['april'],
+        $GLOBALS['lang']['may'],
+        $GLOBALS['lang']['june'],
+        $GLOBALS['lang']['july'],
+        $GLOBALS['lang']['august'],
+        $GLOBALS['lang']['september'],
+        $GLOBALS['lang']['october'],
+        $GLOBALS['lang']['november'],
+        $GLOBALS['lang']['december']
     );
 
     $ret = '<select name="mois">' ;
@@ -297,8 +297,8 @@ function form_statut($etat)
 function form_allow_comment($state)
 {
     $choice = array(
-        $GLOBALS['lang']['fermes'],
-        $GLOBALS['lang']['ouverts']
+        $GLOBALS['lang']['closed'],
+        $GLOBALS['lang']['open']
     );
     return form_select('allowcomment', $choice, $state, $GLOBALS['lang']['label_dp_commentaires']);
 }
@@ -396,8 +396,8 @@ function display_form_post($post, $errors)
         $html .= hidden_input('ID', $post['ID']);
         $html .= '<button class="submit button-delete" type="button" name="supprimer" onclick="contenuLoad = document.getElementById(\'contenu\').value; rmArticle(this)" />'.$GLOBALS['lang']['supprimer'].'</button>';
     }
-    $html .= '<button class="submit button-cancel" type="button" onclick="annuler(\'articles.php\');">'.$GLOBALS['lang']['annuler'].'</button>';
-    $html .= '<button class="submit button-submit" type="submit" name="enregistrer" onclick="contenuLoad=document.getElementById(\'contenu\').value" tabindex="70">'.$GLOBALS['lang']['envoyer'].'</button>';
+    $html .= '<button class="submit button-cancel" type="button" onclick="annuler(\'articles.php\');">'.$GLOBALS['lang']['cancel'].'</button>';
+    $html .= '<button class="submit button-submit" type="submit" name="enregistrer" onclick="contenuLoad=document.getElementById(\'contenu\').value" tabindex="70">'.$GLOBALS['lang']['send'].'</button>';
     $html .= '</p>';
     $html .= hidden_input('_verif_envoi', 1);
     $html .= hidden_input('token', new_token());

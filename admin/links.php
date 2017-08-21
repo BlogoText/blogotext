@@ -156,7 +156,7 @@ echo '<div id="subnav">';
 afficher_form_filtre('links', htmlspecialchars($vars['filtre']));
 if ($step != 'edit' && $step != 2) {
     echo '<div class="nombre-elem">';
-    echo ucfirst(nombre_objets(count($arr), 'link')).' '.$GLOBALS['lang']['sur'].' '.liste_elements_count('SELECT count(*) AS nbr FROM links', array(), 'links');
+    echo ucfirst(nombre_objets(count($arr), 'link')).' '.$GLOBALS['lang']['on'].' '.liste_elements_count('SELECT count(*) AS nbr FROM links', array(), 'links');
     echo '</div>';
 }
 echo '</div>';

@@ -41,14 +41,14 @@ function display_form_feed_conf($errors = '')
         $out .= '<input class="remove-feed" name="k_'.$flux['checksum'].'" type="hidden" value="1">';
         $out .= '</span>';
         $out .= '<span>';
-        $out .= '<button type="button" class="submit button-cancel" onclick="unMarkAsRemove(this)">'.$GLOBALS['lang']['annuler'].'</button>';
+        $out .= '<button type="button" class="submit button-cancel" onclick="unMarkAsRemove(this)">'.$GLOBALS['lang']['cancel'].'</button>';
         $out .= '<button type="button" class="submit button-delete" onclick="markAsRemove(this)">'.$GLOBALS['lang']['supprimer'].'</button>';
         $out .= '</span>';
         $out .= '</li>';
     }
     $out .= '</ul>';
     $out .= '<p class="submit-bttns">';
-    $out .= '<button class="submit button-submit" type="submit" name="send">'.$GLOBALS['lang']['envoyer'].'</button>';
+    $out .= '<button class="submit button-submit" type="submit" name="send">'.$GLOBALS['lang']['send'].'</button>';
     $out .= '</p>';
     $out .= hidden_input('token', new_token());
     $out .= hidden_input('verif_envoi', 1);

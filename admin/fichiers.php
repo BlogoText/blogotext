@@ -87,9 +87,9 @@ function display_form_file($errors, $files)
             $form .= '<div id="dragndrop-area" ondragover="event.preventDefault();" ondrop="handleDrop(event);" >';
             $form .= '<div id="dragndrop-title">';
             $form .= $GLOBALS['lang']['img_drop_files_here'];
-            $form .= '<div class="upload-info">('.$GLOBALS['lang']['label_jusqua'].$maxFileSize.$GLOBALS['lang']['label_parfichier'].')</div>';
+            $form .= '<div class="upload-info">('.$GLOBALS['lang']['label_upto'].$maxFileSize.$GLOBALS['lang']['label_perfile'].')</div>';
             $form .= '</div>';
-            $form .= '<p>'.$GLOBALS['lang']['ou'].'</p>';
+            $form .= '<p>'.$GLOBALS['lang']['or'].'</p>';
             $form .= '<div id="file-input-wrapper"><input name="fichier" id="fichier" class="text" type="file" required="" /><label for="fichier"></label></div>';
             $form .= '<button type="button" class="specify-link button-cancel" id="click-change-form" onclick="return switchUploadForm();" data-lang-url="'.$GLOBALS['lang']['img_specifier_url'].'" data-lang-file="'.$GLOBALS['lang']['img_upload_un_fichier'].'">'.$GLOBALS['lang']['img_specifier_url'].'</button>';
             $form .= '</div>';
@@ -172,8 +172,8 @@ function display_form_file($errors, $files)
         $form .= '<p><input type="checkbox" id="statut" name="statut" '.$checked.' class="checkbox" /><label for="statut">'.$GLOBALS['lang']['label_file_priv'].'</label></p>';
         $form .= '<p class="submit-bttns">';
         $form .= '<button class="submit button-delete" type="button" name="supprimer" onclick="rmFichier(this)">'.$GLOBALS['lang']['supprimer'].'</button>';
-        $form .= '<button class="submit button-cancel" type="button" onclick="annuler(\'fichiers.php\');">'.$GLOBALS['lang']['annuler'].'</button>';
-        $form .= '<button class="submit button-submit" type="submit" name="editer">'.$GLOBALS['lang']['envoyer'].'</button>';
+        $form .= '<button class="submit button-cancel" type="button" onclick="annuler(\'fichiers.php\');">'.$GLOBALS['lang']['cancel'].'</button>';
+        $form .= '<button class="submit button-submit" type="submit" name="editer">'.$GLOBALS['lang']['send'].'</button>';
         $form .= '</p>';
         $form .= '</div>';
 
@@ -213,7 +213,7 @@ function display_files_list($arr)
     if ($lstype) {
         $out .= '<div class="list-buttons" id="list-types">';
         $idx = 0;
-        $out .= '<button class="current" id="butIdtype'.$idx.'" onclick="type_sort(\'\', \'butIdtype'.$idx.'\');">'.count($arr).' '.$GLOBALS['lang']['label_fichiers'].'</button>';
+        $out .= '<button class="current" id="butIdtype'.$idx.'" onclick="type_sort(\'\', \'butIdtype'.$idx.'\');">'.count($arr).' '.$GLOBALS['lang']['label_files'].'</button>';
         foreach ($lstype as $type => $amount) {
             if (!$type) {
                 break;
@@ -319,9 +319,9 @@ function display_pictures_list($images)
     $out .= '<ul id="slider-nav-bar">';
     $out .= '<li><button id="slider-nav-close" class="slider-nav-button" onclick="slideshow(\'close\');"></button></li>';
     $out .= '<li><button id="slider-nav-dl"    class="slider-nav-button" onclick="triggerClick(document.getElementById(\'slider-nav-dl-link\'))" title="'.$GLOBALS['lang']['telecharger'].'"></button><a id="slider-nav-dl-link" download></a></li>';
-    $out .= '<li><button id="slider-nav-share" class="slider-nav-button" onclick="triggerClick(document.getElementById(\'slider-nav-share-link\'))" title="'.$GLOBALS['lang']['partager'].   '"></button><a id="slider-nav-share-link"></a></li>';
+    $out .= '<li><button id="slider-nav-share" class="slider-nav-button" onclick="triggerClick(document.getElementById(\'slider-nav-share-link\'))" title="'.$GLOBALS['lang']['share'].   '"></button><a id="slider-nav-share-link"></a></li>';
     $out .= '<li><button id="slider-nav-infos" class="slider-nav-button" onclick="" title="'.$GLOBALS['lang']['infos'].      '"></button></li>';
-    $out .= '<li><button id="slider-nav-edit"  class="slider-nav-button" onclick="triggerClick(document.getElementById(\'slider-nav-edit-link\'))" title="'.$GLOBALS['lang']['editer'].     '"></button><a id="slider-nav-edit-link"></a></li>';
+    $out .= '<li><button id="slider-nav-edit"  class="slider-nav-button" onclick="triggerClick(document.getElementById(\'slider-nav-edit-link\'))" title="'.$GLOBALS['lang']['edit'].     '"></button><a id="slider-nav-edit-link"></a></li>';
 
     $out .= '<li><button id="slider-nav-suppr" class="slider-nav-button" title="'.$GLOBALS['lang']['supprimer'].  '"></button></li>';
     $out .= '</ul>';

@@ -80,7 +80,7 @@ echo erreurs($erreurs);
 echo '<div id="subnav">';
     echo addon_form_list_addons_filter($filtre);
     echo '<div class="nombre-elem">';
-    echo ucfirst(nombre_objets(count($tableau), 'module')).' '.$GLOBALS['lang']['sur'].' '.count($addons);
+    echo ucfirst(nombre_objets(count($tableau), 'module')).' '.$GLOBALS['lang']['on'].' '.count($addons);
     echo '</div>';
 echo '</div>';
 

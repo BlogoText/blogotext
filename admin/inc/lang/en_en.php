@@ -11,6 +11,8 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 # *** LICENSE ***
 
+require_once(__DIR__.'/../../../inc/lang/fr_fr.php');
+
 $GLOBALS['lang'] = array(
 'id' => 'en',
 // Install
@@ -29,44 +31,21 @@ $GLOBALS['lang'] = array(
 'first_titre' => 'My first Blogpost',
 'first_edit' => 'Edit me',
 // Navigation
-'le' => 'the',
-'remarque' => 'Notice',
 'preferences' => 'Settings',
 'connexion' => 'Connection',
 'enregistrer' => 'Save',
-'valider' => 'Submit',
-'annuler' => 'Cancel',
-'envoyer' => 'Send',
-'preview' => 'Preview',
-'editer' => 'Edit',
-'activer' => 'Activate',
-'desactiver' => 'Deactivate',
 'mesarticles' => 'My articles',
 'mesmodules' => 'My addons',
 'mesliens' => 'My links',
 'mesabonnements' => 'My subscriptions',
 'nouveau' => 'New article',
 'supprimer' => 'Delete',
-'voir' => 'See',
-'partager' => 'Share',
 'telecharger' => 'Download',
-'infos' => 'Infos',
 'deconnexion' => 'Logout',
-'rechercher' => 'Search',
-'filtrer' => 'Filter',
-'oui' => 'Yes',
-'non' => 'No',
-'ouverts' => 'Open',
-'fermes' => 'Closed',
 'repondre' => 'answer',
 'depuis' => 'since',
-'sur' => 'on',
 'patientez' => 'wait',
 'secondes' => 'seconds',
-'du' => 'on',
-'et' => 'and',
-'ou' => 'or',
-'par' => 'by',
 'ajoute' => 'addded',
 'trouve' => 'found',
 'voir_sur_le_blog' => 'See online',
@@ -74,21 +53,6 @@ $GLOBALS['lang'] = array(
 'using' => 'with',
 'rendered' => 'generated in',
 'recherche' => 'Search result for',
-// Boutons formatage commentaires
-'bouton-gras' => 'Bold',
-'bouton-ital' => 'Italic',
-'bouton-soul' => 'Underline',
-'bouton-barr' => 'Line-through',
-'bouton-lien' => 'Insert a link',
-'bouton-cita' => 'Insert a quote',
-'bouton-imag' => 'Insert an image',
-'bouton-code' => 'Insert formated code',
-'bouton-left' => 'Left aligned',
-'bouton-center' => 'Centred',
-'bouton-right' => 'Right aligned',
-'bouton-justify' => 'Justify',
-'bouton-liul' => 'Insert a list',
-'bouton-liol' => 'Insert a ordered list',
 // Modes
 'ecrire' => 'Edit: ',
 'apercu' => 'Preview',
@@ -496,23 +460,9 @@ $GLOBALS['lang'] = array(
 '8' => 'eight',
 '9' => 'nine',
 
-'derniere_connexion_le' => 'Last connection from',
-'cet_ordi' => 'this computer',
-
 // Grab menu
 'grab_menu_open' => 'Open the menu',
 'grab_menu_close' => 'Close the menu',
 'apply' => 'Apply',
 
-// Mail Notification 
-'mail_subject' => 'New comment on "',
-'mail_message1' => 'The amazing author ',
-'mail_message2' => ' replied to a comment on ',
-'mail_message3' => ' from ',
-'mail_see' => 'You can see it by following ',
-'mail_link' => 'this link',
-'mail_unsub' => 'To unsubscribe from the comments on that post, you can follow this link: ',
-'mail_unsuball' => 'To unsubscribe from the comments on all the posts, follow this link: ',
-'mail_end' => 'Also, do not reply to this email, since it is an automatic generated email.',
-'mail_regards' => 'Regards',
 );

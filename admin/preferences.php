@@ -224,7 +224,7 @@ function display_form_prefs($errors = '')
     $submitBox = '<div class="submit-bttns">';
     $submitBox .= hidden_input('_verif_envoi', 1);
     $submitBox .= hidden_input('token', new_token());
-    $submitBox .= '<button class="submit button-cancel" type="button" onclick="annuler(\'preferences.php\');" >'.$GLOBALS['lang']['annuler'].'</button>';
+    $submitBox .= '<button class="submit button-cancel" type="button" onclick="annuler(\'preferences.php\');" >'.$GLOBALS['lang']['cancel'].'</button>';
     $submitBox .= '<button class="submit button-submit" type="submit" name="enregistrer">'.$GLOBALS['lang']['enregistrer'].'</button>';
     $submitBox .= '</div>';
 
@@ -403,7 +403,7 @@ function display_form_prefs($errors = '')
         $fieldsetLinks .= '</p>';
 
         // partage de fichiers !pages : télécharger dans fichiers automatiquement ?
-        $nbs = array($GLOBALS['lang']['non'], $GLOBALS['lang']['oui'], $GLOBALS['lang']['pref_ask_everytime']);
+        $nbs = array($GLOBALS['lang']['no'], $GLOBALS['lang']['yes'], $GLOBALS['lang']['pref_ask_everytime']);
 
         $fieldsetLinks .= '<p>';
         $fieldsetLinks .= form_select('dl_link_to_files', $nbs, $GLOBALS['dl_link_to_files'], $GLOBALS['lang']['pref_linx_dl_auto']);
