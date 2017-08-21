@@ -54,6 +54,18 @@ function fichier_adv_conf()
     return (file_put_contents(FILE_SETTINGS_ADV, $conf, LOCK_EX) !== false);
 }
 
+
+// Create robots.txt file
+function fichier_robots()
+{
+    $robots = BT_ROOT.'robots.txt';
+    $content = "User-agent: *\n";
+    $content .= "Disallow: /admin\n";
+    $content .= "Sitemap: ".$GLOBALS['racine']."sitemap.php\n";
+
+    return (file_put_contents($robots, $content, LOCK_EX) !== false);
+}
+
 /**
  * show the form for step 1 (language)
  * ! this function return nothing and use echo
@@ -244,6 +256,8 @@ function install_form_3_proceed()
     $totalPosts = liste_elements_count('SELECT count(ID) AS nbr FROM articles', array());
 
     fichier_adv_conf();
+
+    fichier_robots();
 
     if ($totalPosts != 0) {
         return;
