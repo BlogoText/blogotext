@@ -247,21 +247,17 @@ function lang_set_list()
 function lang_load_land($admin)
 {
     if (empty($GLOBALS['lang'])) {
-        $GLOBALS['lang'] = '';
+        $lang = 'fr'; // default
+    }
+    else {
+        $lang = $GLOBALS['lang'];
     }
 
+    require_once BT_ROOT.'inc/lang/'.$lang.'_'.$lang.'.php';
+    $GLOBALS['lang'] = LANG;
     if ($admin === true && defined('BT_ROOT_ADMIN')) {
-        $path = BT_ROOT_ADMIN;
-    } else {
-        $path = BT_ROOT;
-    }
-    switch ($GLOBALS['lang']) {
-        case 'en':
-            require_once $path.'inc/lang/en_en.php';
-            break;
-        case 'fr':
-        default:
-            require_once $path.'inc/lang/fr_fr.php';
+        require_once BT_ROOT_ADMIN.'inc/lang/'.$lang.'_'.$lang.'.php';
+        $GLOBALS['lang'] = array_merge(LANG, LANG_ADMIN);
     }
 }
 
