@@ -65,7 +65,7 @@ function moteur_recherche()
 /**
  *
  */
-function encart_commentaires()
+function encart_comments()
 {
     $query = '
         SELECT a.bt_title, c.bt_author, c.bt_id, c.bt_article_id, c.bt_content

@@ -14,7 +14,7 @@
 /**
  *
  */
-function titre_url($title)
+function title_url($title)
 {
     return trim(diacritique($title), '-');
 }
@@ -196,7 +196,7 @@ function heure_formate($id)
         'h:i:s A',  // 11:56:04 PM
         'h:i A',    // 11:56 PM
     );
-    return date($format[$GLOBALS['format_heure']], $timestamp);
+    return date($format[$GLOBALS['format_hour']], $timestamp);
 }
 
 /**

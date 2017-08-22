@@ -20,27 +20,27 @@ require_once 'inc/boot.php';
 */
 
 $files = array();
-$GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);
+$GLOBALS['liste_files'] = open_serialzd_file(FILES_DB);
 $token = (string)filter_input(INPUT_POST, 'token');
 $json = '{ "url": "%s", "status": "%s", "token": "%s" }';
 
-foreach ($GLOBALS['liste_fichiers'] as $key => $file) {
+foreach ($GLOBALS['liste_files'] as $key => $file) {
     $files[] = $file['bt_id'];
 }
 
 if (isset($_FILES['fichier'])) {
     $time = time();
-    $file = init_post_fichier();
+    $file = init_post_file();
 
     // avoid ID collisions
     while (in_array($file['bt_id'], $files)) {
         $time--;
         $file['bt_id'] = date('YmdHis', $time);
     }
-    $errors = valider_form_fichier($file);
+    $errors = valider_form_file($file);
 
     if (!$errors) {
-        $newFile = bdd_fichier($file, 'ajout-nouveau', 'upload', $_FILES['fichier']);
+        $newFile = bdd_file($file, 'ajout-nouveau', 'upload', $_FILES['fichier']);
         $file = ($newFile === null) ? $file : $newFile;
         die(printf($json, 'fichiers.php?file_id='.$file['bt_id'].'&amp;edit', 'success', new_token()));
     }

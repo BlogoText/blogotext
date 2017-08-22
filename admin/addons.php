@@ -63,12 +63,12 @@ if ($filtre == 'disabled') {
  * echo
  */
 
-echo tpl_get_html_head($GLOBALS['lang']['mesmodules']);
+echo tpl_get_html_head($GLOBALS['lang']['mymodules']);
 
 echo '<div id="header">';
     echo '<div id="top">';
         echo moteur_recherche();
-        echo tpl_show_topnav($GLOBALS['lang']['mesmodules']);
+        echo tpl_show_topnav($GLOBALS['lang']['mymodules']);
     echo '</div>';
 echo '</div>';
 

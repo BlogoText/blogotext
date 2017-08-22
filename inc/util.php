@@ -248,8 +248,7 @@ function lang_load_land($admin)
 {
     if (empty($GLOBALS['lang'])) {
         $lang = 'fr'; // default
-    }
-    else {
+    } else {
         $lang = $GLOBALS['lang'];
     }
 
@@ -288,7 +287,7 @@ function decode_id($id)
 function get_blogpath($id, $titre)
 {
     $date = decode_id($id);
-    $path = URL_ROOT.'?d='.$date['annee'].'/'.$date['mois'].'/'.$date['jour'].'/'.$date['heure'].'/'.$date['minutes'].'/'.$date['secondes'].'-'.titre_url($titre);
+    $path = URL_ROOT.'?d='.$date['annee'].'/'.$date['mois'].'/'.$date['jour'].'/'.$date['heure'].'/'.$date['minutes'].'/'.$date['secondes'].'-'.title_url($titre);
     return $path;
 }
 

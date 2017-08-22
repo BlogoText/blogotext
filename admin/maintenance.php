@@ -77,9 +77,9 @@ function rebuilt_file_db()
     $filesDtb = $filesDtbId = array();
 
     // Purge inexistant files on the disk
-    foreach ($GLOBALS['liste_fichiers'] as $id => $file) {
+    foreach ($GLOBALS['liste_files'] as $id => $file) {
         if (!in_array($file['bt_path'].$file['bt_filename'], $filesDisk)) {
-            unset($GLOBALS['liste_fichiers'][$id]);
+            unset($GLOBALS['liste_files'][$id]);
         }
         $filesDtb[] = $file['bt_path'].$file['bt_filename'];
         $filesDtbId[] = $file['bt_id'];
@@ -107,13 +107,13 @@ function rebuilt_file_db()
                 'bt_filename' => $file,
                 'bt_content' => '',
                 'bt_wiki_content' => '',
-                'bt_dossier' => 'default',
+                'bt_folder' => 'default',
                 'bt_checksum' => sha1_file($filepath),
                 'bt_statut' => 0,
                 'bt_path' => (preg_match('#^/[0-9a-f]{2}/#', $file)) ? substr($file, 0, 3) : '',
             );
             list($newImg['bt_dim_w'], $newImg['bt_dim_h']) = getimagesize($filepath);
-            $GLOBALS['liste_fichiers'][] = $newImg;
+            $GLOBALS['liste_files'][] = $newImg;
         }
         create_thumbnail($filepath);
     }
@@ -139,16 +139,16 @@ function rebuilt_file_db()
                 'bt_filename' => $file,
                 'bt_content' => '',
                 'bt_wiki_content' => '',
-                'bt_dossier' => 'default',
+                'bt_folder' => 'default',
                 'bt_checksum' => sha1_file($filepath),
                 'bt_statut' => 0,
                 'bt_path' => '',
             );
-            $GLOBALS['liste_fichiers'][] = $newFile;
+            $GLOBALS['liste_files'][] = $newFile;
         }
     }
-    $GLOBALS['liste_fichiers'] = tri_selon_sous_cle($GLOBALS['liste_fichiers'], 'bt_id');
-    create_file_dtb(FILES_DB, $GLOBALS['liste_fichiers']);
+    $GLOBALS['liste_files'] = tri_selon_sous_cle($GLOBALS['liste_files'], 'bt_id');
+    create_file_dtb(FILES_DB, $GLOBALS['liste_files']);
 }
 
 /*
@@ -240,7 +240,7 @@ function insert_table_articles($tableau)
 /**
  *
  */
-function insert_table_commentaires($tableau)
+function insert_table_comments($tableau)
 {
     $arrDiff = diff_trouve_base('commentaires', $tableau);
     $return = count($arrDiff);
@@ -259,7 +259,7 @@ function insert_table_commentaires($tableau)
 /**
  * recompte les commentaires aux articles
  */
-function recompte_commentaires()
+function recompte_comments()
 {
     if (DBMS == 'sqlite') {
         $query = '
@@ -299,11 +299,11 @@ function importer_json($json)
     }
     // importer les commentaires
     if (!empty($data['commentaires'])) {
-        $return['commentaires'] = insert_table_commentaires($data['commentaires']);
+        $return['commentaires'] = insert_table_comments($data['commentaires']);
     }
     // recompter les commentaires
     if (!empty($data['commentaires']) or !empty($data['articles'])) {
-        recompte_commentaires();
+        recompte_comments();
     }
     return $return;
 }
@@ -335,7 +335,7 @@ function addFolder2zip($zip, $folder)
 /**
  *
  */
-function creer_fichier_zip($folders)
+function creer_file_zip($folders)
 {
     $zipfile = 'archive_site-'.date('Ymd').'-'.substr(md5(rand(10, 99)), 3, 5).'.zip';
     $zip = new ZipArchive;
@@ -354,7 +354,7 @@ function creer_fichier_zip($folders)
 /**
  * fabrique le fichier json (très simple en fait)
  */
-function creer_fichier_json($arrData)
+function creer_file_json($arrData)
 {
     $path = 'backup-data-'.date('Ymd-His').'.json';
     return (file_put_contents(DIR_BACKUP.$path, json_encode($arrData), LOCK_EX) === false) ? false : URL_BACKUP.$path;
@@ -363,7 +363,7 @@ function creer_fichier_json($arrData)
 /**
  * Crée la liste des RSS et met tout ça dans un fichier OPML
  */
-function creer_fichier_opml()
+function creer_file_opml()
 {
     $path = 'backup-data-'.date('Ymd-His').'.opml';
     // sort feeds by folder
@@ -496,11 +496,11 @@ function importer_wordpress($xml)
     }
     // importer les commentaires
     if (!empty($data['commentaires'])) {
-        $return['commentaires'] = insert_table_commentaires($data['commentaires']);
+        $return['commentaires'] = insert_table_comments($data['commentaires']);
     }
     // recompter les commentaires
     if (!empty($data['commentaires']) or !empty($data['articles'])) {
-        recompte_commentaires();
+        recompte_comments();
     }
 
     return $return;
@@ -600,7 +600,7 @@ function parse_html($content)
  * process
  */
 
-$GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);
+$GLOBALS['liste_files'] = open_serialzd_file(FILES_DB);
 $GLOBALS['liste_flux'] = open_serialzd_file(FEEDS_DB);
 
 
@@ -608,12 +608,12 @@ $GLOBALS['liste_flux'] = open_serialzd_file(FEEDS_DB);
  * echo
  */
 
-echo tpl_get_html_head($GLOBALS['lang']['titre_maintenance']);
+echo tpl_get_html_head($GLOBALS['lang']['title_maintenance']);
 
 echo '<div id="header">';
     echo '<div id="top">';
     tpl_show_msg();
-    echo tpl_show_topnav('preferences.php', $GLOBALS['lang']['titre_maintenance']);
+    echo tpl_show_topnav('preferences.php', $GLOBALS['lang']['title_maintenance']);
     echo '</div>';
 echo '</div>';
 
@@ -668,8 +668,8 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
         echo '</fieldset>';
         // export links in html
         echo '<fieldset id="e_html">';
-        echo '<legend class="legend-backup">'.$GLOBALS['lang']['bak_combien_linx'].'</legend>';
-        echo '<p>'.form_select('nb-links2', $nbs, 50, $GLOBALS['lang']['bak_combien_linx']).'</p>';
+        echo '<legend class="legend-backup">'.$GLOBALS['lang']['bak_howmuch_link'].'</legend>';
+        echo '<p>'.form_select('nb-links2', $nbs, 50, $GLOBALS['lang']['bak_howmuch_link']).'</p>';
         echo '</fieldset>';
         // export data in zip
         echo '<fieldset id="e_zip">';
@@ -789,7 +789,7 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
                             }
                         }
                     }
-                    $file_archive = creer_fichier_json($arrData);
+                    $file_archive = creer_file_json($arrData);
 
                 // Export links in HTML format
                 } elseif ($format == 'html') {
@@ -814,11 +814,11 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
                     if ($_GET['incl-theme'] == 1) {
                         $dossiers[] = DIR_THEMES;
                     }
-                    $file_archive = creer_fichier_zip($dossiers);
+                    $file_archive = creer_file_zip($dossiers);
 
                 // Export a OPML rss lsit
                 } elseif ($format == 'opml') {
-                    $file_archive = creer_fichier_opml();
+                    $file_archive = creer_file_opml();
                 } else {
                     echo 'nothing to do';
                 }
@@ -829,7 +829,7 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
                     echo '<fieldset class="pref valid-center">';
                     echo '<legend class="legend-backup">'.$GLOBALS['lang']['bak_succes_save'].'</legend>';
 
-                    echo '<p><a href="'.$file_archive.'" download>'.$GLOBALS['lang']['bak_dl_fichier'].'</a></p>';
+                    echo '<p><a href="'.$file_archive.'" download>'.$GLOBALS['lang']['bak_dl_file'].'</a></p>';
                     echo '<p class="submit-bttns"><button class="submit button-submit" type="submit">'.$GLOBALS['lang']['submit'].'</button></p>';
                     echo '</fieldset>';
                     echo '</form>';
@@ -850,7 +850,7 @@ if (!isset($_GET['do']) and !isset($_FILES['file'])) {
                 }
                     // recount comms/articles
                 if ($_GET['opti-comm'] == 1) {
-                    recompte_commentaires();
+                    recompte_comments();
                 }
                     // delete old RSS entries
                 if ($_GET['opti-rss'] == 1) {

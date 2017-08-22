@@ -480,7 +480,7 @@ function addon_form_edit_settings($addon_id)
         $out .= hidden_input('action_type', 'settings');
         $out .= '<input type="hidden" name="addon_action" value="params" />';
         $out .= '<button class="submit button-cancel" type="button" onclick="annuler(\'addons.php\');" >'.$GLOBALS['lang']['cancel'].'</button>';
-        $out .= '<button class="submit button-submit" type="submit" name="enregistrer">'.$GLOBALS['lang']['enregistrer'].'</button>';
+        $out .= '<button class="submit button-submit" type="submit" name="enregistrer">'.$GLOBALS['lang']['record'].'</button>';
         $out .= '</div>';
         // END submit box
         $out .= '</div>';

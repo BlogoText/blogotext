@@ -53,7 +53,7 @@ function liste_base_files($tri_selon, $motif, $nombre)
 
     switch ($tri_selon) {
         case 'statut':
-            foreach ($GLOBALS['liste_fichiers'] as $id => $file) {
+            foreach ($GLOBALS['liste_files'] as $id => $file) {
                 if ($file['bt_statut'] == $motif) {
                     $tableau_sortie[$id] = $file;
                 }
@@ -61,7 +61,7 @@ function liste_base_files($tri_selon, $motif, $nombre)
             break;
 
         case 'date':
-            foreach ($GLOBALS['liste_fichiers'] as $id => $file) {
+            foreach ($GLOBALS['liste_files'] as $id => $file) {
                 if (($pos = strpos($file['bt_id'], $motif)) !== false and $pos == 0) {
                     $tableau_sortie[$id] = $file;
                 }
@@ -69,7 +69,7 @@ function liste_base_files($tri_selon, $motif, $nombre)
             break;
 
         case 'type':
-            foreach ($GLOBALS['liste_fichiers'] as $id => $file) {
+            foreach ($GLOBALS['liste_files'] as $id => $file) {
                 if ($file['bt_type'] == $motif) {
                     $tableau_sortie[$id] = $file;
                 }
@@ -77,7 +77,7 @@ function liste_base_files($tri_selon, $motif, $nombre)
             break;
 
         case 'extension':
-            foreach ($GLOBALS['liste_fichiers'] as $id => $file) {
+            foreach ($GLOBALS['liste_files'] as $id => $file) {
                 if (($file['bt_fileext'] == $motif)) {
                     $tableau_sortie[$id] = $file;
                 }
@@ -85,16 +85,16 @@ function liste_base_files($tri_selon, $motif, $nombre)
             break;
 
         case 'dossier':
-            foreach ($GLOBALS['liste_fichiers'] as $id => $file) {
-                if (in_array($motif, explode(',', $file['bt_dossier']))) {
+            foreach ($GLOBALS['liste_files'] as $id => $file) {
+                if (in_array($motif, explode(',', $file['bt_folder']))) {
                     $tableau_sortie[$id] = $file;
                 }
             }
             break;
 
         case 'recherche':
-            $GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);
-            foreach ($GLOBALS['liste_fichiers'] as $id => $file) {
+            $GLOBALS['liste_files'] = open_serialzd_file(FILES_DB);
+            foreach ($GLOBALS['liste_files'] as $id => $file) {
                 if (strpos($file['bt_content'].' '.$file['bt_filename'], $motif)) {
                     $tableau_sortie[$id] = $file;
                 }
@@ -102,7 +102,7 @@ function liste_base_files($tri_selon, $motif, $nombre)
             break;
 
         default:
-            $tableau_sortie = $GLOBALS['liste_fichiers'];
+            $tableau_sortie = $GLOBALS['liste_files'];
     }
 
     if (isset($nombre) and is_numeric($nombre) and $nombre > 0) {
@@ -130,7 +130,7 @@ function fichier_prefs()
         'dl_link_to_files' => 0,
         'email' => 'mail@example.com',
         'format_date' => 0,
-        'format_heure' => 0,
+        'format_hour' => 0,
         'fuseau_horaire' => 'UTC',
         'global_com_rule' => 0,
         'keywords' => 'blog, blogotext',
@@ -138,7 +138,7 @@ function fichier_prefs()
         'max_bill_admin' => 25,
         'max_comm_admin' => 50,
         'max_rss_admin' => 25,
-        'nb_list_linx' => 50,
+        'nb_list_link' => 50,
         'nom_du_site' => BLOGOTEXT_NAME,
         'require_email' => 0,
         'theme_choisi' => 'default',
@@ -155,7 +155,7 @@ function fichier_prefs()
             'dl_link_to_files' => $int,
             'email' => $string | FILTER_VALIDATE_EMAIL,
             'format_date' => $int,
-            'format_heure' => $int,
+            'format_hour' => $int,
             'fuseau_horaire' => $string,
             'keywords' => $string,
             'lang' => $string,
@@ -163,7 +163,7 @@ function fichier_prefs()
             'max_bill_admin' => $int,
             'max_comm_admin' => $int,
             'max_rss_admin' => $int,
-            'nb_list_linx' => $int,
+            'nb_list_link' => $int,
             'nom_du_site' => $string,
             'theme_choisi' => $string,
         ));
@@ -204,7 +204,7 @@ function fichier_prefs()
  * TRAITEMENT DU FORMULAIRE DE FICHIER, CÔTÉ BDD
  * Retourne le $fichier de l’entrée (après avoir possiblement changé des trucs, par ex si le fichier existait déjà, l’id retourné change)
  */
-function bdd_fichier($fichier, $quoi, $comment, $sup_var)
+function bdd_file($fichier, $quoi, $comment, $sup_var)
 {
     if ($fichier['bt_type'] == 'image') {
         $dossier = DIR_IMAGES.$fichier['bt_path'].'/';
@@ -218,7 +218,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var)
     // ajout d’un nouveau fichier
     if ($quoi == 'ajout-nouveau') {
             $prefix = '';
-        foreach ($GLOBALS['liste_fichiers'] as $files) {
+        foreach ($GLOBALS['liste_files'] as $files) {
             if (($fichier['bt_checksum'] == $files['bt_checksum'])) {
                 $fichier['bt_id'] = $files['bt_id'];
                 return $fichier;
@@ -240,13 +240,13 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var)
             if (move_uploaded_file($new_file, $dossier.$dest)) {
                 $fichier['bt_checksum'] = sha1_file($dossier.$dest);
             } else {
-                redirection(basename($_SERVER['SCRIPT_NAME']).'?errmsg=error_fichier_ajout_2');
+                redirection(basename($_SERVER['SCRIPT_NAME']).'?errmsg=error_file_ajout_2');
             }
         } // fichier spécifié par URL
         elseif ($comment == 'download' and copy($sup_var, $dossier.$dest)) {
             $fichier['bt_filesize'] = filesize($dossier.$dest);
         } else {
-            redirection(basename($_SERVER['SCRIPT_NAME']).'?errmsg=error_fichier_ajout');
+            redirection(basename($_SERVER['SCRIPT_NAME']).'?errmsg=error_file_ajout');
         }
 
         // si fichier par POST ou par URL == OK, on l’ajoute à la base. (si pas OK, on serai déjà sorti par le else { redirection() }.
@@ -258,9 +258,9 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var)
             $fichier['bt_path'] = '';
         }
         // ajout à la base.
-        $GLOBALS['liste_fichiers'][] = $fichier;
-        $GLOBALS['liste_fichiers'] = tri_selon_sous_cle($GLOBALS['liste_fichiers'], 'bt_id');
-        create_file_dtb(FILES_DB, $GLOBALS['liste_fichiers']);
+        $GLOBALS['liste_files'][] = $fichier;
+        $GLOBALS['liste_files'] = tri_selon_sous_cle($GLOBALS['liste_files'], 'bt_id');
+        create_file_dtb(FILES_DB, $GLOBALS['liste_files']);
     } // modification d’un fichier déjà existant
     elseif ($quoi == 'editer-existant') {
         $new_filename = $fichier['bt_filename'];
@@ -286,26 +286,26 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var)
                 }
                 // error rename ficher
             } else {
-                redirection(basename($_SERVER['SCRIPT_NAME']).'?file_id='.$fichier['bt_id'].'&errmsg=error_fichier_rename');
+                redirection(basename($_SERVER['SCRIPT_NAME']).'?file_id='.$fichier['bt_id'].'&errmsg=error_file_rename');
             }
         }
         list($fichier['bt_dim_w'], $fichier['bt_dim_h']) = getimagesize($dossier.$new_filename); // reupdate filesize.
 
         // modifie le fichier dans la BDD des fichiers.
-        foreach ($GLOBALS['liste_fichiers'] as $key => $entry) {
+        foreach ($GLOBALS['liste_files'] as $key => $entry) {
             if ($entry['bt_id'] == $fichier['bt_id']) {
-                $GLOBALS['liste_fichiers'][$key] = $fichier; // trouve la bonne entrée dans la base.
+                $GLOBALS['liste_files'][$key] = $fichier; // trouve la bonne entrée dans la base.
             }
         }
 
-        $GLOBALS['liste_fichiers'] = tri_selon_sous_cle($GLOBALS['liste_fichiers'], 'bt_id');
-        create_file_dtb(FILES_DB, $GLOBALS['liste_fichiers']);
-        redirection(basename($_SERVER['SCRIPT_NAME']).'?file_id='.$fichier['bt_id'].'&edit&msg=confirm_fichier_edit');
+        $GLOBALS['liste_files'] = tri_selon_sous_cle($GLOBALS['liste_files'], 'bt_id');
+        create_file_dtb(FILES_DB, $GLOBALS['liste_files']);
+        redirection(basename($_SERVER['SCRIPT_NAME']).'?file_id='.$fichier['bt_id'].'&edit&msg=confirm_file_edit');
     } // suppression d’un fichier (de la BDD et du disque)
     elseif ($quoi == 'supprimer-existant') {
         $id = $sup_var;
         // FIXME ajouter un test de vérification de session (security coin)
-        foreach ($GLOBALS['liste_fichiers'] as $fid => $fich) {
+        foreach ($GLOBALS['liste_files'] as $fid => $fich) {
             if ($id == $fich['bt_id']) {
                 $tbl_id = $fid;
                 break;
@@ -313,7 +313,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var)
         }
         // remove physical file on disk if it exists
         if (is_file($dossier.$fichier['bt_filename']) and isset($tbl_id)) {
-            $liste_fichiers = rm_dots_dir(scandir($dossier)); // liste les fichiers réels dans le dossier
+            $liste_files = rm_dots_dir(scandir($dossier)); // liste les fichiers réels dans le dossier
             if (unlink($dossier.$fichier['bt_filename'])) { // fichier physique effacé
                 if ($fichier['bt_type'] == 'image') {
                     // Delete the preview picture if any
@@ -322,9 +322,9 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var)
                         unlink($img);
                     }
                 }
-                unset($GLOBALS['liste_fichiers'][$tbl_id]); // efface le fichier dans la liste des fichiers.
-                $GLOBALS['liste_fichiers'] = tri_selon_sous_cle($GLOBALS['liste_fichiers'], 'bt_id');
-                create_file_dtb(FILES_DB, $GLOBALS['liste_fichiers']);
+                unset($GLOBALS['liste_files'][$tbl_id]); // efface le fichier dans la liste des fichiers.
+                $GLOBALS['liste_files'] = tri_selon_sous_cle($GLOBALS['liste_files'], 'bt_id');
+                create_file_dtb(FILES_DB, $GLOBALS['liste_files']);
                 return 'success';
             } else { // erreur effacement fichier physique
                 return 'error_suppr_file_suppr_error';
@@ -333,10 +333,10 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var)
 
         // the file in DB does not exists on disk => remove entry from DB
         if (isset($tbl_id)) {
-            unset($GLOBALS['liste_fichiers'][$tbl_id]); // remove entry from files-list.
+            unset($GLOBALS['liste_files'][$tbl_id]); // remove entry from files-list.
         }
-        $GLOBALS['liste_fichiers'] = tri_selon_sous_cle($GLOBALS['liste_fichiers'], 'bt_id');
-        create_file_dtb(FILES_DB, $GLOBALS['liste_fichiers']);
+        $GLOBALS['liste_files'] = tri_selon_sous_cle($GLOBALS['liste_files'], 'bt_id');
+        create_file_dtb(FILES_DB, $GLOBALS['liste_files']);
         return 'no_such_file_on_disk';
     }
 }
@@ -346,7 +346,7 @@ function bdd_fichier($fichier, $quoi, $comment, $sup_var)
  * gets posted informations and turn them into
  * an array
  */
-function init_post_fichier()
+function init_post_file()
 {
     //no $mode : it's always admin.
     // on edit : get file info from form
@@ -397,7 +397,7 @@ function init_post_fichier()
         'bt_wiki_content' => clean_txt($_POST['description']),
         'bt_checksum' => $checksum,
         'bt_statut' => $statut,
-        'bt_dossier' => ((empty($dossier)) ? 'default' : $dossier ), // tags
+        'bt_folder' => ((empty($dossier)) ? 'default' : $dossier ), // tags
         'bt_path' => ((empty($path)) ? (substr($checksum, 0, 2)) : $path ), // path on disk (rand subdir to avoid too many files in same dir)
     );
     return $fichier;

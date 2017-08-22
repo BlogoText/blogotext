@@ -112,7 +112,7 @@ $LANG = array(
 'monday' => 'lundi',
 'tuesday' => 'mardi',
 'wednesday' => 'mercredi',
-'thurdsay' => 'jeudi',
+'thursday' => 'jeudi',
 'friday' => 'vendredi',
 'saturday' => 'samedi',
 'sunday' => 'dimanche',
@@ -141,11 +141,11 @@ $LANG = array(
 // Notes
 'note_no_article' => 'Aucun article :/',
 'note_no_module' => 'Aucun module',
-'note_no_commentaire' => 'Aucun commentaire',
+'note_no_comment' => 'Aucun commentaire',
 'note_comment_closed' => 'Commentaires fermés',
 'note_no_link' => 'Aucun lien',
 'note_no_image' => 'Aucune image',
-'note_no_fichier' => 'Aucun fichier',
+'note_no_file' => 'Aucun fichier',
 'note_no_feed' => 'Aucun flux RSS',
 'note_no_feed_entry' => 'Aucune entrée RSS',
 // placeholders

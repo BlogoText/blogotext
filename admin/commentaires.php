@@ -167,8 +167,8 @@ function display_comment($comment, $withLink)
     echo '<div class="comm-options">';
     echo '<ul>';
     echo '<li class="cl-edit" onclick="unfold(this);">'.$GLOBALS['lang']['edit'].'</li>';
-    echo '<li class="cl-activ" onclick="activate_comm(this);" data-comm-id="'.$comment['ID'].'" data-comm-btid="'.$comment['bt_id'].'" data-comm-art-id="'.$comment['bt_article_id'].'">'.$GLOBALS['lang'][((!$comment['bt_statut']) ? '' : 'des').'activer'].'</li>';
-    echo '<li class="cl-suppr" onclick="suppr_comm(this);" data-comm-id="'.$comment['ID'].'" data-comm-art-id="'.$comment['bt_article_id'].'">'.$GLOBALS['lang']['supprimer'].'</li>';
+    echo '<li class="cl-activ" onclick="activate_comm(this);" data-comm-id="'.$comment['ID'].'" data-comm-btid="'.$comment['bt_id'].'" data-comm-art-id="'.$comment['bt_article_id'].'">'.$GLOBALS['lang'][((!$comment['bt_statut']) ? '' : 'des').'activate'].'</li>';
+    echo '<li class="cl-suppr" onclick="suppr_comm(this);" data-comm-id="'.$comment['ID'].'" data-comm-art-id="'.$comment['bt_article_id'].'">'.$GLOBALS['lang']['delete'].'</li>';
     echo '</ul>';
     echo '</div>';
 
@@ -188,13 +188,13 @@ function display_comment($comment, $withLink)
  * echo
  */
 
-echo tpl_get_html_head($GLOBALS['lang']['titre_commentaires']. (($postTitle) ?' | '.$postTitle : ''));
+echo tpl_get_html_head($GLOBALS['lang']['title_comments']. (($postTitle) ?' | '.$postTitle : ''));
 
 echo '<div id="header">';
     echo '<div id="top">';
         tpl_show_msg();
         echo moteur_recherche();
-        echo tpl_show_topnav($GLOBALS['lang']['titre_commentaires']);
+        echo tpl_show_topnav($GLOBALS['lang']['title_comments']);
     echo '</div>';
 echo '</div>';
 
@@ -206,9 +206,9 @@ afficher_form_filtre('commentaires', htmlspecialchars($vars['filtre']));
 echo '<div class="nombre-elem">';
 if ($paramMakeup['menu_theme'] == 'for_article') {
     $decodedId = decode_id($vars['post_id']);
-    $postLink = URL_ROOT.'?d='.$decodedId['annee'].'/'.$decodedId['mois'].'/'.$decodedId['jour'].'/'.$decodedId['heure'].'/'.$decodedId['minutes'].'/'.$decodedId['secondes'].'-'.titre_url($postTitle);
+    $postLink = URL_ROOT.'?d='.$decodedId['annee'].'/'.$decodedId['mois'].'/'.$decodedId['jour'].'/'.$decodedId['heure'].'/'.$decodedId['minutes'].'/'.$decodedId['secondes'].'-'.title_url($postTitle);
     echo '<ul>';
-    echo '<li><a href="ecrire.php?post_id='.$vars['post_id'].'">'.$GLOBALS['lang']['ecrire'].$postTitle.'</a></li>';
+    echo '<li><a href="ecrire.php?post_id='.$vars['post_id'].'">'.$GLOBALS['lang']['write'].$postTitle.'</a></li>';
     echo '<li><a href="'.$postLink.'">'.$GLOBALS['lang']['post_link'].'</a></li>';
     echo '</ul>';
     echo '– &nbsp; '.ucfirst(nombre_objets(count($comments), 'comment'));
@@ -230,7 +230,7 @@ if ($comments) {
     }
     echo '</div>';
 } else {
-    echo info($GLOBALS['lang']['note_no_commentaire']);
+    echo info($GLOBALS['lang']['note_no_comment']);
 }
 
 if ($paramMakeup['menu_theme'] == 'for_article') {

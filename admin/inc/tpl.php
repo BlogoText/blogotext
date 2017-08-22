@@ -23,9 +23,9 @@ function tpl_show_topnav($titre)
     $html = '<div id="nav">';
     $html .=  '<ul>';
     $html .=  '<li><a href="index.php" id="lien-index"'.(($tab == 'index.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['label_resume'].'</a></li>';
-    $html .=  '<li><a href="articles.php" id="lien-liste"'.(($tab == 'articles.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['mesarticles'].'</a></li>';
-    $html .=  '<li><a href="ecrire.php" id="lien-nouveau"'.(($tab == 'ecrire.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['nouveau'].'</a></li>';
-    $html .=  '<li><a href="commentaires.php" id="lien-lscom"'.(($tab == 'commentaires.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['titre_commentaires'].'</a></li>';
+    $html .=  '<li><a href="articles.php" id="lien-liste"'.(($tab == 'articles.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['myarticles'].'</a></li>';
+    $html .=  '<li><a href="ecrire.php" id="lien-nouveau"'.(($tab == 'ecrire.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['new'].'</a></li>';
+    $html .=  '<li><a href="commentaires.php" id="lien-lscom"'.(($tab == 'commentaires.php') ? ' class="current"' : '').'>'.$GLOBALS['lang']['title_comments'].'</a></li>';
     $html .=  '<li><a href="fichiers.php" id="lien-fichiers"'.(($tab == 'fichiers.php') ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_files']).'</a></li>';
     if ($GLOBALS['afficher_liens']) {
         $html .=  '<li><a href="links.php" id="lien-links"'.(($tab == 'links.php') ? ' class="current"' : '').'>'.ucfirst($GLOBALS['lang']['label_links']).'</a></li>';
@@ -43,7 +43,7 @@ function tpl_show_topnav($titre)
     $html .=  '<li><a href="preferences.php" id="lien-preferences">'.$GLOBALS['lang']['preferences'].'</a></li>';
     $html .=  '<li><a href="addons.php" id="lien-modules">'.ucfirst($GLOBALS['lang']['label_modules']).'</a></li>';
     $html .=  '<li><a href="'.URL_ROOT.'" id="lien-site">'.$GLOBALS['lang']['blog_link'].'</a></li>';
-    $html .=  '<li><a href="logout.php" id="lien-deconnexion">'.$GLOBALS['lang']['deconnexion'].'</a></li>';
+    $html .=  '<li><a href="logout.php" id="lien-deconnexion">'.$GLOBALS['lang']['logout'].'</a></li>';
     $html .=  '</ul>';
     $html .=  '</div>';
     return $html;
@@ -59,7 +59,7 @@ function tpl_show_msg()
     if ($msg) {
         if (array_key_exists(htmlspecialchars($msg), $GLOBALS['lang'])) {
             $nbnew = (string)filter_input(INPUT_GET, 'nbnew');
-            $suffix = ($nbnew) ? htmlspecialchars($nbnew).' '.$GLOBALS['lang']['rss_nouveau_flux'] : ''; // nb new RSS
+            $suffix = ($nbnew) ? htmlspecialchars($nbnew).' '.$GLOBALS['lang']['rss_new_feed'] : ''; // nb new RSS
             confirmation($GLOBALS['lang'][$msg].$suffix);
         }
     }
@@ -167,17 +167,17 @@ function php_lang_to_js($a)
     $frontend_str['rssJsAlertNewLink'] = $GLOBALS['lang']['rss_jsalert_new_link'];
     $frontend_str['rssJsAlertNewLinkFolder'] = $GLOBALS['lang']['rss_jsalert_new_link_folder'];
     $frontend_str['confirmFeedClean'] = $GLOBALS['lang']['confirm_feed_clean'];
-    $frontend_str['confirmCommentSuppr'] = $GLOBALS['lang']['confirm_comment_suppr'];
+    $frontend_str['confirmCommentSuppr'] = $GLOBALS['lang']['confirm_comment_del'];
     $frontend_str['activer'] = $GLOBALS['lang']['activate'];
     $frontend_str['desactiver'] = $GLOBALS['lang']['desactivate'];
     $frontend_str['errorPhpAjax'] = $GLOBALS['lang']['error_phpajax'];
-    $frontend_str['errorCommentSuppr'] = $GLOBALS['lang']['error_comment_suppr'];
+    $frontend_str['errorCommentSuppr'] = $GLOBALS['lang']['error_comment_del'];
     $frontend_str['errorCommentValid'] = $GLOBALS['lang']['error_comment_valid'];
     $frontend_str['questionQuitPage'] = $GLOBALS['lang']['question_quit_page'];
     $frontend_str['questionCleanRss'] = $GLOBALS['lang']['question_clean_rss'];
     $frontend_str['questionSupprComment'] = $GLOBALS['lang']['question_suppr_comment'];
     $frontend_str['questionSupprArticle'] = $GLOBALS['lang']['question_suppr_article'];
-    $frontend_str['questionSupprFichier'] = $GLOBALS['lang']['question_suppr_fichier'];
+    $frontend_str['questionSupprFichier'] = $GLOBALS['lang']['question_suppr_file'];
 
     $sc = 'var BTlang = '.json_encode($frontend_str).';';
 

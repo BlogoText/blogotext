@@ -1879,7 +1879,7 @@ function addNewFeed()
         // recharge la page en cas de succès
         loading_animation('off');
         notifNode.textContent = 'Success: please reload page.';
-        window.location.href = window.location.href.split("?")[0]+'?msg=confirm_feed_ajout';
+        window.location.href = window.location.href.split("?")[0]+'?msg=confirm_feed_add';
         return false;
 
     };
