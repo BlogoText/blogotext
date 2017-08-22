@@ -150,8 +150,8 @@ if ($query) {
     echo '<ul id="resultat-recherche">';
     echo '<li><a href="articles.php?q='.$query.'">'.nombre_objets($numberOfPosts, 'article').'</a></li>';
     echo '<li><a href="links.php?q='.$query.'">'.nombre_objets($numberOfLinks, 'link').'</a></li>';
-    echo '<li><a href="commentaires.php?q='.$query.'">'.nombre_objets($numberOfComments, 'commentaire').'</a></li>';
-    echo '<li><a href="fichiers.php?q='.$query.'">'.nombre_objets($numberOfFiles, 'fichier').'</a></li>';
+    echo '<li><a href="commentaires.php?q='.$query.'">'.nombre_objets($numberOfComments, 'comment').'</a></li>';
+    echo '<li><a href="fichiers.php?q='.$query.'">'.nombre_objets($numberOfFiles, 'files').'</a></li>';
     echo '<li><a href="feed.php?q='.$query.'">'.nombre_objets($numberOfFeeds, 'feed_entry').'</a></li>';
     echo '</ul>';
     echo '</div>';

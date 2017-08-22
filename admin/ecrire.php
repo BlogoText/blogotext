@@ -496,7 +496,7 @@ if ($post) {
         echo '<div class="nombre-elem">';
         echo '<a href="'.$post['bt_link'].'">'.$GLOBALS['lang']['post_link'].'</a> &nbsp; – &nbsp; ';
         echo '<a href="'.$post['bt_link'].'&share">'.$GLOBALS['lang']['post_share'].'</a> &nbsp; – &nbsp; ';
-        echo '<a href="commentaires.php?post_id='.$postId.'">'.ucfirst(nombre_objets($post['bt_nb_comments'], 'commentaire')).'</a>';
+        echo '<a href="commentaires.php?post_id='.$postId.'">'.ucfirst(nombre_objets($post['bt_nb_comments'], 'comment')).'</a>';
         echo '</div>';
     echo '</div>';
 }

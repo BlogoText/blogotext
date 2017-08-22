@@ -211,9 +211,9 @@ if ($paramMakeup['menu_theme'] == 'for_article') {
     echo '<li><a href="ecrire.php?post_id='.$vars['post_id'].'">'.$GLOBALS['lang']['ecrire'].$postTitle.'</a></li>';
     echo '<li><a href="'.$postLink.'">'.$GLOBALS['lang']['post_link'].'</a></li>';
     echo '</ul>';
-    echo '– &nbsp; '.ucfirst(nombre_objets(count($comments), 'commentaire'));
+    echo '– &nbsp; '.ucfirst(nombre_objets(count($comments), 'comment'));
 } elseif ($paramMakeup['menu_theme'] == 'for_comms') {
-    echo ucfirst(nombre_objets(count($comments), 'commentaire')).' '.$GLOBALS['lang']['on'].' '.$numberOfComments;
+    echo ucfirst(nombre_objets(count($comments), 'comment')).' '.$GLOBALS['lang']['on'].' '.$numberOfComments;
 }
 echo '</div>';
 echo '</div>';

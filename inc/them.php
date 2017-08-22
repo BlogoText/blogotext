@@ -179,7 +179,7 @@ function conversions_theme_article($texte, $billet)
     }
     // comments open OR ( comments closed AND comments exists ) => say « nb comments ».
     if (!($billet['bt_allow_comments'] == 0 or $GLOBALS['global_com_rule'] == 1 ) or $billet['bt_nb_comments'] != 0) {
-        $texte = str_replace($GLOBALS['balises']['nb_commentaires'], nombre_objets($billet['bt_nb_comments'], 'commentaire'), $texte);
+        $texte = str_replace($GLOBALS['balises']['nb_commentaires'], nombre_objets($billet['bt_nb_comments'], 'comment'), $texte);
     }
     $texte = str_replace($GLOBALS['balises']['article_lien'], $billet['bt_link'], $texte);
     $texte = str_replace($GLOBALS['balises']['article_tags'], liste_tags($billet, '1'), $texte);
