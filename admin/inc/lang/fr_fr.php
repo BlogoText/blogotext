@@ -11,9 +11,8 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 # *** LICENSE ***
 
-require_once(__DIR__.'/../../../inc/lang/fr_fr.php');
 
-$GLOBALS['lang'] = array(
+define('LANG_ADMIN', array(
 'id' => 'fr',
 // Install
 'install' => 'Installation',
@@ -516,4 +515,4 @@ $GLOBALS['lang'] = array(
 'mail_unsuball' => 'Pour vous désinscrire des commentaires de tous les billets, suivez ce lien: ',
 'mail_end' => 'Merci de ne pas répondre à ce message automatique.',
 'mail_regards' => 'Cordialement.',
-);
+));

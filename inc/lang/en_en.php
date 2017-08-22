@@ -11,7 +11,7 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 # *** LICENSE ***
 
-$GLOBALS['lang'] = array(
+define('LANG', array(
 'id' => 'en',
 // Navigation
 'notice' => 'Notice',
@@ -176,4 +176,4 @@ $GLOBALS['lang'] = array(
 'mail_unsuball' => 'To unsubscribe from the comments on all the posts, follow this link: ',
 'mail_end' => 'Also, do not reply to this email, since it is an automatic generated email.',
 'mail_regards' => 'Regards',
-);
+));
