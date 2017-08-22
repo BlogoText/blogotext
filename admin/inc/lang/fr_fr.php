@@ -12,7 +12,7 @@
 # *** LICENSE ***
 
 
-define('LANG_ADMIN', array(
+$LANG_ADMIN = array(
 'id' => 'fr',
 // Install
 'install' => 'Installation',
@@ -515,4 +515,4 @@ define('LANG_ADMIN', array(
 'mail_unsuball' => 'Pour vous désinscrire des commentaires de tous les billets, suivez ce lien: ',
 'mail_end' => 'Merci de ne pas répondre à ce message automatique.',
 'mail_regards' => 'Cordialement.',
-));
+);

@@ -11,7 +11,7 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 # *** LICENSE ***
 
-define('LANG_ADMIN', array(
+$LANG_ADMIN = array(
 'id' => 'en',
 // Install
 'install' => 'Installation',
@@ -463,4 +463,4 @@ define('LANG_ADMIN', array(
 'grab_menu_close' => 'Close the menu',
 'apply' => 'Apply',
 
-));
+);

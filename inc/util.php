@@ -254,11 +254,14 @@ function lang_load_land($admin)
     }
 
     require_once BT_ROOT.'inc/lang/'.$lang.'_'.$lang.'.php';
-    $GLOBALS['lang'] = LANG;
     if ($admin === true && defined('BT_ROOT_ADMIN')) {
         require_once BT_ROOT_ADMIN.'inc/lang/'.$lang.'_'.$lang.'.php';
-        $GLOBALS['lang'] = array_merge(LANG, LANG_ADMIN);
+        $GLOBALS['lang'] = array_merge($LANG, $LANG_ADMIN);
+        unset($LANG_ADMIN);
+    } else {
+        $GLOBALS['lang'] = $LANG;
     }
+    unset($LANG);
 }
 
 /**

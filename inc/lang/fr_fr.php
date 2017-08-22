@@ -11,7 +11,7 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 # *** LICENSE ***
 
-define('LANG', array(
+$LANG = array(
 'id' => 'fr',
 // Navigation
 'notice' => 'Remarque',
@@ -176,4 +176,4 @@ define('LANG', array(
 'mail_unsuball' => 'Pour vous désinscrire des commentaires de tous les billets, suivez ce lien: ',
 'mail_end' => 'Merci de ne pas répondre à ce message automatique.',
 'mail_regards' => 'Cordialement.',
-));
+);
