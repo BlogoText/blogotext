@@ -23,8 +23,7 @@ DEFINE('WRONG_PNG', 'iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP
 DEFINE('EXPIRE_PNG', 60 * 60 * 24 * 365);
 
 
-
-function download($url, $target, $referer = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:34.0) Gecko/20100101 Firefox/34.0')
+function download($url, $target, $referer = BLOGOTEXT_UA)
 {
     $success = false;
 
