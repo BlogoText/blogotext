@@ -33,7 +33,7 @@ $html_head = '<!DOCTYPE html>
         </style>
     </head>
     <body>
-        <h1 class="center">BlogoText update to 3.7</h1>
+        <h1 class="center">BlogoText update to the lastest 3.7.X</h1>
         <div id="content">';
 
 /**
@@ -109,7 +109,7 @@ if (!defined('BT_RUN_INSTALL')) {
 
 
 // check version
-if (BLOGOTEXT_VERSION != '3.7.4') {
+if (BLOGOTEXT_VERSION != '3.7.5') {
     echo $html_head;
     echo '
         <div class="center">
@@ -156,7 +156,7 @@ if (!isset($_GET['proceed'])) {
     echo $html_head;
     echo '
         <div class="center">
-            <h3>Update BlogoText to 3.7 ?</h3>
+            <h3>Update BlogoText to 3.7.5 ?</h3>
             <p style="margin:0.5em auto;max-width:400px;text-align:left;">Some recommendations</p>
             <ul>';
     if (PHP_INTL === false) {
