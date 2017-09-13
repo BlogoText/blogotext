@@ -430,6 +430,9 @@ function send_emails($id_comment)
     //create a boundary for the email.
     $boundary = uniqid('blogotext');
     $subject = $GLOBALS['lang']['mail_subject'].$article_title.'" - '.$GLOBALS['nom_du_site'];
+    $subject = 'New comment on "'.$article_title.'" - '.$GLOBALS['nom_du_site'];
+    $headers  = 'MIME-Version: 1.0'."\r\n".'Content-type: text/html; charset="UTF-8"'."\r\n";
+    $headers .= 'From: no.reply_'.$GLOBALS['email']."\r\n".'X-Mailer: BlogoText - PHP/'.phpversion();
 
     // send emails
     foreach ($to_send_mail as $mail) {
@@ -472,6 +475,16 @@ function send_emails($id_comment)
 
         $message .= "\r\n\r\n--" . $boundary . "--";
 
+=======
+        $message = '<html>';
+        $message .= '<head><title>'.$subject.'</title></head>';
+        $message .= '<body><p>A new comment by <b>'.$comm_author.'</b> has been posted on <b>'.$article_title.'</b> form '.$GLOBALS['nom_du_site'].'.<br/>';
+        $message .= 'You can see it by following <a href="'.get_blogpath($article_id, '').'#'.article_anchor($id_comment).'">this link</a>.</p>';
+        $message .= '<p>To unsubscribe from the comments on that post, you can follow this link:<br/><a href="'.$unsublink.'">'.$unsublink.'</a>.</p>';
+        $message .= '<p>To unsubscribe from the comments on all the posts, follow this link:<br/> <a href="'.$unsublink.'&amp;all=1">'.$unsublink.'&amp;all=1</a>.</p>';
+        $message .= '<p>Also, do not reply to this email, since it is an automatic generated email.</p><p>Regards</p></body>';
+        $message .= '</html>';
+>>>>>>> fc1b95de2cb553f36950a0bbfd4beb859b2b15bc
         mail($mail, $subject, $message, $headers);
     }
     return true;
