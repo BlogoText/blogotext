@@ -8,6 +8,10 @@
 # note : each note will be start with "note :"
 # note : 1 note by subject
 
+[3.7.6]
+    note : issue #318, thanks to @chb9
+    - fix XSS issue in comments
+
 [3.7.5]
     - fix feed aggregator multiple errors on pages navigation
     - fix feed aggregator filter for 4 bytes char

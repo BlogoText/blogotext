@@ -116,15 +116,44 @@ function parse_texte_code($texte, $code_before)
 }
 
 /**
+ * used by markup()
+ * convert a BBCode link to HTML <a>
+ * with a check on URL
  *
+ * @params array $matches, array from preg_replace_callback
+ * @return string
  */
-function markup($texte)
+function markup_clean_href($matches)
 {
-    $texte = preg_replace('#\[([^|]+)\|(\s*javascript.*)\]#i', '$1', $texte);
-    $texte = preg_replace("/(\r\n|\r\n\r|\n|\n\r|\r)/", "\r", $texte);
+    // var_dump($matches);
+    $allowed = array('http://', 'https://', 'ftp://');
+    // if not a valid url, return the string
+    if (!filter_var($matches['2'], FILTER_VALIDATE_URL)
+     || !preg_match('#^('.join('|', $allowed).')#i', $matches['2'])
+    ) {
+        return $matches['0'];
+    }
+    // handle different case
+    if (empty(trim($matches['1']))) {
+        return $matches['1'].'<a href="'.$matches['2'].'">'.$matches['2'].'</a>';
+    } else {
+        return '<a href="'.$matches['2'].'">'.$matches['1'].'</a>';
+    }
+}
+
+/**
+ * convert text with BBCode (more or less BBCode) to HTML
+ *
+ * @params string $text
+ * @return string
+ */
+function markup($text)
+{
+    $text = preg_replace('#\[([^|]+)\|(\s*javascript.*)\]#i', '$1', $text);
+    $text = preg_replace("/(\r\n|\r\n\r|\n|\n\r|\r)/", "\r", $text);
     $tofind = array(
-        /* regex URL     */ '#([^"\[\]|])((http|ftp)s?://([^"\'\[\]<>\s\)\(]+))#i',
-        /* a href        */ '#\[([^[]+)\|([^[]+)\]#',
+        // /* regex URL     */ '#([^"\[\]|])((http|ftp)s?://([^"\'\[\]<>\s\)\(]+))#i',
+        // /* a href        */ '#\[([^[]+)\|([^[]+)\]#',
         /* strong        */ '#\[b\](.*?)\[/b\]#s',
         /* italic        */ '#\[i\](.*?)\[/i\]#s',
         /* strike        */ '#\[s\](.*?)\[/s\]#s',
@@ -134,8 +163,8 @@ function markup($texte)
         /* code=language */ '#\[code=(\w+)\]\[/code\]#s',
     );
     $toreplace = array(
-        /* regex URL     */ '$1<a href="$2">$2</a>',
-        /* a href        */ '<a href="$2">$1</a>',
+        // /* regex URL     */ '$1<a href="$2">$2</a>',
+        // /* a href        */ '<a href="$2">$1</a>',
         /* strong        */ '<b>$1</b>',
         /* italic        */ '<em>$1</em>',
         /* strike        */ '<del>$1</del>',
@@ -145,9 +174,11 @@ function markup($texte)
         /* code=language */ '<prebtcode data-language="$1"></prebtcode>'."\r",
     );
 
-    preg_match_all('#\[code(=(\w+))?\](.*?)\[/code\]#s', $texte, $code_contents, PREG_SET_ORDER);
-    $texte_formate = preg_replace('#\[code(=(\w+))?\](.*?)\[/code\]#s', '[code$1][/code]', $texte);
+    preg_match_all('#\[code(=(\w+))?\](.*?)\[/code\]#s', $text, $code_contents, PREG_SET_ORDER);
+    $texte_formate = preg_replace('#\[code(=(\w+))?\](.*?)\[/code\]#s', '[code$1][/code]', $text);
     $texte_formate = preg_replace($tofind, $toreplace, $texte_formate);
+    $texte_formate = preg_replace_callback('#([^"\[\]|])((http|ftp)s?://([^"\'\[\]<>\s\)\(]+))#i', 'markup_clean_href', $texte_formate);
+    $texte_formate = preg_replace_callback('#\[([^[]+)\|([^[]+)\]#', 'markup_clean_href', $texte_formate);
     $texte_formate = parse_texte_paragraphs($texte_formate);
     $texte_formate = parse_texte_code($texte_formate, $code_contents);
 
