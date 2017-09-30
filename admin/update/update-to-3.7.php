@@ -156,7 +156,7 @@ if (!isset($_GET['proceed'])) {
     echo $html_head;
     echo '
         <div class="center">
-            <h3>Update BlogoText to 3.7.5 ?</h3>
+            <h3>Update BlogoText to 3.7.6 ?</h3>
             <p style="margin:0.5em auto;max-width:400px;text-align:left;">Some recommendations</p>
             <ul>';
     if (PHP_INTL === false) {
