@@ -9,6 +9,7 @@
 # note : 1 note by subject
 
 [3.7.6]
+    note : issue #318, thanks to @chb9
     - fix XSS issue in comments
 
 [3.7.5]
