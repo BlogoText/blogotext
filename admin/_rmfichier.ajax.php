@@ -19,14 +19,14 @@ require_once 'inc/boot.php';
     It is not intended to be called directly in your browser.
 */
 
-$GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);
+$GLOBALS['liste_files'] = open_serialzd_file(FILES_DB);
 $fileId = filter_input(INPUT_POST, 'file_id');
 $deletion = (filter_input(INPUT_POST, 'supprimer') !== null);
 
 if ($fileId && preg_match('#^\d{14}$#', $fileId) && $deletion) {
-    foreach ($GLOBALS['liste_fichiers'] as $file) {
+    foreach ($GLOBALS['liste_files'] as $file) {
         if ($file['bt_id'] == $fileId) {
-            die(bdd_fichier($file, 'supprimer-existant', '', $file['bt_id']));
+            die(bdd_file($file, 'supprimer-existant', '', $file['bt_id']));
         }
     }
 }

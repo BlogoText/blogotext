@@ -90,13 +90,13 @@ function traiter_form_link($link)
 {
     if (filter_input(INPUT_POST, 'enregistrer') !== null) {
         $result = links_db_push($link);
-        $redir = basename($_SERVER['SCRIPT_NAME']).'?msg=confirm_link_ajout';
+        $redir = basename($_SERVER['SCRIPT_NAME']).'?msg=confirm_link_add';
     } elseif (filter_input(INPUT_POST, 'editer') !== null) {
         $result = links_db_upd($link);
         $redir = basename($_SERVER['SCRIPT_NAME']).'?msg=confirm_link_edit';
     } elseif (filter_input(INPUT_POST, 'supprimer') !== null) {
         $result = links_db_del($link);
-        $redir = basename($_SERVER['SCRIPT_NAME']).'?msg=confirm_link_suppr';
+        $redir = basename($_SERVER['SCRIPT_NAME']).'?msg=confirm_link_del';
     }
 
     if (isset($result) && $result === true) {
@@ -154,10 +154,10 @@ function afficher_form_link($step, $errors, $linkEdited = '')
         $form .= '<form method="get" id="post-new-lien" action="'.basename($_SERVER['SCRIPT_NAME']).'">';
         $form .= '<fieldset>';
         $form .= '<div class="contain-input">';
-        $form .= '<label for="url">'.$GLOBALS['lang']['label_nouv_lien'].'</label>';
+        $form .= '<label for="url">'.$GLOBALS['lang']['label_new_link'].'</label>';
         $form .= '<input type="text" name="url" id="url" value="" size="70" placeholder="http://www.example.com/" class="text" autocomplete="off" />';
         $form .= '</div>';
-        $form .= '<p class="submit-bttns"><button type="submit" class="submit button-submit">'.$GLOBALS['lang']['envoyer'].'</button></p>';
+        $form .= '<p class="submit-bttns"><button type="submit" class="submit button-submit">'.$GLOBALS['lang']['send'].'</button></p>';
         $form .= '</fieldset>';
         $form .= '</form>';
     } elseif ($step == 2) {
@@ -218,7 +218,7 @@ function afficher_form_link($step, $errors, $linkEdited = '')
         }
 
         $link = array('title' => htmlspecialchars($title), 'url' => htmlspecialchars($url));
-        $form .= '<input type="text" name="title" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_titre']).'" required="" value="'.$link['title'].'" size="50" class="text" autofocus />';
+        $form .= '<input type="text" name="title" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_title']).'" required="" value="'.$link['title'].'" size="50" class="text" autofocus />';
         $form .= '<span id="description-box">';
         $form .= ($type == 'image') ? '<span id="img-container"><img src="'.$fdata.'" alt="img" class="preview-img" height="'.$height.'" width="'.$width.'"/></span>' : '';
         $form .= '<textarea class="text description" name="description" cols="40" rows="7" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_description']).'"></textarea>';
@@ -230,16 +230,16 @@ function afficher_form_link($step, $errors, $linkEdited = '')
         $form .= '<input type="hidden" id="categories" name="categories" value="" />';
         $form .= '</div>';
 
-        $form .= '<input type="checkbox" name="statut" id="statut" class="checkbox" /><label class="forcheckbox" for="statut">'.$GLOBALS['lang']['label_lien_priv'].'</label>';
+        $form .= '<input type="checkbox" name="statut" id="statut" class="checkbox" /><label class="forcheckbox" for="statut">'.$GLOBALS['lang']['label_link_priv'].'</label>';
         if ($type == 'image' || $type == 'file') {
             // download of file is asked
-            $form .= ($GLOBALS['dl_link_to_files'] == 2) ? '<input type="checkbox" name="add_to_files" id="add_to_files" class="checkbox" /><label class="forcheckbox" for="add_to_files">'.$GLOBALS['lang']['label_dl_fichier'].'</label>' : '';
+            $form .= ($GLOBALS['dl_link_to_files'] == 2) ? '<input type="checkbox" name="add_to_files" id="add_to_files" class="checkbox" /><label class="forcheckbox" for="add_to_files">'.$GLOBALS['lang']['label_dl_file'].'</label>' : '';
             // download of file is systematic
             $form .= ($GLOBALS['dl_link_to_files'] == 1) ? hidden_input('add_to_files', 'on') : '';
         }
         $form .= '<p class="submit-bttns">';
-        $form .= '<button class="submit button-cancel" type="button" onclick="annuler(\'links.php\');">'.$GLOBALS['lang']['annuler'].'</button>';
-        $form .= '<button class="submit button-submit" type="submit" name="enregistrer" id="valid-link">'.$GLOBALS['lang']['envoyer'].'</button>';
+        $form .= '<button class="submit button-cancel" type="button" onclick="annuler(\'links.php\');">'.$GLOBALS['lang']['cancel'].'</button>';
+        $form .= '<button class="submit button-submit" type="submit" name="enregistrer" id="valid-link">'.$GLOBALS['lang']['send'].'</button>';
         $form .= '</p>';
         $form .= hidden_input('_verif_envoi', 1);
         $form .= hidden_input('bt_id', $newId);
@@ -249,7 +249,7 @@ function afficher_form_link($step, $errors, $linkEdited = '')
     } elseif ($step == 'edit') {
         $form = '<form method="post" onsubmit="return moveTag();" id="post-lien" action="'.basename($_SERVER['SCRIPT_NAME']).'?id='.$linkEdited['bt_id'].'">';
         $form .= '<input type="text" name="url" placeholder="URL" required="" value="'.$linkEdited['bt_link'].'" size="70" class="text readonly-like" />';
-        $form .= '<input type="text" name="title" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_titre']).'" required="" value="'.$linkEdited['bt_title'].'" size="70" class="text" autofocus />';
+        $form .= '<input type="text" name="title" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_title']).'" required="" value="'.$linkEdited['bt_title'].'" size="70" class="text" autofocus />';
         $form .= '<div id="description-box">';
         $form .= '<textarea class="description text" name="description" cols="70" rows="7" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_description']).'" >'.$linkEdited['bt_wiki_content'].'</textarea>';
         $form .= '</div>';
@@ -258,12 +258,12 @@ function afficher_form_link($step, $errors, $linkEdited = '')
         $form .= '<input list="htmlListTags" type="text" class="text" id="type_tags" name="tags" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_tags']).'"/>';
         $form .= '<input type="hidden" id="categories" name="categories" value="" />';
         $form .= '</div>';
-        $form .= '<input type="checkbox" name="statut" id="statut" class="checkbox" '.(($linkEdited['bt_statut'] == 0) ? 'checked' : '').'/><label class="forcheckbox" for="statut">'.$GLOBALS['lang']['label_lien_priv'].'</label>';
+        $form .= '<input type="checkbox" name="statut" id="statut" class="checkbox" '.(($linkEdited['bt_statut'] == 0) ? 'checked' : '').'/><label class="forcheckbox" for="statut">'.$GLOBALS['lang']['label_link_priv'].'</label>';
 
         $form .= '<p class="submit-bttns">';
-        $form .= '<button class="submit button-delete" type="button" name="supprimer" onclick="rmArticle(this)">'.$GLOBALS['lang']['supprimer'].'</button>';
-        $form .= '<button class="submit button-cancel" type="button" onclick="annuler(\'links.php\');">'.$GLOBALS['lang']['annuler'].'</button>';
-        $form .= '<button class="submit button-submit" type="submit" name="editer">'.$GLOBALS['lang']['envoyer'].'</button>';
+        $form .= '<button class="submit button-delete" type="button" name="supprimer" onclick="rmArticle(this)">'.$GLOBALS['lang']['delete'].'</button>';
+        $form .= '<button class="submit button-cancel" type="button" onclick="annuler(\'links.php\');">'.$GLOBALS['lang']['cancel'].'</button>';
+        $form .= '<button class="submit button-submit" type="submit" name="editer">'.$GLOBALS['lang']['send'].'</button>';
         $form .= '</p>';
         $form .= hidden_input('ID', $linkEdited['ID']);
         $form .= hidden_input('bt_id', $linkEdited['bt_id']);
@@ -288,8 +288,8 @@ function afficher_lien($link)
     $list .= '<span class="date">'.date_formate($link['bt_id']).', '.heure_formate($link['bt_id']).'</span>';
     $list .= '<div class="link-options">';
     $list .= '<ul>';
-    $list .= '<li class="ll-edit"><a href="'.basename($_SERVER['SCRIPT_NAME']).'?id='.$link['bt_id'].'">'.$GLOBALS['lang']['editer'].'</a></li>';
-    $list .= ($link['bt_statut'] == 1) ? '<li class="ll-seepost"><a href="'.URL_ROOT.'?mode=links&amp;id='.$link['bt_id'].'">'.$GLOBALS['lang']['voir_sur_le_blog'].'</a></li>' : '';
+    $list .= '<li class="ll-edit"><a href="'.basename($_SERVER['SCRIPT_NAME']).'?id='.$link['bt_id'].'">'.$GLOBALS['lang']['edit'].'</a></li>';
+    $list .= ($link['bt_statut'] == 1) ? '<li class="ll-seepost"><a href="'.URL_ROOT.'?mode=links&amp;id='.$link['bt_id'].'">'.$GLOBALS['lang']['see_online'].'</a></li>' : '';
     $list .= '</ul>';
     $list .= '</div>';
     $list .=  '</div>';

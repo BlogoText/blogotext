@@ -28,7 +28,7 @@ function display_form_feed_conf($errors = '')
     foreach ($GLOBALS['liste_flux'] as $flux) {
         $out .= '<li>';
         $out .= '<span'.( ($flux['iserror'] > 2) ? ' class="feed-error" title="('.$flux['iserror'].' last requests were errors.)" ' : ''  ).'>';
-        $out .= '<label for="i_'.$flux['checksum'].'">'.$GLOBALS['lang']['rss_label_titre_flux'].'</label>';
+        $out .= '<label for="i_'.$flux['checksum'].'">'.$GLOBALS['lang']['rss_label_title_flux'].'</label>';
         $out .= '<input id="i_'.$flux['checksum'].'" name="i_'.$flux['checksum'].'" type="text" class="text" value="'.htmlspecialchars($flux['title']).'">';
         $out .= '</span>';
         $out .= '<span>';
@@ -36,19 +36,19 @@ function display_form_feed_conf($errors = '')
         $out .= '<input id="j_'.$flux['checksum'].'" name="j_'.$flux['checksum'].'" type="text" class="text" value="'.htmlspecialchars($flux['link']).'">';
         $out .= '</span>';
         $out .= '<span>';
-        $out .= '<label for="l_'.$flux['checksum'].'">'.$GLOBALS['lang']['rss_label_dossier'].'</label>';
+        $out .= '<label for="l_'.$flux['checksum'].'">'.$GLOBALS['lang']['rss_label_folder'].'</label>';
         $out .= '<input id="l_'.$flux['checksum'].'" name="l_'.$flux['checksum'].'" type="text" class="text" value="'.htmlspecialchars($flux['folder']).'">';
         $out .= '<input class="remove-feed" name="k_'.$flux['checksum'].'" type="hidden" value="1">';
         $out .= '</span>';
         $out .= '<span>';
-        $out .= '<button type="button" class="submit button-cancel" onclick="unMarkAsRemove(this)">'.$GLOBALS['lang']['annuler'].'</button>';
-        $out .= '<button type="button" class="submit button-delete" onclick="markAsRemove(this)">'.$GLOBALS['lang']['supprimer'].'</button>';
+        $out .= '<button type="button" class="submit button-cancel" onclick="unMarkAsRemove(this)">'.$GLOBALS['lang']['cancel'].'</button>';
+        $out .= '<button type="button" class="submit button-delete" onclick="markAsRemove(this)">'.$GLOBALS['lang']['delete'].'</button>';
         $out .= '</span>';
         $out .= '</li>';
     }
     $out .= '</ul>';
     $out .= '<p class="submit-bttns">';
-    $out .= '<button class="submit button-submit" type="submit" name="send">'.$GLOBALS['lang']['envoyer'].'</button>';
+    $out .= '<button class="submit button-submit" type="submit" name="send">'.$GLOBALS['lang']['send'].'</button>';
     $out .= '</p>';
     $out .= hidden_input('token', new_token());
     $out .= hidden_input('verif_envoi', 1);
@@ -329,13 +329,13 @@ $tableau = liste_elements($sql, $arr, 'rss');
  * echo
  */
 
-echo tpl_get_html_head($GLOBALS['lang']['mesabonnements']);
+echo tpl_get_html_head($GLOBALS['lang']['mysubs']);
 
 echo '<div id="header">';
     echo '<div id="top">';
         tpl_show_msg();
         echo moteur_recherche();
-        echo tpl_show_topnav($GLOBALS['lang']['mesabonnements']);
+        echo tpl_show_topnav($GLOBALS['lang']['mysubs']);
     echo '</div>';
 
 $config = filter_input(INPUT_GET, 'config');
@@ -350,7 +350,7 @@ if ($config === null) {
     echo '<li><button type="button" onclick="return cleanList();" title="'.$GLOBALS['lang']['rss_label_clean'].'"></button></li>';
     echo '</ul>';
     echo '</div>';
-    echo '<button type="button" id="fab" class="add-feed" onclick="addNewFeed();" title="'.$GLOBALS['lang']['rss_label_config'].'">'.$GLOBALS['lang']['label_lien_ajout'].'</button>';
+    echo '<button type="button" id="fab" class="add-feed" onclick="addNewFeed();" title="'.$GLOBALS['lang']['rss_label_config'].'">'.$GLOBALS['lang']['label_link_add'].'</button>';
 }
 
 echo '</div>';
@@ -406,7 +406,7 @@ if ($config !== null) {
     }
     $out .= '</div>';
     $out .= '</div>';
-    $out .= '<div class="keyshortcut">'.$GLOBALS['lang']['rss_raccourcis_clavier'].'</div>';
+    $out .= '<div class="keyshortcut">'.$GLOBALS['lang']['rss_key_shortcuts'].'</div>';
     $out .= '</div>';
 
     echo $out;

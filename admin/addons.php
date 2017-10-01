@@ -63,12 +63,12 @@ if ($filtre == 'disabled') {
  * echo
  */
 
-echo tpl_get_html_head($GLOBALS['lang']['mesmodules']);
+echo tpl_get_html_head($GLOBALS['lang']['mymodules']);
 
 echo '<div id="header">';
     echo '<div id="top">';
         echo moteur_recherche();
-        echo tpl_show_topnav($GLOBALS['lang']['mesmodules']);
+        echo tpl_show_topnav($GLOBALS['lang']['mymodules']);
     echo '</div>';
 echo '</div>';
 
@@ -80,7 +80,7 @@ echo erreurs($erreurs);
 echo '<div id="subnav">';
     echo addon_form_list_addons_filter($filtre);
     echo '<div class="nombre-elem">';
-    echo ucfirst(nombre_objets(count($tableau), 'module')).' '.$GLOBALS['lang']['sur'].' '.count($addons);
+    echo ucfirst(nombre_objets(count($tableau), 'module')).' '.$GLOBALS['lang']['on'].' '.count($addons);
     echo '</div>';
 echo '</div>';
 

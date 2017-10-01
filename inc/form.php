@@ -30,7 +30,7 @@ function valider_form_commentaire($commentaire, $mode)
 {
     $erreurs = array();
     if (!strlen(trim($commentaire['bt_author']))) {
-        $erreurs[] = $GLOBALS['lang']['err_comm_auteur'];
+        $erreurs[] = $GLOBALS['lang']['err_comm_author'];
     }
     if (!empty($commentaire['bt_email']) or $GLOBALS['require_email'] == 1) { // if email is required, or is given, it must be valid
         if (!preg_match('#^[-\w!%+~\'*"\[\]{}.=]+@[\w.-]+\.[a-zA-Z]{2,6}$#i', trim($commentaire['bt_email']))) {
@@ -38,7 +38,7 @@ function valider_form_commentaire($commentaire, $mode)
         }
     }
     if (!strlen(trim($commentaire['bt_content'])) or $commentaire['bt_content'] == "<p></p>") { // comment may not be empty
-        $erreurs[] = $GLOBALS['lang']['err_comm_contenu'];
+        $erreurs[] = $GLOBALS['lang']['err_comm_content'];
     }
     if (!preg_match('/\d{14}/', $commentaire['bt_article_id'])) { // comment has to be on a valid article_id
         $erreurs[] = $GLOBALS['lang']['err_comm_article_id'];
@@ -110,10 +110,10 @@ function form_formatting_toolbar($extended = false)
 {
     $html = '';
     $html .= '<p class="formatbut">'."\n";
-    $html .= "\t".'<button id="button01" class="but" type="button" title="'.$GLOBALS['lang']['bouton-gras'].'" onclick="insertTag(this, \'[b]\',\'[/b]\');"><span></span></button>'."\n";
-    $html .= "\t".'<button id="button02" class="but" type="button" title="'.$GLOBALS['lang']['bouton-ital'].'" onclick="insertTag(this, \'[i]\',\'[/i]\');"><span></span></button>'."\n";
-    $html .= "\t".'<button id="button03" class="but" type="button" title="'.$GLOBALS['lang']['bouton-soul'].'" onclick="insertTag(this, \'[u]\',\'[/u]\');"><span></span></button>'."\n";
-    $html .= "\t".'<button id="button04" class="but" type="button" title="'.$GLOBALS['lang']['bouton-barr'].'" onclick="insertTag(this, \'[s]\',\'[/s]\');"><span></span></button>'."\n";
+    $html .= "\t".'<button id="button01" class="but" type="button" title="'.$GLOBALS['lang']['btn-bold'].'" onclick="insertTag(this, \'[b]\',\'[/b]\');"><span></span></button>'."\n";
+    $html .= "\t".'<button id="button02" class="but" type="button" title="'.$GLOBALS['lang']['btn-ital'].'" onclick="insertTag(this, \'[i]\',\'[/i]\');"><span></span></button>'."\n";
+    $html .= "\t".'<button id="button03" class="but" type="button" title="'.$GLOBALS['lang']['btn-uder'].'" onclick="insertTag(this, \'[u]\',\'[/u]\');"><span></span></button>'."\n";
+    $html .= "\t".'<button id="button04" class="but" type="button" title="'.$GLOBALS['lang']['btn-stri'].'" onclick="insertTag(this, \'[s]\',\'[/s]\');"><span></span></button>'."\n";
 
     if ($extended) {
         $html .= "\t".'<span class="spacer"></span>'."\n";
@@ -146,14 +146,14 @@ function form_formatting_toolbar($extended = false)
         $html .= "\t".'<button id="button08" class="but" type="button" title="'.$GLOBALS['lang']['bouton-justify'].'" onclick="insertTag(this, \'[justify]\',\'[/justify]\');"><span></span></button>'."\n";
 
         $html .= "\t".'<span class="spacer"></span>'."\n";
-        $html .= "\t".'<button id="button11" class="but" type="button" title="'.$GLOBALS['lang']['bouton-imag'].'" onclick="insertTag(this, \'[img]\',\'|alt[/img]\');"><span></span></button>'."\n";
+        $html .= "\t".'<button id="button11" class="but" type="button" title="'.$GLOBALS['lang']['btn-img'].'" onclick="insertTag(this, \'[img]\',\'|alt[/img]\');"><span></span></button>'."\n";
         $html .= "\t".'<button id="button16" class="but" type="button" title="'.$GLOBALS['lang']['bouton-liul'].'" onclick="insertChar(this, \'\n\n** element 1\n** element 2\n\');"><span></span></button>'."\n";
         $html .= "\t".'<button id="button17" class="but" type="button" title="'.$GLOBALS['lang']['bouton-liol'].'" onclick="insertChar(this, \'\n\n## element 1\n## element 2\n\');"><span></span></button>'."\n";
     }
 
     $html .= "\t".'<span class="spacer"></span>'."\n";
-    $html .= "\t".'<button id="button09" class="but" type="button" title="'.$GLOBALS['lang']['bouton-lien'].'" onclick="insertTag(this, \'[\',\'|http://]\');"><span></span></button>'."\n";
-    $html .= "\t".'<button id="button10" class="but" type="button" title="'.$GLOBALS['lang']['bouton-cita'].'" onclick="insertTag(this, \'[quote]\',\'[/quote]\');"><span></span></button>'."\n";
+    $html .= "\t".'<button id="button09" class="but" type="button" title="'.$GLOBALS['lang']['btn-link'].'" onclick="insertTag(this, \'[\',\'|http://]\');"><span></span></button>'."\n";
+    $html .= "\t".'<button id="button10" class="but" type="button" title="'.$GLOBALS['lang']['btn-quot'].'" onclick="insertTag(this, \'[quote]\',\'[/quote]\');"><span></span></button>'."\n";
     $html .= "\t".'<button id="button12" class="but" type="button" title="'.$GLOBALS['lang']['bouton-code'].'" onclick="insertTag(this, \'[code]\',\'[/code]\');"><span></span></button>'."\n";
 
     $html .= '</p>';

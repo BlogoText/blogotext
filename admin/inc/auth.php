@@ -20,7 +20,7 @@ if (!defined('BT_ROOT')) {
  */
 function auth_kill_session()
 {
-    unset($_SESSION['nom_utilisateur'], $_SESSION['user_id'], $_SESSION['tokens']);
+    unset($_SESSION['nom_user'], $_SESSION['user_id'], $_SESSION['tokens']);
     setcookie('BT-admin-stay-logged', null);
     session_destroy();
 
