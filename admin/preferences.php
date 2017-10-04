@@ -92,7 +92,7 @@ function form_timezone($default)
             $timezoneList['UTC'][] = array('tz_name' => 'UTC', 'city' => 'UTC');
         }
     }
-    $form = '<label>'.$GLOBALS['lang']['pref_fuseau_horaire'].'</label>';
+    $form = '<label>'.$GLOBALS['lang']['pref_timezone'].'</label>';
     $form .= '<select name="fuseau_horaire">';
     foreach ($timezoneList as $continent => $zone) {
         $form .= '<optgroup label="'.ucfirst(strtolower($continent)).'">';
@@ -125,8 +125,8 @@ function form_format_hour($default)
         date('h:i:s A'),  // 11:56:04 PM
         date('h:i A'),    // 11:56 PM
     );
-    $form = '<label>'.$GLOBALS['lang']['pref_format_heure'].'</label>';
-    $form .= '<select name="format_heure">';
+    $form = '<label>'.$GLOBALS['lang']['pref_format_hour'].'</label>';
+    $form .= '<select name="format_hour">';
     foreach ($formats as $option => $label) {
         $form .= '<option value="'.htmlentities($option).'"'.(($default == $option) ? ' selected="selected" ' : '').'>'.htmlentities($label).'</option>';
     }
@@ -139,7 +139,7 @@ function form_format_hour($default)
  */
 function form_language($default)
 {
-    $form = '<label>'.$GLOBALS['lang']['pref_langue'].'</label>';
+    $form = '<label>'.$GLOBALS['lang']['pref_language'].'</label>';
     $form .= '<select name="langue">';
     foreach ($GLOBALS['langs'] as $option => $label) {
         $form .= '<option value="'.htmlentities($option).'"'.(($default == $option) ? ' selected="selected" ' : '').'>'.$label.'</option>';
@@ -184,7 +184,7 @@ function validate_form_preferences()
         $errors[] = $GLOBALS['lang']['err_wrong_token'];
     }
     if (!strlen(trim($author))) {
-        $errors[] = $GLOBALS['lang']['err_prefs_auteur'];
+        $errors[] = $GLOBALS['lang']['err_prefs_author'];
     }
     if ($GLOBALS['require_email'] == 1) {
         if (!preg_match('#^[\w.+~\'*-]+@[\w.-]+\.[a-zA-Z]{2,6}$#i', trim($email))) {
@@ -192,16 +192,16 @@ function validate_form_preferences()
         }
     }
     if (!preg_match('#^(https?://).*/$#', $root)) {
-        $errors[] = $GLOBALS['lang']['err_prefs_racine_slash'];
+        $errors[] = $GLOBALS['lang']['err_prefs_root_slash'];
     }
     if (!strlen(trim($username))) {
-        $errors[] = $GLOBALS['lang']['err_prefs_identifiant'];
+        $errors[] = $GLOBALS['lang']['err_prefs_login'];
     }
     if ($username != USER_LOGIN && !strlen($password)) {
         $errors[] = $GLOBALS['lang']['err_prefs_id_mdp'];
     }
     if (preg_match('#[=\'"\\\\|]#iu', $username)) {
-        $errors[] = $GLOBALS['lang']['err_prefs_id_syntaxe'];
+        $errors[] = $GLOBALS['lang']['err_prefs_id_syntax'];
     }
     if ($password && !password_verify(hash_pass($password, true), USER_PWHASH)) {
         $errors[] = $GLOBALS['lang']['err_prefs_oldmdp'];
@@ -224,18 +224,18 @@ function display_form_prefs($errors = '')
     $submitBox = '<div class="submit-bttns">';
     $submitBox .= hidden_input('_verif_envoi', 1);
     $submitBox .= hidden_input('token', new_token());
-    $submitBox .= '<button class="submit button-cancel" type="button" onclick="annuler(\'preferences.php\');" >'.$GLOBALS['lang']['annuler'].'</button>';
-    $submitBox .= '<button class="submit button-submit" type="submit" name="enregistrer">'.$GLOBALS['lang']['enregistrer'].'</button>';
+    $submitBox .= '<button class="submit button-cancel" type="button" onclick="annuler(\'preferences.php\');" >'.$GLOBALS['lang']['cancel'].'</button>';
+    $submitBox .= '<button class="submit button-submit" type="submit" name="enregistrer">'.$GLOBALS['lang']['record'].'</button>';
     $submitBox .= '</div>';
 
     echo '<form id="preferences" method="post" action="'.basename($_SERVER['SCRIPT_NAME']).'" >' ;
         echo erreurs($errors);
         $fieldsetUser = '<div role="group" class="pref">';
-        $fieldsetUser .= '<div class="form-legend"><legend class="legend-user">'.$GLOBALS['lang']['prefs_legend_utilisateur'].'</legend></div>';
+        $fieldsetUser .= '<div class="form-legend"><legend class="legend-user">'.$GLOBALS['lang']['prefs_legend_user'].'</legend></div>';
 
         $fieldsetUser .= '<div class="form-lines">';
         $fieldsetUser .= '<p>';
-        $fieldsetUser .= '<label for="auteur">'.$GLOBALS['lang']['pref_auteur'].'</label>';
+        $fieldsetUser .= '<label for="auteur">'.$GLOBALS['lang']['pref_author'].'</label>';
         $fieldsetUser .= '<input type="text" id="auteur" name="auteur" size="30" value="'.((empty($GLOBALS['auteur'])) ? htmlspecialchars(USER_LOGIN) : $GLOBALS['auteur']).'" class="text" />';
         $fieldsetUser .= '</p>';
 
@@ -245,12 +245,12 @@ function display_form_prefs($errors = '')
         $fieldsetUser .= '</p>';
 
         $fieldsetUser .= '<p>';
-        $fieldsetUser .= '<label for="nom_du_site">'.$GLOBALS['lang']['pref_nom_site'].'</label>';
+        $fieldsetUser .= '<label for="nom_du_site">'.$GLOBALS['lang']['pref_site_name'].'</label>';
         $fieldsetUser .= '<input type="text" id="nom_du_site" name="nom_du_site" size="30" value="'.$GLOBALS['nom_du_site'].'" class="text" />';
         $fieldsetUser .= '</p>';
 
         $fieldsetUser .= '<p>';
-        $fieldsetUser .= '<label for="racine">'.$GLOBALS['lang']['pref_racine'].'</label>';
+        $fieldsetUser .= '<label for="racine">'.$GLOBALS['lang']['pref_root'].'</label>';
         $fieldsetUser .= '<input type="text" id="racine" name="racine" size="30" value="'.$GLOBALS['racine'].'" class="text" />';
         $fieldsetUser .= '</p>';
 
@@ -271,11 +271,11 @@ function display_form_prefs($errors = '')
     echo $fieldsetUser;
 
         $fieldsetSecurity = '<div role="group" class="pref">';
-        $fieldsetSecurity .= '<div class="form-legend"><legend class="legend-securite">'.$GLOBALS['lang']['prefs_legend_securite'].'</legend></div>';
+        $fieldsetSecurity .= '<div class="form-legend"><legend class="legend-securite">'.$GLOBALS['lang']['prefs_legend_security'].'</legend></div>';
 
         $fieldsetSecurity .= '<div class="form-lines">';
         $fieldsetSecurity .= '<p>';
-        $fieldsetSecurity .= '<label for="identifiant">'.$GLOBALS['lang']['pref_identifiant'].'</label>';
+        $fieldsetSecurity .= '<label for="identifiant">'.$GLOBALS['lang']['pref_login'].'</label>';
         $fieldsetSecurity .= '<input type="text" id="identifiant" name="identifiant" size="30" value="'.htmlspecialchars(USER_LOGIN).'" class="text" />';
         $fieldsetSecurity .= '</p>';
 
@@ -285,7 +285,7 @@ function display_form_prefs($errors = '')
         $fieldsetSecurity .= '</p>';
 
         $fieldsetSecurity .= '<p>';
-        $fieldsetSecurity .= '<label for="mdp_rep">'.$GLOBALS['lang']['pref_mdp_nouv'].'</label>';
+        $fieldsetSecurity .= '<label for="mdp_rep">'.$GLOBALS['lang']['pref_mdp_new'].'</label>';
         $fieldsetSecurity .= '<input type="password" id="mdp_rep" name="mdp_rep" size="30" value="" class="text" autocomplete="off" />';
         $fieldsetSecurity .= '</p>';
         $fieldsetSecurity .= '</div>';
@@ -296,7 +296,7 @@ function display_form_prefs($errors = '')
     echo $fieldsetSecurity;
 
         $fieldsetAppearance = '<div role="group" class="pref">';
-        $fieldsetAppearance .= '<div class="form-legend"><legend class="legend-apparence">'.$GLOBALS['lang']['prefs_legend_apparence'].'</legend></div>';
+        $fieldsetAppearance .= '<div class="form-legend"><legend class="legend-apparence">'.$GLOBALS['lang']['prefs_legend_appearance'].'</legend></div>';
 
         $fieldsetAppearance .= '<div class="form-lines">';
         $fieldsetAppearance .= '<p>';
@@ -317,11 +317,11 @@ function display_form_prefs($errors = '')
         $fieldsetAppearance .= '</p>';
 
         $fieldsetAppearance .= '<p>';
-        $fieldsetAppearance .= form_checkbox('afficher_rss', $GLOBALS['afficher_rss'], $GLOBALS['lang']['pref_afficher_rss']);
+        $fieldsetAppearance .= form_checkbox('afficher_rss', $GLOBALS['afficher_rss'], $GLOBALS['lang']['pref_show_rss']);
         $fieldsetAppearance .= '</p>';
 
         $fieldsetAppearance .= '<p>';
-        $fieldsetAppearance .= form_checkbox('afficher_liens', $GLOBALS['afficher_liens'], $GLOBALS['lang']['pref_afficher_liens']);
+        $fieldsetAppearance .= form_checkbox('afficher_liens', $GLOBALS['afficher_liens'], $GLOBALS['lang']['pref_show_liens']);
         $fieldsetAppearance .= '</p>';
         $fieldsetAppearance .= '</div>';
 
@@ -331,7 +331,7 @@ function display_form_prefs($errors = '')
     echo $fieldsetAppearance;
 
         $fieldsetDateHour = '<div role="group" class="pref">';
-        $fieldsetDateHour .= '<div class="form-legend"><legend class="legend-dateheure">'.$GLOBALS['lang']['prefs_legend_langdateheure'].'</legend></div>';
+        $fieldsetDateHour .= '<div class="form-legend"><legend class="legend-dateheure">'.$GLOBALS['lang']['prefs_legend_langdatehour'].'</legend></div>';
 
         $fieldsetDateHour .= '<div class="form-lines">';
         $fieldsetDateHour .= '<p>';
@@ -343,7 +343,7 @@ function display_form_prefs($errors = '')
         $fieldsetDateHour .= '</p>';
 
         $fieldsetDateHour .= '<p>';
-        $fieldsetDateHour .= form_format_hour($GLOBALS['format_heure']);
+        $fieldsetDateHour .= form_format_hour($GLOBALS['format_hour']);
         $fieldsetDateHour .= '</p>';
 
         $fieldsetDateHour .= '<p>';
@@ -392,21 +392,21 @@ function display_form_prefs($errors = '')
 
     if ($GLOBALS['afficher_liens']) {
         $fieldsetLinks = '<div role="group" class="pref">';
-        $fieldsetLinks .= '<div class="form-legend"><legend class="legend-links">'.$GLOBALS['lang']['prefs_legend_configlinx'].'</legend></div>';
+        $fieldsetLinks .= '<div class="form-legend"><legend class="legend-links">'.$GLOBALS['lang']['prefs_legend_configlink'].'</legend></div>';
 
         $fieldsetLinks .= '<div class="form-lines">';
         // nb liens côté admin
         $nbs = array(50 => 50, 100 => 100, 200 => 200, 300 => 300, 500 => 500, -1 => $GLOBALS['lang']['pref_all']);
 
         $fieldsetLinks .= '<p>';
-        $fieldsetLinks .= form_select('nb_list_linx', $nbs, $GLOBALS['nb_list_linx'], $GLOBALS['lang']['pref_nb_list_linx']);
+        $fieldsetLinks .= form_select('nb_list_link', $nbs, $GLOBALS['nb_list_link'], $GLOBALS['lang']['pref_nb_list_link']);
         $fieldsetLinks .= '</p>';
 
         // partage de fichiers !pages : télécharger dans fichiers automatiquement ?
-        $nbs = array($GLOBALS['lang']['non'], $GLOBALS['lang']['oui'], $GLOBALS['lang']['pref_ask_everytime']);
+        $nbs = array($GLOBALS['lang']['no'], $GLOBALS['lang']['yes'], $GLOBALS['lang']['pref_ask_everytime']);
 
         $fieldsetLinks .= '<p>';
-        $fieldsetLinks .= form_select('dl_link_to_files', $nbs, $GLOBALS['dl_link_to_files'], $GLOBALS['lang']['pref_linx_dl_auto']);
+        $fieldsetLinks .= form_select('dl_link_to_files', $nbs, $GLOBALS['dl_link_to_files'], $GLOBALS['lang']['pref_link_dl_auto']);
         $fieldsetLinks .= '</p>';
 
         // lien à glisser sur la barre des favoris
@@ -422,7 +422,7 @@ function display_form_prefs($errors = '')
         $fieldsetLinks .= '</div>';
         echo $fieldsetLinks;
     } else {
-        echo hidden_input('nb_list_linx', 50);
+        echo hidden_input('nb_list_link', 50);
         echo hidden_input('dl_link_to_files', 1);
     }
 
@@ -460,7 +460,7 @@ function display_form_prefs($errors = '')
     }
 
     $fieldsetMaintenance = '<div role="group" class="pref">';
-    $fieldsetMaintenance .= '<div class="form-legend"><legend class="legend-sweep">'.$GLOBALS['lang']['titre_maintenance'].'</legend></div>';
+    $fieldsetMaintenance .= '<div class="form-legend"><legend class="legend-sweep">'.$GLOBALS['lang']['title_maintenance'].'</legend></div>';
 
     $fieldsetMaintenance .= '<div class="form-lines">';
     $fieldsetMaintenance .= '<p>';

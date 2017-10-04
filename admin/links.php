@@ -63,11 +63,11 @@ if ($vars['_verif_envoi']) {
             // dl_link_to_files : 0 = never ; 1 = always ; 2 = ask with checkbox
             if ($vars['add_to_files']) {
                 $vars['fichier'] = $link['bt_link'];
-                $file = init_post_fichier();
-                $errors = valider_form_fichier($file);
+                $file = init_post_file();
+                $errors = valider_form_file($file);
 
-                $GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);
-                bdd_fichier($file, 'ajout-nouveau', 'download', $link['bt_link']);
+                $GLOBALS['liste_files'] = open_serialzd_file(FILES_DB);
+                bdd_file($file, 'ajout-nouveau', 'download', $link['bt_link']);
             }
         }
         traiter_form_link($link);
@@ -110,7 +110,7 @@ if (!$vars['url'] && !$vars['ajout']) {
                 SELECT *
                   FROM links
                  ORDER BY bt_id DESC
-                 LIMIT '.($GLOBALS['max_linx_admin'] + 0);
+                 LIMIT '.($GLOBALS['max_link_admin'] + 0);
             $arr = liste_elements($sql, array(), 'links');
         }
     } elseif ($vars['q']) {
@@ -133,19 +133,19 @@ if (!$vars['url'] && !$vars['ajout']) {
             SELECT *
               FROM links
              ORDER BY bt_id DESC
-             LIMIT '.($GLOBALS['nb_list_linx'] + 0);
+             LIMIT '.($GLOBALS['nb_list_link'] + 0);
         $arr = liste_elements($sql, array(), 'links');
     }
 }
 
 
-echo tpl_get_html_head($GLOBALS['lang']['mesliens']);
+echo tpl_get_html_head($GLOBALS['lang']['mylinks']);
 
 echo '<div id="header">';
     echo '<div id="top">';
         tpl_show_msg();
         echo moteur_recherche();
-        echo tpl_show_topnav($GLOBALS['lang']['mesliens']);
+        echo tpl_show_topnav($GLOBALS['lang']['mylinks']);
     echo '</div>';
 echo '</div>';
 
@@ -156,7 +156,7 @@ echo '<div id="subnav">';
 afficher_form_filtre('links', htmlspecialchars($vars['filtre']));
 if ($step != 'edit' && $step != 2) {
     echo '<div class="nombre-elem">';
-    echo ucfirst(nombre_objets(count($arr), 'link')).' '.$GLOBALS['lang']['sur'].' '.liste_elements_count('SELECT count(*) AS nbr FROM links', array(), 'links');
+    echo ucfirst(nombre_objets(count($arr), 'link')).' '.$GLOBALS['lang']['on'].' '.liste_elements_count('SELECT count(*) AS nbr FROM links', array(), 'links');
     echo '</div>';
 }
 echo '</div>';
@@ -174,7 +174,7 @@ if ($step == 'edit' && $arr[0]) {
         afficher_lien($link);
     }
     if (!$vars['ajout']) {
-        echo '<a id="fab" class="add-link" href="links.php?ajout" title="'.$GLOBALS['lang']['label_lien_ajout'].'">'.$GLOBALS['lang']['label_lien_ajout'].'</a>';
+        echo '<a id="fab" class="add-link" href="links.php?ajout" title="'.$GLOBALS['lang']['label_link_add'].'">'.$GLOBALS['lang']['label_link_add'].'</a>';
     }
     echo '</div>';
 }

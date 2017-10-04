@@ -1,11 +1,11 @@
 <article class="article post" itemscope itemtype="http://schema.org/BlogPosting">
 	<header class="art-title post-title">
-		<h1 class="entry-title" itemprop="name"><a href="{article_lien}" itemprop="url">{article_titre}</a></h1>
-		<div class="date"><time datetime="{article_date_iso}" itemprop="datePublished dateCreated">{article_date}</time> ⋅ <a href="{article_lien}#commentaires" itemprop="discussionUrl">{nombre_commentaires}</a></div>
-		<div class="author" itemprop="author" itemscope itemtype="https://schema.org/Person">Par <em itemprop="name">{blog_auteur}</em></div>
+		<h1 class="entry-title" itemprop="name"><a href="{article_lien}" itemprop="url">{article_title}</a></h1>
+		<div class="date"><time datetime="{article_date_iso}" itemprop="datePublished dateCreated">{article_date}</time> ⋅ <a href="{article_lien}#commentaires" itemprop="discussionUrl">{nombre_comments}</a></div>
+		<div class="author" itemprop="author" itemscope itemtype="https://schema.org/Person">Par <em itemprop="name">{blog_author}</em></div>
 	</header>
 	<div class="art-content post-content entry-content" itemprop="articleBody">
-		{article_contenu}
+		{article_content}
 	</div>
 	<footer class="art-footer post-footer entry-footer">
 		<div class="art-tags post-tags">{article_tags}</div>
@@ -13,8 +13,8 @@
 </article>
 
 <div id="commentaires">
-	<div class="nbcom">{nombre_commentaires}</div>
-	{BOUCLE_commentaires}
+	<div class="nbcom">{nombre_comments}</div>
+	{BOUCLE_comments}
 	<article class="comment" id="{commentaire_ancre}">
 		<div class="comm-icon-side">
 			<img class="com-gravatar" width="48" height="48" src="{racine_du_site}/favatar.php?q={commentaire_md5email}" alt="avatar" />
@@ -22,17 +22,17 @@
 		</div>
 		<div class="comm-main-frame">
 			<header class="com-head">
-				<span class="com-author"><span class="author">{commentaire_auteur_lien}</span> a dit :</span>
+				<span class="com-author"><span class="author">{commentaire_author_lien}</span> a dit :</span>
 			</header>
 			<div class="com-content">
-				{commentaire_contenu}
+				{commentaire_content}
 			</div>
 			<footer class="com-footer">
-				<span class="com-reply"><a href="#form-commentaire" onclick="reply('[b]@[{commentaire_auteur}|#{commentaire_ancre}] :[/b] ');">@répondre</a> <a href="#{commentaire_ancre}">#lien</a></span>
+				<span class="com-reply"><a href="#form-commentaire" onclick="reply('[b]@[{commentaire_author}|#{commentaire_ancre}] :[/b] ');">@répondre</a> <a href="#{commentaire_ancre}">#lien</a></span>
 			</footer>
 		</div>
 	</article>
-	{/BOUCLE_commentaires}
+	{/BOUCLE_comments}
 </div>
 
 <div id="postcom">

@@ -209,7 +209,7 @@ function traitment_form_post($post)
     global $vars;
     if ($vars['enregistrer']) {
         $result = bdd_article($post, (!empty($post['ID'])) ? 'modifier-existant' : 'enregistrer-nouveau');
-        $redir = basename($_SERVER['SCRIPT_NAME']).'?post_id='.$post['bt_id'].'&msg='.((!empty($post['ID'])) ? 'confirm_article_maj' : 'confirm_article_ajout');
+        $redir = basename($_SERVER['SCRIPT_NAME']).'?post_id='.$post['bt_id'].'&msg='.((!empty($post['ID'])) ? 'confirm_article_maj' : 'confirm_article_add');
     } elseif ($vars['supprimer'] && $vars['ID']) {
         $result = bdd_article($post, 'supprimer-existant');
         $redir = 'articles.php?msg=confirm_article_suppr';
@@ -239,18 +239,18 @@ function form_years($displayedYear)
 function form_months($displayedMonth)
 {
     $months = array(
-        $GLOBALS['lang']['janvier'],
-        $GLOBALS['lang']['fevrier'],
-        $GLOBALS['lang']['mars'],
-        $GLOBALS['lang']['avril'],
-        $GLOBALS['lang']['mai'],
-        $GLOBALS['lang']['juin'],
-        $GLOBALS['lang']['juillet'],
-        $GLOBALS['lang']['aout'],
-        $GLOBALS['lang']['septembre'],
-        $GLOBALS['lang']['octobre'],
-        $GLOBALS['lang']['novembre'],
-        $GLOBALS['lang']['decembre']
+        $GLOBALS['lang']['january'],
+        $GLOBALS['lang']['february'],
+        $GLOBALS['lang']['march'],
+        $GLOBALS['lang']['april'],
+        $GLOBALS['lang']['may'],
+        $GLOBALS['lang']['june'],
+        $GLOBALS['lang']['july'],
+        $GLOBALS['lang']['august'],
+        $GLOBALS['lang']['september'],
+        $GLOBALS['lang']['october'],
+        $GLOBALS['lang']['november'],
+        $GLOBALS['lang']['december']
     );
 
     $ret = '<select name="mois">' ;
@@ -286,9 +286,9 @@ function form_statut($etat)
 {
     $choix = array(
         $GLOBALS['lang']['label_invisible'],
-        $GLOBALS['lang']['label_publie']
+        $GLOBALS['lang']['label_published']
     );
-    return form_select('statut', $choix, $etat, $GLOBALS['lang']['label_dp_etat']);
+    return form_select('statut', $choix, $etat, $GLOBALS['lang']['label_dp_state']);
 }
 
 /**
@@ -297,10 +297,10 @@ function form_statut($etat)
 function form_allow_comment($state)
 {
     $choice = array(
-        $GLOBALS['lang']['fermes'],
-        $GLOBALS['lang']['ouverts']
+        $GLOBALS['lang']['closed'],
+        $GLOBALS['lang']['open']
     );
-    return form_select('allowcomment', $choice, $state, $GLOBALS['lang']['label_dp_commentaires']);
+    return form_select('allowcomment', $choice, $state, $GLOBALS['lang']['label_dp_comments']);
 }
 
 /**
@@ -351,14 +351,14 @@ function display_form_post($post, $errors)
         (isset($post['bt_id'])) ? '?post_id='.$post['bt_id'] : ''
     );
     $html .= '<div class="main-form">';
-    $html .= '<input id="titre" name="titre" type="text" size="50" value="'.$defaultTitle.'" required="" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_titre']).'" tabindex="30" class="text" spellcheck="true" />' ;
+    $html .= '<input id="titre" name="titre" type="text" size="50" value="'.$defaultTitle.'" required="" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_title']).'" tabindex="30" class="text" spellcheck="true" />' ;
     $html .= '<div id="chapo_note">';
     $html .= '<textarea id="chapo" name="chapo" rows="5" cols="20" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_chapo']).'" tabindex="35" class="text" >'.$defaultAbstract.'</textarea>' ;
     $html .= '<textarea id="notes" name="notes" rows="5" cols="20" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_notes']).'" tabindex="40" class="text" >'.$defaultNotes.'</textarea>' ;
     $html .= '</div>';
 
     $html .= form_formatting_toolbar(true);
-    $html .= '<textarea id="contenu" name="contenu" rows="20" cols="60" required="" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_contenu']).'" tabindex="55" class="text">'.$defaultContent.'</textarea>' ;
+    $html .= '<textarea id="contenu" name="contenu" rows="20" cols="60" required="" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_content']).'" tabindex="55" class="text">'.$defaultContent.'</textarea>' ;
 
     if ($GLOBALS['activer_categories']) {
         $html .= '<div id="tag_bloc">';
@@ -369,7 +369,7 @@ function display_form_post($post, $errors)
     }
 
     if (!$GLOBALS['automatic_keywords']) {
-        $html .= '<input id="mots_cles" name="mots_cles" type="text" size="50" value="'.$defaultKeywords.'" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_motscle']).'" tabindex="67" class="text" />';
+        $html .= '<input id="mots_cles" name="mots_cles" type="text" size="50" value="'.$defaultKeywords.'" placeholder="'.ucfirst($GLOBALS['lang']['placeholder_keywords']).'" tabindex="67" class="text" />';
     }
     $html .= '</div>';
 
@@ -394,10 +394,10 @@ function display_form_post($post, $errors)
         $html .= hidden_input('article_id', $post['bt_id']);
         $html .= hidden_input('article_date', $post['bt_date']);
         $html .= hidden_input('ID', $post['ID']);
-        $html .= '<button class="submit button-delete" type="button" name="supprimer" onclick="contenuLoad = document.getElementById(\'contenu\').value; rmArticle(this)" />'.$GLOBALS['lang']['supprimer'].'</button>';
+        $html .= '<button class="submit button-delete" type="button" name="supprimer" onclick="contenuLoad = document.getElementById(\'contenu\').value; rmArticle(this)" />'.$GLOBALS['lang']['delete'].'</button>';
     }
-    $html .= '<button class="submit button-cancel" type="button" onclick="annuler(\'articles.php\');">'.$GLOBALS['lang']['annuler'].'</button>';
-    $html .= '<button class="submit button-submit" type="submit" name="enregistrer" onclick="contenuLoad=document.getElementById(\'contenu\').value" tabindex="70">'.$GLOBALS['lang']['envoyer'].'</button>';
+    $html .= '<button class="submit button-cancel" type="button" onclick="annuler(\'articles.php\');">'.$GLOBALS['lang']['cancel'].'</button>';
+    $html .= '<button class="submit button-submit" type="submit" name="enregistrer" onclick="contenuLoad=document.getElementById(\'contenu\').value" tabindex="70">'.$GLOBALS['lang']['send'].'</button>';
     $html .= '</p>';
     $html .= hidden_input('_verif_envoi', 1);
     $html .= hidden_input('token', new_token());
@@ -418,28 +418,28 @@ function validate_form_post($post)
         $errors[] = $GLOBALS['lang']['err_wrong_token'];
     }
     if (!strlen(trim($post['bt_title']))) {
-        $errors[] = $GLOBALS['lang']['err_titre'];
+        $errors[] = $GLOBALS['lang']['err_title'];
     }
     if (!strlen(trim($post['bt_content']))) {
-        $errors[] = $GLOBALS['lang']['err_contenu'];
+        $errors[] = $GLOBALS['lang']['err_content'];
     }
     if (!preg_match('/\d{4}/', $date['annee'])) {
-        $errors[] = $GLOBALS['lang']['err_annee'];
+        $errors[] = $GLOBALS['lang']['err_year'];
     }
     if ((!preg_match('/\d{2}/', $date['mois'])) || ($date['mois'] > '12')) {
-        $errors[] = $GLOBALS['lang']['err_mois'];
+        $errors[] = $GLOBALS['lang']['err_month'];
     }
     if ((!preg_match('/\d{2}/', $date['jour'])) || ($date['jour'] > date('t', mktime(0, 0, 0, $date['mois'], 1, $date['annee'])))) {
-        $errors[] = $GLOBALS['lang']['err_jour'];
+        $errors[] = $GLOBALS['lang']['err_day'];
     }
     if ((!preg_match('/\d{2}/', $date['heure'])) || ($date['heure'] > 23)) {
-        $errors[] = $GLOBALS['lang']['err_heure'];
+        $errors[] = $GLOBALS['lang']['err_hour'];
     }
     if ((!preg_match('/\d{2}/', $date['minutes'])) || ($date['minutes'] > 59)) {
         $errors[] = $GLOBALS['lang']['err_minutes'];
     }
     if ((!preg_match('/\d{2}/', $date['secondes'])) || ($date['secondes'] > 59)) {
-        $errors[] = $GLOBALS['lang']['err_secondes'];
+        $errors[] = $GLOBALS['lang']['err_seconds'];
     }
     return $errors;
 }
@@ -471,7 +471,7 @@ if ($postId) {
 }
 
 // Page's title
-$writeTitleLight = ($post) ? $GLOBALS['lang']['titre_maj'] : $GLOBALS['lang']['titre_ecrire'];
+$writeTitleLight = ($post) ? $GLOBALS['lang']['title_maj'] : $GLOBALS['lang']['title_write'];
 $writeTitle = ($post) ? $writeTitleLight.' : '.$post['bt_title'] : $writeTitleLight;
 
 
@@ -496,7 +496,7 @@ if ($post) {
         echo '<div class="nombre-elem">';
         echo '<a href="'.$post['bt_link'].'">'.$GLOBALS['lang']['post_link'].'</a> &nbsp; – &nbsp; ';
         echo '<a href="'.$post['bt_link'].'&share">'.$GLOBALS['lang']['post_share'].'</a> &nbsp; – &nbsp; ';
-        echo '<a href="commentaires.php?post_id='.$postId.'">'.ucfirst(nombre_objets($post['bt_nb_comments'], 'commentaire')).'</a>';
+        echo '<a href="commentaires.php?post_id='.$postId.'">'.ucfirst(nombre_objets($post['bt_nb_comments'], 'comment')).'</a>';
         echo '</div>';
     echo '</div>';
 }

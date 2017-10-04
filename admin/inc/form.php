@@ -14,7 +14,7 @@
 /**
  *
  */
-function valider_form_fichier($file)
+function valider_form_file($file)
 {
     $errors = array();
     $token = (string)filter_input(INPUT_POST, 'token');
@@ -35,7 +35,7 @@ function valider_form_fichier($file)
                 $errors[] = 'aucun fichier déposé';
             }
         } elseif ($url !== null && empty($url)) {
-            $errors[] = $GLOBALS['lang']['err_lien_vide'];
+            $errors[] = $GLOBALS['lang']['err_empty_link'];
         }
     } elseif (!$file['bt_filename']) {
         // On edit
@@ -63,7 +63,7 @@ function valider_form_rss()
     // On feed add: URL needs to be valid, not empty, and must not already be in DB
     if ($url !== null) {
         if (empty($url)) {
-            $errors[] = $GLOBALS['lang']['err_lien_vide'];
+            $errors[] = $GLOBALS['lang']['err_empty_link'];
         }
         if (!preg_match('#^(https?://[\S]+)[a-z]{2,6}[-\#_\w?%*:.;=+\(\)/&~$,]*$#', trim($url))) {
             $errors[] = $GLOBALS['lang']['err_comm_webpage'];
@@ -184,7 +184,7 @@ function filtre($type, $filtre)
     $listTypes = array();
     $ret = '<select name="filtre">' ;
     if ($type == 'articles') {
-        $ret .= '<option value="">'.$GLOBALS['lang']['label_article_derniers'].'</option>';
+        $ret .= '<option value="">'.$GLOBALS['lang']['label_article_last'].'</option>';
         $query = '
             SELECT DISTINCT substr(bt_date, 1, 6) AS date
               FROM articles
@@ -192,7 +192,7 @@ function filtre($type, $filtre)
         $arrTags = list_all_tags('articles', false);
         $databaseType = 'sqlite';
     } elseif ($type == 'commentaires') {
-        $ret .= '<option value="">'.$GLOBALS['lang']['label_comment_derniers'].'</option>';
+        $ret .= '<option value="">'.$GLOBALS['lang']['label_comment_last'].'</option>';
         $arrAuthors = nb_entries_as('commentaires', 'bt_author');
         $query = '
             SELECT DISTINCT substr(bt_id, 1, 6) AS date
@@ -200,7 +200,7 @@ function filtre($type, $filtre)
              ORDER BY bt_id DESC';
         $databaseType = 'sqlite';
     } elseif ($type == 'links') {
-        $ret .= '<option value="">'.$GLOBALS['lang']['label_link_derniers'].'</option>';
+        $ret .= '<option value="">'.$GLOBALS['lang']['label_link_last'].'</option>';
         $arrTags = list_all_tags('links', false);
 
         // FIX: sometimes this is an empty array. To investigate.
@@ -216,7 +216,7 @@ function filtre($type, $filtre)
         $databaseType = 'sqlite';
     } elseif ($type == 'fichiers') {
         // crée un tableau où les clé sont les types de fichiers et les valeurs, le nombre de fichiers de ce type.
-        $files = $GLOBALS['liste_fichiers'];
+        $files = $GLOBALS['liste_files'];
         $arrMonths = array();
         foreach ($files as $file) {
             $type = $file['bt_type'];
@@ -227,7 +227,7 @@ function filtre($type, $filtre)
         }
         arsort($listTypes);
 
-        $ret .= '<option value="">'.$GLOBALS['lang']['label_fichier_derniers'].'</option>';
+        $ret .= '<option value="">'.$GLOBALS['lang']['label_file_last'].'</option>';
         $databaseType = 'fichier_txt_files';
     }
 
@@ -238,7 +238,7 @@ function filtre($type, $filtre)
             $arrMonths[$row['date']] = mois_en_lettres(substr($row['date'], 4, 2)).' '.substr($row['date'], 0, 4);
         }
     } elseif ($databaseType == 'fichier_txt_files') {
-        foreach ($GLOBALS['liste_fichiers'] as $e) {
+        foreach ($GLOBALS['liste_files'] as $e) {
             if (!empty($e['bt_id'])) {
                 // mk array[201005] => "May 2010", uzw
                 $arrMonths[substr($e['bt_id'], 0, 6)] = mois_en_lettres(substr($e['bt_id'], 4, 2)).' '.substr($e['bt_id'], 0, 4);
@@ -251,7 +251,7 @@ function filtre($type, $filtre)
     $ret .= '<option value="draft"'.(($filtre == 'draft') ? ' selected="selected"' : '').'>'.$GLOBALS['lang']['label_invisibles'].'</option>';
 
     // Public
-    $ret .= '<option value="pub"'.(($filtre == 'pub') ? ' selected="selected"' : '').'>'.$GLOBALS['lang']['label_publies'].'</option>';
+    $ret .= '<option value="pub"'.(($filtre == 'pub') ? ' selected="selected"' : '').'>'.$GLOBALS['lang']['label_publisheds'].'</option>';
 
     // By date
     if (!empty($arrMonths)) {
@@ -264,7 +264,7 @@ function filtre($type, $filtre)
 
     // By author (for comments)
     if (!empty($arrAuthors)) {
-        $ret .= '<optgroup label="'.$GLOBALS['lang']['pref_auteur'].'">';
+        $ret .= '<optgroup label="'.$GLOBALS['lang']['pref_author'].'">';
         foreach ($arrAuthors as $nom) {
             if (!empty($nom['nb'])) {
                 $ret .= '<option value="auteur.'.$nom['bt_author'].'"'.(($filtre == 'auteur.'.$nom['bt_author']) ? ' selected="selected"' : '').'>'.$nom['bt_author'].' ('.$nom['nb'].')'.'</option>';

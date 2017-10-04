@@ -75,7 +75,7 @@ function afficher_form_commentaire($article_id, $mode, $erreurs, $edit_comm)
         $GLOBALS['form_commentaire'] .= '</div>'."\n";
     } // comm sent ; with errors
     elseif (isset($_POST['_verif_envoi']) and !empty($erreurs)) {
-        $GLOBALS['form_commentaire'] .= '<div id="erreurs"><strong>'.$GLOBALS['lang']['erreurs'].'</strong> :'."\n" ;
+        $GLOBALS['form_commentaire'] .= '<div id="erreurs"><strong>'.$GLOBALS['lang']['errors'].'</strong> :'."\n" ;
         $GLOBALS['form_commentaire'] .= '<ul><li>'."\n";
         $GLOBALS['form_commentaire'] .=  implode('</li><li>', $erreurs);
         $GLOBALS['form_commentaire'] .=  '</li></ul></div>'."\n";
@@ -122,8 +122,8 @@ function afficher_form_commentaire($article_id, $mode, $erreurs, $edit_comm)
             // submit buttons
         $form .= "\t".'<fieldset class="buttons">'."\n";
             $form .= "\t\t".'<p class="submit-bttns">'."\n";
-            $form .= "\t\t\t".'<button class="submit button-cancel" type="button" onclick="unfold(this);">'.$GLOBALS['lang']['annuler'].'</button>'."\n";
-            $form .= "\t\t\t".'<button class="submit button-submit" type="submit" name="enregistrer">'.$GLOBALS['lang']['envoyer'].'</button>'."\n";
+            $form .= "\t\t\t".'<button class="submit button-cancel" type="button" onclick="unfold(this);">'.$GLOBALS['lang']['cancel'].'</button>'."\n";
+            $form .= "\t\t\t".'<button class="submit button-submit" type="submit" name="enregistrer">'.$GLOBALS['lang']['send'].'</button>'."\n";
             $form .= "\t\t".'</p>'."\n";
         $form .= "\t".'</fieldset><!--end buttons-->'."\n";
         $form .= '</div>'."\n";
@@ -141,7 +141,7 @@ function afficher_form_commentaire($article_id, $mode, $erreurs, $edit_comm)
             $form .= '<form id="form-commentaire" class="form-commentaire" method="post" action="'.'?'.$_SERVER['QUERY_STRING'].'" >'."\n";
             $form .= "\t".'<fieldset class="field">'."\n";
                 $form .= form_formatting_toolbar(false);
-                $form .= "\t\t".'<textarea class="commentaire" name="commentaire" required="" placeholder="'.$GLOBALS['lang']['label_commentaire'].'" id="commentaire" cols="50" rows="10">'.$form_cont['comment'].'</textarea>'."\n";
+                $form .= "\t\t".'<textarea class="commentaire" name="commentaire" required="" placeholder="'.$GLOBALS['lang']['label_comment'].'" id="commentaire" cols="50" rows="10">'.$form_cont['comment'].'</textarea>'."\n";
             $form .= "\t".'</fieldset>'."\n";
             $form .= "\t".'<fieldset class="infos">'."\n";
                 $form .= "\t\t".'<label>'.$GLOBALS['lang']['label_dp_pseudo'];
@@ -160,12 +160,12 @@ function afficher_form_commentaire($article_id, $mode, $erreurs, $edit_comm)
                 $form .= "\t\t".'<input class="check" type="checkbox" id="subscribe" name="subscribe"'.$subscribe_checked.' />'.label('subscribe', $GLOBALS['lang']['comment_subscribe'])."\n";
             $form .= "\t".'</fieldset><!--end cookie asking-->'."\n";
             $form .= "\t".'<fieldset class="buttons">'."\n";
-                $form .= "\t\t".'<input class="submit" type="submit" name="enregistrer" value="'.$GLOBALS['lang']['envoyer'].'" />'."\n";
+                $form .= "\t\t".'<input class="submit" type="submit" name="enregistrer" value="'.$GLOBALS['lang']['send'].'" />'."\n";
                 $form .= "\t\t".'<input class="submit" type="submit" name="previsualiser" value="'.$GLOBALS['lang']['preview'].'" />'."\n";
             $form .= "\t".'</fieldset><!--end buttons-->'."\n";
             $GLOBALS['form_commentaire'] .= $form;
             if ($GLOBALS['comm_defaut_status'] == '0') { // petit message en cas de moderation a-priori
-                $GLOBALS['form_commentaire'] .= "\t\t".'<div class="need-validation">'.$GLOBALS['lang']['remarque'].' :'."\n" ;
+                $GLOBALS['form_commentaire'] .= "\t\t".'<div class="need-validation">'.$GLOBALS['lang']['notice'].' :'."\n" ;
                 $GLOBALS['form_commentaire'] .= "\t\t\t".$GLOBALS['lang']['comment_need_validation']."\n";
                 $GLOBALS['form_commentaire'] .= "\t\t".'</div>'."\n";
             }
@@ -247,22 +247,20 @@ function lang_set_list()
 function lang_load_land($admin)
 {
     if (empty($GLOBALS['lang'])) {
-        $GLOBALS['lang'] = '';
+        $lang = 'fr'; // default
+    } else {
+        $lang = $GLOBALS['lang'];
     }
 
+    require_once BT_ROOT.'inc/lang/'.$lang.'_'.$lang.'.php';
     if ($admin === true && defined('BT_ROOT_ADMIN')) {
-        $path = BT_ROOT_ADMIN;
+        require_once BT_ROOT_ADMIN.'inc/lang/'.$lang.'_'.$lang.'.php';
+        $GLOBALS['lang'] = array_merge($LANG, $LANG_ADMIN);
+        unset($LANG_ADMIN);
     } else {
-        $path = BT_ROOT;
+        $GLOBALS['lang'] = $LANG;
     }
-    switch ($GLOBALS['lang']) {
-        case 'en':
-            require_once $path.'inc/lang/en_en.php';
-            break;
-        case 'fr':
-        default:
-            require_once $path.'inc/lang/fr_fr.php';
-    }
+    unset($LANG);
 }
 
 /**
@@ -289,7 +287,7 @@ function decode_id($id)
 function get_blogpath($id, $titre)
 {
     $date = decode_id($id);
-    $path = URL_ROOT.'?d='.$date['annee'].'/'.$date['mois'].'/'.$date['jour'].'/'.$date['heure'].'/'.$date['minutes'].'/'.$date['secondes'].'-'.titre_url($titre);
+    $path = URL_ROOT.'?d='.$date['annee'].'/'.$date['mois'].'/'.$date['jour'].'/'.$date['heure'].'/'.$date['minutes'].'/'.$date['secondes'].'-'.title_url($titre);
     return $path;
 }
 

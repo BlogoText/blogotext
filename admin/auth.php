@@ -25,7 +25,7 @@ if (auth_check_session()) {
 }
 
 usleep(200000);  // avoid bruteforce
-$username = (string)filter_input(INPUT_POST, 'nom_utilisateur');
+$username = (string)filter_input(INPUT_POST, 'nom_user');
 $password = (string)filter_input(INPUT_POST, 'mot_de_passe');
 $check = (filter_input(INPUT_POST, '_verif_envoi') !== null);
 $stayLogged = (filter_input(INPUT_POST, 'stay_logged') !== null);
@@ -74,8 +74,8 @@ echo '<div id="pageauth">';
 echo '<h1>'.BLOGOTEXT_NAME.'</h1>';
 echo '<form method="post" action="auth.php">';
 echo '<div id="auth">';
-echo '<p><label for="user">'.ucfirst($GLOBALS['lang']['label_dp_identifiant']).'</label><input class="text" type="text" autocomplete="off" id="user" name="nom_utilisateur" placeholder="John Doe" value="" required autofocus /></p>';
-echo '<p><label for="password">'.ucfirst($GLOBALS['lang']['label_dp_motdepasse']).'</label><input class="text" id="password" type="password" placeholder="••••••••••••" name="mot_de_passe" value="" required /></p>';
+echo '<p><label for="user">'.ucfirst($GLOBALS['lang']['label_dp_login']).'</label><input class="text" type="text" autocomplete="off" id="user" name="nom_user" placeholder="John Doe" value="" required autofocus /></p>';
+echo '<p><label for="password">'.ucfirst($GLOBALS['lang']['label_dp_passwd']).'</label><input class="text" id="password" type="password" placeholder="••••••••••••" name="mot_de_passe" value="" required /></p>';
 echo '<p><input type="checkbox" id="stay_logged" name="stay_logged" checked class="checkbox" /><label for="stay_logged">'.$GLOBALS['lang']['label_stay_logged'].'</label></p>';
 echo '<button class="submit button-submit" type="submit" name="submit">'.$GLOBALS['lang']['connexion'].'</button>';
 echo '<input type="hidden" name="_verif_envoi" value="1" />';

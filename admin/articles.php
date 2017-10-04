@@ -34,7 +34,7 @@ function afficher_liste_articles($arr)
     } else {
         $out = info($GLOBALS['lang']['note_no_article']);
     }
-    $out .= '<a id="fab" class="add-article" href="ecrire.php" title="'.$GLOBALS['lang']['titre_ecrire'].'">'.$GLOBALS['lang']['titre_ecrire'].'</a>';
+    $out .= '<a id="fab" class="add-article" href="ecrire.php" title="'.$GLOBALS['lang']['title_write'].'">'.$GLOBALS['lang']['title_write'].'</a>';
 
     echo $out;
 }
@@ -105,13 +105,13 @@ if ($query) {
  * echo
  */
 
-echo tpl_get_html_head($GLOBALS['lang']['mesarticles']);
+echo tpl_get_html_head($GLOBALS['lang']['myarticles']);
 
 echo '<div id="header">';
     echo '<div id="top">';
         tpl_show_msg();
         echo moteur_recherche();
-        echo tpl_show_topnav($GLOBALS['lang']['mesarticles']);
+        echo tpl_show_topnav($GLOBALS['lang']['myarticles']);
     echo '</div>';
 echo '</div>';
 
@@ -119,7 +119,7 @@ echo '<div id="axe">';
     echo '<div id="subnav">';
     afficher_form_filtre('articles', htmlspecialchars($filter));
     echo '<div class="nombre-elem">';
-        echo ucfirst(nombre_objets(count($tableau), 'article')).' '.$GLOBALS['lang']['sur'].' '.liste_elements_count('SELECT count(*) AS nbr FROM articles', array());
+        echo ucfirst(nombre_objets(count($tableau), 'article')).' '.$GLOBALS['lang']['on'].' '.liste_elements_count('SELECT count(*) AS nbr FROM articles', array());
     echo '</div>';
 echo '</div>';
 

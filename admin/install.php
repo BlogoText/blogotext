@@ -144,7 +144,7 @@ function install_form_2_echo($errors = '')
     $link = rtrim($link, '/').'/';  // ensure it ends with a slash
 
     echo '<p>';
-    echo '<label for="racine">'.$GLOBALS['lang']['pref_racine'].' </label><input type="url" name="racine" id="racine" size="30" value="'.$link.'" class="text" required />';
+    echo '<label for="racine">'.$GLOBALS['lang']['pref_root'].' </label><input type="url" name="racine" id="racine" size="30" value="'.$link.'" class="text" required />';
     echo '</p>';
     echo hidden_input('comm_defaut_status', 1);
     echo hidden_input('langue', $GLOBALS['lang']['id']);
@@ -268,7 +268,7 @@ function install_form_3_proceed()
         $post1 = array (
             'bt_id' => date('YmdHis', $time),
             'bt_date' => date('YmdHis', $time),
-            'bt_title' => $GLOBALS['lang']['first_titre'],
+            'bt_title' => $GLOBALS['lang']['first_title'],
             'bt_abstract' => $GLOBALS['lang']['first_edit'],
             'bt_content' => $GLOBALS['lang']['first_edit'],
             'bt_wiki_content' => $GLOBALS['lang']['first_edit'],
@@ -372,9 +372,9 @@ function install_form_2_valid()
     $url = (string)filter_input(INPUT_POST, 'racine', FILTER_VALIDATE_URL);
 
     if (!$username) {
-        $errors[] = $GLOBALS['lang']['err_prefs_identifiant'];
+        $errors[] = $GLOBALS['lang']['err_prefs_login'];
     } elseif (preg_match('#[=\'"\\\\|]#iu', $username)) {
-        $errors[] = $GLOBALS['lang']['err_prefs_id_syntaxe'];
+        $errors[] = $GLOBALS['lang']['err_prefs_id_syntax'];
     }
 
     if ((strlen($password) < 6)) {
@@ -383,11 +383,11 @@ function install_form_2_valid()
 
     $url = trim($url);
     if (empty($url) || !preg_match('#^https?://.+#', $url)) {
-        $errors[] = $GLOBALS['lang']['err_prefs_racine'];
+        $errors[] = $GLOBALS['lang']['err_prefs_root'];
     } elseif (!preg_match('/^https?:\/\//', $url)) {
-        $errors[] = $GLOBALS['lang']['err_prefs_racine_http'];
+        $errors[] = $GLOBALS['lang']['err_prefs_root_http'];
     } elseif (!preg_match('/\/$/', $url)) {
-        $errors[] = $GLOBALS['lang']['err_prefs_racine_slash'];
+        $errors[] = $GLOBALS['lang']['err_prefs_root_slash'];
     }
 
     return $errors;

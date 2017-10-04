@@ -87,11 +87,11 @@ function display_form_file($errors, $files)
             $form .= '<div id="dragndrop-area" ondragover="event.preventDefault();" ondrop="handleDrop(event);" >';
             $form .= '<div id="dragndrop-title">';
             $form .= $GLOBALS['lang']['img_drop_files_here'];
-            $form .= '<div class="upload-info">('.$GLOBALS['lang']['label_jusqua'].$maxFileSize.$GLOBALS['lang']['label_parfichier'].')</div>';
+            $form .= '<div class="upload-info">('.$GLOBALS['lang']['label_upto'].$maxFileSize.$GLOBALS['lang']['label_perfile'].')</div>';
             $form .= '</div>';
-            $form .= '<p>'.$GLOBALS['lang']['ou'].'</p>';
+            $form .= '<p>'.$GLOBALS['lang']['or'].'</p>';
             $form .= '<div id="file-input-wrapper"><input name="fichier" id="fichier" class="text" type="file" required="" /><label for="fichier"></label></div>';
-            $form .= '<button type="button" class="specify-link button-cancel" id="click-change-form" onclick="return switchUploadForm();" data-lang-url="'.$GLOBALS['lang']['img_specifier_url'].'" data-lang-file="'.$GLOBALS['lang']['img_upload_un_fichier'].'">'.$GLOBALS['lang']['img_specifier_url'].'</button>';
+            $form .= '<button type="button" class="specify-link button-cancel" id="click-change-form" onclick="return switchUploadForm();" data-lang-url="'.$GLOBALS['lang']['img_specifier_url'].'" data-lang-file="'.$GLOBALS['lang']['img_upload_a_file'].'">'.$GLOBALS['lang']['img_specifier_url'].'</button>';
             $form .= '</div>';
             $form .= '<div id="count"></div>';
             $form .= '<div id="result"></div>';
@@ -99,9 +99,9 @@ function display_form_file($errors, $files)
 
         $form .= '<div id="img-others-infos">';
 
-        $form .= '<p><label for="nom_entree">'.$GLOBALS['lang']['label_dp_nom'].'</label><input type="text" id="nom_entree" name="nom_entree" placeholder="'.$GLOBALS['lang']['placeholder_nom_fichier'].'" value="" size="60" class="text" /></p>';
+        $form .= '<p><label for="nom_entree">'.$GLOBALS['lang']['label_dp_name'].'</label><input type="text" id="nom_entree" name="nom_entree" placeholder="'.$GLOBALS['lang']['placeholder_file_name'].'" value="" size="60" class="text" /></p>';
         $form .= '<p><label for="description">'.$GLOBALS['lang']['label_dp_description'].'</label><textarea class="text" id="description" name="description" cols="60" rows="5" placeholder="'.$GLOBALS['lang']['placeholder_description'].'" ></textarea></p>';
-        $form .= '<p><label for="dossier">'.$GLOBALS['lang']['label_dp_dossier'].'</label><input type="text" id="dossier" name="dossier" placeholder="'.$GLOBALS['lang']['placeholder_folder'].'" value="" size="60" class="text" /></p>';
+        $form .= '<p><label for="dossier">'.$GLOBALS['lang']['label_dp_folder'].'</label><input type="text" id="dossier" name="dossier" placeholder="'.$GLOBALS['lang']['placeholder_folder'].'" value="" size="60" class="text" /></p>';
         $form .= hidden_input('token', new_token(), 'id');
         $form .= '<p><input type="checkbox" id="statut" name="statut" class="checkbox" /><label for="statut">'.$GLOBALS['lang']['label_file_priv'].'</label></p>';
         $form .= hidden_input('_verif_envoi', '1');
@@ -133,15 +133,15 @@ function display_form_file($errors, $files)
 
         // File informations
         $form .= '<ul id="fichier-meta-info">';
-            $form .= '<li><b>'.$GLOBALS['lang']['label_dp_nom'].'</b> '.$myFile['bt_filename'].'</li>';
+            $form .= '<li><b>'.$GLOBALS['lang']['label_dp_name'].'</b> '.$myFile['bt_filename'].'</li>';
             $form .= '<li><b>'.$GLOBALS['lang']['label_dp_type'].'</b> '.$myFile['bt_type'].' (.'.$myFile['bt_fileext'].')</li>';
         if ($myFile['bt_type'] == 'image') {
             $form .= '<li><b>'.$GLOBALS['lang']['label_dp_dimensions'].'</b> '.$myFile['bt_dim_w'].'px × '.$myFile['bt_dim_h'].'px'.'</li>';
         }
             $form .= '<li><b>'.$GLOBALS['lang']['label_dp_date'].'</b>'.date_formate($myFile['bt_id']).', '.heure_formate($myFile['bt_id']).'</li>';
-            $form .= '<li><b>'.$GLOBALS['lang']['label_dp_poids'].'</b>'.format_size($myFile['bt_filesize']).'</li>';
+            $form .= '<li><b>'.$GLOBALS['lang']['label_dp_filesize'].'</b>'.format_size($myFile['bt_filesize']).'</li>';
             $form .= '<li><b>'.$GLOBALS['lang']['label_dp_checksum'].'</b>'.$myFile['bt_checksum'].'</li>';
-            $form .= '<li><b>'.$GLOBALS['lang']['label_dp_visibilite'].'</b>'.(($myFile['bt_statut'] == 1) ? 'Publique' : 'Privée').'</li>';
+            $form .= '<li><b>'.$GLOBALS['lang']['label_dp_visibility'].'</b>'.(($myFile['bt_statut'] == 1) ? 'Publique' : 'Privée').'</li>';
         $form .= '</ul>';
 
         // Integration codes
@@ -165,15 +165,15 @@ function display_form_file($errors, $files)
 
         // Edit the file
         $form .= '<div id="img-others-infos">';
-        $form .= '<p><label for="nom_entree">'.ucfirst($GLOBALS['lang']['label_dp_nom']).'</label><input type="text" id="nom_entree" name="nom_entree" placeholder="" value="'.pathinfo($myFile['bt_filename'], PATHINFO_FILENAME).'" size="60" class="text" /></p>';
+        $form .= '<p><label for="nom_entree">'.ucfirst($GLOBALS['lang']['label_dp_name']).'</label><input type="text" id="nom_entree" name="nom_entree" placeholder="" value="'.pathinfo($myFile['bt_filename'], PATHINFO_FILENAME).'" size="60" class="text" /></p>';
         $form .= '<p><label for="description">'.$GLOBALS['lang']['label_dp_description'].'</label><textarea class="text" name="description" id="description" cols="60" rows="5" placeholder="'.$GLOBALS['lang']['placeholder_description'].'" >'.$myFile['bt_wiki_content'].'</textarea></p>';
-        $form .= '<p><label for="dossier">'.$GLOBALS['lang']['label_dp_dossier'].'</label><input type="text" name="dossier" placeholder="'.$GLOBALS['lang']['placeholder_folder'].'" value="'.((!empty($myFile['bt_dossier'])) ? $myFile['bt_dossier'] : '').'" size="60" class="text" /></p>';
+        $form .= '<p><label for="dossier">'.$GLOBALS['lang']['label_dp_folder'].'</label><input type="text" name="dossier" placeholder="'.$GLOBALS['lang']['placeholder_folder'].'" value="'.((!empty($myFile['bt_folder'])) ? $myFile['bt_folder'] : '').'" size="60" class="text" /></p>';
         $checked = ($myFile['bt_statut'] == 0) ? 'checked ' : '';
         $form .= '<p><input type="checkbox" id="statut" name="statut" '.$checked.' class="checkbox" /><label for="statut">'.$GLOBALS['lang']['label_file_priv'].'</label></p>';
         $form .= '<p class="submit-bttns">';
-        $form .= '<button class="submit button-delete" type="button" name="supprimer" onclick="rmFichier(this)">'.$GLOBALS['lang']['supprimer'].'</button>';
-        $form .= '<button class="submit button-cancel" type="button" onclick="annuler(\'fichiers.php\');">'.$GLOBALS['lang']['annuler'].'</button>';
-        $form .= '<button class="submit button-submit" type="submit" name="editer">'.$GLOBALS['lang']['envoyer'].'</button>';
+        $form .= '<button class="submit button-delete" type="button" name="supprimer" onclick="rmFichier(this)">'.$GLOBALS['lang']['delete'].'</button>';
+        $form .= '<button class="submit button-cancel" type="button" onclick="annuler(\'fichiers.php\');">'.$GLOBALS['lang']['cancel'].'</button>';
+        $form .= '<button class="submit button-submit" type="submit" name="editer">'.$GLOBALS['lang']['send'].'</button>';
         $form .= '</p>';
         $form .= '</div>';
 
@@ -213,7 +213,7 @@ function display_files_list($arr)
     if ($lstype) {
         $out .= '<div class="list-buttons" id="list-types">';
         $idx = 0;
-        $out .= '<button class="current" id="butIdtype'.$idx.'" onclick="type_sort(\'\', \'butIdtype'.$idx.'\');">'.count($arr).' '.$GLOBALS['lang']['label_fichiers'].'</button>';
+        $out .= '<button class="current" id="butIdtype'.$idx.'" onclick="type_sort(\'\', \'butIdtype'.$idx.'\');">'.count($arr).' '.$GLOBALS['lang']['label_files'].'</button>';
         foreach ($lstype as $type => $amount) {
             if (!$type) {
                 break;
@@ -227,7 +227,7 @@ function display_files_list($arr)
     // Files
     $out .= '<table id="file-list">';
     $out .= '<thead>';
-        $out .= '<tr><th></th><th>'.$GLOBALS['lang']['label_dp_nom'].'</th><th>'.$GLOBALS['lang']['label_dp_poids'].'</th><th>'.$GLOBALS['lang']['label_dp_date'].'</th><th></th><th></th></tr>';
+        $out .= '<tr><th></th><th>'.$GLOBALS['lang']['label_dp_name'].'</th><th>'.$GLOBALS['lang']['label_dp_filesize'].'</th><th>'.$GLOBALS['lang']['label_dp_date'].'</th><th></th><th></th></tr>';
     $out .= '</thead>';
     $out .= '<tbody>';
 
@@ -260,27 +260,27 @@ function traitment_form_file($file)
         // Addition
         // via $_FILES
         if (isset($_FILES['fichier'])) {
-            $newFile = bdd_fichier($file, 'ajout-nouveau', 'upload', $_FILES['fichier']);
+            $newFile = bdd_file($file, 'ajout-nouveau', 'upload', $_FILES['fichier']);
         }
         // via $_POST d’une url
         if ($vars['fichier']) {
-            $newFile = bdd_fichier($file, 'ajout-nouveau', 'download', $vars['fichier']);
+            $newFile = bdd_file($file, 'ajout-nouveau', 'download', $vars['fichier']);
         }
         $file = (is_null($newFile)) ? $file : $newFile;
-        redirection(basename($_SERVER['SCRIPT_NAME']).'?file_id='.$file['bt_id'].'&msg=confirm_fichier_ajout');
+        redirection(basename($_SERVER['SCRIPT_NAME']).'?file_id='.$file['bt_id'].'&msg=confirm_file_add');
     } elseif ($vars['editer'] && !$vars['suppr']) {
         // Edition
         $oldFileName = $vars['filename'];  // Name can be edited too. This is old name, the new one is in $file[].
-        bdd_fichier($file, 'editer-existant', '', $oldFileName);
+        bdd_file($file, 'editer-existant', '', $oldFileName);
     } elseif ($vars['supprimer'] && preg_match('#^\d{14}$#', $fileId)) {
         // Deletion
-        $response = bdd_fichier($file, 'supprimer-existant', '', $fileId);
+        $response = bdd_file($file, 'supprimer-existant', '', $fileId);
         if ($response == 'error_suppr_file_suppr_error') {
-            redirection(basename($_SERVER['SCRIPT_NAME']).'?errmsg=error_fichier_suppr&what=file_suppr_error');
+            redirection(basename($_SERVER['SCRIPT_NAME']).'?errmsg=error_file_suppr&what=file_suppr_error');
         } elseif ($response == 'no_such_file_on_disk') {
-            redirection(basename($_SERVER['SCRIPT_NAME']).'?msg=error_fichier_suppr&what=but_no_such_file_on_disk2');
+            redirection(basename($_SERVER['SCRIPT_NAME']).'?msg=error_file_suppr&what=but_no_such_file_on_disk2');
         } elseif ($response == 'success') {
-            redirection(basename($_SERVER['SCRIPT_NAME']).'?msg=confirm_fichier_suppr');
+            redirection(basename($_SERVER['SCRIPT_NAME']).'?msg=confirm_file_del');
         }
     }
 }
@@ -300,8 +300,8 @@ function display_pictures_list($images)
     // Sort pictures into "logical folders"
     $lsFolder = '';
     foreach ($images as $image) {
-        if (!empty($image['bt_dossier'])) {
-            $lsFolder .= $image['bt_dossier'].',';
+        if (!empty($image['bt_folder'])) {
+            $lsFolder .= $image['bt_folder'].',';
         }
     }
     $arr = explode(',', $lsFolder);
@@ -318,12 +318,12 @@ function display_pictures_list($images)
 
     $out .= '<ul id="slider-nav-bar">';
     $out .= '<li><button id="slider-nav-close" class="slider-nav-button" onclick="slideshow(\'close\');"></button></li>';
-    $out .= '<li><button id="slider-nav-dl"    class="slider-nav-button" onclick="triggerClick(document.getElementById(\'slider-nav-dl-link\'))" title="'.$GLOBALS['lang']['telecharger'].'"></button><a id="slider-nav-dl-link" download></a></li>';
-    $out .= '<li><button id="slider-nav-share" class="slider-nav-button" onclick="triggerClick(document.getElementById(\'slider-nav-share-link\'))" title="'.$GLOBALS['lang']['partager'].   '"></button><a id="slider-nav-share-link"></a></li>';
+    $out .= '<li><button id="slider-nav-dl"    class="slider-nav-button" onclick="triggerClick(document.getElementById(\'slider-nav-dl-link\'))" title="'.$GLOBALS['lang']['download'].'"></button><a id="slider-nav-dl-link" download></a></li>';
+    $out .= '<li><button id="slider-nav-share" class="slider-nav-button" onclick="triggerClick(document.getElementById(\'slider-nav-share-link\'))" title="'.$GLOBALS['lang']['share'].   '"></button><a id="slider-nav-share-link"></a></li>';
     $out .= '<li><button id="slider-nav-infos" class="slider-nav-button" onclick="" title="'.$GLOBALS['lang']['infos'].      '"></button></li>';
-    $out .= '<li><button id="slider-nav-edit"  class="slider-nav-button" onclick="triggerClick(document.getElementById(\'slider-nav-edit-link\'))" title="'.$GLOBALS['lang']['editer'].     '"></button><a id="slider-nav-edit-link"></a></li>';
+    $out .= '<li><button id="slider-nav-edit"  class="slider-nav-button" onclick="triggerClick(document.getElementById(\'slider-nav-edit-link\'))" title="'.$GLOBALS['lang']['edit'].     '"></button><a id="slider-nav-edit-link"></a></li>';
 
-    $out .= '<li><button id="slider-nav-suppr" class="slider-nav-button" title="'.$GLOBALS['lang']['supprimer'].  '"></button></li>';
+    $out .= '<li><button id="slider-nav-suppr" class="slider-nav-button" title="'.$GLOBALS['lang']['delete'].  '"></button></li>';
     $out .= '</ul>';
     $out .= '<div id="slider-display">';
     $out .= '<img id="slider-img" src="" alt=""/>';
@@ -368,7 +368,7 @@ function display_pictures_list($images)
             ],
             id: '.(string)$im['bt_id'].',
             desc: "'.addslashes(preg_replace('#(\n|\r|\n\r)#', '', nl2br($im['bt_content']))).'",
-            dossier: "'.(isset($im['bt_dossier']) ? $im['bt_dossier'] : '').'",
+            dossier: "'.(isset($im['bt_folder']) ? $im['bt_folder'] : '').'",
             width: '.(string)$im['bt_dim_w'].',
             height: '.(string)$im['bt_dim_h'].',
             weight: '.(string)$im['bt_filesize'].',
@@ -412,7 +412,7 @@ function display_pictures_list($images)
  */
 
 $file = array();
-$GLOBALS['liste_fichiers'] = open_serialzd_file(FILES_DB);
+$GLOBALS['liste_files'] = open_serialzd_file(FILES_DB);
 
 // Search / Sort
 if ($vars['filtre']) {
@@ -429,14 +429,14 @@ if ($vars['filtre']) {
     } elseif ($type == 'type' && $search) {
         $files = liste_base_files('type', $search, '');
     } else {
-        $files = $GLOBALS['liste_fichiers'];
+        $files = $GLOBALS['liste_files'];
     }
 } elseif ($vars['q']) {
     $files = liste_base_files('recherche', htmlspecialchars(urldecode($vars['q'])), '');
 } elseif ($vars['extension']) {
     $files = liste_base_files('extension', htmlspecialchars($vars['extension']), '');
 } elseif ($vars['file_id'] && preg_match('#^\d{14}$#', $vars['file_id'])) {
-    foreach ($GLOBALS['liste_fichiers'] as $fich) {
+    foreach ($GLOBALS['liste_files'] as $fich) {
         if ($fich['bt_id'] == $vars['file_id']) {
             $file = $fich;
             break;
@@ -446,14 +446,14 @@ if ($vars['filtre']) {
         $files[$_GET['file_id']] = $file;
     }
 } else {
-    $files = $GLOBALS['liste_fichiers'];
+    $files = $GLOBALS['liste_files'];
 }
 
 // Traitment
 $errors = array();
 if (isset($_POST['_verif_envoi'])) {
-    $file = init_post_fichier();
-    $errors = valider_form_fichier($file);
+    $file = init_post_file();
+    $errors = valider_form_file($file);
     if (!$errors) {
         traitment_form_file($file);
     }
@@ -465,13 +465,13 @@ if (isset($_POST['_verif_envoi'])) {
  * echo
  */
 
-echo tpl_get_html_head($GLOBALS['lang']['titre_fichier']);
+echo tpl_get_html_head($GLOBALS['lang']['title_file']);
 
 echo '<div id="header">';
     echo '<div id="top">';
         tpl_show_msg();
         echo moteur_recherche();
-        echo tpl_show_topnav($GLOBALS['lang']['titre_fichier']);
+        echo tpl_show_topnav($GLOBALS['lang']['title_file']);
     echo '</div>';
 echo '</div>';
 
