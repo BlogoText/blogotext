@@ -29,7 +29,8 @@ This is BlogoText, the lightweight SQLite Blog-Engine.
  * cURL (for RSS reader, links sharing, comments icons)
  * LibXML (for RSS reader)
  * GZip (for zip exporting function)
- * [Intl](http://php.net/manual/en/book.intl.php)
+ * [Intl](http://php.net/manual/book.intl.php)
+ * [mbstring](http://php.net/manual/book.mbstring.php)
 
 ## Installation
  * Download [the lastest release](https://github.com/BlogoText/blogotext/releases)
