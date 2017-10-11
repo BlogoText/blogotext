@@ -151,7 +151,7 @@ $LANG = array(
 // placeholders
 'placeholder_search' => 'Search',
 //Formulaire Images
-'label_upto' => 'Up to',
+'label_upto' => 'Up to ',
 'label_perfile' => ' per file',
 'label_codes' => 'Integration codes:',
 // Chiffres 0 à 9 pour captcha
