@@ -486,13 +486,15 @@ echo '<div id="page">';
 
 // Check files existance
 $realFiles = array();
-foreach ($files as $i => $file) {
-    if (!isset($file['bt_path'])) {
-        $file['bt_path'] = '';
-    }
-    $folder = ($file['bt_type'] == 'image') ? DIR_IMAGES.$file['bt_path'] : DIR_DOCUMENTS;
-    if ($file['bt_filename'] != 'index.php' && is_file($folder.'/'.$file['bt_filename'])) {
-        $realFiles[] = $file;
+if (isset($files)) {
+    foreach ($files as $i => $file) {
+        if (!isset($file['bt_path'])) {
+            $file['bt_path'] = '';
+        }
+        $folder = ($file['bt_type'] == 'image') ? DIR_IMAGES.$file['bt_path'] : DIR_DOCUMENTS;
+        if ($file['bt_filename'] != 'index.php' && is_file($folder.'/'.$file['bt_filename'])) {
+            $realFiles[] = $file;
+        }
     }
 }
 
