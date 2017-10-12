@@ -86,6 +86,9 @@ function addons_html_get_list_addons($tableau, $filtre)
     if (!empty($tableau)) {
         $out = '<ul id="modules">';
         foreach ($tableau as $i => $addon) {
+            if (!isset($GLOBALS['addons'][$addon])) {
+                continue;
+            }
             $addon = $GLOBALS['addons'][$addon];
             // addon
             $out .= '<li title="'.$GLOBALS['lang']['addons_click_more'].'">';
