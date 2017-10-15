@@ -128,13 +128,16 @@ function markup_clean_href($matches)
     // var_dump($matches);
     $allowed = array('http://', 'https://', 'ftp://');
     // if not a valid url, return the string
-    if (!filter_var($matches['2'], FILTER_VALIDATE_URL)
-     || !preg_match('#^('.join('|', $allowed).')#i', $matches['2'])
+    if ((
+            !filter_var($matches['2'], FILTER_VALIDATE_URL)
+         || !preg_match('#^('.join('|', $allowed).')#i', $matches['2'])
+        )
+     && !preg_match('/^#[\w-_]+$/i', $matches['2']) // allowing [text|#look-at_this]
     ) {
         return $matches['0'];
     }
     // handle different case
-    if (empty(trim($matches['1']))) {
+    if (empty(trim($matches['1']))){
         return $matches['1'].'<a href="'.$matches['2'].'">'.$matches['2'].'</a>';
     } else {
         return '<a href="'.$matches['2'].'">'.$matches['1'].'</a>';
