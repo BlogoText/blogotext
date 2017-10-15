@@ -137,7 +137,7 @@ function markup_clean_href($matches)
         return $matches['0'];
     }
     // handle different case
-    if (empty(trim($matches['1']))){
+    if (empty(trim($matches['1']))) {
         return $matches['1'].'<a href="'.$matches['2'].'">'.$matches['2'].'</a>';
     } else {
         return '<a href="'.$matches['2'].'">'.$matches['1'].'</a>';
