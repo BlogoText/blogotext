@@ -349,9 +349,14 @@ function display_pictures_list($images)
     $out .=  'var imgs = { list: [';
     // TODO: filename has 3 identical paths?!
     foreach ($images as $idx => $im) {
+        $img_path_src = $im['bt_path'].'/'.$im['bt_filename'];
+
         // TODO: bricolage, we need to ensure the DTB consistency elsewhere
-        if (!isset($im['bt_dim_w'])) {
-            list($im['bt_dim_w'], $im['bt_dim_h']) = getimagesize(DIR_IMAGES.$im['bt_filename']);
+        if (!isset($im['bt_dim_w']) && $im['bt_fileext'] != 'svg') {
+            list($im['bt_dim_w'], $im['bt_dim_h']) = getimagesize(DIR_IMAGES.$img_path_src);
+        } else {
+            // '""' for the PHP to JS
+            $im['bt_dim_w'] = $im['bt_dim_h'] = '""';
         }
 
         $img_path_src = $im['bt_path'].'/'.$im['bt_filename'];
