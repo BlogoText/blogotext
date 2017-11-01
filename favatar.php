@@ -125,13 +125,10 @@ function favatar()
         if (!$service) {
             $service = 'monsterid';
         }
-        $domain = (string)filter_input(INPUT_GET, 'domain');
+
         $targetDir = DIR_CACHE.'avatars/';
         // We use the Libravatar service which will reditect to Gravatar if not found
         $sourceFile = 'http://cdn.libravatar.org/avatar/'.$hash.'?s='.$size.'&d='.$service;
- 	if ($domain) {
-		$sourceFile .= '&domain='.$domain;
-	}
         $targetFile = $targetDir.md5($hash).'.png';
     }
 

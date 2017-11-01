@@ -71,8 +71,7 @@ $GLOBALS['balises'] = array(
     'commentaire_anchor' => '{commentaire_ancre}', // the id="" content
     'commentaire_lien' => '{commentaire_lien}',
     'commentaire_md5email' => '{commentaire_md5email}',
-    'commentaire_domain_email' => '{commentaire_domain_email}',
-    
+
     // Liens
     'lien_title' => '{lien_title}',
     'lien_url' => '{lien_url}',
@@ -152,7 +151,6 @@ function conversions_theme_commentaire($texte, $commentaire)
     $texte = str_replace($GLOBALS['balises']['commentaire_date_iso'], date_formate_iso($commentaire['bt_id']), $texte);
     $texte = str_replace($GLOBALS['balises']['commentaire_hour'], heure_formate($commentaire['bt_id']), $texte);
     $texte = str_replace($GLOBALS['balises']['commentaire_email'], $commentaire['bt_email'], $texte);
-    $texte = str_replace($GLOBALS['balises']['commentaire_domain_email'], explode('@', $commentaire['bt_email'])[1], $texte);
     $texte = str_replace($GLOBALS['balises']['commentaire_md5email'], md5($commentaire['bt_email']), $texte);
     $texte = str_replace($GLOBALS['balises']['commentaire_author_lien'], $commentaire['auteur_lien'], $texte);
     $texte = str_replace($GLOBALS['balises']['commentaire_author'], str_replace("'", "\\'", $commentaire['bt_author']), $texte);
