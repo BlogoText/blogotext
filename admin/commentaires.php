@@ -145,7 +145,7 @@ function display_comment($comment, $withLink)
     echo '<div class="commentbloc'.((!$comment['bt_statut']) ? ' privatebloc' : '').'" id="'.article_anchor($comment['bt_id']).'">';
     echo '<div class="comm-side-icon">';
         echo '<div class="comm-title">';
-        echo '<img class="author-icon" width="48" height="48" src="'.URL_ROOT.'favatar.php?q='.md5(((!empty($comment['bt_email'])) ? $comment['bt_email'] : $comment['bt_author'] )).(!empty($comment['bt_email']) ? '&domain='.explode('@', $comment['bt_email'])[1] : Null).'"/>';
+        echo '<img class="author-icon" width="48" height="48" src="'.URL_ROOT.'favatar.php?q='.md5(((!empty($comment['bt_email'])) ? $comment['bt_email'] : $comment['bt_author'] )).(!empty($comment['bt_email']) ? '&domain='.explode('@', $comment['bt_email'])[1] : null).'"/>';
         echo '<span class="date">'.date_formate($comment['bt_id']).'<span>'.heure_formate($comment['bt_id']).'</span></span>' ;
 
         echo '<span class="reply" onclick="reply(\'[b]@['.str_replace('\'', '\\\'', $comment['bt_author']).'|#'.article_anchor($comment['bt_id']).'] :[/b] \'); ">Reply</span> ';
