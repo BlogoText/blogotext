@@ -12,7 +12,7 @@
 # *** LICENSE ***
 
 require_once 'inc/boot.php';
-
+require_once 'inc/encrypt.php';
 header('Content-Type: image/png');
 
 /**
@@ -23,8 +23,13 @@ DEFINE('WRONG_PNG', 'iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP
 DEFINE('EXPIRE_PNG', 60 * 60 * 24 * 365);
 
 
-function download($url, $target, $referer = BLOGOTEXT_UA)
+function download($url, $target, $domain = null, $referer = BLOGOTEXT_UA)
 {
+    if ($domain) {
+        $ddomain = my_decrypt($domain, $GLOBALS['key']);
+        $url .= '&domain='.$ddomain;
+    }
+
     $success = false;
 
     // Open the target file for writing
@@ -129,9 +134,6 @@ function favatar()
         $targetDir = DIR_CACHE.'avatars/';
         // We use the Libravatar service which will reditect to Gravatar if not found
         $sourceFile = 'http://cdn.libravatar.org/avatar/'.$hash.'?s='.$size.'&d='.$service;
-        if ($domain) {
-            $sourceFile .= '&domain='.$domain;
-        }
         $targetFile = $targetDir.md5($hash).'.png';
     }
 
@@ -142,7 +144,7 @@ function favatar()
         }
 
         // need a test/return false
-        if (!download($sourceFile, $targetFile)) {
+        if (!download($sourceFile, $targetFile, $domain)) {
             exit(base64_decode(WRONG_PNG));
         }
     }
