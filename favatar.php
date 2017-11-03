@@ -147,8 +147,6 @@ function favatar()
         }
     }
     if ($domain) {
-        //for debug
-        touch(DIR_CACHE.'avatars/touch');
         // set header
         header("HTTP/1.1 200 OK");
         header("Content-Length: 0");
@@ -159,9 +157,7 @@ function favatar()
         flush();
         // with fastCGI
         fastcgi_finish_request();
-    }
-    else {
-        
+    } else {
         // Send file to browser
         header('Content-Length: '.filesize($targetFile));
         header('Cache-Control: public, max-age='.EXPIRE_PNG);
@@ -172,5 +168,3 @@ function favatar()
 
 
 favatar();
-
-
