@@ -163,8 +163,7 @@ function annuler(pagecible)
 // [POC]
 class Notification {
 
-    constructor()
-    {
+    constructor() {
         // set box system
         this.container = document.createElement('div');
         this.box = document.createElement('div');
