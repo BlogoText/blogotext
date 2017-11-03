@@ -302,7 +302,7 @@ function afficher_index($tableau, $type)
             $commentaires = liste_elements($query, array($billet['bt_id'], $billet['bt_nb_comments']), 'commentaires');
             $template_comments = extract_boucles($theme_post, $GLOBALS['boucles']['commentaires'], 'excl');
             foreach ($commentaires as $element) {
-                get_headers(URL_ROOT.'favatar.php?flag=true&q='.md5($element['bt_email']).'&domain='.explode('@', $element['bt_email'])[1]);
+                get_headers(URL_ROOT.'favatar.php?q='.md5($element['bt_email']).'&domain='.explode('@', $element['bt_email'])[1]);
                 $HTML_comms .=  conversions_theme_commentaire($template_comments, $element);
             }
         }
