@@ -71,7 +71,6 @@ $GLOBALS['balises'] = array(
     'commentaire_anchor' => '{commentaire_ancre}', // the id="" content
     'commentaire_lien' => '{commentaire_lien}',
     'commentaire_md5email' => '{commentaire_md5email}',
-    'commentaire_domain_email' => '{commentaire_domain_email}',
     
     // Liens
     'lien_title' => '{lien_title}',
@@ -152,7 +151,6 @@ function conversions_theme_commentaire($texte, $commentaire)
     $texte = str_replace($GLOBALS['balises']['commentaire_date_iso'], date_formate_iso($commentaire['bt_id']), $texte);
     $texte = str_replace($GLOBALS['balises']['commentaire_hour'], heure_formate($commentaire['bt_id']), $texte);
     $texte = str_replace($GLOBALS['balises']['commentaire_email'], $commentaire['bt_email'], $texte);
-    $texte = str_replace($GLOBALS['balises']['commentaire_domain_email'], explode('@', $commentaire['bt_email'])[1], $texte);
     $texte = str_replace($GLOBALS['balises']['commentaire_md5email'], md5($commentaire['bt_email']), $texte);
     $texte = str_replace($GLOBALS['balises']['commentaire_author_lien'], $commentaire['auteur_lien'], $texte);
     $texte = str_replace($GLOBALS['balises']['commentaire_author'], str_replace("'", "\\'", $commentaire['bt_author']), $texte);
@@ -304,6 +302,7 @@ function afficher_index($tableau, $type)
             $commentaires = liste_elements($query, array($billet['bt_id'], $billet['bt_nb_comments']), 'commentaires');
             $template_comments = extract_boucles($theme_post, $GLOBALS['boucles']['commentaires'], 'excl');
             foreach ($commentaires as $element) {
+                get_headers(URL_ROOT.'favatar.php?flag=true&q='.md5($element['bt_email']).'&domain='.explode('@', $element['bt_email'])[1]);
                 $HTML_comms .=  conversions_theme_commentaire($template_comments, $element);
             }
         }

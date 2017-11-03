@@ -82,7 +82,7 @@ function download($url, $target, $referer = BLOGOTEXT_UA)
  */
 function favatar()
 {
-
+    
     $what = (string)filter_input(INPUT_GET, 'w');
     $query = (string)filter_input(INPUT_GET, 'q');
 
@@ -129,9 +129,9 @@ function favatar()
         $targetDir = DIR_CACHE.'avatars/';
         // We use the Libravatar service which will reditect to Gravatar if not found
         $sourceFile = 'http://cdn.libravatar.org/avatar/'.$hash.'?s='.$size.'&d='.$service;
- 	if ($domain) {
-		$sourceFile .= '&domain='.$domain;
-	}
+        if ($domain) {
+            $sourceFile .= '&domain='.$domain;
+        }
         $targetFile = $targetDir.md5($hash).'.png';
     }
 
@@ -146,12 +146,31 @@ function favatar()
             exit(base64_decode(WRONG_PNG));
         }
     }
-
-    // Send file to browser
-    header('Content-Length: '.filesize($targetFile));
-    header('Cache-Control: public, max-age='.EXPIRE_PNG);
-    header('Last-Modified: '.gmdate('D, d M Y H:i:s', filemtime($targetFile)).' GMT');
-    exit(readfile($targetFile));
+    if ($domain) {
+        //for debug
+        touch(DIR_CACHE.'avatars/touch');
+        // set header
+        header("HTTP/1.1 200 OK");
+        header("Content-Length: 0");
+        header("Connection: Close");
+        // send response
+        ob_start();
+        ob_end_flush();
+        flush();
+        // with fastCGI
+        fastcgi_finish_request();
+    }
+    else {
+        
+        // Send file to browser
+        header('Content-Length: '.filesize($targetFile));
+        header('Cache-Control: public, max-age='.EXPIRE_PNG);
+        header('Last-Modified: '.gmdate('D, d M Y H:i:s', filemtime($targetFile)).' GMT');
+        exit(readfile($targetFile));
+    }
 }
 
+
 favatar();
+
+
