@@ -138,6 +138,7 @@ function favatar()
         if (!is_dir($targetDir) && !create_folder($targetDir, true, true)) {
             exit(base64_decode(WRONG_PNG));
         }
+        //Check if a self-hosted avatar service is declare as describe in Libravatar API
         if ($domain) {
             if (dns_get_record('_avatars-sec._tcp.'.$domain, DNS_SRV)) {
                 $sourceFile = 'https://'.$domain.'/avatar/'.$hash.'?s='.$size.'&d='.$service;
@@ -162,6 +163,10 @@ function favatar()
         // with fastCGI
         fastcgi_finish_request();
     } else {
+        //Test if file is an image or die
+        if (!exif_imagetype($targetFile)) {
+            exit(base64_decode(WRONG_PNG));
+        }
         // Send file to browser
         header('Content-Length: '.filesize($targetFile));
         header('Cache-Control: public, max-age='.EXPIRE_PNG);
