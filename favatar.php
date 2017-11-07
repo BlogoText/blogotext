@@ -129,23 +129,22 @@ function favatar()
         $targetDir = DIR_CACHE.'avatars/';
         // We use the Libravatar service which will reditect to Gravatar if not found
         $sourceFile = 'http://cdn.libravatar.org/avatar/'.$hash.'?s='.$size.'&d='.$service;
-        if ($domain) {
-            if (dns_get_record('_avatars-sec._tcp.'.$domain, DNS_SRV)) {
-                $sourceFile = 'https://'.$domain.'/avatar/'.$hash.'?s='.$size.'&d='.$service;
-            //$sourceFile .= '&domain='.$domain;
-            } elseif (dns_get_record('_avatars._tcp.'.$domain, DNS_SRV)) {
-                $sourceFile = 'http://'.$domain.'/avatar/'.$hash.'?s='.$size.'&d='.$service;
-            }
-        }
-        $targetFile = $targetDir.md5($hash).'.png';
     }
+        $targetFile = $targetDir.md5($hash).'.png';
+
 
     // No cached file or expired?
     if (!is_file($targetFile) || (time() - filemtime($targetFile)) > EXPIRE_PNG) {
         if (!is_dir($targetDir) && !create_folder($targetDir, true, true)) {
             exit(base64_decode(WRONG_PNG));
         }
-
+        if ($domain) {
+            if (dns_get_record('_avatars-sec._tcp.'.$domain, DNS_SRV)) {
+                $sourceFile = 'https://'.$domain.'/avatar/'.$hash.'?s='.$size.'&d='.$service;
+            } elseif (dns_get_record('_avatars._tcp.'.$domain, DNS_SRV)) {
+                $sourceFile = 'http://'.$domain.'/avatar/'.$hash.'?s='.$size.'&d='.$service;
+            }
+        }
         // need a test/return false
         if (!download($sourceFile, $targetFile)) {
             exit(base64_decode(WRONG_PNG));
