@@ -337,7 +337,9 @@ function addFolder2zip($zip, $folder)
  */
 function creer_fichier_zip($folders)
 {
-    $zipfile = 'archive_site-'.date('Ymd').'-'.substr(md5(rand(10, 99)), 3, 5).'.zip';
+    // fix on windows server, file can be found using "archiv~1.zip" as file name in URL
+    // $zipfile = 'archive_site-'.date('Ymd').'-'.substr(md5(rand(10, 99)), 3, 5).'.zip';
+    $zipfile = substr(md5(rand(10, 99)), 3, 5).'-archive_site-'.date('Ymd').'.zip';
     $zip = new ZipArchive;
     if ($zip->open(DIR_BACKUP.$zipfile, ZipArchive::CREATE) === true) {
         foreach ($folders as $folder) {
