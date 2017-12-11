@@ -8,6 +8,15 @@
 # note : each note will be start with "note :"
 # note : 1 note by subject
 
+[3.7.7]
+    - fix XSS issue in comments
+    - fix issue when view a svg file in the file manager, #339
+    - fix Error on file page after file deletion #327
+    - fix "Reply" not parsed (comments) #323
+    - fix Error on addon compliancy version #330
+    - fix bug on new line in feeds title
+    - upd note on installation (EN lang) #324
+
 [3.7.6]
     note : issue #318, thanks to @chb9
     - fix XSS issue in comments
