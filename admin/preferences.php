@@ -174,7 +174,7 @@ function validate_form_preferences()
     $errors = array();
     $token = (string)filter_input(INPUT_POST, 'token');
     $author = (string)filter_input(INPUT_POST, 'auteur');
-    $email = (string)filter_input(INPUT_POST, 'email');
+    $email = (string)filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
     $root = (string)filter_input(INPUT_POST, 'racine');
     $username = (string)filter_input(INPUT_POST, 'identifiant');
     $password = (string)filter_input(INPUT_POST, 'mdp');
@@ -186,11 +186,11 @@ function validate_form_preferences()
     if (!strlen(trim($author))) {
         $errors[] = $GLOBALS['lang']['err_prefs_auteur'];
     }
-    if ($GLOBALS['require_email'] == 1) {
-        if (!preg_match('#^[\w.+~\'*-]+@[\w.-]+\.[a-zA-Z]{2,6}$#i', trim($email))) {
+    // if ($GLOBALS['require_email'] == 1) {
+        if ($email === null || !preg_match('#^[\w.+~\'*-]+@[\w.-]+\.[a-zA-Z]{2,6}$#i', trim($email))) {
             $errors[] = $GLOBALS['lang']['err_prefs_email'] ;
         }
-    }
+    // }
     if (!preg_match('#^(https?://).*/$#', $root)) {
         $errors[] = $GLOBALS['lang']['err_prefs_racine_slash'];
     }
