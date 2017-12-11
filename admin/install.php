@@ -75,12 +75,12 @@ function install_form_1_echo($errors = '')
         $confErrors[] = '<li>Neither <b>pdo_sqlite</b> or <b>pdo_mysql</b> PHP-modules are loaded. BlogoText needs at least one.</li>';
     }
     if (!is_writable('../')) {
-        $confErrors[] = '<li>BlogoText has no write rights (chmod of home folder must be 644 at least, 777 recommended).</li>';
+        $confErrors[] = '<li>BlogoText has no write rights (chmod of home folder must be 644 at least, 755 recommended).</li>';
     }
     if ($confErrors) {
         echo '<div id="install"><h3>:(</h3>';
         echo '<ul class="erreurs">'.implode($confErrors, '').'</ul>';
-        echo '<p classe="erreurs">Installation aborded.</p>';
+        echo '<p classe="erreurs">Installation aborted.</p>';
         echo '</div></div></div></html>';
         return;
     }
