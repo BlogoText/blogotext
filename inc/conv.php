@@ -122,16 +122,21 @@ function parse_texte_code($texte, $code_before)
  *
  * @params array $matches, array from preg_replace_callback
  * @return string
+ *
+ * dirty fix, to do : review the htmlspecialchars policy before this function
  */
 function markup_clean_href($matches)
 {
-    // var_dump($matches);
     $allowed = array('http://', 'https://', 'ftp://');
+
+    // remove the filter, currentlty doesn't work without working/reformating the submitted url, idn & others stuff...
+    // !filter_var($matches['2'], FILTER_VALIDATE_URL) || 
+
+    // encode < > ", ' allowed in url
+    $matches['2'] = htmlspecialchars(htmlspecialchars_decode($matches['2']), ENT_COMPAT);
+
     // if not a valid url, return the string
-    if ((
-            !filter_var($matches['2'], FILTER_VALIDATE_URL)
-         || !preg_match('#^('.join('|', $allowed).')#i', $matches['2'])
-        )
+    if (!preg_match('#^('.join('|', $allowed).')#i', $matches['2'])
      && !preg_match('/^#[\w-_]+$/i', $matches['2']) // allowing [text|#look-at_this]
     ) {
         return $matches['0'];
