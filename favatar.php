@@ -82,7 +82,7 @@ function download($url, $target, $referer = BLOGOTEXT_UA)
  */
 function favatar()
 {
-
+    
     $what = (string)filter_input(INPUT_GET, 'w');
     $query = (string)filter_input(INPUT_GET, 'q');
 
@@ -125,30 +125,55 @@ function favatar()
         if (!$service) {
             $service = 'monsterid';
         }
-
+        $domain = (string)filter_input(INPUT_GET, 'domain');
         $targetDir = DIR_CACHE.'avatars/';
         // We use the Libravatar service which will reditect to Gravatar if not found
         $sourceFile = 'http://cdn.libravatar.org/avatar/'.$hash.'?s='.$size.'&d='.$service;
-        $targetFile = $targetDir.md5($hash).'.png';
     }
+        $targetFile = $targetDir.md5($hash).'.png';
+
 
     // No cached file or expired?
     if (!is_file($targetFile) || (time() - filemtime($targetFile)) > EXPIRE_PNG) {
         if (!is_dir($targetDir) && !create_folder($targetDir, true, true)) {
             exit(base64_decode(WRONG_PNG));
         }
-
+        //Check if a self-hosted avatar service is declare as describe in Libravatar API
+        if ($domain) {
+            if (dns_get_record('_avatars-sec._tcp.'.$domain, DNS_SRV)) {
+                $sourceFile = 'https://'.$domain.'/avatar/'.$hash.'?s='.$size.'&d='.$service;
+            } elseif (dns_get_record('_avatars._tcp.'.$domain, DNS_SRV)) {
+                $sourceFile = 'http://'.$domain.'/avatar/'.$hash.'?s='.$size.'&d='.$service;
+            }
+        }
         // need a test/return false
         if (!download($sourceFile, $targetFile)) {
             exit(base64_decode(WRONG_PNG));
         }
     }
-
-    // Send file to browser
-    header('Content-Length: '.filesize($targetFile));
-    header('Cache-Control: public, max-age='.EXPIRE_PNG);
-    header('Last-Modified: '.gmdate('D, d M Y H:i:s', filemtime($targetFile)).' GMT');
-    exit(readfile($targetFile));
+    if ($domain) {
+        // set header
+        header("HTTP/1.1 200 OK");
+        header("Content-Length: 0");
+        header("Connection: Close");
+        // send response
+        ob_start();
+        ob_end_flush();
+        flush();
+        // with fastCGI
+        fastcgi_finish_request();
+    } else {
+        //Test if file is an image or die
+        if (!exif_imagetype($targetFile)) {
+            exit(base64_decode(WRONG_PNG));
+        }
+        // Send file to browser
+        header('Content-Length: '.filesize($targetFile));
+        header('Cache-Control: public, max-age='.EXPIRE_PNG);
+        header('Last-Modified: '.gmdate('D, d M Y H:i:s', filemtime($targetFile)).' GMT');
+        exit(readfile($targetFile));
+    }
 }
+
 
 favatar();

@@ -141,6 +141,7 @@ if (preg_match('#\d{14}#', $vars['post_id'])) {
 
 function display_comment($comment, $withLink)
 {
+    get_headers(URL_ROOT.'favatar.php?q='.md5(((!empty($comment['bt_email'])) ? $comment['bt_email'] : $comment['bt_author'] )).(!empty($comment['bt_email']) ? '&domain='.explode('@', $comment['bt_email'])[1] : null));
     afficher_form_commentaire($comment['bt_article_id'], 'admin', '', $comment);
     echo '<div class="commentbloc'.((!$comment['bt_statut']) ? ' privatebloc' : '').'" id="'.article_anchor($comment['bt_id']).'">';
     echo '<div class="comm-side-icon">';
