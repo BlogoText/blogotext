@@ -428,6 +428,9 @@ function send_emails($id_comment)
     //create a boundary for the email.
     $boundary = uniqid('blogotext');
     $subject = $GLOBALS['lang']['mail_subject'].$article_title.'" - '.$GLOBALS['nom_du_site'];
+    $subject = 'New comment on "'.$article_title.'" - '.$GLOBALS['nom_du_site'];
+    $headers  = 'MIME-Version: 1.0'."\r\n".'Content-type: text/html; charset="UTF-8"'."\r\n";
+    $headers .= 'From: no.reply_'.$GLOBALS['email']."\r\n".'X-Mailer: BlogoText - PHP/'.phpversion();
 
     // send emails
     foreach ($to_send_mail as $mail) {

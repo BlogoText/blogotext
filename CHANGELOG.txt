@@ -12,6 +12,11 @@
     - upd email notification system for comments, now use multipart HTML/TXT
     - upd template of admin/index
 
+[3.7.5]
+    - fix feed aggregator multiple errors on pages navigation
+    - fix feed aggregator filter for 4 bytes char
+    - fix admin settings page, wrong behavior for themes listing
+
 [3.7.4]
     - fix wrong behavior on link (title) from feed aggregator
     - fix for PHP 5.5 compat

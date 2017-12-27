@@ -51,9 +51,14 @@ function bdd_rss($flux, $what)
                         bt_folder
                     )
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
+        $regex = '%(?:
+                  \xF0[\x90-\xBF][\x80-\xBF]{2}      # planes 1-3
+                | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
+                | \xF4[\x80-\x8F][\x80-\xBF]{2}      # plane 16
+            )%xs';
         foreach ($flux as $post) {
-            $post['bt_title'] = preg_replace('/(([\xE0-\xEF][\x00-\xFF][\x00-\xFF])|([\xF0-\xF4][\x00-\xFF][\x00-\xFF][\x00-\xFF]))/', '', $post['bt_title']);
-            $post['bt_content'] = preg_replace('/(([\xE0-\xEF][\x00-\xFF][\x00-\xFF])|([\xF0-\xF4][\x00-\xFF][\x00-\xFF][\x00-\xFF]))/', '', $post['bt_content']);
+            $post['bt_title'] = preg_replace($regex, '?', $post['bt_title']);
+            $post['bt_content'] = preg_replace($regex, '?', $post['bt_content']);
             $ret = $req->execute(array(
                 $post['bt_id'],
                 $post['bt_date'],

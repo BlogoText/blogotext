@@ -247,7 +247,7 @@ define('FILE_MYSQL', DIR_CONFIG.'mysql.php');
 // Constants: general
 define('BLOGOTEXT_NAME', 'BlogoText');
 define('BLOGOTEXT_SITE', 'https://github.com/BlogoText/blogotext');
-define('BLOGOTEXT_VERSION', '3.7.4');
+define('BLOGOTEXT_VERSION', '3.7.5');
 define('MINIMAL_PHP_REQUIRED_VERSION', '5.5');
 define('BLOGOTEXT_UA', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0');
 
