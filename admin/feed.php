@@ -162,15 +162,17 @@ function feed_list_html($selected = '')
         $liHtml = '';
         $folderCount = 0;
         foreach ($folder as $feed) {
-            if ($feed['link'] == $selected) {
-                $liHtml .= '<li class="active-site" data-nbrun="'.$feed['nbrun'].'" data-feedurl="'.$feed['link'].'" title="'.$feed['link'].'">';
-            } else {
-                $liHtml .= '<li class="" data-nbrun="'.$feed['nbrun'].'" data-feedurl="'.$feed['link'].'" title="'.$feed['link'].'">';
+            if ($feed['nbrun'] > 0) {
+                if ($feed['link'] == $selected) {
+                    $liHtml .= '<li class="active-site" data-nbrun="'.$feed['nbrun'].'" data-feedurl="'.$feed['link'].'" title="'.$feed['link'].'">';
+                } else {
+                    $liHtml .= '<li class="" data-nbrun="'.$feed['nbrun'].'" data-feedurl="'.$feed['link'].'" title="'.$feed['link'].'">';
+                }
+                $liHtml .= '<a href="?site='.urlencode($feed['link']).'" '.(($feed['iserror'] > 2) ? 'class="feed-error" ': ' ' ).' data-feed-domain="'.parse_url($feed['link'], PHP_URL_HOST).'">'.$feed['title'].'</a>';
+                $liHtml .= '<span>('.$feed['nbrun'].')</span>';
+                $liHtml .= '</li>';
+                $folderCount += $feed['nbrun'];
             }
-            $liHtml .= '<a href="?site='.urlencode($feed['link']).'" '.(($feed['iserror'] > 2) ? 'class="feed-error" ': ' ' ).' data-feed-domain="'.parse_url($feed['link'], PHP_URL_HOST).'">'.$feed['title'].'</a>';
-            $liHtml .= '<span>('.$feed['nbrun'].')</span>';
-            $liHtml .= '</li>';
-            $folderCount += $feed['nbrun'];
         }
 
         if ($idx != '') {
@@ -341,6 +343,7 @@ if (isset($have_more)) {
 if ($sqlOrder == 'ASC') {
     $tableau = array_reverse($tableau);
 }
+
 
 // get pagination
 $btn_previous_page = '';
