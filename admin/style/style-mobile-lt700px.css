@@ -140,8 +140,8 @@
     }
 
     #feed-list {
-        transform: translateX(-100%) translateX(10px);
-        padding-right: 12px;
+        transform: translateX(-100%) translateX(25px);
+        padding-right: 25px;
         position: absolute;
         z-index: 1;
         left: 0;

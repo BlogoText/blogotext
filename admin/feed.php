@@ -344,6 +344,7 @@ if ($sqlOrder == 'ASC') {
     $tableau = array_reverse($tableau);
 }
 
+
 // get pagination
 $btn_previous_page = '';
 $btn_next_page = '';
