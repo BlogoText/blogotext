@@ -15,7 +15,8 @@
 +-------------------------------------------------------------------------+
 |                                                                    LINX |
 +-------------------------------------------------------------------------+
-| http://lehollandaisvolant.net/tout/link/                                |
+| No more available ! (HTTP 404)                                          |
+| http://lehollandaisvolant.net/tout/linx/                                |
 |                                                                         |
 | Linx is an ultra-lightweight SQLite-based "delicous-like" url-saver.    |
 |                                                                         |
