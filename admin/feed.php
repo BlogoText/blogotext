@@ -204,8 +204,6 @@ function send_rss_json($feeds)
         'count' => (count($feeds) - 1)
     );
 
-    $feed['bt_title'] = trim(str_replace(array("\r","\n", "\xe2\x80\xa8", "\\u2028"), '', $feed['bt_title']));
-
     foreach ($feeds as $feed) {
         // fix weird case I found where title can have a line break witch make a not valid JSON feed for JS
         // to do : review this on parsing feed method (BT 3.8)
