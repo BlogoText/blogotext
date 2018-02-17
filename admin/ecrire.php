@@ -39,7 +39,6 @@ $vars['enregistrer'] = (filter_input(INPUT_POST, 'enregistrer') !== null);
 $vars['supprimer'] = (filter_input(INPUT_POST, 'supprimer') !== null);
 $vars['_verif_envoi'] = (filter_input(INPUT_POST, '_verif_envoi') !== null);
 
-
 /**
  *
  */

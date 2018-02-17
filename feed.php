@@ -13,12 +13,6 @@
 
 require_once 'inc/boot.php';
 
-// dependancy
-require_once BT_ROOT.'inc/addons.php';
-
-// launch addons
-addons_init_public();
-
 /**
  * feed.php replace atom.php and rss.php
  *
@@ -56,7 +50,8 @@ header('Content-Type: application/'. $format .'+xml; charset=UTF-8');
  * if file exists and is valid, return the cache and die
  *  " !file exists, go for the full process
  */
-$flux_cache_lv2_path = DIR_VHOST_CACHE.'cache2_'. $format .'_'.substr(md5((isset($_SERVER['QUERY_STRING'])) ? $_SERVER['QUERY_STRING'] : ''), 0, 8).'.dat';
+$flux_cache_lv2_path = DIR_VHOST_CACHE.'feed_lvl2_'. $format .'_'.substr(md5((isset($_SERVER['QUERY_STRING'])) ? $_SERVER['QUERY_STRING'] : ''), 0, 8).'.dat';
+
 
 // if cache file exists
 if (is_file($flux_cache_lv2_path)) {
@@ -68,6 +63,13 @@ if (is_file($flux_cache_lv2_path)) {
     unlink($flux_cache_lv2_path);
 }
 
+
+
+// dependancy
+require_once BT_ROOT.'inc/addons.php';
+
+// launch addons
+addons_init_public();
 
 /**
  * comments for an article (ATOM)
@@ -281,7 +283,7 @@ if (preg_match('#^[0-9]{14}$#', $postId)) {
  * @echo the lastest of _GET['mode']
  */
 } else {
-    $fcache = DIR_VHOST_CACHE.'cache1_feed.dat';
+    $fcache = DIR_VHOST_CACHE.'feed_lvl_1.dat';
     $liste = open_serialzd_file($fcache);
     if (!is_file($fcache) or !is_array($liste)) {
         $GLOBALS['db_handle'] = open_base();

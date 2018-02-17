@@ -85,6 +85,56 @@ $GLOBALS['balises'] = array(
 );
 
 /**
+ * cleanup a string to use it in <meta />
+ *
+ * @params string $string,
+ * @params null|int $limit, the limit size. null = no limit
+ * @params null|string $addon,
+ *                      null, do nothing
+ *                      'encode', encode '{addon_' to '&#123;addon_'
+ *                      'remove', remove the addon tag
+ * @return string
+ */
+function html_clean_meta($string, $limit = 249, $addon = null)
+{
+    $string = str_replace(array("\r", "\n"), ' ', $string);
+    $string = strip_tags($string);
+    if ($limit !== null && mb_strlen($string) > $limit) {
+        $string = mb_substr($string, 0, $limit).'…';
+    }
+    $string = trim($string);
+    $string = htmlspecialchars($string, ENT_QUOTES);
+    // proceed addon tag
+    if ($addon !== null) {
+        $string = html_addon_protect($string, $addon);
+    }
+
+    return $string;
+}
+
+/**
+ * used to prevent addons tags in title, description, comments ...
+ */
+function html_addon_protect($string, $addon)
+{
+    if (is_array($string)) {
+        foreach ($string as &$v) {
+            $v = html_addon_protect($v, $addon);
+        }
+        return $string;
+    }
+
+    if ($addon !== null && strpos($string, '{addon_') !== false) {
+        if ($addon == 'encode') {
+            $string = str_replace('{addon_', '&#123;addon_', $string);
+        } else if ($addon == 'remove') {
+            $string = preg_replace('/\{addon_[a-zA-Z0-9-_]*\}/', '', $string);
+        }
+    }
+    return $string;
+}
+
+/**
  *
  */
 function conversions_theme($texte, $solo_art, $cnt_mode)
@@ -99,17 +149,18 @@ function conversions_theme($texte, $solo_art, $cnt_mode)
     $texte = str_replace($GLOBALS['balises']['tpl_class'], $GLOBALS['tpl_class'], $texte);
 
     if ($cnt_mode == 'post' and !empty($solo_art)) {
-        $texte = str_replace($GLOBALS['balises']['article_titre_page'], $solo_art['bt_title'].' - ', $texte);
-        $texte = str_replace($GLOBALS['balises']['article_titre'], $solo_art['bt_title'], $texte);
+        $clean_title = html_clean_meta($solo_art['bt_title'], 999, 'encode');
+        $texte = str_replace($GLOBALS['balises']['article_titre_page'], $clean_title.' - ', $texte);
+        $texte = str_replace($GLOBALS['balises']['article_titre'], $clean_title, $texte);
         $texte = str_replace($GLOBALS['balises']['article_titre_echape'], urlencode($solo_art['bt_title']), $texte);
         $texte = str_replace($GLOBALS['balises']['article_lien'], $solo_art['bt_link'], $texte);
         if ($solo_art['bt_type'] == 'article') {
-            $texte = str_replace($GLOBALS['balises']['article_chapo'], htmlspecialchars(str_replace(array("\r", "\n"), ' ', ((empty($solo_art['bt_abstract'])) ? mb_substr(strip_tags($solo_art['bt_content']), 0, 249).'…' : $solo_art['bt_abstract'])), ENT_QUOTES), $texte);
+            $texte = str_replace($GLOBALS['balises']['article_chapo'], html_clean_meta(((empty($solo_art['bt_abstract'])) ? $solo_art['bt_content'] : $solo_art['bt_abstract']), 249, 'encode'), $texte);
             $texte = str_replace($GLOBALS['balises']['blog_motscles'], $solo_art['bt_keywords'], $texte);
         }
         if ($solo_art['bt_type'] == 'link' or $solo_art['bt_type'] == 'note') {
-            $texte = str_replace($GLOBALS['balises']['article_chapo'], htmlspecialchars(trim(str_replace(array("\r", "\n"), ' ', mb_substr(strip_tags($solo_art['bt_content']), 0, 149))), ENT_QUOTES).'…', $texte);
-            $texte = str_replace($GLOBALS['balises']['article_titre_page'], $solo_art['bt_title'].' - ', $texte);
+            $texte = str_replace($GLOBALS['balises']['article_chapo'], html_clean_meta(solo_art['bt_content'], 149, 'encode'), $texte);
+            $texte = str_replace($GLOBALS['balises']['article_titre_page'], $clean_title.' - ', $texte);
         }
     }
 
@@ -138,6 +189,10 @@ function conversions_theme($texte, $solo_art, $cnt_mode)
     // addons
     $texte = conversion_theme_addons($texte);
 
+    // revert addon tag protection : &#123;addon_ > {addon_
+    // %26%23123%3Baddon_ is for using {addon_ in a tag (for URL of the tag)
+    $texte = str_replace(array('&#123;addon_', '%26%23123%3Baddon_'), '{addon_', $texte);
+
     return $texte;
 }
 
@@ -146,6 +201,9 @@ function conversions_theme($texte, $solo_art, $cnt_mode)
  */
 function conversions_theme_commentaire($texte, $commentaire)
 {
+    // encode {addon_
+    $commentaire = html_addon_protect($commentaire, 'encode');
+
     $texte = str_replace($GLOBALS['balises']['commentaire_contenu'], $commentaire['bt_content'], $texte);
     $texte = str_replace($GLOBALS['balises']['commentaire_date'], date_formate($commentaire['bt_id']), $texte);
     $texte = str_replace($GLOBALS['balises']['commentaire_date_iso'], date_formate_iso($commentaire['bt_id']), $texte);
@@ -167,8 +225,8 @@ function conversions_theme_article($texte, $billet)
 {
     $texte = str_replace($GLOBALS['balises']['form_commentaire'], $GLOBALS['form_commentaire'], $texte);
     $texte = str_replace($GLOBALS['balises']['rss_comments'], 'rss.php?id='.$billet['bt_id'], $texte);
-    $texte = str_replace($GLOBALS['balises']['article_titre'], $billet['bt_title'], $texte);
-    $texte = str_replace($GLOBALS['balises']['article_chapo'], ((empty($billet['bt_abstract'])) ? mb_substr(strip_tags($billet['bt_content']), 0, 249).'…' : $billet['bt_abstract']), $texte);
+    $texte = str_replace($GLOBALS['balises']['article_titre'], html_clean_meta($billet['bt_title'], null, 'encode'), $texte);
+    $texte = str_replace($GLOBALS['balises']['article_chapo'], html_clean_meta(((empty($billet['bt_abstract'])) ? $billet['bt_content'] : $billet['bt_abstract']), 249, 'encode'), $texte);
     $texte = str_replace($GLOBALS['balises']['article_contenu'], $billet['bt_content'], $texte);
     $texte = str_replace($GLOBALS['balises']['article_date'], date_formate($billet['bt_date']), $texte);
     $texte = str_replace($GLOBALS['balises']['article_date_iso'], date_formate_iso($billet['bt_date']), $texte);
@@ -182,6 +240,7 @@ function conversions_theme_article($texte, $billet)
         $texte = str_replace($GLOBALS['balises']['nb_commentaires'], nombre_objets($billet['bt_nb_comments'], 'commentaire'), $texte);
     }
     $texte = str_replace($GLOBALS['balises']['article_lien'], $billet['bt_link'], $texte);
+    $billet['bt_tags'] = html_clean_meta($billet['bt_tags'], null, 'encode');
     $texte = str_replace($GLOBALS['balises']['article_tags'], liste_tags($billet, '1'), $texte);
     $texte = str_replace($GLOBALS['balises']['article_tags_plain'], liste_tags($billet, '0'), $texte);
     return $texte;
@@ -192,8 +251,10 @@ function conversions_theme_article($texte, $billet)
  */
 function conversions_theme_lien($texte, $lien)
 {
-    $texte = str_replace($GLOBALS['balises']['article_titre'], $lien['bt_title'], $texte);
-    $texte = str_replace($GLOBALS['balises']['lien_titre'], $lien['bt_title'], $texte);
+    // remove {addon_
+    $clean_title = html_addon_protect($lien['bt_title'], 'encode');
+    $texte = str_replace($GLOBALS['balises']['article_titre'], $clean_title, $texte);
+    $texte = str_replace($GLOBALS['balises']['lien_titre'], $clean_title, $texte);
     $texte = str_replace($GLOBALS['balises']['lien_url'], $lien['bt_link'], $texte);
     $texte = str_replace($GLOBALS['balises']['lien_date'], date_formate($lien['bt_id']), $texte);
     $texte = str_replace($GLOBALS['balises']['lien_date_iso'], date_formate_iso($lien['bt_id']), $texte);

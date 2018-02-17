@@ -91,6 +91,7 @@ function rmdir_recursive($path)
  */
 function addons_init_public()
 {
+    // var_dump('addons_init_public');
     $db = addons_db_get();
     $errors = array();
 
@@ -123,7 +124,9 @@ function addons_init_public()
         require_once addon_get_addon_file_path($addon_id);
 
         // check version
-        if (!addon_test_versions($declaration['version'], $addon['version'])) {
+        if (isset($declaration) // dirty fix
+         && !addon_test_versions($declaration['version'], $addon['version'])
+        ) {
             log_error('Addon updated, new version of addon '.$addon_id.' have been detected, please update check addons in admin');
             // check compliancy
             if (!addon_test_compliancy($declaration['compliancy'])) {

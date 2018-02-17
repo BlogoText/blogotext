@@ -86,14 +86,30 @@ function create_htaccess($folder)
     return (file_put_contents($file, $content, LOCK_EX) !== false);
 }
 
+
+
+/**
+ * remove cache for feed.php
+ */
+function flux_remove_cache()
+{
+    $files = glob(DIR_VHOST_CACHE.'feed_lvl*');
+    foreach($files as $file){
+        if (is_file($file)) {
+            unlink($file);
+        }
+    }
+}
+
 /**
  *
  */
 function flux_refresh_cache_lv1()
 {
     create_folder(DIR_VHOST_CACHE, 1);
+    flux_remove_cache();
     $arr_a = liste_elements("SELECT * FROM articles WHERE bt_statut=1 ORDER BY bt_date DESC LIMIT 0, 20", array(), 'articles');
     $arr_c = liste_elements("SELECT c.*, a.bt_title FROM commentaires AS c, articles AS a WHERE c.bt_statut=1 AND c.bt_article_id=a.bt_id ORDER BY c.bt_id DESC LIMIT 0, 20", array(), 'commentaires');
     $arr_l = liste_elements("SELECT * FROM links WHERE bt_statut=1 ORDER BY bt_id DESC LIMIT 0, 20", array(), 'links');
-    return create_file_dtb(DIR_VHOST_CACHE.'cache1_feed.dat', array('c' => $arr_c, 'a' => $arr_a, 'l' => $arr_l));
+    return create_file_dtb(DIR_VHOST_CACHE.'feed_lvl_1.dat', array('c' => $arr_c, 'a' => $arr_a, 'l' => $arr_l));
 }
