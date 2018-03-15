@@ -24,6 +24,20 @@ function captcha_form()
 }
 
 /**
+ * check captcha, return bool
+ */
+
+function captcha_check($token, $captcha)
+{
+    $ua = (isset($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : '';
+    if ($token != sha1($ua.$captcha)) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+/**
  * generates the comment form, with params from the admin-side and the visiter-side
  */
 function afficher_form_commentaire($article_id, $mode, $erreurs, $edit_comm)
