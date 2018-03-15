@@ -22,7 +22,6 @@ function hidden_input($nom, $valeur, $id = 0)
     return $form;
 }
 
-
 /**
  *
  */
