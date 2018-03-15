@@ -11,6 +11,17 @@
 # You can redistribute it under the terms of the MIT / X11 Licence.
 # *** LICENSE ***
 
+/**
+ * Print captcha form
+ */
+function captcha_form()
+{
+    $html = '<label>'.$GLOBALS['lang']['label_dp_captcha'];
+    $html .= '<b>'.en_lettres($GLOBALS['captcha']['x']).'</b> &#x0002B; <b>'.en_lettres($GLOBALS['captcha']['y']).'</b> ';
+    $html .= '<input type="number" name="captcha" autocomplete="off" value="" class="text" /></label>'."\n";
+    $html .= "\t\t".hidden_input('_token', $GLOBALS['captcha']['hash']);
+    return $html;
+}
 
 /**
  * generates the comment form, with params from the admin-side and the visiter-side
@@ -150,9 +161,7 @@ function afficher_form_commentaire($article_id, $mode, $erreurs, $edit_comm)
                 $form .= '<input type="email" name="email" placeholder="mail@example.com" '.$required.' value="'.$form_cont['e_mail'].'" size="25" /></label>'."\n";
                 $form .= "\t\t".'<label>'.$GLOBALS['lang']['label_dp_webpage'];
                 $form .= '<input type="url" name="webpage" placeholder="http://www.example.com" value="'.$form_cont['webpage'].'" size="25" /></label>'."\n";
-                $form .= "\t\t".'<label>'.$GLOBALS['lang']['label_dp_captcha'].'<b>'.en_lettres($GLOBALS['captcha']['x']).'</b> &#x0002B; <b>'.en_lettres($GLOBALS['captcha']['y']).'</b> ';
-                $form .= '<input type="number" name="captcha" autocomplete="off" value="" class="text" /></label>'."\n";
-                $form .= "\t\t".hidden_input('_token', $GLOBALS['captcha']['hash']);
+                $form .= "\t\t".captcha_form();
                 $form .= "\t\t".hidden_input('_verif_envoi', '1');
             $form .= "\t".'</fieldset><!--end info-->'."\n";
             $form .= "\t".'<fieldset class="subsc"><!--begin cookie asking -->'."\n";
