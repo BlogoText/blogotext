@@ -428,7 +428,7 @@ function addon_get_settings($addon_id, $declaration = null)
         $t = include $user_file_path;
 
         foreach ($t as $option => $value) {
-            $saved_settings[$option] = htmlspecialchars($value, ENT_QUOTES);
+            $saved_settings[$option] = $value, ENT_QUOTES;
         }
 
         if (is_array($saved_settings)) {
