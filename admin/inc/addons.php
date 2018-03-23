@@ -328,6 +328,8 @@ function addon_form_edit_settings_proceed($addon_id)
             }
         } else if ($param['type'] == 'text') {
             $datas[$key] = htmlentities($_POST[$key], ENT_QUOTES);
+        } else if ($param['type'] == 'code') {
+            $datas[$key] = $_POST[$key];
         } else if ($param['type'] == 'select') {
             if (isset($param['options'][$_POST[$key]])) {
                 $datas[$key] = htmlentities($_POST[$key], ENT_QUOTES);
@@ -461,6 +463,9 @@ function addon_form_edit_settings($addon_id)
             } else if ($param['type'] == 'text') {
                 $out .= '<label for="'.$key.'">'.addon_get_translation($param['label']).$t_desc.'</label>';
                 $out .= '<input type="text" id="'.$key.'" name="'.$key.'" size="30" value="'.$param['value'].'" class="text" />';
+            } else if ($param['type'] == 'code') {
+                $out .= '<label for="'.$key.'">'.addon_get_translation($param['label']).$t_desc.'</label>';
+                $out .= '<textarea id="'.$key.'" name="'.$key.'" cols="30" rows="5" class="text" >'.$param['value'].'</textarea>';
             } else if ($param['type'] == 'select') {
                 $out .= '<label for="'.$key.'">'.addon_get_translation($param['label']).$t_desc.'</label>';
                 $out .= '<select id="'.$key.'" name="'.$key.'">';
