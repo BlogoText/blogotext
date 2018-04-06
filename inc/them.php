@@ -156,7 +156,7 @@ function conversions_theme($texte, $solo_art, $cnt_mode)
         $texte = str_replace($GLOBALS['balises']['article_lien'], $solo_art['bt_link'], $texte);
         if ($solo_art['bt_type'] == 'article') {
             $texte = str_replace($GLOBALS['balises']['article_chapo'], html_clean_meta(((empty($solo_art['bt_abstract'])) ? $solo_art['bt_content'] : $solo_art['bt_abstract']), 249, 'encode'), $texte);
-            $texte = str_replace($GLOBALS['balises']['blog_motscles'], $solo_art['bt_keywords'], $texte);
+            $texte = str_replace($GLOBALS['balises']['blog_motscles'], html_addon_protect($solo_art['bt_keywords'], 'encode'), $texte);
         }
         if ($solo_art['bt_type'] == 'link' or $solo_art['bt_type'] == 'note') {
             $texte = str_replace($GLOBALS['balises']['article_chapo'], html_clean_meta(solo_art['bt_content'], 149, 'encode'), $texte);
@@ -167,7 +167,7 @@ function conversions_theme($texte, $solo_art, $cnt_mode)
     // si remplacé, ceci n'a pas d'effet.
     $texte = str_replace($GLOBALS['balises']['blog_description'], $GLOBALS['description'], $texte);
     $texte = str_replace($GLOBALS['balises']['article_titre_page'], '', $texte);
-    $texte = str_replace($GLOBALS['balises']['blog_motscles'], $GLOBALS['keywords'], $texte);
+    $texte = str_replace($GLOBALS['balises']['blog_motscles'], html_addon_protect($GLOBALS['keywords'], 'encode'), $texte);
     $texte = str_replace($GLOBALS['balises']['article_titre_echape'], '', $texte);
     $texte = str_replace($GLOBALS['balises']['article_lien'], URL_ROOT, $texte);
     $texte = str_replace($GLOBALS['balises']['article_chapo'], $GLOBALS['description'], $texte);

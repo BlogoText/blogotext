@@ -91,7 +91,6 @@ function rmdir_recursive($path)
  */
 function addons_init_public()
 {
-    // var_dump('addons_init_public');
     $db = addons_db_get();
     $errors = array();
 
@@ -127,12 +126,12 @@ function addons_init_public()
         if (isset($declaration) // dirty fix
          && !addon_test_versions($declaration['version'], $addon['version'])
         ) {
-            log_error('Addon updated, new version of addon '.$addon_id.' have been detected, please update check addons in admin');
+            log_error('Addon updated, new version of addon '.$addon_id.' have been detected, please check addons in admin');
+            addons_db_del();
             // check compliancy
             if (!addon_test_compliancy($declaration['compliancy'])) {
                 log_error('Addon updated, '.$addon_id.' is not compliant with this');
                 // delete db
-                addons_db_del();
                 continue;
             }
         }
@@ -603,7 +602,13 @@ function addons_db_get()
  */
 function addons_db_del()
 {
-    return unlink(ADDONS_DB);
+    $unlink = unlink(ADDONS_DB);
+    if ($unlink) {
+        log_error('The addons database have been deleted, new db will be generated on the next load');
+    } else {
+        log_error('Fail to delete addons database');
+    }
+    return $unlink;
 }
 
 
