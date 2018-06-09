@@ -95,7 +95,7 @@ $GLOBALS['lang'] = array(
 // Titles - liens
 'post_link' => 'Veire en linha',
 'post_share' => 'Partejar',
-'blog_link' => 'Veire lo blog',
+'blog_link' => 'Veire lo blòg',
 'go_to_pref' => 'Anatz a las preferéncias per cambiar lo títol.',
 // Mois
 'janvier' => 'genièr',
