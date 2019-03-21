@@ -39,7 +39,6 @@ $vars['enregistrer'] = (filter_input(INPUT_POST, 'enregistrer') !== null);
 $vars['supprimer'] = (filter_input(INPUT_POST, 'supprimer') !== null);
 $vars['_verif_envoi'] = (filter_input(INPUT_POST, '_verif_envoi') !== null);
 
-
 /**
  *
  */
@@ -74,22 +73,23 @@ function extact_words($text)
     return implode($keywords, ', ');
 }
 
+
 /**
  *
  */
 function post_markup($text)
 {
+    // var_dump(__line__);
+    // var_dump($text);
     $text = preg_replace("/(\r\n|\r\n\r|\n|\n\r|\r)/", "\r", $text);
     $toFind = array(
         // Replace \r with \n when following HTML elements
         '#<(.*?)>\r#',
-
         // Jusitifications
         /* left    */ '#\[left\](.*?)\[/left\]#s',
         /* center  */ '#\[center\](.*?)\[/center\]#s',
         /* right   */ '#\[right\](.*?)\[/right\]#s',
         /* justify */ '#\[justify\](.*?)\[/justify\]#s',
-
         // Misc
         /* regex URL     */ '#([^"\[\]|])((http|ftp)s?://([^"\'\[\]<>\s]+))#i',
         /* a href        */ '#\[([^[]+)\|([^[]+)\]#',
@@ -108,7 +108,6 @@ function post_markup($text)
         /* code=language */ '#\[code=(\w+)\]\[/code\]#s',
         /* color         */ '#\[color=(?:")?(\w+|\#(?:[0-9a-fA-F]{3}){1,2})(?:")?\](.*?)\[/color\]#s',
         /* size          */ '#\[size=(\\\?")?([0-9]{1,})(\\\?")?\](.*?)\[/size\]#s',
-
         // Adding some &nbsp;
         '# (»|!|:|\?|;)#',
         '#« #',
@@ -116,13 +115,11 @@ function post_markup($text)
     $toReplace = array(
         // Replace \r with \n
         '<$1>',
-
         // Jusitifications
         /* left    */ '<div style="text-align:left;">$1</div>',
         /* center  */ '<div style="text-align:center;">$1</div>',
         /* right   */ '<div style="text-align:right;">$1</div>',
         /* justify */ '<div style="text-align:justify;">$1</div>',
-
         // Misc
         /* regex URL     */ '$1<a href="$2">$2</a>',
         /* a href        */ '<a href="$2">$1</a>',
@@ -141,25 +138,85 @@ function post_markup($text)
         /* code=language */ '<prebtcode data-language="$1"></prebtcode>'."\r",
         /* color         */ '<span style="color:$1;">$2</span>',
         /* size          */ '<span style="font-size:$2pt;">$4</span>',
-
         // Adding some &nbsp;
-        ' $1',
-        '« ',
+        ' $1',
+        '« ',
     );
 
     // memorizes [code] tags contents before bbcode being appliyed
     preg_match_all('#\[code(=(\w+))?\](.*?)\[/code\]#s', $text, $codeContents, PREG_SET_ORDER);
     // empty the [code] tags (content is in memory)
     $textFormated = preg_replace('#\[code(=(\w+))?\](.*?)\[/code\]#s', '[code$1][/code]', $text);
+
+    // memorizes <code><pre> tags contents before bbcode being appliyed
+    preg_match_all('#<(code)([^>]*)>(.*?)</\1>#s', $textFormated, $codeHtmlContents, PREG_SET_ORDER);
+    // empty the [code] tags (content is in memory)
+    $textFormated = preg_replace('#<(code)([^>]*)>(.*?)</\1>#s', '<$1></$1>', $textFormated);
+
     // apply bbcode filter
     $textFormated = preg_replace($toFind, $toReplace, $textFormated);
     // apply <p>paragraphe</p> filter
     $textFormated = parse_texte_paragraphs($textFormated);
     // replace [code] elements with theire initial content
     $textFormated = parse_texte_code($textFormated, $codeContents);
+    // replace <pre> and <code> elements with theire initial content
+    $textFormated = parse_texte_code_html($textFormated, $codeHtmlContents);
 
+    // var_dump($textFormated);
+    // exit();
     return $textFormated;
 }
+
+
+/**
+ *
+ */
+function parse_texte_code_html($texte, $code_before)
+{
+    // $i = count($code_before);
+    // $j = 0;
+    // var_dump($code_before);
+    // exit();
+    foreach ($code_before as $code) {
+        $tag = '<'.$code['1'].'></'.$code['1'].'>';
+        $pos = strpos($texte, $tag);
+        // if ($code['1'] == 'code') {
+            
+        // }
+        if ($pos !== false) {
+            $code['3'] = htmlspecialchars(htmlspecialchars_decode($code['3']));
+            $texte = substr_replace(
+                        $texte,
+                        '<'.$code['1'].$code['2'].'>'.$code['3'].'</'.$code['1'].'>',
+                        $pos,
+                        strlen($tag)
+                    );
+        }
+    }
+
+    return $texte;
+}
+
+/* 
+function parse_texte_code_html($texte, $code_before)
+{
+    $codes = array_map('array_shift', $code_before);
+    var_dump($code_before);
+    $i = count($code_before);
+    $j = 0;
+    while ($j < $i) {
+        $pos = strpos($texte, '<'.$codes[$j]['1'].'></'.$codes[$j]['1'].'>');
+        var_dump('<'.$codes[$j]['1'].'></'.$codes[$j]['1'].'>');
+        var_dump($pos);
+        if ($pos !== false) {
+            $texte = substr_replace($texte, $codes[$j], $pos, 11);
+        }
+        ++$j;
+    }
+
+    return $texte;
+}
+ */
 
 /**
  *
@@ -500,7 +557,7 @@ if ($post) {
         echo '</div>';
     echo '</div>';
 }
-
+// var_dump(__line__);
 echo '<div id="page">';
 
 // Show the post
