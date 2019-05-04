@@ -12,7 +12,7 @@
 # *** LICENSE ***
 
 $LANG_ADMIN = array(
-'id' => 'fr',
+'id' => 'oc',
 // Install
 'install' => 'Installacion',
 'install_id' => 'Causissètz un identificant : ',
