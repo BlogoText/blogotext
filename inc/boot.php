@@ -187,17 +187,19 @@ function secure_host_to_path($http_host)
     }
 
     // domain can be idn
+    // idn_to_ascii() fix found at https://github.com/thephpleague/uri/pull/106/files
+    $bugged_idn = (PHP_VERSION_ID >= 70200);
     foreach ($exploded as $type => &$val) {
         if ($type == 'path') {
             $tmp = explode('/', $val);
             foreach ($tmp as &$v) {
                 if (!empty($v)) {
-                    $v = idn_to_ascii($v);
+                    $v = ($bugged_idn) ? @idn_to_ascii($v) : idn_to_ascii($v);
                 }
             }
             $val = implode('/', $tmp);
         } else {
-            $val = idn_to_ascii($val);
+            $val = ($bugged_idn) ? @idn_to_ascii($val) : idn_to_ascii($val);
         }
     }
     $path = $exploded['host'].$exploded['path'];
@@ -247,7 +249,7 @@ define('FILE_MYSQL', DIR_CONFIG.'mysql.php');
 // Constants: general
 define('BLOGOTEXT_NAME', 'BlogoText');
 define('BLOGOTEXT_SITE', 'https://github.com/BlogoText/blogotext');
-define('BLOGOTEXT_VERSION', '3.7.6');
+define('BLOGOTEXT_VERSION', '3.7.7');
 define('MINIMAL_PHP_REQUIRED_VERSION', '5.5');
 define('BLOGOTEXT_UA', 'Mozilla/5.0 (Windows NT 10; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0');
 

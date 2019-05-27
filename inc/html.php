@@ -78,6 +78,7 @@ function encart_commentaires()
          LIMIT 5';
     $tableau = liste_elements($query, array(), 'commentaires');
     if (isset($tableau)) {
+        $tableau = html_addon_protect($tableau, 'encode');
         $listeLastComments = '<ul class="encart_lastcom">'."\n";
         foreach ($tableau as $i => $comment) {
             $comment['contenu_abbr'] = strip_tags($comment['bt_content']);
@@ -123,6 +124,8 @@ function encart_categories($mode)
             }
         }
         $uliste .= '</ul>'."\n";
+
+        $uliste = html_addon_protect($uliste, 'encode');
         return $uliste;
     }
 }

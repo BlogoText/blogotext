@@ -55,15 +55,19 @@ function get_ip()
  */
 function auth_check_session()
 {
-    @session_start();
-    ini_set('session.cookie_httponly', true);
+    // bug fix for PHP 7.2
+    if (session_status() == PHP_SESSION_NONE) {
+        ini_set('session.cookie_httponly', true);
+        session_set_cookie_params(365 * 24 * 60 * 60);
+        @session_start();
+    }
 
     // Check old cookie
     $newUid = uuid();
     if (isset($_COOKIE['BT-admin-stay-logged'])) {
         if ($_COOKIE['BT-admin-stay-logged'] == $newUid) {
             $_SESSION['user_id'] = $newUid;
-            session_set_cookie_params(365 * 24 * 60 * 60);
+            // session_set_cookie_params(365 * 24 * 60 * 60);
             session_regenerate_id(true);
             return true;
         }
