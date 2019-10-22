@@ -39,9 +39,18 @@ if ($check) {
         $_SESSION['user_id'] = $userId;
 
         if ($stayLogged) {
+            $session_restart = (session_status() === PHP_SESSION_ACTIVE);
+            if ($session_restart) {
+                $saved = $_SESSION;
+                session_destroy();
+            }
             // If user wants to stay logged
-            setcookie('BT-admin-stay-logged', $userId, time() + 365 * 24 * 60 * 60, null, null, false, true);
             session_set_cookie_params(365 * 24 * 60 * 60);
+            setcookie('BT-admin-stay-logged', $userId, time() + 365 * 24 * 60 * 60, null, null, false, true);
+            if ($session_restart) {
+                session_start();
+                $_SESSION = $saved;
+            }
         } else {
             $_SESSION['stay_logged_mode'] = 0;
             session_regenerate_id(true);
