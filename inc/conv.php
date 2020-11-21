@@ -132,7 +132,7 @@ function markup_clean_href($matches)
             !filter_var($matches['2'], FILTER_VALIDATE_URL)
          || !preg_match('#^('.join('|', $allowed).')#i', $matches['2'])
         )
-     && !preg_match('/^#[\w-_]+$/i', $matches['2']) // allowing [text|#look-at_this]
+     && !preg_match('/^#[\w\-_]+$/i', $matches['2']) // allowing [text|#look-at_this]
     ) {
         return $matches['0'];
     }
