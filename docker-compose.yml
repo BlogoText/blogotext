@@ -1,0 +1,16 @@
+version: '2.4'
+
+volumes:
+  bgt-data:
+
+services:
+  blogotext:
+    image: blogotext
+    container_name: blogotext
+    build:
+      context: ./
+    volumes:
+      - bgt-data:/var/www/html
+    ports:
+        - 8080:8080
+    restart: unless-stopped
