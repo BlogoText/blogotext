@@ -33,7 +33,15 @@ This is BlogoText, the lightweight SQLite Blog-Engine.
  * [mbstring](http://php.net/manual/book.mbstring.php)
 
 ## Installation
+### Self-hosted
  * Download [the lastest release](https://github.com/BlogoText/blogotext/releases)
  * Upload folder to your site (eg: to `https://example.com/blog`)
  * Use your browser to go to your site
  * Follow the few steps
+
+### Docker
+* Intall [Docker](https://docs.docker.com/engine/install/)
+* Install [docker-compose](https://docs.docker.com/compose/install/)
+* Checkout git repository: `git clone https://github.com/BlogoText/blogotext.git`
+* Build docker image and run BlogoText container at once: `docker-compose up -d --build`
+* Access BlogoText @ https://YOUR_IP_ADRESS:8080
